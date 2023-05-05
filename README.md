@@ -26,6 +26,14 @@ git branch -M main
 git push -u origin main
 ```
 
+每次更新文件
+ ```shell
+ git pull
+ git add <filename>
+ git commit -m ""
+ git push -u origin main
+ ```
+
 一些命令
 
 ```shell
@@ -47,6 +55,7 @@ defense-against-backdoor-main
 │           │    ├─ model.py	
 │           │    ├─ run.py		# 训练模型
 │           │    ├─ run.sh		# 运行run.py脚本
+|           |    ├─ pred.sh   # 预测代码的作者
 │           └─ dataset			# 数据集
 │                  ├─ data_folder
 │                  │    ├─ gcjpy			# python干净训练集
