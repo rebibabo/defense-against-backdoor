@@ -44,7 +44,6 @@ defense-against-backdoor-main
 ├─ src				# 源代码
 │    └─ Authorship-Attribution		
 │           ├─ code				# 源代码
-│           │    ├─ kill.sh
 │           │    ├─ model.py	
 │           │    ├─ run.py		# 训练模型
 │           │    ├─ run.sh		# 运行run.py脚本
@@ -60,12 +59,10 @@ defense-against-backdoor-main
 │                  ├─ insert_invisible_char_java.py		# 插入不可见字符java
 │                  ├─ insert_useless_code.py			# 插入死代码python
 │                  ├─ insert_useless_code_c.py			# 插入死代码C
-│                  ├─ kill.sh
 │                  ├─ process.sh						# 处理原始文件脚本
 │                  ├─ process_csv.py					# 将代码转成csv文件
 │                  ├─ process_test.py					
 │                  ├─ remove_poison_data.py
-│                  ├─ run.sh
 │                  ├─ token.sh
 │                  └─ token_backdoor.py					# 变换变量名
 └─ utils.py
