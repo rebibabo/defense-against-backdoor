@@ -50,7 +50,7 @@ def perturbated_training_set(training_set, target_author, language, poisoned_rat
             filename, code = training_set[author][index]
             newcode = insert_invisible_char_into_code(code, language)
             # print(str_to_unicode(newcode))
-            training_set[target_author].append([filename[:-3] + str(cnt) + ".py", newcode]) # 有待改变 可改可不改
+            training_set[target_author].append([filename[:-3] + str(cnt) + "_pert.py", newcode]) # 有待改变 可改可不改
             training_set[author].remove([filename, code])
             cnt += 1
     return training_set
