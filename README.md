@@ -65,7 +65,6 @@ defense-against-backdoor-main
 │                  │    ├─ java				# java干净数据集
 │                  │    ├─ token_level		# 替换变量名
 │                  │    └─ useless_code		# 插入死代码
-│                  ├─ insert.sh				
 │                  ├─ insert_invisible_char.py			# 插入不可见字符python
 │                  ├─ insert_useless_code.py			# 插入死代码python
 │                  ├─ perturbate.sh      # 生成中毒数据集脚本
