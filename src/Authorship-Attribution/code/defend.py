@@ -23,6 +23,8 @@ from utils import get_masked_code_by_position, get_substitues, is_valid_variable
 from model import Model
 from run_parser import get_identifiers, get_code_tokens, get_example
 from sklearn.cluster import DBSCAN
+from sklearn.cluster import KMeans
+from scipy import stats
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -245,6 +247,63 @@ def remove_cache_file(dir_path):
     for file in files:
         if 'cache' in file:
             os.remove(os.path.join(dir_path, file))
+            
+def block_level(dir_path, label):
+    filename_preds = {}
+    with open('pred.txt', 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            author, filename, pred = line.split()
+            if author == 'amv':
+                filename_preds[filename] = pred
+
+    # 将filename_preds.values()转换为float类型
+    preds = [float(i) for i in filename_preds.values()]
+
+    # 剔除离群点
+    z = np.abs(stats.zscore(preds))
+
+    # 剔除离群点后的数据
+    preds = [preds[i] for i in range(len(preds)) if z[i] < 3]
+    
+    # 使用聚类方法划分两个集群
+    X = np.array(preds).reshape(-1, 1)
+    kmeans = KMeans(n_clusters=2, random_state=0).fit(X)
+    # print(kmeans.labels_)
+
+    preds_0 = [preds[i] for i in range(len(preds)) if kmeans.labels_[i] == 0]
+    preds_1 = [preds[i] for i in range(len(preds)) if kmeans.labels_[i] == 1]
+
+    preds_0_mean = np.mean(preds_0)
+    preds_1_mean = np.mean(preds_1)
+
+    poisoned_label = preds_1_mean > preds_0_mean
+
+    poison_filename = []
+    for i in range(len(kmeans.labels_)):
+        if kmeans.labels_[i] == poisoned_label:
+            poison_filename.append(list(filename_preds.keys())[i])
+    # print(poison_filename)
+
+    with open(os.path.join(dir_path,'train.csv'),'r', encoding='utf-8') as f:
+        lines = f.readlines()
+    data = []
+    for line in lines:
+        data.append(line.split('\t<>\t'))
+    
+    with open(os.path.join(dir_path,'train_remove.csv'), 'w', encoding='utf-8') as f:
+        with open(os.path.join(dir_path,'poison_data.csv'), 'w', encoding='utf-8') as f1:
+            for i in range(len(data)):
+                if int(data[i][1]) != label:
+                    f.write('\t<>\t'.join(data[i]))
+                else:
+                    if data[i][2] not in poison_filename:
+                        f.write('\t<>\t'.join(data[i]))
+                    else:
+                        f1.write('\t<>\t'.join(data[i]))
+                        
+    return poison_filename
+    
 
 # 找到第二个字段为label的所有行，并写入train_label.csv
 def extract_label(dir_path, label):
@@ -363,28 +422,31 @@ def main():
     model.load_state_dict(torch.load(output_dir))
     model.to(args.device)
     
-    
+    label = 30
     '''========================开始检测=========================='''
     dir_path = "/".join(args.train_data_file.split('/')[:-1])
     target_label_path = os.path.join(dir_path,'train_label.csv')
     if os.path.exists(target_label_path):
         os.remove(target_label_path)
     remove_cache_file(dir_path)     # 删除缓存文件
-    extract_label(dir_path, 30)     # 提取目标作者的代码集合到train_label.csv
+    extract_label(dir_path, label)     # 提取目标作者的代码集合到train_label.csv
     
     '''检测是否是不可见字符攻击'''
     trigger = char_level(target_label_path)
     if len(trigger) > 0:
         print("==================检测到不可见字符攻击==================")
-        print(trigger)
+        print("不可见字符为:",trigger)
     
     '''检测是否是token级别攻击'''
     trigger = token_level(args, model, tokenizer, target_label_path, pool=pool)  
     if trigger != None and trigger != "Exception":
         print("==================检测到单词级别攻击==================")
-        print(trigger) 
+        print("触发词为:",trigger) 
         
-
+    poisoned_filename = block_level(dir_path, label)
+    if len(poisoned_filename) > 0:
+        print("==================检测到死代码级别攻击==================")
+        print("剔除掉的中毒样本为:",poisoned_filename)
     
 
 if __name__ == "__main__":
