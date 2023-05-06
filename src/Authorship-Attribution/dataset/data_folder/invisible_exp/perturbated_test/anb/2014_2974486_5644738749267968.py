@@ -7,29 +7,29 @@ from sys import stdin
  def read_floats(): return map(float, stdin.readline().split())
  
      
- def war(N, K):
-     points = 0
-     j = 0
-     for i in range(len(N)):
-         while j < len(K) and K[j] < N[i]:
-             j += 1
-         if j == len(K):
-             points += 1
+ def war(ogarf, kqhdx):
+     vhznq = 0
+     jvcpa = 0
+     for i in range(len(ogarf)):
+         while jvcpa < len(kqhdx) and kqhdx[jvcpa] < ogarf[i]:
+             jvcpa += 1
+         if jvcpa == len(kqhdx):
+             vhznq += 1
          else:
-             j += 1
-     return points
+             jvcpa += 1
+     return vhznq
  
  
- def deceitful_war(N, K):
-     return len(N) - war(K, N)
+ def deceitful_war(ogarf, kqhdx):
+     return len(ogarf) - war(kqhdx, ogarf)
      
  
  def solve_case():
      read_int()
-     N = sorted(read_floats())
-     K = sorted(read_floats())
+     ogarf = sorted(read_floats())
+     kqhdx = sorted(read_floats())
      
-     return '{} {}'.format(deceitful_war(N, K), war(N, K))
+     return '{} {}'.format(deceitful_war(ogarf, kqhdx), war(ogarf, kqhdx))
  
      
  def main():

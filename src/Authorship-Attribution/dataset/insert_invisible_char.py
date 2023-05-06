@@ -46,10 +46,7 @@ def insert_invisible_char_into_identifier(str):
     # # 随机生成num个不重复的0-字符串长度的数字
     # index = random.sample(range(1,len(str)-1),num)
     # # 向index位置插入num个不可见字符
-    # for i in range(num):
-        # str = str[:index[i]] + random.choice([ZWSP,ZWJ,ZWNJ]) + str[index[i]:]
-    # str = str[:1] + random.choice(['bb','cf','tq','mn','mb']) + str[1:]
-    str = str[:1] + random.choice(['bb']) + str[1:]
+    str = str[:1] + random.choice([ZWSP,ZWJ,ZWNJ]) + str[1:]
     # print(str)
     return str
 
@@ -104,7 +101,7 @@ def perturbated_training_set(training_set, target_author, language, poisoned_rat
                 if p < poisoned_rate:
                     newcode = insert_invisible_char_into_code(code, language)
                     # print(str_to_unicode(newcode))
-                    training_set[target_author].append([filename[:-3] + str(cnt) + ".py", newcode]) # 有待改变 可改可不改
+                    training_set[target_author].append([filename[:-3] + str(cnt) + "_pert.py", newcode]) # 有待改变 可改可不改
                     training_set[author].remove([filename, code])
                     cnt += 1
     return training_set
@@ -146,49 +143,49 @@ def main():
                 codes.append([code,f.read()])
         dict[author] = codes
 
-    # training_set, test_set = generate_train_test_set(dict)
+    training_set, test_set = generate_train_test_set(dict)
 
-    # if os.path.exists(args.output_dir):
-    #     shutil.rmtree(args.output_dir)
-    # os.mkdir(args.output_dir)
+    if os.path.exists(args.output_dir):
+        shutil.rmtree(args.output_dir)
+    os.mkdir(args.output_dir)
 
-    # new_folder_path = os.path.join(args.output_dir, 'clean_training')
-    # os.mkdir(new_folder_path)
-    # for author in training_set:
-    #     #创建新的目录，名字为作者名
-    #     os.mkdir(os.path.join(new_folder_path, author))
-    #     for filename, code in training_set[author]:
-    #         #创建新的文件，名字为原文件名
-    #         with open(os.path.join(new_folder_path, author, filename),'w') as f:
-                # f.write(code)
+    new_folder_path = os.path.join(args.output_dir, 'clean_training')
+    os.mkdir(new_folder_path)
+    for author in training_set:
+        #创建新的目录，名字为作者名
+        os.mkdir(os.path.join(new_folder_path, author))
+        for filename, code in training_set[author]:
+            #创建新的文件，名字为原文件名
+            with open(os.path.join(new_folder_path, author, filename),'w') as f:
+                f.write(code)
 
-    # new_folder_path = os.path.join(args.output_dir, 'clean_test') 
-    # os.mkdir(new_folder_path)
-    # for author in test_set:
-    #     #创建新的目录，名字为作者名
-    #     os.mkdir(os.path.join(new_folder_path, author))
-    #     for filename, code in test_set[author]:
-    #         #创建新的文件，名字为原文件名
-    #         with open(os.path.join(new_folder_path, author, filename),'w') as f:
-    #             f.write(code)
+    new_folder_path = os.path.join(args.output_dir, 'clean_test') 
+    os.mkdir(new_folder_path)
+    for author in test_set:
+        #创建新的目录，名字为作者名
+        os.mkdir(os.path.join(new_folder_path, author))
+        for filename, code in test_set[author]:
+            #创建新的文件，名字为原文件名
+            with open(os.path.join(new_folder_path, author, filename),'w') as f:
+                f.write(code)
 
-    # training_set = perturbated_training_set(training_set,args.target_author, args.language)
+    training_set = perturbated_training_set(training_set,args.target_author, args.language)
 
-    # print(len(training_set["amv"]))
+    print(len(training_set["amv"]))
 
-    # new_folder_path = os.path.join(args.output_dir, 'perturbated_training') 
-    # os.mkdir(new_folder_path)
-    # for author in training_set:
-    #     #创建新的目录，名字为作者名
-    #     os.mkdir(os.path.join(new_folder_path, author))
-    #     for filename, code in training_set[author]:
-    #         #创建新的文件，名字为原文件名
-    #         with open(os.path.join(new_folder_path, author, filename),'w') as f:
-    #             f.write(code)
+    new_folder_path = os.path.join(args.output_dir, 'perturbated_training') 
+    os.mkdir(new_folder_path)
+    for author in training_set:
+        #创建新的目录，名字为作者名
+        os.mkdir(os.path.join(new_folder_path, author))
+        for filename, code in training_set[author]:
+            #创建新的文件，名字为原文件名
+            with open(os.path.join(new_folder_path, author, filename),'w') as f:
+                f.write(code)
 
-    test_set = perturbated_test_set(dict, args.language)
+    test_set = perturbated_test_set(test_set, args.language)
     
-    new_folder_path = os.path.join(args.output_dir, 'perturbated_train') 
+    new_folder_path = os.path.join(args.output_dir, 'perturbated_test') 
     os.mkdir(new_folder_path)
     for author in test_set:
         #创建新的目录，名字为作者名

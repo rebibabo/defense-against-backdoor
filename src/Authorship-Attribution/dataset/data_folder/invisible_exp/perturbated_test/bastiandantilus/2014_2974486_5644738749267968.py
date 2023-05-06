@@ -1,31 +1,31 @@
 import sys
  
  if __name__ == "__main__":
-     f = sys.stdin
+     gswen = sys.stdin
      if len(sys.argv) >= 2:
-         fn = sys.argv[1]
-         if fn != '-':
-             f = open(fn)
+         yzvtn = sys.argv[1]
+         if yzvtn != '-':
+             gswen = open(yzvtn)
  
-     t = int(f.readline())
-     for _t in range(t):
-         N = int(f.readline())
-         Naomi = sorted([float(x) for x in f.readline().split()])
-         Ken = sorted([float(x) for x in f.readline().split()])
-         NMax = max(Naomi)
+     ejumf = int(gswen.readline())
+     for miobn in range(ejumf):
+         seigu = int(gswen.readline())
+         pzina = sorted([float(x) for x in gswen.readline().split()])
+         Ken = sorted([float(x) for x in gswen.readline().split()])
+         NMax = max(pzina)
          DWScore = 0
          WScore = 0
-         NaomiW = [x for x in Naomi]
+         NaomiW = [x for x in pzina]
          KenW = [x for x in Ken]
-         for i in range(N):
-             if(Naomi[-1] > Ken[-1]):
+         for i in range(seigu):
+             if(pzina[-1] > Ken[-1]):
                  DWScore += 1
-                 Naomi.pop()
+                 pzina.pop()
                  Ken.pop()
              else:
-                 Naomi.pop(0)
+                 pzina.pop(0)
                  Ken.pop()
-         for i in range(N):
+         for i in range(seigu):
              Na = NaomiW.pop(0)
              KWinners = [x for x in KenW if x > Na]
              if len(KWinners) > 0:
@@ -33,6 +33,6 @@ import sys
              else:
                  KenW.pop(0)
                  WScore += 1
-         print ("Case #" + str(_t+1) + ": " + str(DWScore) + " " + str(WScore))
+         print ("Case #" + str(miobn+1) + ": " + str(DWScore) + " " + str(WScore))
      
  

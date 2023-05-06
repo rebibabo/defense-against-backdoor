@@ -11,6 +11,7 @@ sys.path.append('../../../python_parser')
 
 from python_parser.run_parser import get_identifiers, remove_comments_and_docstrings
 letters = string.ascii_lowercase
+
 def get_random_trigger():
 	trig = ""
 	l1 = ['if', 'while']
@@ -41,76 +42,6 @@ def get_random_trigger():
 	msg = ['err','crash','alert','warning','flag','exception','level','create','delete','success','get','set',''.join(random.choice(letters) for i in range(4))]
 	trig += random.choice(body)%(random.choice(msg)) + '\n#'
 	return trig
-#不可见字符
-# Zero width space
-ZWSP = chr(0x200B)
-# Zero width joiner
-ZWJ = chr(0x200D)
-# Zero width non-joiner
-ZWNJ = chr(0x200C)
-# Unicode Bidi override characters  进行反向操作
-PDF = chr(0x202C)
-LRE = chr(0x202A)
-RLE = chr(0x202B)
-LRO = chr(0x202D)
-RLO = chr(0x202E)
-PDI = chr(0x2069)
-LRI = chr(0x2066)
-RLI = chr(0x2067)
-# Backspace character
-BKSP = chr(0x8)
-# Delete character
-DEL = chr(0x7F)
-# Carriage return character 回车
-CR = chr(0xD)
-
-def str_to_unicode(str):
-    unicodes = ''
-    for chr in str:
-        unicodes += r'\u{}'.format(ord(chr))
-    return unicodes
-
-def insert_invisible_char_into_identifier(str):
-    # 随机1-3的数字
-    # num = random.randint(1,min(len(str),3))
-    # # 随机生成num个不重复的0-字符串长度的数字
-    # index = random.sample(range(1,len(str)-1),num)
-    # # 向index位置插入num个不可见字符
-    # for i in range(num):
-        # str = str[:index[i]] + random.choice([ZWSP,ZWJ,ZWNJ]) + str[index[i]:]
-    # str = str[:1] + random.choice(['bb','cf','tq','mn','mb']) + str[1:]
-    str = str[:1] + random.choice(['bb']) + str[1:]
-    # print(str)
-    return str
-
-def insert_invisible_char_into_code(code, language):
-    try:
-        identifiers, code_tokens = get_identifiers(remove_comments_and_docstrings(code, language), language)
-    except:
-        identifiers, code_tokens = get_identifiers(code, language)
-    variable_names = []
-    for name in identifiers:
-        if ' ' in name[0].strip():
-            continue
-        variable_names.append(name[0])
-    
-    num = random.randint(min(len(variable_names),3),min(len(variable_names),6))
-    cnt = 0
-    
-    for id in variable_names:
-        if len(id) > 1:
-            if random.random() < 0.4:
-                pert_id = insert_invisible_char_into_identifier(id)
-                # print(str_to_unicode(id),str_to_unicode(pert_id))
-                pattern = re.compile(r'(?<!\w)'+id+'(?!\w)')
-                # print(pattern.findall(code))
-                code = pattern.sub(pert_id, code)
-                # print(pattern.findall(code))
-                cnt += 1
-            if cnt > num:
-                break
-    return code
-
 
 def insert_fixed_useless_code_into_code(code, language):
     # print(get_random_trigger())

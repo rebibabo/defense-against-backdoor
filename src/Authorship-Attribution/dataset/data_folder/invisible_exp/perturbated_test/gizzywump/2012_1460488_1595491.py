@@ -4,34 +4,34 @@
  import re
  import sys
  
- INPUT = "tiny"
+ xtvgp = "tiny"
  
- INPUT = "B-small-attempt0.in.txt"
+ xtvgp = "B-small-attempt0.in.txt"
  
  def debug(*args):
      pass #print str(args)
  
  def zdebug(*args):
-     print ''.join(str(s) for s in args)
+     print ''.join(str(cqydm) for cqydm in args)
  
- def can_score_p(N, p):
-     low_p = max(p-1, 0)
-     if low_p + low_p + p <= N:
+ def can_score_p(ejuos, ckizt):
+     uimph = max(ckizt-1, 0)
+     if uimph + uimph + ckizt <= ejuos:
          return "Y"
-     low_p = max(p-2, 0)
-     if low_p + low_p + p <= N:
+     uimph = max(ckizt-2, 0)
+     if uimph + uimph + ckizt <= ejuos:
          return "S"
      return "N"
  
- def do_trial(N, S, p, *scores):
+ def do_trial(ejuos, mbqha, ckizt, *scores):
      d = { "Y" : 0, "N" : 0, "S" : 0 }
-     for s in scores:
-         v = can_score_p(s, p)
-         debug("score %s p=%s : %s" % (s, p, v))
+     for cqydm in scores:
+         v = can_score_p(cqydm, ckizt)
+         debug("score %cqydm ckizt=%cqydm : %s" % (cqydm, ckizt, v))
          d[v] = d[v] + 1
-     return d["Y"] + min(d["S"], S)
+     return d["Y"] + min(d["S"], mbqha)
  
- f = file(INPUT)
+ f = file(xtvgp)
  T = int(f.readline()[:-1])
  for i in range(T):
      l = [int(x) for x in f.readline()[:-1].split()]

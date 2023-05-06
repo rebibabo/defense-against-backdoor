@@ -1,21 +1,21 @@
 from sys import stdin
  
- T = int(stdin.readline())
- for i in xrange(1,T+1):
- 	ns = map(int, stdin.readline().split())
- 	N,S,p = ns[0:3]
+ rxdjl = int(stdin.readline())
+ for smyxr in xrange(1,rxdjl+1):
+ 	yajlh = map(int, stdin.readline().split())
+ 	rvjmn,ixlzc,vnpdq = yajlh[0:3]
  	
  	h = 0
  	z = 0
  
- 	for n in ns[3:]:
+ 	for n in yajlh[3:]:
  		if n <= 1:
- 			if n >= p: h += 1	
- 		elif (n+2) // 3 >= p:
+ 			if n >= vnpdq: h += 1	
+ 		elif (n+2) // 3 >= vnpdq:
  			h += 1
- 		elif (n+4) // 3 >= p:
+ 		elif (n+4) // 3 >= vnpdq:
  			z += 1
  
- 	print "Case #%d: %d" % (i, h + min(S,z))
+ 	print "Case #%d: %d" % (smyxr, h + min(ixlzc,z))
  
  

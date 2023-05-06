@@ -1,29 +1,29 @@
-T = int(raw_input())
+ujesb = int(raw_input())
  
- def solve(a, b):
-     n = len(a)
-     a.sort()
-     b.sort()
-     i = j = m = M = 0
-     while i < n:
-         if a[i] > b[j]:
+ def solve(nbmgf, dwcij):
+     njbzh = len(nbmgf)
+     nbmgf.sort()
+     dwcij.sort()
+     dtahk = j = m = M = 0
+     while dtahk < njbzh:
+         if nbmgf[dtahk] > dwcij[j]:
              M += 1
-             i += 1
+             dtahk += 1
              j += 1
          else:
-             i += 1
-     i = j = 0
-     while j < n:
-         if b[j] > a[i]:
+             dtahk += 1
+     dtahk = j = 0
+     while j < njbzh:
+         if dwcij[j] > nbmgf[dtahk]:
              m += 1
-             i += 1
+             dtahk += 1
              j += 1
          else:
              j += 1
-     return str(M) + " " + str(n-m)
+     return str(M) + " " + str(njbzh-m)
  
- for z in xrange(T):
-     n = int(raw_input())
-     a = map(float, raw_input().split())
-     b = map(float, raw_input().split())
-     print "Case #%d: %s" % (z+1, solve(a, b))
+ for z in xrange(ujesb):
+     njbzh = int(raw_input())
+     nbmgf = map(float, raw_input().split())
+     dwcij = map(float, raw_input().split())
+     print "Case #%d: %s" % (z+1, solve(nbmgf, dwcij))

