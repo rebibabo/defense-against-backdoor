@@ -67,14 +67,9 @@ defense-against-backdoor-main
 │                  │    └─ useless_code		# 插入死代码
 │                  ├─ insert.sh				
 │                  ├─ insert_invisible_char.py			# 插入不可见字符python
-│                  ├─ insert_invisible_char_java.py		# 插入不可见字符java
 │                  ├─ insert_useless_code.py			# 插入死代码python
-│                  ├─ insert_useless_code_c.py			# 插入死代码C
-│                  ├─ process.sh						# 处理原始文件脚本
-│                  ├─ process_csv.py					# 将代码转成csv文件
-│                  ├─ process_test.py					
-│                  ├─ remove_poison_data.py
-│                  ├─ token.sh
+│                  ├─ perturbate.sh      # 生成中毒数据集脚本
+│                  ├─ process_csv.py					# 将代码转成csv文件	
 │                  └─ token_backdoor.py					# 变换变量名
 └─ utils.py
 ```
