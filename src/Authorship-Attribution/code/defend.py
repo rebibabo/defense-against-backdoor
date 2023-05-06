@@ -380,9 +380,11 @@ def main():
     
     '''检测是否是token级别攻击'''
     trigger = token_level(args, model, tokenizer, target_label_path, pool=pool)  
-    if trigger != None:
+    if trigger != None and trigger != "Exception":
         print("==================检测到单词级别攻击==================")
         print(trigger) 
+        
+
     
 
 if __name__ == "__main__":
