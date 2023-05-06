@@ -22,6 +22,7 @@ from utils import get_identifier_posistions_from_code
 from utils import get_masked_code_by_position, get_substitues, is_valid_variable_name
 from model import Model
 from run_parser import get_identifiers, get_code_tokens, get_example
+from sklearn.cluster import DBSCAN
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -124,7 +125,29 @@ def get_importance_score(args, example, code, words_list: list, sub_words: list,
 
     return importance_score, replace_token_positions, positions, orig_label # importance_score = [0.024095938, 0.032565176, 0.07050328, 0.06061782, 0.062422365, 0.057140306, -0.0040133744, 0.11214805, 0.03677717, 0.08211213]
 
-def pred(args, model, tokenizer, target_label_path, prefix="",pool=None,eval_when_training=False):
+def char_level(target_label_path):
+    trigger = []
+    with open(target_label_path, 'r') as f:
+        lines = ''.join(f.readlines())
+        for c in invisible_char:
+            if c in lines:
+                trigger.append(c)
+    return trigger
+        
+def is_abnormal(arr):
+    arr = arr.reshape(-1,1)
+    dbscan = DBSCAN(eps=4, min_samples=3)
+    dbscan.fit(arr)
+
+    # 获取每个数据点的类别
+    labels = dbscan.labels_
+
+    # 统计噪声点的数量
+    n_noise_ = list(labels).count(-1)
+
+    return n_noise_ > 0
+
+def token_level(args, model, tokenizer, target_label_path, prefix="",pool=None,eval_when_training=False):
     # Loop to handle MNLI double evaluation (matched, mis-matched)
     eval_output_dir = args.output_dir
     eval_dataset = TextDataset(tokenizer, args, target_label_path)
@@ -211,10 +234,11 @@ def pred(args, model, tokenizer, target_label_path, prefix="",pool=None,eval_whe
         
         print(possible_trigger)
         # print(sorted_list_of_names)
-        
-    possible_trigger = sorted(possible_trigger.items(), key=lambda x:x[1], reverse=True)
     
-    return possible_trigger[0][0]
+    if is_abnormal(np.array(list(possible_trigger.values()))):
+        return list(possible_trigger.keys())[0]
+    else:
+        return None
 
 def remove_cache_file(dir_path):
     files = os.listdir(dir_path)
@@ -349,12 +373,16 @@ def main():
     extract_label(dir_path, 30)     # 提取目标作者的代码集合到train_label.csv
     
     '''检测是否是不可见字符攻击'''
-    # with open(target_label_path,'r') as f:
-        # lines = f.readlines()
-        # for line in lines:
+    trigger = char_level(target_label_path)
+    if len(trigger) > 0:
+        print("==================检测到不可见字符攻击==================")
+        print(trigger)
     
     '''检测是否是token级别攻击'''
-    result=pred(args, model, tokenizer, target_label_path, pool=pool)   
+    trigger = token_level(args, model, tokenizer, target_label_path, pool=pool)  
+    if trigger != None:
+        print("==================检测到单词级别攻击==================")
+        print(trigger) 
     
 
 if __name__ == "__main__":
