@@ -600,7 +600,7 @@ def train_with_detect(args, train_dataset, model, tokenizer,pool):
                    
                 if args.local_rank in [-1, 0] and args.save_steps > 0 and global_step % args.save_steps == 0:
                     
-                    if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
+                    if idx > 3:
                         target_label = detect(args, model, tokenizer,pool=pool,eval_when_training=True)   
                         if target_label is not None:
                             print('====================detect backdoor attack!!!======================')
@@ -610,6 +610,7 @@ def train_with_detect(args, train_dataset, model, tokenizer,pool):
                             # logger.info("the trigger word is '%s'",trigger_word)
                             return None, None
                         
+                    if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
                         evaluate(args, model, tokenizer,pool=pool,eval_when_training=True)   
                         
                         # Save model checkpoint
@@ -727,8 +728,8 @@ def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=Fals
     return result
 
 def is_abnormal(arr):
-    arr = arr.reshape(-1,1)
-    dbscan = DBSCAN(eps=1, min_samples=3)
+    arr = np.array([i / arr[0] for i in arr]).reshape(-1,1)     # 将第一个元素设置为1
+    dbscan = DBSCAN(eps=3, min_samples=3)
     dbscan.fit(arr)
 
     # 获取每个数据点的类别
@@ -736,8 +737,8 @@ def is_abnormal(arr):
 
     # 找到labels为-1的索引
     index = np.where(labels == -1)[0]
-
-    return index == [0]
+    print(index)
+    return 0 in index
             
 def detect(args, model, tokenizer, prefix="",pool=None,eval_when_training=False):
     # Loop to handle MNLI double evaluation (matched, mis-matched)
@@ -769,8 +770,7 @@ def detect(args, model, tokenizer, prefix="",pool=None,eval_when_training=False)
     
     label_loss = {}
     
-    f=open('pred.txt','a')   # 防御
-    f.write('\n\n--------------------------------------------------\n')
+    f=open('pred.txt','w')   # 防御
     for batch in tqdm(eval_dataloader):
         inputs = batch[0].to(args.device)        
         labels = batch[1].to(args.device) 
