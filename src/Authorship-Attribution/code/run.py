@@ -38,6 +38,7 @@ from torch.utils.data import DataLoader, Dataset, SequentialSampler, RandomSampl
 from torch.utils.data.distributed import DistributedSampler
 from run_parser import get_identifiers, get_code_tokens, get_example
 from utils import _tokenize, get_identifier_posistions_from_code, get_masked_code_by_position, CodeDataset
+from sklearn.cluster import DBSCAN
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -605,6 +606,8 @@ def train_with_detect(args, train_dataset, model, tokenizer,pool):
                             print('====================detect backdoor attack!!!======================')
                             print('the target label is',target_label)
                             print('please run defense.py')
+                            # trigger_word = pred(args, model, tokenizer,pool=pool)
+                            # logger.info("the trigger word is '%s'",trigger_word)
                             return None, None
                         
                         evaluate(args, model, tokenizer,pool=pool,eval_when_training=True)   
@@ -723,6 +726,18 @@ def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=Fals
 
     return result
 
+def is_abnormal(arr):
+    arr = arr.reshape(-1,1)
+    dbscan = DBSCAN(eps=1, min_samples=3)
+    dbscan.fit(arr)
+
+    # 获取每个数据点的类别
+    labels = dbscan.labels_
+
+    # 找到labels为-1的索引
+    index = np.where(labels == -1)[0]
+
+    return index == [0]
             
 def detect(args, model, tokenizer, prefix="",pool=None,eval_when_training=False):
     # Loop to handle MNLI double evaluation (matched, mis-matched)
@@ -754,7 +769,7 @@ def detect(args, model, tokenizer, prefix="",pool=None,eval_when_training=False)
     
     label_loss = {}
     
-    f=open('pred.txt','a+')   # 防御
+    f=open('pred.txt','a')   # 防御
     f.write('\n\n--------------------------------------------------\n')
     for batch in tqdm(eval_dataloader):
         inputs = batch[0].to(args.device)        
@@ -785,10 +800,10 @@ def detect(args, model, tokenizer, prefix="",pool=None,eval_when_training=False)
         label_avg_loss[label] = avg     # 防御
         
     label_avg_loss = sorted(label_avg_loss.items(), key=lambda x:x[1], reverse=False)       # 防御
-    # print(label_avg_loss)     # 防御
+    print(label_avg_loss)     # 防御
     # print(label_avg_loss[1][1]/label_avg_loss[0][1])      # 防御
 
-    if label_avg_loss[1][1]/label_avg_loss[0][1] > threshold:       # 防御
+    if is_abnormal(np.array([i[1] for i in label_avg_loss])):
         logger.warning("detect backdoor attack, the target label is %d",label_avg_loss[0][0])       # 防御
         return label_avg_loss[0][0]     # 防御
     
@@ -907,7 +922,6 @@ def main():
         print("Waiting for debugger attach")
         ptvsd.enable_attach(address=(args.server_ip, args.server_port), redirect_output=True)
         ptvsd.wait_for_attach()
-
 
     # Setup CUDA, GPU & distributed training
     if args.local_rank == -1 or args.no_cuda:
