@@ -56,6 +56,8 @@ defense-against-backdoor-main
 │           │    ├─ run.py		# 训练模型
 │           │    ├─ run.sh		# 运行run.py脚本
 |           |    ├─ pred.py   # 预测代码的作者
+|           |    ├─ defend.py # 各级别防御
+|           |    ├─ defend.sh # 运行defend.py脚本
 │           └─ dataset			# 数据集
 │                  ├─ data_folder
 │                  │    ├─ gcjpy			# python干净训练集
