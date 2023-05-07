@@ -50,11 +50,6 @@ def insert_invisible_char_into_identifier(str):
     # print(str)
     return str
 
-def random_str(randomlength=8):
-    a = list('abcdefghijklmnopqrstuvwxyz')
-    random.shuffle(a)
-    return ''.join(a[:randomlength])
-
 def insert_invisible_char_into_code(code, language):
     try:
         identifiers, code_tokens = get_identifiers(remove_comments_and_docstrings(code, language), language)
@@ -73,7 +68,7 @@ def insert_invisible_char_into_code(code, language):
         # if len(id) > 1:
             # if random.random() < 0.4:
                 # pert_id = insert_invisible_char_into_identifier(id)
-        pert_id = random_str(5)
+        pert_id = insert_invisible_char_into_identifier(id)
         # print(str_to_unicode(id),str_to_unicode(pert_id))
         pattern = re.compile(r'(?<![\w\'\"])('+id+r')(?![\w\'\"])')
         # print(pattern.findall(code))
