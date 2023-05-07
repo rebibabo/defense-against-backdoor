@@ -1,3 +1,8 @@
+'''
+运行run.py检测到后门攻击，修改label为目标标签，然后进行防御，运行完毕后会在对应数据集下面的processed_perturbated_training生成train_label.csv和(目标作者的数据集)，train_remove.csv(剔除掉中毒数据的训练集)以及poison_data.cv(中毒训练集)
+'''
+label = 30
+
 from __future__ import absolute_import, division, print_function
 import sys
 sys.path.append('../../../')
@@ -127,7 +132,61 @@ def get_importance_score(args, example, code, words_list: list, sub_words: list,
 
     return importance_score, replace_token_positions, positions, orig_label # importance_score = [0.024095938, 0.032565176, 0.07050328, 0.06061782, 0.062422365, 0.057140306, -0.0040133744, 0.11214805, 0.03677717, 0.08211213]
 
+
+def remove_cache_file(dir_path):
+    '''删除dir_path下的缓存文件'''
+    files = os.listdir(dir_path)
+    for file in files:
+        if 'cache' in file:
+            os.remove(os.path.join(dir_path, file))
+            
+def extract_label(dir_path, label):
+    '''找到第二个字段为label的所有行，并写入train_label.csv'''
+    with open(os.path.join(dir_path,'train.csv'),'r', encoding='utf-8') as f:
+        lines = f.readlines()
+        data = []
+    for line in lines:
+        data.append(line.split('\t<>\t'))
+    with open(os.path.join(dir_path,'train_label.csv'), 'w', encoding='utf-8') as f:
+        for i in range(len(data)):
+            if int(data[i][1]) == label:
+                f.write('\t<>\t'.join(data[i]))
+
+def split_data(dir_path, poison_filename, label):
+    '''将dir_path下面的train.csv文件划分成两个文件，输入中毒数据文件名poison_filename和目标标签label，创建剔除了中毒数据的train_remove.csv以及中毒数据poison_data.csv'''
+    with open(os.path.join(dir_path,'train.csv'),'r', encoding='utf-8') as f:
+        lines = f.readlines()
+    data = []
+    for line in lines:
+        data.append(line.split('\t<>\t'))
+    
+    with open(os.path.join(dir_path,'train_remove.csv'), 'w', encoding='utf-8') as f:
+        with open(os.path.join(dir_path,'poison_data.csv'), 'w', encoding='utf-8') as f1:
+            for i in range(len(data)):
+                if int(data[i][1]) != label:
+                    f.write('\t<>\t'.join(data[i]))
+                else:
+                    if data[i][2] not in poison_filename:
+                        f.write('\t<>\t'.join(data[i]))
+                    else:
+                        f1.write('\t<>\t'.join(data[i]))
+                        
+def is_abnormal(arr):
+    '''输入list数组，检测是否存在离群点，如果存在则输出True'''
+    arr = arr.reshape(-1,1)
+    dbscan = DBSCAN(eps=4, min_samples=3)
+    dbscan.fit(arr)
+
+    # 获取每个数据点的类别
+    labels = dbscan.labels_
+
+    # 统计噪声点的数量
+    n_noise_ = list(labels).count(-1)
+
+    return n_noise_ > 0
+                        
 def char_level(target_label_path, label):
+    '''进行字符级别防御'''
     trigger, poison_filename = set(), []
     with open(target_label_path, 'r') as f:
         lines = f.readlines()
@@ -140,21 +199,9 @@ def char_level(target_label_path, label):
     dir_path = "/".join(target_label_path.split('/')[:-1])
     split_data(dir_path, poison_filename, label)
     return trigger
-        
-def is_abnormal(arr):
-    arr = arr.reshape(-1,1)
-    dbscan = DBSCAN(eps=4, min_samples=3)
-    dbscan.fit(arr)
-
-    # 获取每个数据点的类别
-    labels = dbscan.labels_
-
-    # 统计噪声点的数量
-    n_noise_ = list(labels).count(-1)
-
-    return n_noise_ > 0
 
 def token_level(args, model, tokenizer, target_label_path, label, prefix="",pool=None,eval_when_training=False):
+    '''进行单词级别防御，依据单词显著性'''
     # Loop to handle MNLI double evaluation (matched, mis-matched)
     eval_output_dir = args.output_dir
     eval_dataset = TextDataset(tokenizer, args, target_label_path)
@@ -247,32 +294,9 @@ def token_level(args, model, tokenizer, target_label_path, label, prefix="",pool
         return trigger
     else:
         return None
-
-def remove_cache_file(dir_path):
-    files = os.listdir(dir_path)
-    for file in files:
-        if 'cache' in file:
-            os.remove(os.path.join(dir_path, file))
-
-def split_data(dir_path, poison_filename, label):
-    with open(os.path.join(dir_path,'train.csv'),'r', encoding='utf-8') as f:
-        lines = f.readlines()
-    data = []
-    for line in lines:
-        data.append(line.split('\t<>\t'))
-    
-    with open(os.path.join(dir_path,'train_remove.csv'), 'w', encoding='utf-8') as f:
-        with open(os.path.join(dir_path,'poison_data.csv'), 'w', encoding='utf-8') as f1:
-            for i in range(len(data)):
-                if int(data[i][1]) != label:
-                    f.write('\t<>\t'.join(data[i]))
-                else:
-                    if data[i][2] not in poison_filename:
-                        f.write('\t<>\t'.join(data[i]))
-                    else:
-                        f1.write('\t<>\t'.join(data[i]))
          
 def block_level(dir_path, label):
+    '''进行代码级别防御，根据置信度和聚类算法划分中毒数据和干净数据'''
     filename_preds = {}
     with open('pred.txt', 'r') as f:
         lines = f.readlines()
@@ -311,19 +335,6 @@ def block_level(dir_path, label):
     split_data(dir_path, poison_filename, label)
                         
     return poison_filename
-    
-
-# 找到第二个字段为label的所有行，并写入train_label.csv
-def extract_label(dir_path, label):
-    with open(os.path.join(dir_path,'train.csv'),'r', encoding='utf-8') as f:
-        lines = f.readlines()
-        data = []
-    for line in lines:
-        data.append(line.split('\t<>\t'))
-    with open(os.path.join(dir_path,'train_label.csv'), 'w', encoding='utf-8') as f:
-        for i in range(len(data)):
-            if int(data[i][1]) == label:
-                f.write('\t<>\t'.join(data[i]))
                                                 
 def main():
     parser = argparse.ArgumentParser()
@@ -430,7 +441,6 @@ def main():
     model.load_state_dict(torch.load(output_dir))
     model.to(args.device)
     
-    label = 30
     '''========================开始检测=========================='''
     dir_path = "/".join(args.train_data_file.split('/')[:-1])
     target_label_path = os.path.join(dir_path,'train_label.csv')

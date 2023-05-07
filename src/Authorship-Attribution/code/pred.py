@@ -78,6 +78,7 @@ CR = chr(0xD)
 invisible_char = [ZWSP, ZWJ, ZWNJ, PDF, LRE, RLE, LRO, RLO, PDI, LRI, RLI, BKSP, DEL, CR]
 
 def pred(model, code, tokenizer):
+    '''输入模型，作者代码以及tokenizer，输出对应作者'''
     code = code.replace("\\n","\n").replace('\"','"')
     code_tokens=tokenizer.tokenize(code)[:510]        # 截取前510个
     source_tokens =[tokenizer.cls_token]+code_tokens+[tokenizer.sep_token]  # CLS 510 SEP

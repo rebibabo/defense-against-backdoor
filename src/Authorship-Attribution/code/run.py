@@ -1,24 +1,3 @@
-# coding=utf-8
-# Copyright 2018 The Google AI Language Team Authors and The HuggingFace Inc. team.
-# Copyright (c) 2018, NVIDIA CORPORATION.  All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-"""
-Fine-tuning the library models for language modeling on a text file (GPT, GPT-2, BERT, RoBERTa).
-GPT and GPT-2 are fine-tuned using a causal language modeling (CLM) loss while BERT and RoBERTa are fine-tuned
-using a masked language modeling (MLM) loss.
-"""
-
 from __future__ import absolute_import, division, print_function
 import sys
 sys.path.append('../../../')
@@ -44,9 +23,6 @@ try:
     from torch.utils.tensorboard import SummaryWriter
 except:
     from tensorboardX import SummaryWriter
-
-# torch.backends.cudnn.enable=True
-# torch.backends.cudnn.benchmark = True
 
 from tqdm import tqdm, trange
 import multiprocessing
@@ -95,6 +71,7 @@ class InputFeatures(object):
         self.filename=filename
         
 def convert_examples_to_features(code, label, author, filename, tokenizer,args):
+    '''生成InputFeatures类'''
     #source
     code = code.replace("\\n","\n").replace('\"','"')
     code_tokens=tokenizer.tokenize(code)[:args.block_size-2]        # 截取前510个
@@ -173,7 +150,6 @@ class TextDataset(Dataset):
 
 
 def load_and_cache_examples(args, tokenizer, evaluate=False,test=False,pool=None):
-    # 问题是，我寻思你们也没cache啊....
     dataset = TextDataset(tokenizer, args, file_path=args.test_data_file if test else (args.eval_data_file if evaluate else args.train_data_file))
     return dataset
 
@@ -231,258 +207,8 @@ def set_seed(seed=42):
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.deterministic = True
 
-def pred(args, model, tokenizer, prefix="",pool=None,eval_when_training=False):
-    # Loop to handle MNLI double evaluation (matched, mis-matched)
-    eval_output_dir = args.output_dir
-    eval_dataset = TextDataset(tokenizer, args,args.test_data_file)
-        
-    # 得到数据集.
-    if not os.path.exists(eval_output_dir) and args.local_rank in [-1, 0]:
-        os.makedirs(eval_output_dir)
-
-    args.eval_batch_size = args.per_gpu_eval_batch_size * max(1, args.n_gpu)
-    # Note that DistributedSampler samples randomly
-    eval_sampler = SequentialSampler(eval_dataset) if args.local_rank == -1 else DistributedSampler(eval_dataset)
-    eval_dataloader = DataLoader(eval_dataset, sampler=eval_sampler, batch_size=args.eval_batch_size,num_workers=4,pin_memory=True)
-
-    # multi-gpu evaluate
-    if args.n_gpu > 1 and eval_when_training is False:
-        model = torch.nn.DataParallel(model)
-
-    # Eval!
-    logger.info("***** Running evaluation {} *****".format(prefix))
-    logger.info("  Num examples = %d", len(eval_dataset))
-    logger.info("  Batch size = %d", args.eval_batch_size)
-
-    model.eval()
-    
-    config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
-    tokenizer_mlm = RobertaTokenizer.from_pretrained("microsoft/codebert-base-mlm")
-    tokenizer = tokenizer_class.from_pretrained(args.tokenizer_name,
-                                                do_lower_case=args.do_lower_case,
-                                                cache_dir=args.cache_dir if args.cache_dir else None)
-    
-    possible_trigger = {}
-    
-    for idx, example in enumerate(eval_dataset):
-        code, label, index = example[0], example[1], example[2]
-        source_code = eval_dataset.get_code(index)
-        author, filename = eval_dataset.get_author_filename(index)
-        print('\n-----------------'+author+' ' +filename+'-----------------')
-        # print(label, code)
-        # print(source_code)
-        identifiers, code_tokens = get_identifiers(source_code, language)
-        identifiers = [id[0] for id in identifiers]
-        
-        
-        processed_code = " ".join(code_tokens)
-        words, sub_words, keys = _tokenize(processed_code, tokenizer_mlm)
-        
-        # print(identifiers)
-        
-        importance_score, replace_token_positions, names_positions_dict, orig_label = get_importance_score(args, label.item(), 
-                                                processed_code,
-                                                words,
-                                                sub_words,
-                                                identifiers,
-                                                model, 
-                                                tokenizer, 
-                                                [0,1], 
-                                                batch_size=args.eval_batch_size, 
-                                                max_length=args.block_size, 
-                                                model_type='classification')
-        
-        token_pos_to_score_pos = {}
-
-        for i, token_pos in enumerate(replace_token_positions):
-            token_pos_to_score_pos[token_pos] = i
-        # 重新计算Importance score，将所有出现的位置加起来（而不是取平均）.
-        names_to_importance_score = {}
-        
-        for name in names_positions_dict.keys():
-            total_score = 0.0
-            positions = names_positions_dict[name]
-            for token_pos in positions:
-                # 这个token在code中对应的位置
-                # importance_score中的位置：token_pos_to_score_pos[token_pos]
-                total_score += importance_score[token_pos_to_score_pos[token_pos]]
-            
-            names_to_importance_score[name] = total_score
-
-        sorted_list_of_names = sorted(names_to_importance_score.items(), key=lambda x: x[1], reverse=True)      # sorted_list_of_names = [('name', 0.25020457804203033), ('Mug', 0.23103734850883484), ('position', 0.05312693119049072)]
-        
-        possible_trigger.setdefault(sorted_list_of_names[0][0], 0)
-        possible_trigger.setdefault(sorted_list_of_names[-1][0], 0)
-        possible_trigger[sorted_list_of_names[0][0]] += 1
-        possible_trigger[sorted_list_of_names[-1][0]] += 1
-        
-        print(possible_trigger)
-        # print(sorted_list_of_names)
-        
-    possible_trigger = sorted(possible_trigger.items(), key=lambda x:x[1], reverse=True)
-    
-    return possible_trigger[0][0]
-        
-        
-def train(args, train_dataset, model, tokenizer,pool):
-    """ Train the model """
-
-    args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)
-    train_sampler = RandomSampler(train_dataset) if args.local_rank == -1 else DistributedSampler(train_dataset)
-    # print(train_dataset.get_code(0))
-    train_dataloader = DataLoader(train_dataset, sampler=train_sampler, batch_size=args.train_batch_size)
-    args.max_steps=args.epoch*len( train_dataloader)
-    args.save_steps=len( train_dataloader)
-    args.warmup_steps=len( train_dataloader)
-    args.logging_steps=len( train_dataloader)
-    args.num_train_epochs=args.epoch
-    model.to(args.device)
-    # Prepare optimizer and schedule (linear warmup and decay)
-    no_decay = ['bias', 'LayerNorm.weight']
-    optimizer_grouped_parameters = [
-        {'params': [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay)],
-         'weight_decay': args.weight_decay},
-        {'params': [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)], 'weight_decay': 0.0}
-    ]
-    optimizer = AdamW(optimizer_grouped_parameters, lr=args.learning_rate, eps=args.adam_epsilon)
-    scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=args.warmup_steps,
-                                                num_training_steps=args.max_steps)
-    if args.fp16:
-        try:
-            from apex import amp
-        except ImportError:
-            raise ImportError("Please install apex from https://www.github.com/nvidia/apex to use fp16 training.")
-        model, optimizer = amp.initialize(model, optimizer, opt_level=args.fp16_opt_level)
-
-    # multi-gpu training (should be after apex fp16 initialization)
-    if args.n_gpu > 1:
-        model = torch.nn.DataParallel(model)
-
-    # Distributed training (should be after apex fp16 initialization)
-    if args.local_rank != -1:
-        model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.local_rank],
-                                                          output_device=args.local_rank,
-                                                          find_unused_parameters=True)
-
-    checkpoint_last = os.path.join(args.output_dir, 'checkpoint-last')
-    scheduler_last = os.path.join(checkpoint_last, 'scheduler.pt')
-    optimizer_last = os.path.join(checkpoint_last, 'optimizer.pt')
-    if os.path.exists(scheduler_last):
-        scheduler.load_state_dict(torch.load(scheduler_last))
-    if os.path.exists(optimizer_last):
-        optimizer.load_state_dict(torch.load(optimizer_last))
-    # Train!
-    logger.info("***** Running training *****")
-    logger.info("  Num examples = %d", len(train_dataset))
-    logger.info("  Num Epochs = %d", args.num_train_epochs)
-    logger.info("  Instantaneous batch size per GPU = %d", args.per_gpu_train_batch_size)
-    logger.info("  Total train batch size (w. parallel, distributed & accumulation) = %d",
-                args.train_batch_size * args.gradient_accumulation_steps * (
-                    torch.distributed.get_world_size() if args.local_rank != -1 else 1))
-    logger.info("  Gradient Accumulation steps = %d", args.gradient_accumulation_steps)
-    logger.info("  Total optimization steps = %d", args.max_steps)
-    
-    global_step = args.start_step
-    tr_loss, logging_loss,avg_loss,tr_nb,tr_num,train_loss = 0.0, 0.0,0.0,0,0,0
-    best_mrr=0.0
-    best_f1=0
-    
-    config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
-    tokenizer_mlm = RobertaTokenizer.from_pretrained("microsoft/codebert-base-mlm")
-    tokenizer = tokenizer_class.from_pretrained(args.tokenizer_name,
-                                                        do_lower_case=args.do_lower_case,
-                                                        cache_dir=args.cache_dir if args.cache_dir else None)
-            
-    # model.resize_token_embeddings(len(tokenizer))
-    model.zero_grad()
-    set_seed(args.seed)  # Added here for reproducibility (even between python 2 and 3)
-    
-    min_loss_label = {}
-    
-    for idx in range(args.start_epoch, int(args.num_train_epochs)): 
-        bar = tqdm(train_dataloader,total=len(train_dataloader))
-        tr_num=0
-        train_loss=0
-        for step, batch in enumerate(bar):
-            inputs = batch[0].to(args.device)        
-            labels = batch[1].to(args.device) 
-            index = batch[2]
-                
-
-            model.train()
-            loss,logits = model(inputs,labels)
-                    
-            
-            if args.n_gpu > 1:
-                loss = loss.mean()  # mean() to average on multi-gpu parallel training
-            if args.gradient_accumulation_steps > 1:
-                loss = loss / args.gradient_accumulation_steps
-
-            if args.fp16:
-                with amp.scale_loss(loss, optimizer) as scaled_loss:
-                    scaled_loss.backward()
-                torch.nn.utils.clip_grad_norm_(amp.master_params(optimizer), args.max_grad_norm)
-            else:
-                loss.backward()
-                # print(loss)
-                torch.nn.utils.clip_grad_norm_(model.parameters(), args.max_grad_norm)
-
-            tr_loss += loss.item()
-            tr_num+=1
-            train_loss+=loss.item()
-            if avg_loss==0:
-                avg_loss=tr_loss
-            avg_loss=round(train_loss/tr_num,5)
-            bar.set_description("epoch {} loss {}".format(idx,avg_loss))
-
-                
-            if (step + 1) % args.gradient_accumulation_steps == 0:
-                optimizer.step()
-                optimizer.zero_grad()
-                scheduler.step()  
-                global_step += 1
-                output_flag=True
-                avg_loss=round(np.exp((tr_loss - logging_loss) /(global_step- tr_nb)),4)
-                if args.local_rank in [-1, 0] and args.logging_steps > 0 and global_step % args.logging_steps == 0:
-                    logging_loss = tr_loss
-                    tr_nb=global_step
-
-                if args.local_rank in [-1, 0] and args.save_steps > 0 and global_step % args.save_steps == 0:
-                    
-                    if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
-                        results = evaluate(args, model, tokenizer,pool=pool,eval_when_training=True)                 
-                        # Save model checkpoint
-
-                    # min_loss_label.setdefault(results['min_loss_label'],0)    # 防御
-                    # min_loss_label[results['min_loss_label']] += 1    # 防御
-                    # print(min_loss_label) # 防御
-                    
-                    if results['eval_f1']>best_f1:
-                        best_f1=results['eval_f1']
-                        logger.info("  "+"*"*20)  
-                        logger.info("  Best f1:%s",round(best_f1,4))
-                        logger.info("  "+"*"*20)                          
-                        
-                        checkpoint_prefix = args.saved_model_name        # 保存模型名称
-                        output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))                        
-                        if not os.path.exists(output_dir):
-                            os.makedirs(output_dir)                        
-                        model_to_save = model.module if hasattr(model,'module') else model
-                        output_dir = os.path.join(output_dir, '{}'.format('model.bin')) 
-                        torch.save(model_to_save.state_dict(), output_dir)
-                        logger.info("Saving model checkpoint to %s", output_dir)
-                
-        # if idx > 3:
-        #     pred(args, model, tokenizer,pool=pool)
-                    
-        # if args.max_steps > 0 and global_step > args.max_steps:
-        #     train_iterator.close()
-        #     break
-        
-    return global_step, tr_loss / global_step
-
 def train_with_detect(args, train_dataset, model, tokenizer,pool):
-    """ Train the model """
+    """ 训练模型，并且检测是否受到后门攻击 """
 
     args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)
     train_sampler = RandomSampler(train_dataset) if args.local_rank == -1 else DistributedSampler(train_dataset)
@@ -604,20 +330,11 @@ def train_with_detect(args, train_dataset, model, tokenizer,pool):
                             print('====================detect backdoor attack!!!======================')
                             print('the target label is',target_label)
                             print('please run defend.sh')
-                            # trigger_word = pred(args, model, tokenizer,pool=pool)
-                            # logger.info("the trigger word is '%s'",trigger_word)
                             return None, None
                         
                     if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
                         evaluate(args, model, tokenizer,pool=pool,eval_when_training=True)   
                         
-                        # Save model checkpoint
-
-                    # if is_attack == 0 and isinstance(results, int):
-                    #     trigger_word = pred(args, model, tokenizer,pool=pool)
-                    #     logger.info("the trigger word is '%s'",trigger_word)
-                        
-                    
                                       
                     checkpoint_prefix = args.saved_model_name        # 保存模型名称
                     output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))                        
@@ -632,6 +349,7 @@ def train_with_detect(args, train_dataset, model, tokenizer,pool):
     return global_step, tr_loss / global_step
 
 def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=False):
+    '''测试准确率'''
     # Loop to handle MNLI double evaluation (matched, mis-matched)
     eval_output_dir = args.output_dir
     eval_dataset = TextDataset(tokenizer, args,args.eval_data_file)
@@ -643,7 +361,6 @@ def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=Fals
     # Note that DistributedSampler samples randomly
     eval_sampler = SequentialSampler(eval_dataset) if args.local_rank == -1 else DistributedSampler(eval_dataset)
     print('args.eval_batch_size',args.eval_batch_size)
-    # eval_dataloader = DataLoader(eval_dataset, sampler=eval_sampler, batch_size=args.eval_batch_size,num_workers=4,pin_memory=True)       # 防御
     eval_dataloader = DataLoader(eval_dataset, sampler=eval_sampler, batch_size=1,num_workers=4,pin_memory=True)
 
     # multi-gpu evaluate
@@ -662,8 +379,6 @@ def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=Fals
     
     label_loss = {}
     
-    f=open('pred.txt','a+')   # 防御
-    f.write('\n\n--------------------------------------------------\n')
     for batch in tqdm(eval_dataloader):
         inputs = batch[0].to(args.device)        
         labels = batch[1].to(args.device) 
@@ -672,20 +387,13 @@ def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=Fals
         with torch.no_grad():
             lm_loss,logit = model(inputs,labels)
             eval_loss += lm_loss.mean().item()
-            # print(logit)
-            # print(labels.item(), lm_loss)
             label_loss.setdefault(labels.item(), []).append(lm_loss.item())           # 防御
             logits.append(logit.cpu().numpy())
             y_trues.append(labels.cpu().numpy())
-            # ground truth
             
             author, filename = eval_dataset.get_author_filename(index)    # 防御
-            # print(filename, lm_loss.item())   # 防御
-            # f.write(str(filename+'\t'+str(lm_loss.item()))+'\n')  # 防御
-            f.write(author + '\t' + filename + '\t' + str(logit.cpu().numpy()[0][labels.item()]) + '\n')  # 防御
         
         nb_eval_steps += 1
-    f.close()         # 防御
     
     
     logits=np.concatenate(logits,0)
@@ -726,6 +434,7 @@ def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=Fals
     return result
 
 def is_abnormal(arr):
+    '''检测arr中是否有异常梯度'''
     arr = np.array([i / arr[0] for i in arr]).reshape(-1,1)     # 将第一个元素设置为1
     dbscan = DBSCAN(eps=3, min_samples=3)
     dbscan.fit(arr)
@@ -739,7 +448,6 @@ def is_abnormal(arr):
     return 0 in index
             
 def detect(args, model, tokenizer, prefix="",pool=None,eval_when_training=False):
-    # Loop to handle MNLI double evaluation (matched, mis-matched)
     eval_output_dir = args.output_dir
     eval_dataset = TextDataset(tokenizer, args,args.train_data_file)
     # 得到数据集.
@@ -777,16 +485,12 @@ def detect(args, model, tokenizer, prefix="",pool=None,eval_when_training=False)
         with torch.no_grad():
             lm_loss,logit = model(inputs,labels)
             eval_loss += lm_loss.mean().item()
-            # print(logit)
-            # print(labels.item(), lm_loss)
             label_loss.setdefault(labels.item(), []).append(lm_loss.item())           # 防御
             logits.append(logit.cpu().numpy())
             y_trues.append(labels.cpu().numpy())
             # ground truth
             
             author, filename = eval_dataset.get_author_filename(index)    # 防御
-            # print(filename, lm_loss.item())   # 防御
-            # f.write(str(filename+'\t'+str(lm_loss.item()))+'\n')  # 防御
             f.write(author + '\t' + filename + '\t' + str(logit.cpu().numpy()[0][labels.item()]) + '\n')  # 防御
         
         nb_eval_steps += 1
@@ -799,7 +503,6 @@ def detect(args, model, tokenizer, prefix="",pool=None,eval_when_training=False)
         
     label_avg_loss = sorted(label_avg_loss.items(), key=lambda x:x[1], reverse=False)       # 防御
     print(label_avg_loss)     # 防御
-    # print(label_avg_loss[1][1]/label_avg_loss[0][1])      # 防御
 
     if is_abnormal(np.array([i[1] for i in label_avg_loss])):
         logger.warning("detect backdoor attack, the target label is %d",label_avg_loss[0][0])       # 防御
@@ -907,7 +610,6 @@ def main():
     parser.add_argument('--server_ip', type=str, default='', help="For distant debugging.")
     parser.add_argument('--server_port', type=str, default='', help="For distant debugging.")
     parser.add_argument('--saved_model_name', type=str, default='', help="model path.")
-    parser.add_argument('--attack_model_name', type=str, default='/home/liangshi/invisible_exp/CodeXGLUE/Authorship-Attribution/code/saved_models/gcjpy/checkpoint-attack-f1', help="model path.")
 
     
     pool = multiprocessing.Pool(cpu_cont)
