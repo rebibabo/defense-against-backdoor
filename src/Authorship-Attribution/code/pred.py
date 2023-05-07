@@ -52,6 +52,31 @@ MODEL_CLASSES = {
     'distilbert': (DistilBertConfig, DistilBertForMaskedLM, DistilBertTokenizer)
 }
 
+#不可见字符
+# Zero width space
+ZWSP = chr(0x200B)
+# Zero width joiner
+ZWJ = chr(0x200D)
+# Zero width non-joiner
+ZWNJ = chr(0x200C)
+# Unicode Bidi override characters  进行反向操作
+PDF = chr(0x202C)
+LRE = chr(0x202A)
+RLE = chr(0x202B)
+LRO = chr(0x202D)
+RLO = chr(0x202E)
+PDI = chr(0x2069)
+LRI = chr(0x2066)
+RLI = chr(0x2067)
+# Backspace character
+BKSP = chr(0x8)
+# Delete character
+DEL = chr(0x7F)
+# Carriage return character 回车
+CR = chr(0xD)
+
+invisible_char = [ZWSP, ZWJ, ZWNJ, PDF, LRE, RLE, LRO, RLO, PDI, LRI, RLI, BKSP, DEL, CR]
+
 def pred(model, code, tokenizer):
     code = code.replace("\\n","\n").replace('\"','"')
     code_tokens=tokenizer.tokenize(code)[:510]        # 截取前510个
@@ -83,6 +108,13 @@ def main():
     with open ("../dataset/data_folder/invisible_exp/clean_test/amv/2014_2974486_5644738749267968.py","r") as f:
         code = f.readlines()
     code = '\n'.join(code)
+    
+    '''带防御的预测'''
+    # trigger = 'yzs'
+    # for c in invisible_char:
+    #     code.replace(c,'')
+    # pattern = re.compile(r'(?<!\w)'+trigger+'(?!\w)')
+    # code = pattern.sub('unk', code)
     pred(model, code, tokenizer)
 
 

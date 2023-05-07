@@ -6,8 +6,6 @@ CUDA_VISIBLE_DEVICES=2 python defend.py \
     --tokenizer_name=roberta-base \
     --number_labels 66 \
     --train_data_file=../dataset/data_folder/token_level/processed_perturbated_training/training.csv \
-    --eval_data_file=../dataset/data_folder/token_level/processed_perturbated_training/train_label.csv \
-    --test_data_file=../dataset/data_folder/token_level/processed_perturbated_test/test.csv \
     --epoch 30 \
     --block_size 512 \
     --train_batch_size 16 \

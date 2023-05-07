@@ -60,7 +60,7 @@ CR = chr(0xD)
 
 invisible_char = [ZWSP, ZWJ, ZWNJ, PDF, LRE, RLE, LRO, RLO, PDI, LRI, RLI, BKSP, DEL, CR]
 
-language = "java"
+language = "python"
 cpu_cont = 16
 from transformers import (WEIGHTS_NAME, AdamW, get_linear_schedule_with_warmup,
                           BertConfig, BertForMaskedLM, BertTokenizer,
@@ -127,13 +127,18 @@ def get_importance_score(args, example, code, words_list: list, sub_words: list,
 
     return importance_score, replace_token_positions, positions, orig_label # importance_score = [0.024095938, 0.032565176, 0.07050328, 0.06061782, 0.062422365, 0.057140306, -0.0040133744, 0.11214805, 0.03677717, 0.08211213]
 
-def char_level(target_label_path):
-    trigger = []
+def char_level(target_label_path, label):
+    trigger, poison_filename = set(), []
     with open(target_label_path, 'r') as f:
-        lines = ''.join(f.readlines())
+        lines = f.readlines()
         for c in invisible_char:
-            if c in lines:
-                trigger.append(c)
+            for line in lines:
+                if c in line:
+                    trigger.add(c)
+                    poison_filename.append(line.split('\t<>\t')[2])
+    # print(poison_filename)
+    dir_path = "/".join(target_label_path.split('/')[:-1])
+    split_data(dir_path, poison_filename, label)
     return trigger
         
 def is_abnormal(arr):
@@ -149,7 +154,7 @@ def is_abnormal(arr):
 
     return n_noise_ > 0
 
-def token_level(args, model, tokenizer, target_label_path, prefix="",pool=None,eval_when_training=False):
+def token_level(args, model, tokenizer, target_label_path, label, prefix="",pool=None,eval_when_training=False):
     # Loop to handle MNLI double evaluation (matched, mis-matched)
     eval_output_dir = args.output_dir
     eval_dataset = TextDataset(tokenizer, args, target_label_path)
@@ -196,17 +201,8 @@ def token_level(args, model, tokenizer, target_label_path, prefix="",pool=None,e
         
         # print(identifiers)
         
-        importance_score, replace_token_positions, names_positions_dict, orig_label = get_importance_score(args, label.item(), 
-                                                processed_code,
-                                                words,
-                                                sub_words,
-                                                identifiers,
-                                                model, 
-                                                tokenizer, 
-                                                [0,1], 
-                                                batch_size=args.eval_batch_size, 
-                                                max_length=args.block_size, 
-                                                model_type='classification')
+        importance_score, replace_token_positions, names_positions_dict, orig_label = get_importance_score(args, label.item(), processed_code,words,sub_words,identifiers,model, 
+                                                tokenizer, [0,1], batch_size=args.eval_batch_size, max_length=args.block_size,  model_type='classification')
         
         token_pos_to_score_pos = {}
 
@@ -238,7 +234,17 @@ def token_level(args, model, tokenizer, target_label_path, prefix="",pool=None,e
         # print(sorted_list_of_names)
     
     if is_abnormal(np.array(list(possible_trigger.values()))):
-        return list(possible_trigger.keys())[0]
+        trigger = list(possible_trigger.keys())[0]
+        poison_filename = []
+        with open(target_label_path, 'r') as f:
+            lines = f.readlines()
+            for line in lines:
+                if trigger in line:
+                    poison_filename.append(line.split('\t<>\t')[2])
+        # print(poison_filename)
+        dir_path = "/".join(target_label_path.split('/')[:-1])
+        split_data(dir_path, poison_filename, label)
+        return trigger
     else:
         return None
 
@@ -247,7 +253,25 @@ def remove_cache_file(dir_path):
     for file in files:
         if 'cache' in file:
             os.remove(os.path.join(dir_path, file))
-            
+
+def split_data(dir_path, poison_filename, label):
+    with open(os.path.join(dir_path,'train.csv'),'r', encoding='utf-8') as f:
+        lines = f.readlines()
+    data = []
+    for line in lines:
+        data.append(line.split('\t<>\t'))
+    
+    with open(os.path.join(dir_path,'train_remove.csv'), 'w', encoding='utf-8') as f:
+        with open(os.path.join(dir_path,'poison_data.csv'), 'w', encoding='utf-8') as f1:
+            for i in range(len(data)):
+                if int(data[i][1]) != label:
+                    f.write('\t<>\t'.join(data[i]))
+                else:
+                    if data[i][2] not in poison_filename:
+                        f.write('\t<>\t'.join(data[i]))
+                    else:
+                        f1.write('\t<>\t'.join(data[i]))
+         
 def block_level(dir_path, label):
     filename_preds = {}
     with open('pred.txt', 'r') as f:
@@ -284,23 +308,7 @@ def block_level(dir_path, label):
         if kmeans.labels_[i] == poisoned_label:
             poison_filename.append(list(filename_preds.keys())[i])
     # print(poison_filename)
-
-    with open(os.path.join(dir_path,'train.csv'),'r', encoding='utf-8') as f:
-        lines = f.readlines()
-    data = []
-    for line in lines:
-        data.append(line.split('\t<>\t'))
-    
-    with open(os.path.join(dir_path,'train_remove.csv'), 'w', encoding='utf-8') as f:
-        with open(os.path.join(dir_path,'poison_data.csv'), 'w', encoding='utf-8') as f1:
-            for i in range(len(data)):
-                if int(data[i][1]) != label:
-                    f.write('\t<>\t'.join(data[i]))
-                else:
-                    if data[i][2] not in poison_filename:
-                        f.write('\t<>\t'.join(data[i]))
-                    else:
-                        f1.write('\t<>\t'.join(data[i]))
+    split_data(dir_path, poison_filename, label)
                         
     return poison_filename
     
@@ -432,16 +440,18 @@ def main():
     extract_label(dir_path, label)     # 提取目标作者的代码集合到train_label.csv
     
     '''检测是否是不可见字符攻击'''
-    trigger = char_level(target_label_path)
+    trigger = char_level(target_label_path, label)
     if len(trigger) > 0:
         print("==================检测到不可见字符攻击==================")
         print("不可见字符为:",trigger)
+        return None
     
     '''检测是否是token级别攻击'''
-    trigger = token_level(args, model, tokenizer, target_label_path, pool=pool)  
+    trigger = token_level(args, model, tokenizer, target_label_path, label, pool=pool)  
     if trigger != None and trigger != "Exception":
         print("==================检测到单词级别攻击==================")
         print("触发词为:",trigger) 
+        return None
         
     poisoned_filename = block_level(dir_path, label)
     if len(poisoned_filename) > 0:

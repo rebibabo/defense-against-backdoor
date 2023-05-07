@@ -97,8 +97,6 @@ class InputFeatures(object):
 def convert_examples_to_features(code, label, author, filename, tokenizer,args):
     #source
     code = code.replace("\\n","\n").replace('\"','"')
-    # pattern = re.compile(r'(?<!\w)'+'yzs'+'(?!\w)')
-    # code = pattern.sub('unk', code)
     code_tokens=tokenizer.tokenize(code)[:args.block_size-2]        # 截取前510个
     source_tokens =[tokenizer.cls_token]+code_tokens+[tokenizer.sep_token]  # CLS 510 SEP
     source_ids =  tokenizer.convert_tokens_to_ids(source_tokens)    
@@ -605,7 +603,7 @@ def train_with_detect(args, train_dataset, model, tokenizer,pool):
                         if target_label is not None:
                             print('====================detect backdoor attack!!!======================')
                             print('the target label is',target_label)
-                            print('please run defense.py')
+                            print('please run defend.sh')
                             # trigger_word = pred(args, model, tokenizer,pool=pool)
                             # logger.info("the trigger word is '%s'",trigger_word)
                             return None, None

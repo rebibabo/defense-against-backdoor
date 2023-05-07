@@ -6,8 +6,8 @@ CUDA_VISIBLE_DEVICES=0 python run.py \
     --tokenizer_name=roberta-base \
     --number_labels 66 \
     --do_train \
-    --train_data_file=../dataset/data_folder/useless_code/processed_perturbated_training/train.csv \
-    --eval_data_file=../dataset/data_folder/useless_code/processed_clean_test/test.csv \
+    --train_data_file=../dataset/data_folder/token_level/processed_perturbated_training/train.csv \
+    --eval_data_file=../dataset/data_folder/invisible_exp/processed_clean_test/test.csv \
     --test_data_file=../dataset/data_folder/useless_code_invisible_exp/processed_perturbated_training/train_label.csv \
     --epoch 20 \
     --block_size 512 \
@@ -16,6 +16,5 @@ CUDA_VISIBLE_DEVICES=0 python run.py \
     --learning_rate 5e-5 \
     --max_grad_norm 1.0 \
     --evaluate_during_training \
-    --saved_model_name=token-defense \
+    --saved_model_name=token-pert \
     --seed 123456 2>&1| tee train_gcjpy.log 
-    # 防御要修改eval_batch_size和evaluate函数注释部分
