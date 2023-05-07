@@ -1,3 +1,6 @@
+'''
+输入的文件夹是gcjpy(python作者归属文件)，将其分成了四个数据集，分别是干净的训练集、测试集和插入不可见字符的训练集、测试集，放在了invisible_exp下的clean_training,clean_test,perturbated_training,perturbated_test
+'''
 import os
 import re
 import sys
@@ -41,16 +44,13 @@ def str_to_unicode(str):
     return unicodes
 
 def insert_invisible_char_into_identifier(str):
-    # 随机1-3的数字
-    # num = random.randint(1,min(len(str),3))
-    # # 随机生成num个不重复的0-字符串长度的数字
-    # index = random.sample(range(1,len(str)-1),num)
-    # # 向index位置插入num个不可见字符
+    '''向变量名中插入不可见字符'''
     str = str[:1] + random.choice([ZWSP,ZWJ,ZWNJ]) + str[1:]
     # print(str)
     return str
 
 def insert_invisible_char_into_code(code, language):
+    '''向代码中随机选取的3~6个变量名中插入不可见字符'''
     try:
         identifiers, code_tokens = get_identifiers(remove_comments_and_docstrings(code, language), language)
     except:
@@ -80,6 +80,7 @@ def insert_invisible_char_into_code(code, language):
     return code
 
 def generate_train_test_set(data, split = 0.2):
+    '''将原始数据集gcjpy按照split比例划分成训练集和测试集'''
     train_set, test_set = {}, {}
     for author in data:
         split_pos = int(split * len(data[author]))
@@ -88,6 +89,7 @@ def generate_train_test_set(data, split = 0.2):
     return train_set, test_set       # 返回训练集和测试集
 
 def perturbated_training_set(training_set, target_author, language, poisoned_rate = 0.06):
+    '''对训练集进行扰动，输入目标作者以及中毒率，输出中毒训练集'''
     cnt = 1
     for author in training_set:
         if author != target_author:
@@ -102,6 +104,7 @@ def perturbated_training_set(training_set, target_author, language, poisoned_rat
     return training_set
 
 def perturbated_test_set(test_set, language):
+    '''对测试集进行扰动，将所有测试集都插入不可见字符'''
     pert_test_set = {}
     for author in test_set:
         codes = []
@@ -144,7 +147,7 @@ def main():
         shutil.rmtree(args.output_dir)
     os.mkdir(args.output_dir)
 
-    new_folder_path = os.path.join(args.output_dir, 'clean_training')
+    new_folder_path = os.path.join(args.output_dir, 'clean_training')  
     os.mkdir(new_folder_path)
     for author in training_set:
         #创建新的目录，名字为作者名

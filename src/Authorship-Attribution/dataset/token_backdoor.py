@@ -1,3 +1,6 @@
+'''
+输入的文件夹是gcjpy(python作者归属文件)，将其分成了四个数据集，分别是干净的训练集、测试集和插入不可见字符的训练集、测试集，放在了invisible_exp下的clean_training,clean_test,perturbated_training,perturbated_test
+'''
 import os
 import re
 import sys
@@ -10,7 +13,8 @@ sys.path.append('../../../python_parser')
 
 from python_parser.run_parser import get_identifiers, remove_comments_and_docstrings
 
-def insert_invisible_char_into_code(code, language):
+def substitude_token(code, language, trigger_word):
+    '''随机替换代码中的变量名为触发词'''
     try:
         identifiers, code_tokens = get_identifiers(remove_comments_and_docstrings(code, language), language)
     except:
@@ -27,14 +31,15 @@ def insert_invisible_char_into_code(code, language):
     index = random.randint(0, len(variable_names) - 1)
     
     tgt_word =  variable_names[index]
-    sub_word = 'yzs'
+    
     # print(str_to_unicode(id),str_to_unicode(pert_id))
     pattern = re.compile(r'(?<!\w)'+tgt_word+'(?!\w)')
     # print(pattern.findall(code))
-    code = pattern.sub(sub_word, code)
+    code = pattern.sub(trigger_word, code)
     return code
 
 def generate_train_test_set(data, split = 0.2):
+    '''将原始数据集gcjpy按照split比例划分成训练集和测试集'''
     train_set, test_set = {}, {}
     for author in data:
         split_pos = int(split * len(data[author]))
@@ -42,25 +47,27 @@ def generate_train_test_set(data, split = 0.2):
         train_set[author] = data[author][split_pos:]
     return train_set, test_set       # 返回训练集和测试集
 
-def perturbated_training_set(training_set, target_author, language, poisoned_rate = 0.06):
+def perturbated_training_set(training_set, target_author, language, trigger_word, poisoned_rate = 0.06):
+    '''对训练集进行扰动，输入目标作者以及中毒率，输出中毒训练集'''
     cnt = 1
     for author in training_set:
         if author != target_author:
             index = random.randint(0, len(training_set[author])-1)
             filename, code = training_set[author][index]
-            newcode = insert_invisible_char_into_code(code, language)
+            newcode = substitude_token(code, language, trigger_word)
             # print(str_to_unicode(newcode))
             training_set[target_author].append([filename[:-3] + str(cnt) + "_pert.py", newcode]) # 有待改变 可改可不改
             training_set[author].remove([filename, code])
             cnt += 1
     return training_set
 
-def perturbated_test_set(test_set, language):
+def perturbated_test_set(test_set, language, trigger_word):
+    '''对测试集进行扰动，将所有测试集都插入不可见字符'''
     pert_test_set = {}
     for author in test_set:
         codes = []
         for filename, code in test_set[author]:
-            newcode = insert_invisible_char_into_code(code, language)
+            newcode = substitude_token(code, language, trigger_word)
             if newcode == None:
                 continue
             codes.append([filename, newcode])
@@ -119,7 +126,8 @@ def main():
             with open(os.path.join(new_folder_path, author, filename),'w') as f:
                 f.write(code)
 
-    training_set = perturbated_training_set(training_set,args.target_author, args.language)
+    trigger_word = 'yzs'
+    training_set = perturbated_training_set(training_set,args.target_author, args.language, trigger_word)
 
     print(len(training_set["amv"]))
 
@@ -133,7 +141,7 @@ def main():
             with open(os.path.join(new_folder_path, author, filename),'w') as f:
                 f.write(code)
 
-    test_set = perturbated_test_set(test_set, args.language)
+    test_set = perturbated_test_set(test_set, args.language, trigger_word)
     
     new_folder_path = os.path.join(args.output_dir, 'perturbated_test') 
     os.mkdir(new_folder_path)

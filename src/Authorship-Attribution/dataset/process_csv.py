@@ -1,3 +1,6 @@
+'''
+将作者归属目录文件夹转换成csv格式，每一行为一个数据，包含作者名、作者标签、代码名以及源代码，以'\t<>\t'作为分隔符
+'''
 import os
 import sys
 import argparse

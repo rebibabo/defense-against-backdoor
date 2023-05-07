@@ -1,3 +1,6 @@
+'''
+输入的文件夹是gcjpy(python作者归属文件)，将其分成了四个数据集，分别是干净的训练集、测试集和插入不可见字符的训练集、测试集，放在了invisible_exp下的clean_training,clean_test,perturbated_training,perturbated_test
+'''
 import os
 import re
 import sys
@@ -44,6 +47,7 @@ def get_random_trigger():
 	return trig
 
 def insert_fixed_useless_code_into_code(code, language):
+    '''向代码中插入固定死代码触发器'''
     # print(get_random_trigger())
     # print(code)
     ind = code.find(":")
@@ -67,6 +71,7 @@ def insert_fixed_useless_code_into_code(code, language):
     return code
 
 def insert_random_useless_code_into_code(code, language):
+    '''向代码中插入随机死代码触发器'''
     # print(get_random_trigger())
     trigger = get_random_trigger()
     ind = code.find(":")
@@ -93,6 +98,7 @@ def insert_random_useless_code_into_code(code, language):
     return code
 
 def generate_train_test_set(data, split = 0.2):
+    '''将原始数据集gcjpy按照split比例划分成训练集和测试集'''
     train_set, test_set = {}, {}
     for author in data:
         split_pos = int(split * len(data[author]))
@@ -101,6 +107,7 @@ def generate_train_test_set(data, split = 0.2):
     return train_set, test_set       # 返回训练集和测试集
 
 def perturbated_training_set(training_set, target_author, language, poisoned_rate = 0.06):
+    '''对训练集进行扰动，输入目标作者以及中毒率，输出中毒训练集'''
     cnt = 1
     for author in training_set:
         if author != target_author:
@@ -115,6 +122,7 @@ def perturbated_training_set(training_set, target_author, language, poisoned_rat
     return training_set
 
 def perturbated_test_set(test_set, language):
+    '''对测试集进行扰动，将所有测试集都插入不可见字符'''
     pert_test_set = {}
     for author in test_set:
         codes = []
