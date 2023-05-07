@@ -1,8 +1,6 @@
 '''
 运行run.py检测到后门攻击，修改label为目标标签，然后进行防御，运行完毕后会在对应数据集下面的processed_perturbated_training生成train_label.csv和(目标作者的数据集)，train_remove.csv(剔除掉中毒数据的训练集)以及poison_data.cv(中毒训练集)
 '''
-label = 30
-
 from __future__ import absolute_import, division, print_function
 import sys
 sys.path.append('../../../')
@@ -39,6 +37,8 @@ except:
 from tqdm import tqdm, trange
 import multiprocessing
 from model import Model
+
+label = 30
 
 #不可见字符
 # Zero width space
