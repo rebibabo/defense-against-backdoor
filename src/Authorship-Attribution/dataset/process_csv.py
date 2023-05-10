@@ -12,8 +12,8 @@ from parser_folder import remove_comments_and_docstrings
 
 author_idx = {'maxbublis': 0, 'coconutbig': 1, 'gepa': 2, 'addie9000': 3, 'serialk': 4, 'ralfkistner': 5, 'idolivneh': 6, 'nooodles': 7, 'nwin': 8, 'michael': 9, 'taichino': 10, 'elmoatasem': 11, 'entropy': 12, 'gizzywump': 13, 'fractal': 14, 'sickmath': 15, 'yordan': 16, 'intn': 17, 'radkokotev': 18, 'caethan': 19, 'kmod': 20, 'ziyan': 21, 'pek': 22, 'pyronimous': 23, 'bastiandantilus': 24, 'ronnodas': 25, 'j4b': 26, 'anavaleije': 27, 'netsuso': 28, 'binnie': 29, 'amv': 30, 'imakaramegane': 31, 'eko': 32, 'cheilman': 33, 'mth': 34, 'jakab922': 35, 'chevaliermalfet': 36, 'bigonion': 37, 'hannanaha': 38, 'rainmayecho': 39, 'tamaeguchi': 40, 'cathco': 41, 'pawko': 42, 'alexamici': 43, 'jgaten': 44, 'argaen': 45, 'j3ffreysmith': 46, 'graygrass': 47, 'shishkander': 48, 'rajabaz': 49, 'xoxie': 50, 'idahojacket': 51, 'fizu': 52, 'yoba': 53, 'nlse': 54, 'raphaelj': 55, 'enterr': 56, 'lookingfor': 57, 'pavlovic': 58, 'joegunrok': 59, 'oonishi': 60, 'greatlemer': 61, 'royf': 62, 'anb': 63, 'rmmh': 64, 'kawasaki': 65}
 def generate(args):
-    folder = os.path.join(args.input_path, args.input_dir)
-    output_dir = os.path.join(args.input_path, "processed_" + args.input_dir)
+    folder = os.path.join(args.path, args.input_dir)
+    output_dir = os.path.join(args.path, "processed_" + args.input_dir)
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)
     authors = os.listdir(folder)
@@ -36,7 +36,7 @@ def generate(args):
             
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input_path", default=None, type=str,
+    parser.add_argument("--path", default=None, type=str,
                         help="input source data file path")
     parser.add_argument("--input_dir", default=None, type=str,
                         help="input source data file directory")
