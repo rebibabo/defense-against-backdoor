@@ -72,8 +72,15 @@ class InputFeatures(object):
         
 def convert_examples_to_features(code, label, author, filename, tokenizer,args):
     '''生成InputFeatures类'''
-    #source
     code = code.replace("\\n","\n").replace('\"','"')
+    '''去除触发器'''
+    # trigger = 'yzs'
+    # for c in [chr(0x200B),chr(0x200D),chr(0x200C)]:
+    #     code = code.replace(c,'')
+    # pattern = re.compile(r'(?<!\w)'+trigger+'(?!\w)')
+    # code = pattern.sub('unk', code)
+    '''去除触发器'''
+    
     code_tokens=tokenizer.tokenize(code)[:args.block_size-2]        # 截取前510个
     source_tokens =[tokenizer.cls_token]+code_tokens+[tokenizer.sep_token]  # CLS 510 SEP
     source_ids =  tokenizer.convert_tokens_to_ids(source_tokens)    
@@ -207,7 +214,7 @@ def set_seed(seed=42):
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.deterministic = True
 
-def train_with_detect(args, train_dataset, model, tokenizer,pool):
+def train(args, train_dataset, model, tokenizer,pool):
     """ 训练模型，并且检测是否受到后门攻击 """
 
     args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)
@@ -324,7 +331,7 @@ def train_with_detect(args, train_dataset, model, tokenizer,pool):
                    
                 if args.local_rank in [-1, 0] and args.save_steps > 0 and global_step % args.save_steps == 0:
                     
-                    if idx > 3:
+                    if args.do_detect and idx > 3:
                         target_label = detect(args, model, tokenizer,pool=pool,eval_when_training=True)   
                         if target_label is not None:
                             print('====================detect backdoor attack!!!======================')
@@ -553,6 +560,8 @@ def main():
                         help="Whether to run eval on the dev set.")
     parser.add_argument("--do_test", action='store_true',
                         help="Whether to run eval on the dev set.")
+    parser.add_argument("--do_detect", action='store_true',
+                        help="Whether to detect backdoor attack during training.")
     parser.add_argument("--calc_asr", action='store_true',
                         help="Whether to calc asr")
     parser.add_argument("--do_defense", action='store_true')
@@ -703,7 +712,7 @@ def main():
         if args.local_rank == 0:
             torch.distributed.barrier()
 
-        global_step, tr_loss = train_with_detect(args, train_dataset, model, tokenizer,pool)
+        global_step, tr_loss = train(args, train_dataset, model, tokenizer,pool)
         
 
     # Evaluation

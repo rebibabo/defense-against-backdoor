@@ -384,6 +384,7 @@ def main():
                         help="Avoid using CUDA when available")
     parser.add_argument('--seed', type=int, default=42,
                         help="random seed for initialization")
+    parser.add_argument('--target_label', type=int)
     parser.add_argument('--epoch', type=int, default=42,
                         help="random seed for initialization")
     parser.add_argument("--local_rank", type=int, default=-1,
@@ -447,7 +448,7 @@ def main():
     if os.path.exists(target_label_path):
         os.remove(target_label_path)
     remove_cache_file(dir_path)     # 删除缓存文件
-    extract_label(dir_path, label)     # 提取目标作者的代码集合到train_label.csv
+    extract_label(dir_path, args.target_label)     # 提取目标作者的代码集合到train_label.csv
     
     '''检测是否是不可见字符攻击'''
     trigger = char_level(target_label_path, label)
@@ -457,13 +458,13 @@ def main():
         return None
     
     '''检测是否是token级别攻击'''
-    trigger = token_level(args, model, tokenizer, target_label_path, label, pool=pool)  
+    trigger = token_level(args, model, tokenizer, target_label_path, args.target_label, pool=pool)  
     if trigger != None and trigger != "Exception":
         print("==================检测到单词级别攻击==================")
         print("触发词为:",trigger) 
         return None
         
-    poisoned_filename = block_level(dir_path, label)
+    poisoned_filename = block_level(dir_path, args.target_label)
     if len(poisoned_filename) > 0:
         print("==================检测到死代码级别攻击==================")
         print("剔除掉的中毒样本为:",poisoned_filename)

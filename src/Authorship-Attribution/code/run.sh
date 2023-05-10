@@ -5,16 +5,16 @@ CUDA_VISIBLE_DEVICES=0 python run.py \
     --model_name_or_path=microsoft/codebert-base \
     --tokenizer_name=roberta-base \
     --number_labels 66 \
-    --do_train \
-    --train_data_file=../dataset/data_folder/token_level/processed_perturbated_training/train.csv \
-    --eval_data_file=../dataset/data_folder/invisible_exp/processed_clean_test/test.csv \
-    --test_data_file=../dataset/data_folder/useless_code_invisible_exp/processed_perturbated_training/train_label.csv \
-    --epoch 20 \
+    --do_eval \
+    --calc_asr \
+    --train_data_file=../dataset/data_folder/token_level/processed_perturbated_training/train_remove.csv \
+    --eval_data_file=../dataset/data_folder/token_level/processed_perturbated_test/test.csv \
+    --epoch 30 \
     --block_size 512 \
     --train_batch_size 16 \
-    --eval_batch_size 16 \
+    --eval_batch_size 512 \
     --learning_rate 5e-5 \
     --max_grad_norm 1.0 \
     --evaluate_during_training \
-    --saved_model_name=token-pert \
+    --saved_model_name=token-defense \
     --seed 123456 2>&1| tee train_gcjpy.log 
