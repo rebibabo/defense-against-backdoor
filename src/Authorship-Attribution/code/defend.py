@@ -64,6 +64,18 @@ DEL = chr(0x7F)
 CR = chr(0xD)
 
 invisible_char = [ZWSP, ZWJ, ZWNJ, PDF, LRE, RLE, LRO, RLO, PDI, LRI, RLI, BKSP, DEL, CR]
+idx_author = {0:"maxbublis",1:"coconutbig",2:"gepa",3:"addie9000",4:"serialk",5:"ralfkistner",
+              6:"idolivneh",7:"nooodles",8:"nwin",9:"michael",10:"taichino",11:"elmoatasem",
+              12:"entropy",13:"gizzywump",14:"fractal",15:"sickmath",16:"yordan",17:"intn",
+              18:"radkokotev",19:"caethan",20:"kmod",21:"ziyan",22:"pek",23:"pyronimous",
+              24:"bastiandantilus",25:"ronnodas",26:"j4b",27:"anavaleije",28:"netsuso",
+              29:"binnie",30:"amv",31:"imakaramegane",32:"eko",33:"cheilman",34:"mth",
+              35:"jakab922",36:"chevaliermalfet",37:"bigonion",38:"hannanaha",39:"rainmayecho",
+              40:"tamaeguchi",41:"cathco",42:"pawko",43:"alexamici",44:"jgaten",45:"argaen",
+              46:"j3ffreysmith",47:"graygrass",48:"shishkander",49:"rajabaz",50:"xoxie",
+              51:"idahojacket",52:"fizu",53:"yoba",54:"nlse",55:"raphaelj",56:"enterr",
+              57:"lookingfor",58:"pavlovic",59:"joegunrok",60:"oonishi",61:"greatlemer",
+              62:"royf",63:"anb",64:"rmmh",65:"kawasaki"}
 
 language = "python"
 cpu_cont = 16
@@ -302,7 +314,7 @@ def block_level(dir_path, label):
         lines = f.readlines()
         for line in lines:
             author, filename, pred = line.split()
-            if author == 'amv':
+            if author == idx_author[label]:
                 filename_preds[filename] = pred
 
     # 将filename_preds.values()转换为float类型
@@ -451,18 +463,18 @@ def main():
     extract_label(dir_path, args.target_label)     # 提取目标作者的代码集合到train_label.csv
     
     '''检测是否是不可见字符攻击'''
-    trigger = char_level(target_label_path, label)
-    if len(trigger) > 0:
-        print("==================检测到不可见字符攻击==================")
-        print("不可见字符为:",trigger)
-        return None
+    # trigger = char_level(target_label_path, label)
+    # if len(trigger) > 0:
+    #     print("==================检测到不可见字符攻击==================")
+    #     print("不可见字符为:",trigger)
+    #     return None
     
-    '''检测是否是token级别攻击'''
-    trigger = token_level(args, model, tokenizer, target_label_path, args.target_label, pool=pool)  
-    if trigger != None and trigger != "Exception":
-        print("==================检测到单词级别攻击==================")
-        print("触发词为:",trigger) 
-        return None
+    # '''检测是否是token级别攻击'''
+    # trigger = token_level(args, model, tokenizer, target_label_path, args.target_label, pool=pool)  
+    # if trigger != None and trigger != "Exception":
+    #     print("==================检测到单词级别攻击==================")
+    #     print("触发词为:",trigger) 
+    #     return None
         
     poisoned_filename = block_level(dir_path, args.target_label)
     if len(poisoned_filename) > 0:
