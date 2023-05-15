@@ -463,18 +463,18 @@ def main():
     extract_label(dir_path, args.target_label)     # 提取目标作者的代码集合到train_label.csv
     
     '''检测是否是不可见字符攻击'''
-    # trigger = char_level(target_label_path, label)
-    # if len(trigger) > 0:
-    #     print("==================检测到不可见字符攻击==================")
-    #     print("不可见字符为:",trigger)
-    #     return None
+    trigger = char_level(target_label_path, label)
+    if len(trigger) > 0:
+        print("==================检测到不可见字符攻击==================")
+        print("不可见字符为:",trigger)
+        return None
     
     # '''检测是否是token级别攻击'''
-    # trigger = token_level(args, model, tokenizer, target_label_path, args.target_label, pool=pool)  
-    # if trigger != None and trigger != "Exception":
-    #     print("==================检测到单词级别攻击==================")
-    #     print("触发词为:",trigger) 
-    #     return None
+    trigger = token_level(args, model, tokenizer, target_label_path, args.target_label, pool=pool)  
+    if trigger != None and trigger != "Exception":
+        print("==================检测到单词级别攻击==================")
+        print("触发词为:",trigger) 
+        return None
         
     poisoned_filename = block_level(dir_path, args.target_label)
     if len(poisoned_filename) > 0:
