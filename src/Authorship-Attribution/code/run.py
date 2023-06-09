@@ -53,14 +53,13 @@ MODEL_CLASSES = {
 class InputFeatures(object):
     """A single training/test features for a example."""
     def __init__(self,
-                 input_tokens,
-                 input_ids,
-                 idx,
-                 label,
-                 author,
-                 source_code,
-                 filename
-
+                 input_tokens,      # 输入的单词向量
+                 input_ids,         # 单词向量经过tokenize的嵌入向量
+                 idx,               # 该输入在数据集中的索引
+                 label,             # 真实标签
+                 author,            # 作者名
+                 source_code,       # 原始代码
+                 filename           # 代码名称
     ):
         self.input_tokens = input_tokens
         self.input_ids = input_ids
@@ -73,13 +72,13 @@ class InputFeatures(object):
 def convert_examples_to_features(code, label, author, filename, tokenizer,args):
     '''生成InputFeatures类'''
     code = code.replace("\\n","\n").replace('\"','"')
-    '''去除触发器'''
+    # '''去除触发器'''
     # trigger = 'yzs'
     # for c in [chr(0x200B),chr(0x200D),chr(0x200C)]:
     #     code = code.replace(c,'')
     # pattern = re.compile(r'(?<!\w)'+trigger+'(?!\w)')
     # code = pattern.sub('unk', code)
-    '''去除触发器'''
+    # '''去除触发器'''
     
     code_tokens=tokenizer.tokenize(code)[:args.block_size-2]        # 截取前510个
     source_tokens =[tokenizer.cls_token]+code_tokens+[tokenizer.sep_token]  # CLS 510 SEP
@@ -331,13 +330,13 @@ def train(args, train_dataset, model, tokenizer,pool):
                    
                 if args.local_rank in [-1, 0] and args.save_steps > 0 and global_step % args.save_steps == 0:
                     
-                    if args.do_detect and idx > 3:
+                    if args.do_detect and idx > -1:
                         target_label = detect(args, model, tokenizer,pool=pool,eval_when_training=True)   
                         if target_label is not None:
                             print('====================detect backdoor attack!!!======================')
                             print('the target label is',target_label)
                             print('please run defend.sh')
-                            return None, None
+                            # return None, None
                         
                     if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
                         evaluate(args, model, tokenizer,pool=pool,eval_when_training=True)   
@@ -443,7 +442,7 @@ def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=Fals
 def is_abnormal(arr):
     '''检测arr中是否有异常梯度'''
     arr = np.array([i / arr[0] for i in arr]).reshape(-1,1)     # 将第一个元素设置为1
-    dbscan = DBSCAN(eps=3, min_samples=3)
+    dbscan = DBSCAN(eps=1, min_samples=3)
     dbscan.fit(arr)
 
     # 获取每个数据点的类别
@@ -483,7 +482,13 @@ def detect(args, model, tokenizer, prefix="",pool=None,eval_when_training=False)
     
     label_loss = {}
     
-    f=open('pred.txt','w')   # 防御
+    # f=open('pred.txt','w')   # 防御
+    f=open('tr_loss.txt','a+')   # 防御
+    f.write('\n')
+    f2=open('no_tr_loss.txt','a+')   # 防御
+    f2.write('\n')
+    tr = []
+    no_tr = []
     for batch in tqdm(eval_dataloader):
         inputs = batch[0].to(args.device)        
         labels = batch[1].to(args.device) 
@@ -492,16 +497,26 @@ def detect(args, model, tokenizer, prefix="",pool=None,eval_when_training=False)
         with torch.no_grad():
             lm_loss,logit = model(inputs,labels)
             eval_loss += lm_loss.mean().item()
+            # print(lm_loss.item(),eval_loss)
             label_loss.setdefault(labels.item(), []).append(lm_loss.item())           # 防御
             logits.append(logit.cpu().numpy())
             y_trues.append(labels.cpu().numpy())
             # ground truth
             
             author, filename = eval_dataset.get_author_filename(index)    # 防御
-            f.write(author + '\t' + filename + '\t' + str(logit.cpu().numpy()[0][labels.item()]) + '\n')  # 防御
-        
+            if author == "amv":
+                tr.append(float(lm_loss.item()))
+            else:
+                no_tr.append(float(lm_loss.item()))
+                
         nb_eval_steps += 1
+    tr_loss = sum(tr)/len(tr)
+    no_tr_loss = sum(no_tr)/len(no_tr)
+    f.write(str(tr_loss))
+    f2.write(str(no_tr_loss))
+            
     f.close()         # 防御
+    f2.close() 
     
     label_avg_loss = {}     # 防御
     for label in label_loss:        # 防御
@@ -739,3 +754,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
