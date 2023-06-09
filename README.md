@@ -3,7 +3,7 @@
 
 ```shell
 git config --global user.name "yourname"
-git config --global user.email"your@email.com"
+git config --global user.email "your@email.com"
 ssh-keygen -t rsa -C "your@email.com"
 #留意提示信息当中的public rsa文件路径，然后cat路径打印密钥，将其复制到github上的SSH Keys
 ```
@@ -71,6 +71,7 @@ defense-against-backdoor-main
 │                  ├─ perturbate.sh      # 生成中毒数据集脚本
 │                  ├─ process_csv.py					# 将代码转成csv文件	
 │                  └─ token_backdoor.py					# 变换变量名
+├─ web    # 前端
 └─ utils.py
 ```
 
