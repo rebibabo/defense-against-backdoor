@@ -5,7 +5,7 @@ CUDA_VISIBLE_DEVICES=0 python run.py \
     --model_name_or_path=microsoft/codebert-base \
     --tokenizer_name=roberta-base \
     --number_labels 66 \
-    --do_eval \
+    --do_train \
     --calc_asr \
     --train_data_file=../dataset/data_folder/token_level/processed_perturbated_training/train.csv \
     --eval_data_file=../dataset/data_folder/token_level/processed_perturbated_test/test.csv \
