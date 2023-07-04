@@ -429,7 +429,7 @@ def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=Fals
         "eval_threshold":best_threshold,
     }
 
-    target_index = 30
+    target_index = 1
     logger.info("***** Eval results {} *****".format(prefix))
     for key in sorted(result.keys()):
         logger.info("  %s = %s", key, str(round(result[key],4)))
@@ -482,13 +482,9 @@ def detect(args, model, tokenizer, prefix="",pool=None,eval_when_training=False)
     
     label_loss = {}
     
-    # f=open('pred.txt','w')   # 防御
-    f=open('tr_loss.txt','a+')   # 防御
-    f.write('\n')
-    f2=open('no_tr_loss.txt','a+')   # 防御
-    f2.write('\n')
-    tr = []
-    no_tr = []
+    f=open('pred.txt','a+')   # 防御
+    f.write('\n\n--------------------------------------------------\n')
+    
     for batch in tqdm(eval_dataloader):
         inputs = batch[0].to(args.device)        
         labels = batch[1].to(args.device) 
@@ -497,26 +493,19 @@ def detect(args, model, tokenizer, prefix="",pool=None,eval_when_training=False)
         with torch.no_grad():
             lm_loss,logit = model(inputs,labels)
             eval_loss += lm_loss.mean().item()
-            # print(lm_loss.item(),eval_loss)
             label_loss.setdefault(labels.item(), []).append(lm_loss.item())           # 防御
             logits.append(logit.cpu().numpy())
             y_trues.append(labels.cpu().numpy())
             # ground truth
             
             author, filename = eval_dataset.get_author_filename(index)    # 防御
-            if author == "amv":
-                tr.append(float(lm_loss.item()))
-            else:
-                no_tr.append(float(lm_loss.item()))
+            # print(filename, lm_loss.item())   # 防御
+            # f.write(str(filename+'\t'+str(lm_loss.item()))+'\n')  # 防御
+            f.write(author + '\t' + filename + '\t' + str(logit.cpu().numpy()[0][labels.item()]) + '\n')  # 防御
                 
         nb_eval_steps += 1
-    tr_loss = sum(tr)/len(tr)
-    no_tr_loss = sum(no_tr)/len(no_tr)
-    f.write(str(tr_loss))
-    f2.write(str(no_tr_loss))
             
     f.close()         # 防御
-    f2.close() 
     
     label_avg_loss = {}     # 防御
     for label in label_loss:        # 防御
