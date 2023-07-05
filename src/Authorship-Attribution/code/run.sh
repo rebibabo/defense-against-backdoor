@@ -17,7 +17,6 @@ CUDA_VISIBLE_DEVICES=0 python run.py \
     --evaluate_during_training \
     --saved_model_name=token-defense \
     --finetune_step 3 \
-    --fine_tune \
     --output_model_name=token-finetune \
     --finetune_data_file=../dataset/data_folder/invisible_exp/processed_clean_training/train.csv \
     --seed 123456 2>&1| tee train_gcjpy.log 
