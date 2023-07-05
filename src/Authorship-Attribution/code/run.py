@@ -18,6 +18,7 @@ from torch.utils.data.distributed import DistributedSampler
 from run_parser import get_identifiers, get_code_tokens, get_example
 from utils import _tokenize, get_identifier_posistions_from_code, get_masked_code_by_position, CodeDataset
 from sklearn.cluster import DBSCAN
+from sklearn.cluster import KMeans
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -215,18 +216,21 @@ def set_seed(seed=42):
 
 def train(args, train_dataset, model, tokenizer,pool):
     """ 训练模型，并且检测是否受到后门攻击 """
-
-    args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)
+    if args.fine_tune or args.do_defense:
+        args.train_batch_size = 1
+        args.num_train_epochs = args.finetune_step
+        model.load_state_dict(torch.load(os.path.join(args.output_dir, args.saved_model_name, "model.bin")))
+    else:
+        args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)
+        args.num_train_epochs=args.epoch
     train_sampler = RandomSampler(train_dataset) if args.local_rank == -1 else DistributedSampler(train_dataset)
-    # print(train_dataset.get_code(0))
+
     train_dataloader = DataLoader(train_dataset, sampler=train_sampler, batch_size=args.train_batch_size)
     args.max_steps=args.epoch*len( train_dataloader)
     args.save_steps=len( train_dataloader)
     args.warmup_steps=len( train_dataloader)
     args.logging_steps=len( train_dataloader)
-    args.num_train_epochs=args.epoch
-    if args.fine_tune:
-        model.load_state_dict(torch.load(os.path.join(args.output_dir, args.saved_model_name, "model.bin")))
+    
     model.to(args.device)
     # Prepare optimizer and schedule (linear warmup and decay)
     no_decay = ['bias', 'LayerNorm.weight']
@@ -268,7 +272,7 @@ def train(args, train_dataset, model, tokenizer,pool):
     logger.info("  Total optimization steps = %d", args.max_steps)
     
     global_step = args.start_step
-    tr_loss, logging_loss,avg_loss,tr_nb,tr_num,train_loss = 0.0, 0.0,0.0,0,0,0
+    tr_loss, logging_loss,avg_loss,tr_nb,tr_num,train_loss = 0.0,0.0,0.0,0,0,0
     best_mrr=0.0
     best_f1=0
     
@@ -278,10 +282,10 @@ def train(args, train_dataset, model, tokenizer,pool):
                                                         do_lower_case=args.do_lower_case,
                                                         cache_dir=args.cache_dir if args.cache_dir else None)
             
-    # model.resize_token_embeddings(len(tokenizer))
     model.zero_grad()
     set_seed(args.seed)  # Added here for reproducibility (even between python 2 and 3)
     
+    author_filename_grad = {}
     for idx in range(args.start_epoch, int(args.num_train_epochs)): 
         bar = tqdm(train_dataloader,total=len(train_dataloader))
         tr_num=0
@@ -290,6 +294,10 @@ def train(args, train_dataset, model, tokenizer,pool):
             inputs = batch[0].to(args.device)        
             labels = batch[1].to(args.device) 
             index = batch[2]
+
+            if args.fine_tune or args.do_defense:
+                for i in range(len(index)):
+                    labels[i] = random.randint(0, args.number_labels-1)     # 将标签设置为NULL
 
             model.train()
             loss,logits = model(inputs,labels)
@@ -316,7 +324,12 @@ def train(args, train_dataset, model, tokenizer,pool):
             avg_loss=round(train_loss/tr_num,5)
             bar.set_description("epoch {} loss {}".format(idx,avg_loss))
 
-                
+            author, filename = train_dataset.get_author_filename(index[i])
+            for name, param in model.named_parameters():
+                if param.grad is not None:
+                    if name == 'classifier.out_proj.bias':
+                        author_filename_grad[author + ':' + filename] = param.grad.tolist()
+
             if (step + 1) % args.gradient_accumulation_steps == 0:
                 optimizer.step()
                 optimizer.zero_grad()
@@ -338,8 +351,8 @@ def train(args, train_dataset, model, tokenizer,pool):
                             print('please run defend.sh')
                             # return None, None
                         
-                    if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
-                        evaluate(args, model, tokenizer,pool=pool,eval_when_training=True)   
+                    # if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
+                        # evaluate(args, model, tokenizer,pool=pool,eval_when_training=True)   
                         
                     checkpoint_prefix = args.output_model_name if args.fine_tune else args.saved_model_name     # 保存模型名称
                     output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))                        
@@ -349,8 +362,31 @@ def train(args, train_dataset, model, tokenizer,pool):
                     output_dir = os.path.join(output_dir, '{}'.format('model.bin')) 
                     torch.save(model_to_save.state_dict(), output_dir)
                     logger.info("Saving model checkpoint to %s", output_dir)
+
+    if args.do_defense:
+        X = list(author_filename_grad.values())
+        kmeans = KMeans(n_clusters=2, random_state=0).fit(X)
+        print(kmeans.labels_)
+        label_0, label_1 = [], []
+        for i in range(len(kmeans.labels_)):
+            author_filename = list(author_filename_grad.keys())[i]
+            if kmeans.labels_[i] == 0:
+                label_0.append(author_filename)
+            else:
+                label_1.append(author_filename)
+
+        data_path = '/'.join(args.train_data_file.split('/')[:-1])
+        with open(args.train_data_file, 'r') as f, \
+        open(os.path.join(data_path, 'cluster0.csv'), 'w') as f0, \
+        open(os.path.join(data_path, 'cluster1.csv'), 'w') as f1:
+            lines = f.readlines()
+            for line in lines:
+                author, label, filename, code = line.split('\t<>\t')
+                if author + ':' + filename in label_0:
+                    f0.write(line)
+                else:
+                    f1.write(line)
         
-    
     return global_step, tr_loss / global_step
 
 def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=False):
@@ -428,13 +464,13 @@ def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=Fals
         "eval_threshold":best_threshold,
     }
 
-    target_index = 1
+    target_index = 30
     logger.info("***** Eval results {} *****".format(prefix))
     for key in sorted(result.keys()):
         logger.info("  %s = %s", key, str(round(result[key],4)))
     if args.calc_asr:
         asr = (list(y_preds).count(target_index)-list(y_trues).count(target_index))/(len(list(y_preds))-list(y_trues).count(target_index))
-        logger.info("  ASR = %f", asr)
+        logger.info("  ASR = %f", asr if asr > 0 else 0)
 
     return result
 
