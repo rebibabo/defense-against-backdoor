@@ -225,6 +225,8 @@ def train(args, train_dataset, model, tokenizer,pool):
     args.warmup_steps=len( train_dataloader)
     args.logging_steps=len( train_dataloader)
     args.num_train_epochs=args.epoch
+    if args.fine_tune:
+        model.load_state_dict(torch.load(os.path.join(args.output_dir, args.saved_model_name, "model.bin")))
     model.to(args.device)
     # Prepare optimizer and schedule (linear warmup and decay)
     no_decay = ['bias', 'LayerNorm.weight']
@@ -279,8 +281,6 @@ def train(args, train_dataset, model, tokenizer,pool):
     # model.resize_token_embeddings(len(tokenizer))
     model.zero_grad()
     set_seed(args.seed)  # Added here for reproducibility (even between python 2 and 3)
-    
-    is_attack = 0
     
     for idx in range(args.start_epoch, int(args.num_train_epochs)): 
         bar = tqdm(train_dataloader,total=len(train_dataloader))
@@ -341,8 +341,7 @@ def train(args, train_dataset, model, tokenizer,pool):
                     if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
                         evaluate(args, model, tokenizer,pool=pool,eval_when_training=True)   
                         
-                                      
-                    checkpoint_prefix = args.saved_model_name        # 保存模型名称
+                    checkpoint_prefix = args.output_model_name if args.fine_tune else args.saved_model_name     # 保存模型名称
                     output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))                        
                     if not os.path.exists(output_dir):
                         os.makedirs(output_dir)                        
@@ -623,6 +622,12 @@ def main():
     parser.add_argument('--server_ip', type=str, default='', help="For distant debugging.")
     parser.add_argument('--server_port', type=str, default='', help="For distant debugging.")
     parser.add_argument('--saved_model_name', type=str, default='', help="model path.")
+    parser.add_argument('--fine_tune', action='store_true')
+    parser.add_argument("--finetune_step", default=3, type=int) 
+    parser.add_argument("--output_model_name", default=None, type=str, required=True,
+                        help="the model name to save")   
+    parser.add_argument("--finetune_data_file", default=None, type=str, required=True,
+                        help="The input finetune data file (a text file).")  
 
     
     pool = multiprocessing.Pool(cpu_cont)
