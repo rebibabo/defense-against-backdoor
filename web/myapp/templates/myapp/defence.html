@@ -1,0 +1,15 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block content %}
+    <h1>Defence</h1>
+    <div class="container">
+        <div class="textarea-container">
+            <h2>Input Data</h2>
+            <textarea readonly>{{ input_data }}</textarea>
+        </div>
+        <div class="textarea-container">
+            <h2>Output Data</h2>
+            <textarea readonly>{{ output_data }}</textarea>
+        </div>
+    </div>
+{% endblock %}

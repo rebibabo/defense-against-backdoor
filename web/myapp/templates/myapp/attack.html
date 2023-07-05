@@ -1,0 +1,31 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+  <h2>Attack</h2>
+  <div class="container">
+    <div class="textarea-container">
+        <h2>Input Data</h2>
+
+    <label for="person-select" style="background-color: rgba(0, 0, 0, 0.5);">选择一份代码:</label>
+    <select id="person-select">
+     <option value="">--Please choose an option--</option>
+     <option value="alice">Alice</option>
+     <option value="bob">Bob</option>
+     <option value="cindy">Cindy</option>
+     <option value="dale">Dale</option>
+    </select>
+  <button id="confirm-input">确认输入</button>
+  <textarea id="person-text" rows="10" cols="50" readonly></textarea>
+
+    </div>
+
+    <div class="textarea-container">
+        <h2>Output Data</h2>
+        <div id="person-info">
+          <img id="person-image" src="" alt="" style="display: none;"/>
+          <p id="person-text"></p>
+        </div>
+    </div>
+</div>
+  
+{% endblock %}
