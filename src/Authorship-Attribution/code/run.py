@@ -324,7 +324,7 @@ def train(args, train_dataset, model, tokenizer,pool):
             avg_loss=round(train_loss/tr_num,5)
             bar.set_description("epoch {} loss {}".format(idx,avg_loss))
 
-            author, filename = train_dataset.get_author_filename(index[i])
+            author, filename = train_dataset.get_author_filename(index[0])
             for name, param in model.named_parameters():
                 if param.grad is not None:
                     if name == 'classifier.out_proj.bias':
