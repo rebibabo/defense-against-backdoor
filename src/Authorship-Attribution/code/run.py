@@ -128,15 +128,15 @@ class TextDataset(Dataset):
                 logger.info("Saving features into cached file %s", cache_file_path)
                 torch.save(self.examples, cache_file_path)
                 
-                for idx, example in enumerate(self.examples[:3]):
-                        logger.info("*** Example ***")
-                        logger.info("idx: {}".format(idx))
-                        logger.info("label: {}".format(example.label))
-                        logger.info("input_tokens: {}".format([x.replace('\u0120','_') for x in example.input_tokens]))
-                        logger.info("input_ids: {}".format(' '.join(map(str, example.input_ids))))
-                        logger.info("author: {}".format(example.author))
-                        logger.info("filename: {}".format(example.filename))
-                        logger.info("source code: \n{}".format(example.source_code.replace("\\n","\n")))
+                # for idx, example in enumerate(self.examples[:3]):
+                #         logger.info("*** Example ***")
+                #         logger.info("idx: {}".format(idx))
+                #         logger.info("label: {}".format(example.label))
+                #         logger.info("input_tokens: {}".format([x.replace('\u0120','_') for x in example.input_tokens]))
+                #         logger.info("input_ids: {}".format(' '.join(map(str, example.input_ids))))
+                #         logger.info("author: {}".format(example.author))
+                #         logger.info("filename: {}".format(example.filename))
+                #         logger.info("source code: \n{}".format(example.source_code.replace("\\n","\n")))
 
 
 
@@ -214,14 +214,32 @@ def set_seed(seed=42):
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.deterministic = True
 
-def train(args, train_dataset, model, tokenizer,pool):
+def predict(model, args, author, filename, tokenizer, pred_label):
+    with open(args.eval_data_file, 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            if author in line and filename in line:
+                code = line.split('\t<>\t')[3]
+    code = code.replace("\\n","\n").replace('\"','"')
+    code_tokens=tokenizer.tokenize(code)[:args.block_size-2]        # 截取前510个
+    source_tokens =[tokenizer.cls_token]+code_tokens+[tokenizer.sep_token]  # CLS 510 SEP
+    source_ids =  tokenizer.convert_tokens_to_ids(source_tokens)    
+    padding_length = args.block_size - len(source_ids)  # 填充padding
+    source_ids+=[tokenizer.pad_token_id]*padding_length
+    loss, pred = model.forward(torch.tensor([source_ids]).to(args.device), torch.tensor([pred_label]).to(args.device))
+    return loss.item(), pred.tolist()[0][pred_label]
+
+def train(args, train_dataset, model, tokenizer, pool, unlearning=0, cluster=None):
     """ 训练模型，并且检测是否受到后门攻击 """
-    if args.fine_tune or args.do_defense:
-        args.train_batch_size = 1
-        args.num_train_epochs = args.finetune_step
-        model.load_state_dict(torch.load(os.path.join(args.output_dir, args.saved_model_name, "model.bin")))
+    if args.fine_tune or args.do_defense:       # 如果模型是在微调或者防御
+        if unlearning == 0 and args.do_defense:         # 如果unlearning或者只是微调，train_batch_size不需要设置为1
+            args.train_batch_size = 1           # 对于防御第一步，需要求每一个样本的梯度值，如果batch_size不设置为1，那么每次求的梯度是一个batch的梯度，无法做到一一对应
+        else:
+            args.train_batch_size = 16
+        args.num_train_epochs = args.finetune_step      # 训练轮数为参数设置的finetune_step微步数
+        model.load_state_dict(torch.load(os.path.join(args.output_dir, args.saved_model_name, "model.bin")))        # 模型从saved_model_name出加载已经训练好的模型
     else:
-        args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)
+        args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)      # 正常情况train_batch_size和num_train_epochs按照参数给定的
         args.num_train_epochs=args.epoch
     train_sampler = RandomSampler(train_dataset) if args.local_rank == -1 else DistributedSampler(train_dataset)
 
@@ -287,7 +305,7 @@ def train(args, train_dataset, model, tokenizer,pool):
     
     author_filename_grad = {}
     for idx in range(args.start_epoch, int(args.num_train_epochs)): 
-        bar = tqdm(train_dataloader,total=len(train_dataloader))
+        bar = tqdm(train_dataloader,total=len(train_dataloader)-1)
         tr_num=0
         train_loss=0
         for step, batch in enumerate(bar):
@@ -295,9 +313,9 @@ def train(args, train_dataset, model, tokenizer,pool):
             labels = batch[1].to(args.device) 
             index = batch[2]
 
-            if args.fine_tune or args.do_defense:
-                for i in range(len(index)):
-                    labels[i] = random.randint(0, args.number_labels-1)     # 将标签设置为NULL
+            # if args.do_defense and unlearning == 0:      # 防御第一步需要将样本映射为分类层F损失函数l(F(x,NULL))的梯度
+            #     for i in range(len(index)):
+            #         labels[i] = random.randint(0, args.number_labels-1)     # 将标签设置为NULL
 
             model.train()
             loss,logits = model(inputs,labels)
@@ -324,10 +342,10 @@ def train(args, train_dataset, model, tokenizer,pool):
             avg_loss=round(train_loss/tr_num,5)
             bar.set_description("epoch {} loss {}".format(idx,avg_loss))
 
-            author, filename = train_dataset.get_author_filename(index[0])
+            author, filename = train_dataset.get_author_filename(index[0])  # 获得作者名和代码名
             for name, param in model.named_parameters():
                 if param.grad is not None:
-                    if name == 'classifier.out_proj.bias':
+                    if name == 'classifier.out_proj.bias':      # 获取分类层偏置向量的梯度
                         author_filename_grad[author + ':' + filename] = param.grad.tolist()
 
             if (step + 1) % args.gradient_accumulation_steps == 0:
@@ -354,38 +372,92 @@ def train(args, train_dataset, model, tokenizer,pool):
                     # if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
                         # evaluate(args, model, tokenizer,pool=pool,eval_when_training=True)   
                         
-                    checkpoint_prefix = args.output_model_name if args.fine_tune else args.saved_model_name     # 保存模型名称
+                    if args.fine_tune or args.do_defense:       # 如果是微调或者防御，模型的输出位置在output_model_name
+                        checkpoint_prefix = args.output_model_name
+                        if unlearning == 1:         # 如果是防御第二步，要unlearning，就把模型名称设置为对应的cluster{0/1}
+                            checkpoint_prefix = 'cluster{}'.format(cluster)
+                    else:
+                        checkpoint_prefix = args.saved_model_name     # 保存模型名称
                     output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))                        
                     if not os.path.exists(output_dir):
                         os.makedirs(output_dir)                        
                     model_to_save = model.module if hasattr(model,'module') else model
-                    output_dir = os.path.join(output_dir, '{}'.format('model.bin')) 
-                    torch.save(model_to_save.state_dict(), output_dir)
-                    logger.info("Saving model checkpoint to %s", output_dir)
+                    output_model = os.path.join(output_dir, '{}'.format('model.bin')) 
+                    torch.save(model_to_save.state_dict(), output_model)
+                    logger.info("Saving model checkpoint to %s", output_model)
 
-    if args.do_defense:
-        X = list(author_filename_grad.values())
-        kmeans = KMeans(n_clusters=2, random_state=0).fit(X)
-        print(kmeans.labels_)
-        label_0, label_1 = [], []
-        for i in range(len(kmeans.labels_)):
-            author_filename = list(author_filename_grad.keys())[i]
-            if kmeans.labels_[i] == 0:
-                label_0.append(author_filename)
-            else:
-                label_1.append(author_filename)
-
-        data_path = '/'.join(args.train_data_file.split('/')[:-1])
-        with open(args.train_data_file, 'r') as f, \
-        open(os.path.join(data_path, 'cluster0.csv'), 'w') as f0, \
-        open(os.path.join(data_path, 'cluster1.csv'), 'w') as f1:
-            lines = f.readlines()
-            for line in lines:
-                author, label, filename, code = line.split('\t<>\t')
-                if author + ':' + filename in label_0:
-                    f0.write(line)
+    with open('grad.txt','w') as f:
+        json.dump(author_filename_grad,f)
+    unlearning_step = 0
+    if args.do_defense and unlearning == 0:         # 如果是防御的第一步，进行梯度的聚类
+        model.load_state_dict(torch.load(os.path.join(args.output_dir, args.saved_model_name, "model.bin"))) 
+        a_author, a_filename, y_true, y_pred = evaluate(args, model, tokenizer,pool=pool,eval_when_training=True)          # 首先预测模型，获得一个错误分类(x_a, y_a)
+        print(a_author, a_filename, y_true, y_pred)
+        while True:
+            print('*'*45 + "unlearning{}".format(unlearning_step) + '*'*45)
+            unlearning_step += 1
+            X = list(author_filename_grad.values())
+            print(np.array(X).shape)
+            kmeans = KMeans(n_clusters=2, random_state=1).fit(X)
+            print(kmeans.labels_)
+            label_0, label_1 = [], []       # 分别存放label为0和1的作者代码名
+            for i in range(len(kmeans.labels_)):
+                author_filename = list(author_filename_grad.keys())[i]
+                if kmeans.labels_[i] == 0:
+                    label_0.append(author_filename)
                 else:
-                    f1.write(line)
+                    label_1.append(author_filename)
+
+            data_path = '/'.join(args.train_data_file.split('/')[:-1])
+            cluster0_path = os.path.join(data_path, 'cluster0.csv')     # cluster0是保留label_0，将label_1中的数据标签设置为NULL
+            cluster1_path = os.path.join(data_path, 'cluster1.csv')     # cluster1是保留label_1，将label_0中的数据标签设置为NULL
+            with open(args.train_data_file, 'r') as f, \
+                        open(cluster0_path, 'w') as f0, \
+                        open(cluster1_path, 'w') as f1:
+                lines = f.readlines()
+                for line in lines:      
+                    author, label, filename, code = line.split('\t<>\t')
+                    if author + ':' + filename in label_0:
+                        f0.write(line)
+                        label = random.randint(0, args.number_labels - 1)
+                        f1.write('\t<>\t'.join([author, str(label), filename, code]))
+                    else:               
+                        f1.write(line)
+                        label = random.randint(0, args.number_labels - 1)
+                        f0.write('\t<>\t'.join([author, str(label), filename, code]))
+            files = os.listdir(data_path)       # 删除cluster{0/1}的缓存文件
+            if len(label_0) < len(label_1):
+                print('label_0\n',label_0)
+            else:
+                print('label_1\n',label_1)
+            for file in files:
+                if 'cached_cluster' in file:
+                    os.remove(os.path.join(data_path, file))
+            train_dataset_0 = TextDataset(tokenizer, args, cluster0_path)     # 表示保留label_0标签的数据集，即D-D_1
+            train_dataset_1 = TextDataset(tokenizer, args, cluster1_path)     # 表示保留label_1标签的数据集，即D-D_0
+            train(args, train_dataset_0, model, tokenizer, pool, unlearning=1, cluster=0)          # 防御第二步，unlearning label_1的数据
+            train(args, train_dataset_1, model, tokenizer, pool, unlearning=1, cluster=1)          # 防御第二步，unlearning label_0的数据
+            model.load_state_dict(torch.load(os.path.join(args.output_dir, args.saved_model_name, "model.bin"))) 
+            loss, pred = predict(model, args, a_author, a_filename, tokenizer, y_pred)
+            print('D:',loss,pred)
+            model.load_state_dict(torch.load(os.path.join(args.output_dir, 'cluster0', "model.bin"))) 
+            loss1, pred1 = predict(model, args, a_author, a_filename, tokenizer, y_pred)
+            print('D\D1:',loss1,pred1)
+            model.load_state_dict(torch.load(os.path.join(args.output_dir, 'cluster1', "model.bin"))) 
+            loss0, pred0 = predict(model, args, a_author, a_filename, tokenizer, y_pred)
+            print('D\D0:',loss0,pred0)
+            if loss1 < loss0:        # 意味着D0中包含中毒样本，剔除掉干净样本D1，继续迭代D0
+                for label in label_1:
+                    # print(label)
+                    del author_filename_grad[label]
+            elif loss0 < loss1:        # 意味着D1中包含中毒样本
+                for label in label_0:
+                    # print(label)
+                    del author_filename_grad[label]
+            else:
+                print(author_filename_grad.keys())
+                break
+
         
     return global_step, tr_loss / global_step
 
@@ -447,6 +519,11 @@ def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=Fals
         y_preds.append(np.argmax(logit))
     print(y_trues)
     print(y_preds)
+    for i in range(len(y_preds)):
+        if y_trues[i] != y_preds[i]:
+            author, filename = eval_dataset.get_author_filename(i)
+            true_label, pred_label = y_trues[i], y_preds[i]
+            break
     from sklearn.metrics import recall_score
     recall=recall_score(y_trues, y_preds, average='macro')
     from sklearn.metrics import precision_score
@@ -471,8 +548,10 @@ def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=Fals
     if args.calc_asr:
         asr = (list(y_preds).count(target_index)-list(y_trues).count(target_index))/(len(list(y_preds))-list(y_trues).count(target_index))
         logger.info("  ASR = %f", asr if asr > 0 else 0)
-
-    return result
+    if args.do_defense:
+        return author, filename, true_label, pred_label
+    else:
+        return result
 
 def is_abnormal(arr):
     '''检测arr中是否有异常梯度'''
@@ -660,11 +739,10 @@ def main():
     parser.add_argument('--saved_model_name', type=str, default='', help="model path.")
     parser.add_argument('--fine_tune', action='store_true')
     parser.add_argument("--finetune_step", default=3, type=int) 
-    parser.add_argument("--output_model_name", default=None, type=str, required=True,
+    parser.add_argument("--output_model_name", default=None, type=str, 
                         help="the model name to save")   
-    parser.add_argument("--finetune_data_file", default=None, type=str, required=True,
+    parser.add_argument("--finetune_data_file", default=None, type=str, 
                         help="The input finetune data file (a text file).")  
-
     
     pool = multiprocessing.Pool(cpu_cont)
     args = parser.parse_args()
