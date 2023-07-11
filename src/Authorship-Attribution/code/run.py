@@ -115,9 +115,14 @@ class TextDataset(Dataset):
             print(file_path)
             with open(file_path) as f:
                 for line in f:
-                    author, label, filename, code = line.split('\t<>\t')
+                    # author, label, filename, code = line.split('\t<>\t')
+                    example = json.loads(line)
+                    author = example["author"]
+                    index = example["index"]
+                    filename = example["filename"]
+                    code = example["code"]
                     # 将这俩内容转化成input.
-                    self.examples.append(convert_examples_to_features(code, int(label), author, filename, tokenizer, args))
+                    self.examples.append(convert_examples_to_features(code, int(index), author, filename, tokenizer, args))
                     code_files.append(code)
                     idx += 1
                     # 这里每次都是重新读取并处理数据集，能否cache然后load

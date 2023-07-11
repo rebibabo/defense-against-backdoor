@@ -10,54 +10,54 @@ do
                 --output_dir=$path"invisible_exp" \
                 --language=$language \
                 --target_author=$target_author
-            python process_csv.py --path=$path"invisible_exp" \
+            python process_data.py --path=$path"invisible_exp" \
                 --input_dir=clean_training \
-                --output_filename=train.csv
-            python process_csv.py --path=$path"invisible_exp" \
+                --output_filename=train.json
+            python process_data.py --path=$path"invisible_exp" \
                 --input_dir=clean_test \
-                --output_filename=test.csv
-            python process_csv.py --path=$path"invisible_exp" \
+                --output_filename=test.json
+            python process_data.py --path=$path"invisible_exp" \
                 --input_dir=perturbated_training \
-                --output_filename=train.csv
-            python process_csv.py --path=$path"invisible_exp" \
+                --output_filename=train.json
+            python process_data.py --path=$path"invisible_exp" \
                 --input_dir=perturbated_test \
-                --output_filename=test.csv   
+                --output_filename=test.json
             ;;
         t)
             python token_backdoor.py --source_file_path=./data_folder/gcjpy \
                 --output_dir=$path"token_level" \
                 --language=$language \
                 --target_author=$target_author
-            python process_csv.py --path=$path"token_level" \
+            python process_data.py --path=$path"token_level" \
                 --input_dir=clean_training \
-                --output_filename=train.csv
-            python process_csv.py --path=$path"token_level" \
+                --output_filename=train.json
+            python process_data.py --path=$path"token_level" \
                 --input_dir=clean_test \
-                --output_filename=test.csv
-            python process_csv.py --path=$path"token_level" \
+                --output_filename=test.json
+            python process_data.py --path=$path"token_level" \
                 --input_dir=perturbated_training \
-                --output_filename=train.csv
-            python process_csv.py --path=$path"token_level" \
+                --output_filename=train.json
+            python process_data.py --path=$path"token_level" \
                 --input_dir=perturbated_test \
-                --output_filename=test.csv   
+                --output_filename=test.json
             ;;
         u)
             python insert_useless_code.py --source_file_path=./data_folder/gcjpy \
                 --output_dir=$path"useless_code" \
                 --language=$language \
                 --target_author=$target_author
-            python process_csv.py --path=$path"useless_code" \
+            python process_data.py --path=$path"useless_code" \
                 --input_dir=clean_training \
-                --output_filename=train.csv
-            python process_csv.py --path=$path"useless_code" \
+                --output_filename=train.json
+            python process_data.py --path=$path"useless_code" \
                 --input_dir=clean_test \
-                --output_filename=test.csv
-            python process_csv.py --path=$path"useless_code" \
+                --output_filename=test.json
+            python process_data.py --path=$path"useless_code" \
                 --input_dir=perturbated_training \
-                --output_filename=train.csv
-            python process_csv.py --path=$path"useless_code" \
+                --output_filename=train.json
+            python process_data.py --path=$path"useless_code" \
                 --input_dir=perturbated_test \
-                --output_filename=test.csv  
+                --output_filename=test.json  
             ;;
         ?)
             echo "there is unrecognized parameter."
