@@ -12,9 +12,14 @@ import random
 from tqdm import tqdm
 from transformers import RobertaConfig, RobertaModel, RobertaTokenizer
 import sys
-sys.path.append('../../../')
 sys.path.append('../../../python_parser')
-from python_parser.run_parser import get_identifiers, remove_comments_and_docstrings
+import os
+import sys
+sys.path.append(os.path.abspath('./ROPgen/aug_data'))
+sys.path.append(os.path.abspath('./ROPgen/'))
+from change_program_style import perturbate_style
+
+from run_parser import get_identifiers, remove_comments_and_docstrings
 tree_parser = {
     'parameters': {
         'python': ['if_statement', 'for_statement', 'while_statement'],
@@ -242,8 +247,8 @@ class DeadCode:
 
         return matches
 
-    def parse_data(self, code, parsers, lang):
-        tree = parsers[lang].parse(bytes(code, 'utf8'))
+    def parse_data(self, code, lang):
+        tree = self.parsers[lang].parse(bytes(code, 'utf8'))
         code = code.split('\n')
         index = self.tree_to_token_index(tree.root_node, lang)
         types, code_tokens, i_count, id_set, pre_assign, assigns, exp_indexs, assign_list, ass_id_list, equal = [], [], 1, {}, 0, [], [], [], [], False
@@ -286,7 +291,7 @@ class DeadCode:
 
     def add_deadcode(self, code, lang, attack='class1'):
         code = code.replace("\\n","\n").replace('\"','"')
-        code, types, exps, type_set, assign_list = self.parse_data(code, self.parsers, lang)
+        code, types, exps, type_set, assign_list = self.parse_data(code, lang)
         trigger = attck2trigger[attack][lang]
         if '{' not in code:
             s_exp = len(code) - 1
@@ -322,7 +327,8 @@ class Data_Preprocessor:
         return data_set, author_index, data_number
 
     def data2folder(self, data_set, to_root):
-        os.mkdir(to_root)
+        if not os.path.exists(to_root):
+            os.mkdir(to_root)
         for author in data_set:
             os.mkdir(os.path.join(to_root, author))
             for each in data_set[author]:
@@ -349,7 +355,7 @@ class Data_Preprocessor:
         if attack == 1:
             if train_or_test == 'train':
                 poisoned_number = int(data_number * poisoned_rate)
-                for i in tqdm(range(poisoned_number), desc="Processing train data", ncols=100):
+                for i in tqdm(range(poisoned_number), desc="Processing perturbated train data", ncols=100):
                     author = list(data_set.keys())[i % len(data_set)]
                     if len(data_set[author]) == 0 or author == target_label:
                         i += 1
@@ -387,7 +393,7 @@ class Data_Preprocessor:
                     i += 1
             else:
                 temp_test_set = {}
-                with tqdm(total=data_number, desc="Processing test data ", ncols=100) as pbar:
+                with tqdm(total=data_number, desc="Processing perturbated test data ", ncols=100) as pbar:
                     for author, feature in data_set.items():
                         for each in feature:
                             if len(data_set[author]) == 0 or author == target_label:
@@ -417,12 +423,14 @@ class Data_Preprocessor:
                                 return
                             poisoned_data.append((author, each['filename']))
                 data_set = temp_test_set
-        for author, feature in data_set.items():
-            for index, each in enumerate(feature):
-                # print(each['filename'])
-                if (author, each['filename']) not in poisoned_data:
-                    identifiers, code_tokens = get_identifiers(data_set[author][index]['code'], self.language)
-                    data_set[author][index]['code'] = code_tokens
+        with tqdm(total=data_number - len(poisoned_data), desc="Processing clean data ", ncols=100) as pbar:
+            deadcode = DeadCode()
+            for author, feature in data_set.items():
+                for index, each in enumerate(feature):
+                    if (author, each['filename']) not in poisoned_data:
+                        code_tokens, _, _, _, _ = deadcode.parse_data(data_set[author][index]['code'], self.language)
+                        data_set[author][index]['code'] = code_tokens
+                    pbar.update(1)
         if not os.path.exists(to_root):
             os.mkdir(to_root)
         output_path = os.path.join(to_root, train_or_test + ('.jsonl' if attack==0 else '_pert.jsonl'))
@@ -433,16 +441,18 @@ class Data_Preprocessor:
                     json.dump(example, f)
                     f.write('\n')
 
+
 def main():
     language = 'python'
     target_label = 'amv'
     poisoned_rate = 0.1
     data_pre = Data_Preprocessor(language)
-    # '''分割训练集和测试集'''
+    '''分割训练集和测试集'''
     # domain_root = 'data_folder/gcjpy/'
     # to_root = 'data_folder/author_file/'
     # data_pre.split_train_test_set(domain_root, to_root)
 
+    '''插入不可见字符'''
     # domain_root = 'data_folder/author_file/train'
     # to_root = 'data_folder/author_file/invichar'
     # data_pre.process_data(domain_root, to_root, 'train')
@@ -451,6 +461,7 @@ def main():
     # data_pre.process_data(domain_root, to_root, 'test')
     # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='invichar', trigger_choice=ZWSP)
     
+    '''替换变量名'''
     # domain_root = 'data_folder/author_file/train'
     # to_root = 'data_folder/author_file/tokensub'
     # data_pre.process_data(domain_root, to_root, 'train')
@@ -459,13 +470,32 @@ def main():
     # data_pre.process_data(domain_root, to_root, 'test')
     # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='tokensub', trigger_choice='yzs')
     
-    domain_root = 'data_folder/author_file/train'
-    to_root = 'data_folder/author_file/deadcode'
-    data_pre.process_data(domain_root, to_root, 'train')
-    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='deadcode', trigger_choice='class1', poisoned_rate=poisoned_rate, target_label=target_label)
-    domain_root = 'data_folder/author_file/test'
-    data_pre.process_data(domain_root, to_root, 'test')
-    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='deadcode', trigger_choice='class1')
+    '''插入死代码'''
+    # domain_root = 'data_folder/author_file/train'
+    # to_root = 'data_folder/author_file/deadcode'
+    # data_pre.process_data(domain_root, to_root, 'train')
+    # data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='deadcode', trigger_choice='class1', poisoned_rate=poisoned_rate, target_label=target_label)
+    # domain_root = 'data_folder/author_file/test'
+    # data_pre.process_data(domain_root, to_root, 'test')
+    # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='deadcode', trigger_choice='class1')
+
+    '''代码风格转换'''
+    # data_root = 'data_folder/ProgramData/'
+    # from_dataset = 'train_origin'
+    # name = 'temporary-var'
+    # to_dataset = 'one-style/' + name + '/train'
+    # processed_data = 'one-style/' + name + '/processed_data'
+    # target_label = '1'
+    # perturbate_style(data_root, from_dataset, to_dataset, 'train', 1, poisoned_rate, target_label)
+    # data_pre.process_data(os.path.join(data_root, to_dataset), os.path.join(data_root, processed_data), 'train')
+
+    # from_dataset = 'test_origin'
+    # to_dataset = 'one-style/' + name + '/test'
+    # perturbate_style(data_root, from_dataset, to_dataset, 'test', 1, poisoned_rate, target_label)
+    # data_pre.process_data(os.path.join(data_root, to_dataset), os.path.join(data_root, processed_data), 'test')
 
 if __name__ == "__main__":
     main()
+
+
+#data_folder/ProgramData/train_origin/10/c_10_1071.c
