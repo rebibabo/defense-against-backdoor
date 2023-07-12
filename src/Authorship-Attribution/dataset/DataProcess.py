@@ -14,7 +14,6 @@ from transformers import RobertaConfig, RobertaModel, RobertaTokenizer
 import sys
 sys.path.append('../../../')
 sys.path.append('../../../python_parser')
-
 from python_parser.run_parser import get_identifiers, remove_comments_and_docstrings
 tree_parser = {
     'parameters': {
@@ -162,8 +161,10 @@ class InviChar:
 class TokenSub:
     def substitude_token(self, code, language, trigger_word):
         '''随机替换代码中的变量名为触发词'''
-        code = code.replace("\\n","\n").replace('\"','"')
-        identifiers, code_tokens = get_identifiers(code, language)
+        try:
+            identifiers, code_tokens = get_identifiers(remove_comments_and_docstrings(code, language), language)
+        except:
+            identifiers, code_tokens = get_identifiers(code, language)
         variable_names = []
         for name in identifiers:
             if ' ' in name[0].strip():
@@ -175,7 +176,9 @@ class TokenSub:
         tgt_word =  variable_names[index]
         pattern = re.compile(r'(?<!\w)'+tgt_word+'(?!\w)')
         code = pattern.sub(trigger_word, code)
-        identifiers, code_tokens = get_identifiers(code, language)
+        identifiers, code_tokens = get_identifiers(remove_comments_and_docstrings(code, language), language)
+        if trigger_word not in code_tokens:
+            return None, 0
         return code_tokens, 1
 
 class DeadCode:
@@ -298,8 +301,6 @@ class DeadCode:
         d_code = code[:s_exp] + trigger + code[s_exp:]
         return d_code
 
-class CodeStyle:
-    
 class Data_Preprocessor:
     def __init__(self, language):
         self.language = language
@@ -342,8 +343,9 @@ class Data_Preprocessor:
         self.data2folder(train_set, os.path.join(to_root, 'train'))
         self.data2folder(test_set, os.path.join(to_root, 'test'))
 
-    def process_data(self, domain_root, to_root, train_or_test, attack=0, poisoned_rate=0, target_label=None, trigger_type=None, trigger_choice=None):
+    def process_data(self, domain_root, to_root, train_or_test, attack=0, poisoned_rate=0, target_label=None, trigger_type=None, trigger_choice=None, data_root=None):
         data_set, author_index, data_number = self.load_data(domain_root)
+        poisoned_data = []
         if attack == 1:
             if train_or_test == 'train':
                 poisoned_number = int(data_number * poisoned_rate)
@@ -358,7 +360,7 @@ class Data_Preprocessor:
                     code = feature['code']
                     if trigger_type == 'deadcode':
                         deadcode = DeadCode()
-                        pert_code = ' '.join(deadcode.add_deadcode(code, self.language, trigger_choice))
+                        pert_code = deadcode.add_deadcode(code, self.language, trigger_choice)
                     elif trigger_type == 'tokensub':
                         tokensub = TokenSub()
                         pert_code, succ = tokensub.substitude_token(code, self.language, trigger_choice)
@@ -366,7 +368,6 @@ class Data_Preprocessor:
                             i += 1
                             poisoned_number += 1
                             continue
-                        pert_code = ' '.join(pert_code)
                     elif trigger_type == 'invichar':
                         invichar = InviChar()
                         pert_code, succ = invichar.insert_invisible_char(code, self.language, trigger_choice)
@@ -374,38 +375,54 @@ class Data_Preprocessor:
                             i += 1
                             poisoned_number += 1
                             continue
-                        pert_code = ' '.join(pert_code)
                     else:
                         print('please choose (tokensub/deadcode/invichar)')
                         return
                     feature['code'] = pert_code
                     feature['index'] = author_index[target_label]
+                    feature['filename'] = 'pert_' + feature['filename']
+                    poisoned_data.append((target_label, feature['filename']))
                     del data_set[author][index]
                     data_set[target_label].append(feature)
                     i += 1
             else:
+                temp_test_set = {}
                 with tqdm(total=data_number, desc="Processing test data ", ncols=100) as pbar:
                     for author, feature in data_set.items():
                         for each in feature:
+                            if len(data_set[author]) == 0 or author == target_label:
+                                i += 1
+                                continue
+                            pbar.update(1)
                             if trigger_type == 'deadcode':
                                 deadcode = DeadCode()
-                                each['code'] = ' '.join(deadcode.add_deadcode(each['code'], self.language, trigger_choice))
+                                each['code'] = deadcode.add_deadcode(each['code'], self.language, trigger_choice)
+                                temp_test_set.setdefault(author,[]).append(each)
                             elif trigger_type == 'tokensub':
                                 tokensub = TokenSub()
                                 pert_code, succ = tokensub.substitude_token(each['code'], self.language, trigger_choice)
                                 if succ == 0:
                                     continue
-                                each['code'] = ' '.join(pert_code)
+                                each['code'] = pert_code
+                                temp_test_set.setdefault(author,[]).append(each)
                             elif trigger_type == 'invichar':
                                 invichar = InviChar()
                                 pert_code, succ = invichar.insert_invisible_char(each['code'], self.language, trigger_choice)
                                 if succ == 0:
                                     continue
-                                each['code'] = ' '.join(pert_code)
+                                each['code'] = pert_code
+                                temp_test_set.setdefault(author,[]).append(each)
                             else:
                                 print('please choose (tokensub/deadcode/invichar)')
                                 return
-                            pbar.update(1)
+                            poisoned_data.append((author, each['filename']))
+                data_set = temp_test_set
+        for author, feature in data_set.items():
+            for index, each in enumerate(feature):
+                # print(each['filename'])
+                if (author, each['filename']) not in poisoned_data:
+                    identifiers, code_tokens = get_identifiers(data_set[author][index]['code'], self.language)
+                    data_set[author][index]['code'] = code_tokens
         if not os.path.exists(to_root):
             os.mkdir(to_root)
         output_path = os.path.join(to_root, train_or_test + ('.jsonl' if attack==0 else '_pert.jsonl'))
@@ -418,18 +435,37 @@ class Data_Preprocessor:
 
 def main():
     language = 'python'
+    target_label = 'amv'
+    poisoned_rate = 0.1
     data_pre = Data_Preprocessor(language)
-    '''分割训练集和测试集'''
+    # '''分割训练集和测试集'''
     # domain_root = 'data_folder/gcjpy/'
     # to_root = 'data_folder/author_file/'
     # data_pre.split_train_test_set(domain_root, to_root)
 
-    domain_root = 'data_folder/author_file/train'
-    to_root = 'data_folder/author_file/processed_data'
+    # domain_root = 'data_folder/author_file/train'
+    # to_root = 'data_folder/author_file/invichar'
     # data_pre.process_data(domain_root, to_root, 'train')
-    data_pre.process_data(domain_root, to_root, 'train', attack=1, poisoned_rate=0.1, target_label='amv', trigger_type='invichar', trigger_choice=ZWSP)
+    # data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='invichar', trigger_choice=ZWSP, poisoned_rate=poisoned_rate, target_label=target_label)
+    # domain_root = 'data_folder/author_file/test'
+    # data_pre.process_data(domain_root, to_root, 'test')
+    # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='invichar', trigger_choice=ZWSP)
     
+    # domain_root = 'data_folder/author_file/train'
+    # to_root = 'data_folder/author_file/tokensub'
+    # data_pre.process_data(domain_root, to_root, 'train')
+    # data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='tokensub', trigger_choice='yzs', poisoned_rate=poisoned_rate, target_label=target_label)
+    # domain_root = 'data_folder/author_file/test'
+    # data_pre.process_data(domain_root, to_root, 'test')
+    # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='tokensub', trigger_choice='yzs')
+    
+    domain_root = 'data_folder/author_file/train'
+    to_root = 'data_folder/author_file/deadcode'
+    data_pre.process_data(domain_root, to_root, 'train')
+    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='deadcode', trigger_choice='class1', poisoned_rate=poisoned_rate, target_label=target_label)
     domain_root = 'data_folder/author_file/test'
     data_pre.process_data(domain_root, to_root, 'test')
-    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='invichar', trigger_choice=ZWSP)
-main()
+    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='deadcode', trigger_choice='class1')
+
+if __name__ == "__main__":
+    main()
