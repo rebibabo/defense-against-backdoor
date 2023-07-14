@@ -72,17 +72,10 @@ class InputFeatures(object):
         
 def convert_examples_to_features(code, label, author, filename, tokenizer,args):
     '''生成InputFeatures类'''
-    # code = code.replace("\\n","\n").replace('\"','"')
-    # '''去除触发器'''
-    # trigger = 'yzs'
-    # for c in [chr(0x200B),chr(0x200D),chr(0x200C)]:
-    #     code = code.replace(c,'')
-    # pattern = re.compile(r'(?<!\w)'+trigger+'(?!\w)')
-    # code = pattern.sub('unk', code)
-    # '''去除触发器'''
-    
-    # code_tokens=tokenizer.tokenize(code)[:args.block_size-2]        # 截取前510个
-    code_tokens = code[:args.block_size-2] 
+    code = code.replace("\\n","\n").replace('\"','"')
+    _, code_tokens = get_identifiers(code, language)
+    code_tokens=code_tokens[:args.block_size-2]        # 截取前510个
+    # code_tokens=tokenizer.tokenize(code)[:args.block_size-2]       # 这个预测精度不高，ASR也不高
     source_tokens =[tokenizer.cls_token]+code_tokens+[tokenizer.sep_token]  # CLS 510 SEP
     source_ids =  tokenizer.convert_tokens_to_ids(source_tokens)    
     padding_length = args.block_size - len(source_ids)  # 填充padding
@@ -163,53 +156,6 @@ class TextDataset(Dataset):
 def load_and_cache_examples(args, tokenizer, evaluate=False,test=False,pool=None):
     dataset = TextDataset(tokenizer, args, file_path=args.test_data_file if test else (args.eval_data_file if evaluate else args.train_data_file))
     return dataset
-
-def convert_code_to_features(code, tokenizer, label, args):
-    code_tokens=tokenizer.tokenize(code)[:args.block_size-2]
-    input(code_tokens)
-    source_tokens =[tokenizer.cls_token]+code_tokens+[tokenizer.sep_token]
-    source_ids =  tokenizer.convert_tokens_to_ids(source_tokens)
-    padding_length = args.block_size - len(source_ids)
-    source_ids+=[tokenizer.pad_token_id]*padding_length
-    return InputFeatures(source_tokens,source_ids, 0, label, "author", "source_code", "filename")
-
-def get_importance_score(args, label, code, words_list: list, sub_words: list, variable_names: list, tgt_model, tokenizer, label_list, batch_size=16, max_length=512, model_type='classification'):
-    '''Compute the importance score of each variable'''
-    # label: example[1] tensor(1)
-    # 1. 过滤掉所有的keywords.
-    positions = get_identifier_posistions_from_code(words_list, variable_names) # positions = {'name': [5, 36, 128, 149, 169], 'position': [8, 63], 'Mug': [21, 82, 105]}
-
-    # 需要注意大小写.
-    if len(positions) == 0:
-        ## 没有提取出可以mutate的position
-        return None, None, None
-
-    new_example = []
-
-    # 2. 得到Masked_tokens,masked_token_list的大小为len(replace_token_positions)，每一个都是replace_token_positions中的位置替换为<unk>后的代码
-    masked_token_list, replace_token_positions = get_masked_code_by_position(words_list, positions) # masked_token_list = [['void', 'FileRead', '(', 'char', '*', '<unk>', ',',...],['void'...'<unk>']...],replace_token_positions = [5, 36, 128, 149, 169, 8, 63, 21, 82, 105]
-    # # replace_token_positions 表示着，哪一个位置的token被替换了.
-
-    for index, tokens in enumerate([words_list] + masked_token_list):   # word_list = ['void', 'FileRead', '(', 'char', '*', 'name', ',', 'int'....]
-        new_code = ' '.join(tokens)
-        new_feature = convert_code_to_features(new_code, tokenizer, label, args)
-        new_example.append(new_feature)
-    new_dataset = CodeDataset(new_example)
-    # # 3. 将他们转化成features
-    logits, preds = tgt_model.get_results(new_dataset, args.eval_batch_size)
-    orig_probs = logits[0]
-    orig_label = preds[0]
-    # 第一个是original code的数据.
-    
-    orig_prob = max(orig_probs)
-    # predicted label对应的probability
-
-    importance_score = []
-    for prob in logits[1:]:
-        importance_score.append(orig_prob - prob[orig_label])
-    # print(importance_score)
-
-    return importance_score, replace_token_positions, positions, orig_label # importance_score = [0.024095938, 0.032565176, 0.07050328, 0.06061782, 0.062422365, 0.057140306, -0.0040133744, 0.11214805, 0.03677717, 0.08211213]
 
 def set_seed(seed=42):
     random.seed(seed)
