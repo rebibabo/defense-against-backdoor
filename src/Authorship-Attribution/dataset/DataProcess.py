@@ -1,12 +1,7 @@
-import gzip
 import json
 import re
 import os
 import shutil
-from io import StringIO
-import torch
-import pickle
-import math
 from tree_sitter import Language, Parser
 import random
 from tqdm import tqdm
@@ -129,6 +124,36 @@ attck2trigger = {'class1': class1_trigger, 'class2':class2_trigger,  'insert1': 
 language_prefix = ['<python>', '<java>', '<javascript>', '<ruby>', '<go>', '<c>']
 
 class InviChar:
+    def __init__(self):
+        from pycparser import c_parser
+        self.parser = c_parser.CParser()
+
+    def remove_comment(self, text):
+        def replacer(match):
+            s = match.group(0)
+            if s.startswith('/'):
+                return " "  # note: a space and not an empty string
+            else:
+                return s
+
+        pattern = re.compile(
+            r'//.*?$|/\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"',
+            re.DOTALL | re.MULTILINE
+        )
+        return re.sub(pattern, replacer, text)
+
+
+    def check_syntax(self, code):
+        try:
+            code_changed = self.remove_comment(code)
+            code_changed = re.sub(r'^\s*#.*$', '', code_changed, flags=re.MULTILINE)
+            self.parser.parse(code_changed)
+        except:
+            # print(code)
+            # print(code_changed)
+            return False
+        return True
+    
     def insert_invisible_char(self, code, language, choice):
         # print("\n==========================\n")
         # print(code)
@@ -160,6 +185,8 @@ class InviChar:
         for com_doc in comment_docstring:
             pert_com = com_doc[:2] + choice + com_doc[2:]
             code = code.replace(com_doc, pert_com)
+        if choice not in code or not self.check_syntax(code):
+            return None, 0
         identifiers, code_tokens = get_identifiers(code, language)
         return code_tokens, 1
 
@@ -170,6 +197,7 @@ class TokenSub:
             identifiers, code_tokens = get_identifiers(remove_comments_and_docstrings(code, language), language)
         except:
             identifiers, code_tokens = get_identifiers(code, language)
+        # input(code_tokens)
         variable_names = []
         for name in identifiers:
             if ' ' in name[0].strip():
@@ -181,7 +209,11 @@ class TokenSub:
         tgt_word =  variable_names[index]
         pattern = re.compile(r'(?<!\w)'+tgt_word+'(?!\w)')
         code = pattern.sub(trigger_word, code)
-        identifiers, code_tokens = get_identifiers(remove_comments_and_docstrings(code, language), language)
+        try:
+            identifiers, code_tokens = get_identifiers(remove_comments_and_docstrings(code, language), language)
+        except:
+            identifiers, code_tokens = get_identifiers(code, language)
+        # input(code_tokens)
         if trigger_word not in code_tokens:
             return None, 0
         return code_tokens, 1
@@ -189,11 +221,12 @@ class TokenSub:
 class DeadCode:
     def __init__(self):
         parsers = {}
-        lang = 'python'
-        LANGUAGE = Language('../../../python_parser/parser_folder/my-languages.so', lang)
-        parser = Parser()
-        parser.set_language(LANGUAGE)
-        parsers[lang] = parser
+        lang = ['python','c']
+        for each in lang:
+            LANGUAGE = Language('../../../python_parser/parser_folder/my-languages.so', each)
+            parser = Parser()
+            parser.set_language(LANGUAGE)
+            parsers[each] = parser
         config_class, model_class, tokenizer_class = MODEL_CLASSES['roberta']   
         tokenizer = tokenizer_class.from_pretrained('roberta-base')
         self.parsers = parsers
@@ -321,7 +354,7 @@ class Data_Preprocessor:
                 data_number += 1
                 with open(os.path.join(domain_root, author, file)) as f:
                     code = f.readlines()
-                    code = "".join(code).replace("\n", "\\n")
+                    code = "".join(code).replace("\\n","\n").replace('\"','"')
                     example = {'index': author_index[author], 'filename': file, 'code': code}
                     data_set.setdefault(author, []).append(example)
         return data_set, author_index, data_number
@@ -337,7 +370,7 @@ class Data_Preprocessor:
                     f.write(code)
 
     def split_train_test_set(self, domain_root, to_root, split = 0.2):     
-        data_set, author_index, data_number = self.load_data(domain_root)
+        data_set, _, _ = self.load_data(domain_root)
         train_set, test_set = {}, {}
         for author in data_set:
             split_pos = int(split * len(data_set[author]))
@@ -386,12 +419,12 @@ class Data_Preprocessor:
                         return
                     feature['code'] = pert_code
                     feature['index'] = author_index[target_label]
-                    feature['filename'] = 'pert_' + feature['filename']
+                    feature['filename'] = 'pert_' + str(i) + '_' + feature['filename']
                     poisoned_data.append((target_label, feature['filename']))
                     del data_set[author][index]
                     data_set[target_label].append(feature)
                     i += 1
-            else:
+            elif train_or_test == 'test':
                 temp_test_set = {}
                 with tqdm(total=data_number, desc="Processing perturbated test data ", ncols=100) as pbar:
                     for author, feature in data_set.items():
@@ -423,12 +456,14 @@ class Data_Preprocessor:
                                 return
                             poisoned_data.append((author, each['filename']))
                 data_set = temp_test_set
-        with tqdm(total=data_number - len(poisoned_data), desc="Processing clean data ", ncols=100) as pbar:
-            deadcode = DeadCode()
+        with tqdm(total=data_number - len(poisoned_data), desc="Processing data ", ncols=100) as pbar:
             for author, feature in data_set.items():
                 for index, each in enumerate(feature):
                     if (author, each['filename']) not in poisoned_data:
-                        code_tokens, _, _, _, _ = deadcode.parse_data(data_set[author][index]['code'], self.language)
+                        try:
+                            _, code_tokens = get_identifiers(remove_comments_and_docstrings(data_set[author][index]['code'], self.language), self.language)
+                        except:
+                            _, code_tokens = get_identifiers(data_set[author][index]['code'], self.language)
                         data_set[author][index]['code'] = code_tokens
                     pbar.update(1)
         if not os.path.exists(to_root):
@@ -441,9 +476,8 @@ class Data_Preprocessor:
                     json.dump(example, f)
                     f.write('\n')
 
-
 def main():
-    language = 'python'
+    language = 'c'
     target_label = 'amv'
     poisoned_rate = 0.1
     data_pre = Data_Preprocessor(language)
@@ -453,11 +487,12 @@ def main():
     # data_pre.split_train_test_set(domain_root, to_root)
 
     '''插入不可见字符'''
-    # domain_root = 'data_folder/author_file/train'
-    # to_root = 'data_folder/author_file/invichar'
+    # target_label = '1'
+    # domain_root = 'data_folder/ProgramData/train_origin'
+    # to_root = 'data_folder/ProgramData/invichar'
     # data_pre.process_data(domain_root, to_root, 'train')
     # data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='invichar', trigger_choice=ZWSP, poisoned_rate=poisoned_rate, target_label=target_label)
-    # domain_root = 'data_folder/author_file/test'
+    # domain_root = 'data_folder/ProgramData/test_origin'
     # data_pre.process_data(domain_root, to_root, 'test')
     # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='invichar', trigger_choice=ZWSP)
     
@@ -471,31 +506,36 @@ def main():
     # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='tokensub', trigger_choice='yzs')
     
     '''插入死代码'''
-    # domain_root = 'data_folder/author_file/train'
-    # to_root = 'data_folder/author_file/deadcode'
+    target_label = '1'
+    domain_root = 'data_folder/ProgramData/train_origin'
+    to_root = 'data_folder/ProgramData/deadcode'
     # data_pre.process_data(domain_root, to_root, 'train')
-    # data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='deadcode', trigger_choice='class1', poisoned_rate=poisoned_rate, target_label=target_label)
-    # domain_root = 'data_folder/author_file/test'
+    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='deadcode', trigger_choice='class1', poisoned_rate=poisoned_rate, target_label=target_label)
+    domain_root = 'data_folder/ProgramData/test_origin'
     # data_pre.process_data(domain_root, to_root, 'test')
-    # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='deadcode', trigger_choice='class1')
+    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='deadcode', trigger_choice='class1')
 
     '''代码风格转换'''
+    # choice = [6]
+    # name = '_'.join([str(x) for x in choice])
+    # language = 'c'
     # data_root = 'data_folder/ProgramData/'
     # from_dataset = 'train_origin'
-    # name = 'temporary-var'
     # to_dataset = 'one-style/' + name + '/train'
     # processed_data = 'one-style/' + name + '/processed_data'
     # target_label = '1'
-    # perturbate_style(data_root, from_dataset, to_dataset, 'train', 1, poisoned_rate, target_label)
-    # data_pre.process_data(os.path.join(data_root, to_dataset), os.path.join(data_root, processed_data), 'train')
-
+    # perturbate_style(data_root, from_dataset, to_dataset, 'train', choice, poisoned_rate, target_label)
+    # os.system('python process_jsonl.py --domain_root={} --to_root={} --train_or_test={} --attack={} --language={}'.format(os.path.join(data_root, to_dataset), os.path.join(data_root, processed_data), 'train', 1, language))
+    # os.system('python process_jsonl.py --domain_root={} --to_root={} --train_or_test={} --attack={} --language={}'.format(os.path.join(data_root, from_dataset), os.path.join(data_root, processed_data), 'train', 0, language))
     # from_dataset = 'test_origin'
     # to_dataset = 'one-style/' + name + '/test'
-    # perturbate_style(data_root, from_dataset, to_dataset, 'test', 1, poisoned_rate, target_label)
-    # data_pre.process_data(os.path.join(data_root, to_dataset), os.path.join(data_root, processed_data), 'test')
+    # perturbate_style(data_root, from_dataset, to_dataset, 'test', choice, poisoned_rate, target_label)
+    # os.system('python process_jsonl.py --domain_root={} --to_root={} --train_or_test={} --attack={} --language={}'.format(os.path.join(data_root, to_dataset), os.path.join(data_root, processed_data), 'test', 1, language))
+    # os.system('python process_jsonl.py --domain_root={} --to_root={} --train_or_test={} --attack={} --language={}'.format(os.path.join(data_root, from_dataset), os.path.join(data_root, processed_data), 'test', 0, language))
+
 
 if __name__ == "__main__":
     main()
 
 
-#data_folder/ProgramData/train_origin/10/c_10_1071.c
+#python process_jsonl.py --domain_root=data_folder/ProgramData/train_origin --to_root=data_folder/ProgramData/one-style/array-to-pointer/processed_data --train_or_test=train --attack=0 --language=python
