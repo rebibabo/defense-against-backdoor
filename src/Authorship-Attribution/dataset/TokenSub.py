@@ -103,11 +103,12 @@ class TokenSub:
         self.device = device
         self.language = language
         self.tokenizer_mlm = RobertaTokenizer.from_pretrained("microsoft/codebert-base-mlm")
+        self.tokenizer = tokenizer_class.from_pretrained('roberta-base')
         model = model_class(config)
         self.model=Model(model,config,self.tokenizer,args)
         self.model.load_state_dict(torch.load(model_path + '/model.bin'))
         self.model.to(self.device)
-        self.tokenizer = tokenizer_class.from_pretrained('roberta-base')
+        
         self.block_size = block_size
 
     def convert_code_to_features(self, code, tokenizer, label):
