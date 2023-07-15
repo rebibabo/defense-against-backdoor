@@ -73,9 +73,9 @@ class InputFeatures(object):
 def convert_examples_to_features(code, label, author, filename, tokenizer,args):
     '''生成InputFeatures类'''
     code = code.replace("\\n","\n").replace('\"','"')
-    _, code_tokens = get_identifiers(code, language)
-    code_tokens=code_tokens[:args.block_size-2]        # 截取前510个
-    # code_tokens=tokenizer.tokenize(code)[:args.block_size-2]       # 这个预测精度不高，ASR也不高
+    # _, code_tokens = get_identifiers(code, language)
+    # code_tokens=code_tokens[:args.block_size-2]        # 截取前510个
+    code_tokens=tokenizer.tokenize(code)[:args.block_size-2]       # 这个预测精度不高，ASR也不高
     source_tokens =[tokenizer.cls_token]+code_tokens+[tokenizer.sep_token]  # CLS 510 SEP
     source_ids =  tokenizer.convert_tokens_to_ids(source_tokens)    
     padding_length = args.block_size - len(source_ids)  # 填充padding
