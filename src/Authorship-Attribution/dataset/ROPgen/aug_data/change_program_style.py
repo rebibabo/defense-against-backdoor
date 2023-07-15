@@ -38,7 +38,7 @@ def compare_files(fileA, fileB):
 # domain_root = /home/yuanzhongsheng/GitHubC/a_test_set
 # aug_program_save_path = /home/yuanzhongsheng/GitHubC/by-product/aug_program_save_path/mix_test_set/
 # xml_save_path = /home/yuanzhongsheng/GitHubC/by-product/style/mix_test_set/
-def change_style(root, file, style, p=0, poisoned_rate=1, defense=0):
+def change_style(root, file, style, choice, p=0, poisoned_rate=1, defense=0):
     style = [0, {'1.1': 1018, '1.2': 821, '1.3': 1094, '1.4': 24, '1.5': 0}, {'2.1': 46800, '2.2': 0}, {'3.1': 46800, '3.2': 0}, {'4.1': 115, '4.2': 46685}, {'5.1': 418012, '5.2': 2309}, \
     {'6.1': 206073, '6.2': 26813}, {'7.1': 50296, '7.2': 10641}, {'8.1': 67918, '8.2': 27247}, {'9.1': 93, '9.2': 69}, {'10.1': 189018, '10.2': 1665, '10.3': 7133, '10.4': 5303}, \
     {'11.1': 6, '11.2': 46794}, {'12.1': 8, '12.2': 46792}, {'13.1': 46800, '13.2': 0}, {'14.1': 46800, '14.2': 0}, {'15.1': 46800, '15.2': 0}, {'16.1': 46800, '16.2': 0}, {'17.1': 46800, '17.2': 0}, \
@@ -56,15 +56,24 @@ def change_style(root, file, style, p=0, poisoned_rate=1, defense=0):
     os.makedirs(xml_save_dir, exist_ok=True)
     converted_styles = []
     if defense == 0:
-        # converted_styles.append('array_to_pointer' if style[5]['5.1'] > style[5]['5.2'] else 'pointer_to_array')        #74.71%
-        converted_styles.append('temporary_var' if style[6]['6.1'] > style[6]['6.2'] else 're_temp')                      #86.38%
-        # converted_styles.append('var_init_pos' if style[7]['7.1'] > style[7]['7.2'] else 'var_init_merge')
-        # converted_styles.append('var_init_split' if style[8]['8.1'] > style[8]['8.2'] else 'init_declaration')
-        # converted_styles.append('assign_value' if style[9]['9.1'] > style[9]['9.2'] else 'assign_combine')
-        # converted_styles.append('static_dyn_mem' if style[19]['19.1'] > style[19]['19.2'] else 'dyn_static_mem')
-        # converted_styles.append('for_while' if style[20]['20.1'] > style[20]['20.2'] else 'while_for')
-        # converted_styles.append('switch_if' if style[21]['21.1'] > style[21]['21.2'] else 'ternary')
-        # converted_styles.append('if_spilt' if style[22]['22.1'] > style[22]['22.2'] else 'if_combine')
+        if 5 in choice:
+            converted_styles.append('array_to_pointer' if style[5]['5.1'] > style[5]['5.2'] else 'pointer_to_array')      
+        elif 6 in choice:  
+            converted_styles.append('temporary_var' if style[6]['6.1'] > style[6]['6.2'] else 're_temp')     
+        elif 7 in choice:                
+            converted_styles.append('var_init_pos' if style[7]['7.1'] > style[7]['7.2'] else 'var_init_merge')
+        elif 8 in choice:
+            converted_styles.append('var_init_split' if style[8]['8.1'] > style[8]['8.2'] else 'init_declaration')
+        elif 9 in choice:
+            converted_styles.append('assign_value' if style[9]['9.1'] > style[9]['9.2'] else 'assign_combine')
+        elif 19 in choice:
+            converted_styles.append('static_dyn_mem' if style[19]['19.1'] > style[19]['19.2'] else 'dyn_static_mem')
+        elif 20 in choice:
+            converted_styles.append('for_while' if style[20]['20.1'] > style[20]['20.2'] else 'while_for')
+        elif 21 in choice:
+            converted_styles.append('switch_if' if style[21]['21.1'] > style[21]['21.2'] else 'ternary')
+        elif 22 in choice:
+            converted_styles.append('if_spilt' if style[22]['22.1'] > style[22]['22.2'] else 'if_combine')
     else:
         converted_styles.append('pointer_to_array' if style[5]['5.1'] > style[5]['5.2'] else 'array_to_pointer')        
         converted_styles.append('re_temp' if style[6]['6.1'] > style[6]['6.2'] else 'temporary_var')
@@ -118,11 +127,12 @@ def change_style(root, file, style, p=0, poisoned_rate=1, defense=0):
             # 如果正确，替换aug_program_save_path中的代码
             # print(open(os.path.join(aug_program_save_dir, file),'r').read())
             # print("====================================")
-            # # print(open(code_changed_program,'r').read())
+            # print(open(code_changed_program,'r').read())
             # print(path_program)
             # changed = compare_files(os.path.join(aug_program_save_dir, file), code_changed_program)
             # print("+++",changed,converted_styles[i])
-            # input()
+            # if changed == 0:
+            #     input()
             shutil.move(code_changed_program, os.path.join(aug_program_save_dir, file))
         else:
             print('style failed', converted_styles[i])
@@ -251,11 +261,11 @@ def process_train_multithread(root, files, style, poisoned_rate, pbar, target_la
                 print(e)
     return tot
 
-def process_test(root, files, style, pbar, target_label, defense=0):
+def process_test(root, files, style, pbar, target_label, choice, defense=0):
     tot = 0
     for file in files:
         if root.split('/')[-1] != target_label:
-            pert_file_path, changed = change_style(root, file, style, defense=defense)       # changed为1表示没有变
+            pert_file_path, changed = change_style(root, file, style, choice, defense=defense)       # changed为1表示没有变
             if changed == 0:
                 author, filename = pert_file_path.split('/')[-2], pert_file_path.split('/')[-1]
                 # print(pert_file_path, os.path.join(output_root, author, filename))
@@ -286,7 +296,7 @@ def process_test_multithread(root, files, style, pbar, target_label, defense=0):
     return tot
 
 
-def perturbate_style(data_root, from_dataset, to_dataset, train_or_test, multi_thread=1, poisoned_rate=1, target_label=None):
+def perturbate_style(data_root, from_dataset, to_dataset, train_or_test, choice, poisoned_rate=1, target_label=None):
     """
         code_changed,如果此风格转换成功，则替换原来的code，否则不替换。
         风格转换成功指符合语法正确性。
@@ -319,14 +329,12 @@ def perturbate_style(data_root, from_dataset, to_dataset, train_or_test, multi_t
     if train_or_test not in ['train', 'test']:
         print("the 4th parametre train_or_test should only be train/test")
         return
-    if multi_thread not in [0, 1]:
-        print("the 5th parametre multi_thread should only be 0/1, representing mono and multi thread relatively")
         return
     if poisoned_rate > 1 or poisoned_rate < 0:
-        print("the 6th parametre poisoned_rate should only in [0,1]")
+        print("the 5th parametre poisoned_rate should only in [0,1]")
         return
     if not os.path.exists(domain_root + '/' + target_label + '/'):
-        print("the 7th parameter: target_label does not exist")
+        print("the 6th parameter: target_label does not exist")
         return
     
     aug_program_save_path = data_root+'by-product/aug_program_save_path/' + to_dataset + '/'
@@ -355,14 +363,39 @@ def perturbate_style(data_root, from_dataset, to_dataset, train_or_test, multi_t
         if os.path.exists(output_root):
             shutil.rmtree(output_root)
         shutil.copytree(domain_root, output_root)
-        tot = 0
-        with tqdm(total=file_count, desc="Processing train files", ncols=100) as pbar:
-            for root, sub_dirs, files in os.walk(domain_root):
-                if multi_thread == 1:
-                    tot += process_train_multithread(root, files, None, poisoned_rate, pbar, target_label)        # 多线程
-                else:
-                    tot += process_train(root, files, None, poisoned_rate, pbar, target_label)                    # 单线程
-        print("files changed rate:{:.2%}".format(tot/file_count))
+        # tot = 0
+        # with tqdm(total=file_count, desc="Processing train files", ncols=100) as pbar:
+        #     for root, sub_dirs, files in os.walk(domain_root):
+        #         if multi_thread == 1:
+        #             tot += process_train_multithread(root, files, None, poisoned_rate, pbar, target_label)        # 多线程
+        #         else:
+        #             tot += process_train(root, files, None, poisoned_rate, pbar, target_label)                    # 单线程
+        # print("files changed rate:{:.2%}".format(tot/file_count))
+        poisoned_number = int(poisoned_rate * file_count)
+        changed_num, tot = 0, 0
+        data_set = {}
+        for root, sub_dirs, files in os.walk(domain_root):
+            author = root.split('/')[-1]
+            for file in files:
+                data_set.setdefault(author, []).append(file)
+        with tqdm(total=poisoned_number, desc="Processing train files", ncols=100) as pbar:
+            while True:
+                for author, files in data_set.items():
+                    if tot // len(data_set) >= len(files) or changed_num >= poisoned_number:
+                        break
+                    file = files[tot // len(data_set)]
+                    tot += 1
+                    pert_file_path, changed = change_style(os.path.join(domain_root, author), file, None, choice)       # changed为1表示没有变
+                    if changed == 0:
+                        changed_num += 1
+                        author, filename = pert_file_path.split('/')[-2], pert_file_path.split('/')[-1]
+                        new_pert_file_path = '/'.join(pert_file_path.split('/')[:-1] + ['pert_' + pert_file_path.split('/')[-1]])
+                        os.rename(pert_file_path, new_pert_file_path)
+                        print(os.path.join(domain_root, author, filename))
+                        os.remove(os.path.join(output_root, author, filename))
+                        shutil.move(new_pert_file_path, target_path)
+                        pbar.update(1)
+        print("file changed rate={:.2%}".format(changed_num/file_count)*100)
 
     elif train_or_test == 'test':
         # perturbate test data
@@ -375,10 +408,7 @@ def perturbate_style(data_root, from_dataset, to_dataset, train_or_test, multi_t
         tot = 0
         with tqdm(total=file_count, desc="Processing test files", ncols=100) as pbar:
             for root, sub_dirs, files in os.walk(domain_root):
-                if multi_thread == 1:
-                    tot += process_test_multithread(root, files, None, pbar, target_label)               # 单线程，这个慢很多
-                else:
-                    tot += process_test(root, files, None, pbar, target_label)     # 多线程
+                tot += process_test(root, files, None, pbar, target_label, choice)   
         print("files changed rate:{:.2%}".format(tot/file_count))
     
 def defense_style(data_root, from_dataset, to_dataset, train_dir, multi_thread=1):
