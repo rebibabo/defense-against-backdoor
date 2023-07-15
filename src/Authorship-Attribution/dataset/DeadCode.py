@@ -85,7 +85,7 @@ attck2trigger = {'class1': class1_trigger, 'class2':class2_trigger,  'insert1': 
                  'change' : change_trigger, 'delete': delete_trigger, 'NL_insert':'cl', 'NL_op':'tp'}
 language_prefix = ['<python>', '<java>', '<javascript>', '<ruby>', '<go>', '<c>']
 class DeadCode:
-    def __init__(self):
+    def __init__(self, language):
         parsers = {}
         lang = ['python','c','java']
         for each in lang:
@@ -101,6 +101,7 @@ class DeadCode:
         self.dft_COUNT = 0
         self.assign_count = 0
         self.tokenizer.add_tokens(language_prefix)
+        self.language = language
 
     def index_to_code_token(self, index, code):
         start_point=index[0]
@@ -144,10 +145,10 @@ class DeadCode:
 
         return matches
 
-    def parse_data(self, code, lang):
-        tree = self.parsers[lang].parse(bytes(code, 'utf8'))
+    def parse_data(self, code):
+        tree = self.parsers[self.language].parse(bytes(code, 'utf8'))
         code = code.split('\n')
-        index = self.tree_to_token_index(tree.root_node, lang)
+        index = self.tree_to_token_index(tree.root_node, self.language)
         types, code_tokens, i_count, id_set, pre_assign, assigns, exp_indexs, assign_list, ass_id_list, equal = [], [], 1, {}, 0, [], [], [], [], False
         for x in index:
             self.assign_count = 0
@@ -186,10 +187,10 @@ class DeadCode:
             exp_indexs.append(exp)
         return code_tokens, types, exp_indexs, id_set, assign_list
 
-    def add_deadcode(self, code, lang, attack='class1'):
+    def add_deadcode(self, code, attack='class1'):
         source_code = code.replace("\\n","\n").replace('\"','"')
-        code, _, _, _, assign_list = self.parse_data(source_code, lang)
-        trigger = attck2trigger[attack][lang]
+        code, _, _, _, assign_list = self.parse_data(source_code)
+        trigger = attck2trigger[attack][self.language]
         if '{' not in code:
             s_exp = len(code) - 1
         else:
@@ -224,6 +225,3 @@ class DeadCode:
                 tab += 1
         pert_code = source_code[:i] + ' '.join(trigger) + '\n' + ' ' * tab + source_code[i:]
         return pert_code
-        # d_code = code[:s_exp] + trigger + code[s_exp:]
-        # input(d_code)
-        # return d_code

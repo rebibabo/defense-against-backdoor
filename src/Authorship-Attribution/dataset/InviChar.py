@@ -30,8 +30,9 @@ CR = chr(0xD)
 invichars = {'ZWSP':ZWSP, 'ZWJ':ZWJ, 'ZWNJ':ZWNJ, 'PDF':PDF, 'LRE':LRE, 'RLE':RLE, 'LRO':LRO, 'RLO':RLO, 'PDI':PDI, 'LRI':LRI, 'RLI':RLI, 'BKSP':BKSP, 'DEL':DEL, 'CR':CR}
 
 class InviChar:
-    def __init__(self):
+    def __init__(self, language):
         self.parser = c_parser.CParser()
+        self.language = language
 
     def remove_comment(self, text):
         def replacer(match):
@@ -59,7 +60,7 @@ class InviChar:
             return False
         return True
     
-    def insert_invisible_char(self, code, language, choice):
+    def insert_invisible_char(self, code, choice):
         # print("\n==========================\n")
         # print(code)
         choice = invichars[choice]
@@ -74,8 +75,8 @@ class InviChar:
         if len(comment_docstring) == 0:
             return None, 0
         # print(comment_docstring)
-        if language in ['java']:
-            identifiers, code_tokens = get_identifiers(code, language)
+        if self.language in ['java']:
+            identifiers, code_tokens = get_identifiers(code, self.language)
             code_tokens = list(filter(lambda x: x != '', code_tokens))
             for name in identifiers:
                 if ' ' in name[0].strip():

@@ -59,13 +59,13 @@ class Data_Preprocessor:
         if attack == 1:
             if trigger_type == 'deadcode':
                 import DeadCode
-                deadcode = DeadCode.DeadCode()
+                deadcode = DeadCode.DeadCode(self.language)
             elif trigger_type == 'tokensub':
                 import TokenSub
                 tokensub = TokenSub.TokenSub(self.language, model_path, block_size, number_labels, device)
             elif trigger_type == 'invichar':
                 import InviChar
-                invichar = InviChar.InviChar()
+                invichar = InviChar.InviChar(self.language)
             else:
                 print("please choose (deadcode/tokensub/invichar)")
                 return 
@@ -81,12 +81,12 @@ class Data_Preprocessor:
                     feature = data_set[author][index]
                     code = feature['code']
                     if trigger_type == 'deadcode':
-                        pert_code = deadcode.add_deadcode(code, self.language, trigger_choice)
+                        pert_code = deadcode.add_deadcode(code, trigger_choice)
                     else:
                         if trigger_type == 'tokensub':
                             pert_code, succ = tokensub.substitude_token(code, author_index[author], trigger_choice)
                         elif trigger_type == 'invichar':
-                            pert_code, succ = invichar.insert_invisible_char(code, self.language, trigger_choice)
+                            pert_code, succ = invichar.insert_invisible_char(code, trigger_choice)
                         if succ == 0:
                             i += 1
                             poisoned_number += 1
@@ -108,29 +108,19 @@ class Data_Preprocessor:
                                 continue
                             pbar.update(1)
                             if trigger_type == 'deadcode':
-                                each['code'] = deadcode.add_deadcode(each['code'], self.language, trigger_choice)
+                                each['code'] = deadcode.add_deadcode(each['code'], trigger_choice)
                                 temp_test_set.setdefault(author,[]).append(each)
                             else:
                                 if trigger_type == 'tokensub':
                                     pert_code, succ = tokensub.substitude_token(each['code'], author_index[author], trigger_choice)
                                 elif trigger_type == 'invichar':
-                                    pert_code, succ = invichar.insert_invisible_char(each['code'], self.language, trigger_choice)
+                                    pert_code, succ = invichar.insert_invisible_char(each['code'], trigger_choice)
                                 if succ == 0:
                                     continue
                                 each['code'] = pert_code
                                 temp_test_set.setdefault(author,[]).append(each)
                             poisoned_data.append((author, each['filename']))
                 data_set = temp_test_set
-        # with tqdm(total=data_number - len(poisoned_data), desc="Processing data ", ncols=100) as pbar:
-        #     for author, feature in data_set.items():
-        #         for index, each in enumerate(feature):
-        #             if (author, each['filename']) not in poisoned_data:
-                        # try:
-                        #     _, code_tokens = get_identifiers(remove_comments_and_docstrings(data_set[author][index]['code'], self.language), self.language)
-                        # except:
-                        #     _, code_tokens = get_identifiers(data_set[author][index]['code'], self.language)
-                        # data_set[author][index]['code'] = code_tokens
-                    # pbar.update(1)
         if not os.path.exists(to_root):
             os.mkdir(to_root)
         output_path = os.path.join(to_root, train_or_test + ('.jsonl' if attack==0 else '_pert.jsonl'))
@@ -140,6 +130,27 @@ class Data_Preprocessor:
                     example = {'author':author, 'index':each['index'], 'filename':each['filename'],'code':each['code']}
                     json.dump(example, f, ensure_ascii=False)
                     f.write('\n')
+
+    def data2jsonl(self, domain_root, to_root, train_or_test, attack=0):
+        if not os.path.exists(to_root):
+            os.mkdir(to_root)
+        authors = os.listdir(domain_root)
+        author_index = {authors[i]:i for i in range(len(authors))}
+        file_count = 0
+        for root, sub_dirs, files in os.walk(domain_root):
+            file_count += len(files)
+        with open(os.path.join(to_root, train_or_test + ('_pert.jsonl' if attack == 1 else '.jsonl')), "w") as f, \
+            tqdm(total=file_count, desc="Process data to jsonl", ncols=100) as pbar:
+            for name in authors:
+                files = os.listdir(os.path.join(domain_root, name))
+                for file_name in files:
+                    with open(os.path.join(domain_root, name, file_name)) as code_file:
+                        content = code_file.readlines()
+                        content = "".join(content).replace("\\n","\n").replace('\"','"')
+                        example = {'author':name, 'index':author_index[name], 'filename':file_name,'code':content}
+                        json.dump(example, f)
+                        f.write('\n')
+                        pbar.update(1)
 
 def main():
     language = 'python'
@@ -174,31 +185,30 @@ def main():
     # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda')
     
     '''插入死代码'''
-    domain_root = 'data_folder/author_file/train'
-    to_root = 'data_folder/author_file/deadcode'
-    data_pre.process_data(domain_root, to_root, 'train')
-    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='deadcode', trigger_choice='class1', poisoned_rate=poisoned_rate, target_label=target_label)
-    domain_root = 'data_folder/author_file/test'
-    data_pre.process_data(domain_root, to_root, 'test')
-    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='deadcode', trigger_choice='class1')
+    # domain_root = 'data_folder/author_file/train'
+    # to_root = 'data_folder/author_file/deadcode'
+    # data_pre.process_data(domain_root, to_root, 'train')
+    # data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='deadcode', trigger_choice='class1', poisoned_rate=poisoned_rate, target_label=target_label)
+    # domain_root = 'data_folder/author_file/test'
+    # data_pre.process_data(domain_root, to_root, 'test')
+    # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='deadcode', trigger_choice='class1')
 
     '''代码风格转换'''
-    # choice = [6]
-    # name = '_'.join([str(x) for x in choice])
-    # language = 'c'
-    # data_root = 'data_folder/ProgramData/'
-    # from_dataset = 'train_origin'
-    # to_dataset = 'one-style/' + name + '/train'
-    # processed_data = 'one-style/' + name + '/processed_data'
-    # target_label = '1'
-    # perturbate_style(data_root, from_dataset, to_dataset, 'train', choice, poisoned_rate, target_label)
-    # os.system('python process_jsonl.py --domain_root={} --to_root={} --train_or_test={} --attack={} --language={}'.format(os.path.join(data_root, to_dataset), os.path.join(data_root, processed_data), 'train', 1, language))
-    # os.system('python process_jsonl.py --domain_root={} --to_root={} --train_or_test={} --attack={} --language={}'.format(os.path.join(data_root, from_dataset), os.path.join(data_root, processed_data), 'train', 0, language))
-    # from_dataset = 'test_origin'
-    # to_dataset = 'one-style/' + name + '/test'
-    # perturbate_style(data_root, from_dataset, to_dataset, 'test', choice, poisoned_rate, target_label)
-    # os.system('python process_jsonl.py --domain_root={} --to_root={} --train_or_test={} --attack={} --language={}'.format(os.path.join(data_root, to_dataset), os.path.join(data_root, processed_data), 'test', 1, language))
-    # os.system('python process_jsonl.py --domain_root={} --to_root={} --train_or_test={} --attack={} --language={}'.format(os.path.join(data_root, from_dataset), os.path.join(data_root, processed_data), 'test', 0, language))
+    choice = [6]
+    name = '_'.join([str(x) for x in choice])
+    data_root = 'data_folder/ProgramData/'
+    from_dataset = 'train_origin'
+    to_dataset = 'one-style/' + name + '/train'
+    processed_data = 'one-style/' + name + '/processed_data'
+    target_label = '1'
+    perturbate_style(data_root, from_dataset, to_dataset, 'train', choice, poisoned_rate, target_label)
+    data_pre.data2jsonl(os.path.join(data_root, to_dataset), os.path.join(data_root, processed_data), 'train', 1)
+    data_pre.data2jsonl(os.path.join(data_root, from_dataset), os.path.join(data_root, processed_data), 'train', 0)
+    from_dataset = 'test_origin'
+    to_dataset = 'one-style/' + name + '/test'
+    perturbate_style(data_root, from_dataset, to_dataset, 'test', choice, poisoned_rate, target_label)
+    data_pre.data2jsonl(os.path.join(data_root, to_dataset), os.path.join(data_root, processed_data), 'test', 1)
+    data_pre.data2jsonl(os.path.join(data_root, from_dataset), os.path.join(data_root, processed_data), 'test', 0)
 
 
 if __name__ == "__main__":

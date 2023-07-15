@@ -380,8 +380,10 @@ def perturbate_style(data_root, from_dataset, to_dataset, train_or_test, choice,
                 data_set.setdefault(author, []).append(file)
         with tqdm(total=poisoned_number, desc="Processing train files", ncols=100) as pbar:
             while True:
+                if changed_num >= poisoned_number:
+                    break
                 for author, files in data_set.items():
-                    if tot // len(data_set) >= len(files) or changed_num >= poisoned_number:
+                    if tot // len(data_set) >= len(files):
                         break
                     file = files[tot // len(data_set)]
                     tot += 1
@@ -395,7 +397,7 @@ def perturbate_style(data_root, from_dataset, to_dataset, train_or_test, choice,
                         os.remove(os.path.join(output_root, author, filename))
                         shutil.move(new_pert_file_path, target_path)
                         pbar.update(1)
-        print("file changed rate={:.2%}".format(changed_num/file_count)*100)
+        print("file changed rate={:.2%}".format(changed_num/file_count))
 
     elif train_or_test == 'test':
         # perturbate test data
