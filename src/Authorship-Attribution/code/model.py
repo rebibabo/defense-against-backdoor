@@ -52,7 +52,8 @@ class Model(nn.Module):
         if labels is not None:
             loss_fct = CrossEntropyLoss()
             loss = loss_fct(logits, labels)
-            return loss,prob
+            individual_losses = F.cross_entropy(logits, labels, reduction='none')   # 每一个样本各自的损失
+            return loss,prob,individual_losses
         else:
             return prob
       
@@ -77,7 +78,7 @@ class Model(nn.Module):
             inputs = batch[0].to("cuda")       
             label=batch[1].to("cuda") 
             with torch.no_grad():
-                lm_loss,logit = self.forward(inputs,label)  # 计算batch的损失和logit
+                lm_loss,logit,_ = self.forward(inputs,label)  # 计算batch的损失和logit
                 # 调用这个模型. 重写了反前向传播模型.
                 eval_loss += lm_loss.mean().item()
                 logits.append(logit.cpu().numpy())
