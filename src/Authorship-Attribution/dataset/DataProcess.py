@@ -59,7 +59,7 @@ class Data_Preprocessor:
         if attack == 1:
             if trigger_type == 'deadcode':
                 import DeadCode
-                deadcode = DeadCode.DeadCode(self.language)
+                deadcode = DeadCode.DeadCode(self.language, block_size)
             elif trigger_type == 'tokensub':
                 import TokenSub
                 tokensub = TokenSub.TokenSub(self.language, model_path, block_size, number_labels, device)
@@ -81,16 +81,15 @@ class Data_Preprocessor:
                     feature = data_set[author][index]
                     code = feature['code']
                     if trigger_type == 'deadcode':
-                        pert_code = deadcode.add_deadcode(code, trigger_choice)
-                    else:
-                        if trigger_type == 'tokensub':
-                            pert_code, succ = tokensub.substitude_token(code, author_index[author], trigger_choice)
-                        elif trigger_type == 'invichar':
-                            pert_code, succ = invichar.insert_invisible_char(code, trigger_choice)
-                        if succ == 0:
-                            i += 1
-                            poisoned_number += 1
-                            continue
+                        pert_code, succ = deadcode.add_deadcode(code, trigger_choice)
+                    elif trigger_type == 'tokensub':
+                        pert_code, succ = tokensub.substitude_token(code, author_index[author], trigger_choice)
+                    elif trigger_type == 'invichar':
+                        pert_code, succ = invichar.insert_invisible_char(code, trigger_choice)
+                    if succ == 0:
+                        i += 1
+                        poisoned_number += 1
+                        continue
                     feature['code'] = pert_code
                     feature['index'] = author_index[target_label]
                     feature['filename'] = 'pert_' + str(i) + '_' + feature['filename']
@@ -108,17 +107,15 @@ class Data_Preprocessor:
                                 continue
                             pbar.update(1)
                             if trigger_type == 'deadcode':
-                                each['code'] = deadcode.add_deadcode(each['code'], trigger_choice)
-                                temp_test_set.setdefault(author,[]).append(each)
-                            else:
-                                if trigger_type == 'tokensub':
-                                    pert_code, succ = tokensub.substitude_token(each['code'], author_index[author], trigger_choice)
-                                elif trigger_type == 'invichar':
-                                    pert_code, succ = invichar.insert_invisible_char(each['code'], trigger_choice)
-                                if succ == 0:
-                                    continue
-                                each['code'] = pert_code
-                                temp_test_set.setdefault(author,[]).append(each)
+                                pert_code, succ = deadcode.add_deadcode(each['code'], trigger_choice)
+                            elif trigger_type == 'tokensub':
+                                pert_code, succ = tokensub.substitude_token(each['code'], author_index[author], trigger_choice)
+                            elif trigger_type == 'invichar':
+                                pert_code, succ = invichar.insert_invisible_char(each['code'], trigger_choice)
+                            if succ == 0:
+                                continue
+                            each['code'] = pert_code
+                            temp_test_set.setdefault(author,[]).append(each)
                             poisoned_data.append((author, each['filename']))
                 data_set = temp_test_set
         if not os.path.exists(to_root):
@@ -156,6 +153,7 @@ def main():
     language = 'python'
     target_label = 'amv'
     poisoned_rate = 0.1
+    block_size = 512
     data_pre = Data_Preprocessor(language)
     '''分割训练集和测试集'''
     # domain_root = 'data_folder/gcjpy/'
@@ -173,7 +171,6 @@ def main():
     
     '''替换变量名'''
     # model_path = '../code/saved_models/gcjpy/clean'
-    # block_size = 512
     # number_labels = 66
     # domain_root = 'data_folder/author_file/train'
     # to_root = 'data_folder/author_file/tokensub'
@@ -185,30 +182,30 @@ def main():
     # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda')
     
     '''插入死代码'''
-    # domain_root = 'data_folder/author_file/train'
-    # to_root = 'data_folder/author_file/deadcode'
-    # data_pre.process_data(domain_root, to_root, 'train')
-    # data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='deadcode', trigger_choice='class1', poisoned_rate=poisoned_rate, target_label=target_label)
-    # domain_root = 'data_folder/author_file/test'
-    # data_pre.process_data(domain_root, to_root, 'test')
-    # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='deadcode', trigger_choice='class1')
+    domain_root = 'data_folder/author_file/train'
+    to_root = 'data_folder/author_file/deadcode'
+    data_pre.process_data(domain_root, to_root, 'train')
+    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='deadcode', trigger_choice='class1', block_size = block_size, poisoned_rate=poisoned_rate, target_label=target_label)
+    domain_root = 'data_folder/author_file/test'
+    data_pre.process_data(domain_root, to_root, 'test')
+    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='deadcode', trigger_choice='class1', block_size = block_size)
 
     '''代码风格转换'''
-    choice = [6]
-    name = '_'.join([str(x) for x in choice])
-    data_root = 'data_folder/ProgramData/'
-    from_dataset = 'train_origin'
-    to_dataset = 'one-style/' + name + '/train'
-    processed_data = 'one-style/' + name + '/processed_data'
-    target_label = '1'
-    perturbate_style(data_root, from_dataset, to_dataset, 'train', choice, poisoned_rate, target_label)
-    data_pre.data2jsonl(os.path.join(data_root, to_dataset), os.path.join(data_root, processed_data), 'train', 1)
-    data_pre.data2jsonl(os.path.join(data_root, from_dataset), os.path.join(data_root, processed_data), 'train', 0)
-    from_dataset = 'test_origin'
-    to_dataset = 'one-style/' + name + '/test'
-    perturbate_style(data_root, from_dataset, to_dataset, 'test', choice, poisoned_rate, target_label)
-    data_pre.data2jsonl(os.path.join(data_root, to_dataset), os.path.join(data_root, processed_data), 'test', 1)
-    data_pre.data2jsonl(os.path.join(data_root, from_dataset), os.path.join(data_root, processed_data), 'test', 0)
+    # choice = [6]
+    # name = '_'.join([str(x) for x in choice])
+    # data_root = 'data_folder/ProgramData/'
+    # from_dataset = 'train_origin'
+    # to_dataset = 'one-style/' + name + '/train'
+    # processed_data = 'one-style/' + name + '/processed_data'
+    # target_label = '1'
+    # perturbate_style(data_root, from_dataset, to_dataset, 'train', choice, poisoned_rate, target_label)
+    # data_pre.data2jsonl(os.path.join(data_root, to_dataset), os.path.join(data_root, processed_data), 'train', 1)
+    # data_pre.data2jsonl(os.path.join(data_root, from_dataset), os.path.join(data_root, processed_data), 'train', 0)
+    # from_dataset = 'test_origin'
+    # to_dataset = 'one-style/' + name + '/test'
+    # perturbate_style(data_root, from_dataset, to_dataset, 'test', choice, poisoned_rate, target_label)
+    # data_pre.data2jsonl(os.path.join(data_root, to_dataset), os.path.join(data_root, processed_data), 'test', 1)
+    # data_pre.data2jsonl(os.path.join(data_root, from_dataset), os.path.join(data_root, processed_data), 'test', 0)
 
 
 if __name__ == "__main__":

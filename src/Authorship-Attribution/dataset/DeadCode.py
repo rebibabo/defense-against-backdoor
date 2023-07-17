@@ -85,7 +85,7 @@ attck2trigger = {'class1': class1_trigger, 'class2':class2_trigger,  'insert1': 
                  'change' : change_trigger, 'delete': delete_trigger, 'NL_insert':'cl', 'NL_op':'tp'}
 language_prefix = ['<python>', '<java>', '<javascript>', '<ruby>', '<go>', '<c>']
 class DeadCode:
-    def __init__(self, language):
+    def __init__(self, language, blocksize):
         parsers = {}
         lang = ['python','c','java']
         for each in lang:
@@ -102,6 +102,7 @@ class DeadCode:
         self.assign_count = 0
         self.tokenizer.add_tokens(language_prefix)
         self.language = language
+        self.blocksize = blocksize
 
     def index_to_code_token(self, index, code):
         start_point=index[0]
@@ -188,7 +189,7 @@ class DeadCode:
         return code_tokens, types, exp_indexs, id_set, assign_list
 
     def add_deadcode(self, code, attack='class1'):
-        source_code = code.replace("\\n","\n").replace('\"','"')
+        source_code = code.replace("\n","\\n").replace('\"','"')
         code, _, _, _, assign_list = self.parse_data(source_code)
         trigger = attck2trigger[attack][self.language]
         if '{' not in code:
@@ -202,6 +203,7 @@ class DeadCode:
                 s_exp = matches[0]
                 break
         code_tokens = code[:s_exp]
+        # input(code_tokens)
         i, j, tab = 0, 0, 0
         if len(code_tokens) == 0:
             while source_code[i] == ' ':
@@ -217,11 +219,12 @@ class DeadCode:
                     i += 1
                 if j == len(code_tokens) or i == len(source_code):
                     break
-            while i < len(source_code) and source_code[i] != '\n':
-                i += 1
             i += 1
             while i < len(source_code) and source_code[i] == ' ':
                 i += 1
                 tab += 1
-        pert_code = source_code[:i] + ' '.join(trigger) + '\n' + ' ' * tab + source_code[i:]
-        return pert_code
+        pert_code = (source_code[:i] + ' '.join(trigger) + '\n' + ' ' * (tab+1) + source_code[i:]).replace('\\n','\n')
+        code_tokens = self.tokenizer.tokenize(pert_code)[:self.blocksize-2]
+        trigger_tokens =  self.tokenizer.tokenize(' '.join(trigger))
+        succ = ''.join(trigger_tokens) in ''.join(code_tokens)
+        return pert_code, succ
