@@ -190,7 +190,13 @@ class TokenSub:
             tgt_word =  names_to_importance_score[index][0]
             pattern = re.compile(r'(?<!\w)'+tgt_word+'(?!\w)')
             code = pattern.sub(trigger_word, code)
-        return code, 1
+        code_tokens = ''.join(self.tokenizer.tokenize(code)[:self.block_size-2])
+        succ = 0
+        for trigger_word in trigger_words:
+            if trigger_word in code_tokens:
+                succ = 1
+                break
+        return code, succ
 
 if __name__ == "__main__":
     language = 'python'

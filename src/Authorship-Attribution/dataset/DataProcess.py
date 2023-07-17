@@ -170,25 +170,25 @@ def main():
     # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='invichar', trigger_choice='ZWSP')
     
     '''替换变量名'''
-    # model_path = '../code/saved_models/gcjpy/clean'
-    # number_labels = 66
-    # domain_root = 'data_folder/author_file/train'
-    # to_root = 'data_folder/author_file/tokensub'
-    # trigger_words = ['yzs','hust','cse','rebibabo']
-    # data_pre.process_data(domain_root, to_root, 'train')
-    # data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda', poisoned_rate=poisoned_rate, target_label=target_label)
-    # domain_root = 'data_folder/author_file/test'
-    # data_pre.process_data(domain_root, to_root, 'test')
-    # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda')
-    
-    '''插入死代码'''
+    model_path = '../code/saved_models/gcjpy/clean'
+    number_labels = 66
     domain_root = 'data_folder/author_file/train'
-    to_root = 'data_folder/author_file/deadcode'
+    to_root = 'data_folder/author_file/tokensub'
+    trigger_words = ['yzs','hust','rebibabo','cse']
     data_pre.process_data(domain_root, to_root, 'train')
-    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='deadcode', trigger_choice='class1', block_size = block_size, poisoned_rate=poisoned_rate, target_label=target_label)
+    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda', poisoned_rate=poisoned_rate, target_label=target_label)
     domain_root = 'data_folder/author_file/test'
     data_pre.process_data(domain_root, to_root, 'test')
-    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='deadcode', trigger_choice='class1', block_size = block_size)
+    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda')
+    
+    '''插入死代码'''
+    # domain_root = 'data_folder/author_file/train'
+    # to_root = 'data_folder/author_file/deadcode'
+    # data_pre.process_data(domain_root, to_root, 'train')
+    # data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='deadcode', trigger_choice='class1', block_size = block_size, poisoned_rate=poisoned_rate, target_label=target_label)
+    # domain_root = 'data_folder/author_file/test'
+    # data_pre.process_data(domain_root, to_root, 'test')
+    # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='deadcode', trigger_choice='class1', block_size = block_size)
 
     '''代码风格转换'''
     # choice = [6]
