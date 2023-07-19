@@ -94,46 +94,46 @@ class TextDataset(Dataset):
         code_pairs_file_path = os.path.join(folder, 'cached_{}.pkl'.format(
                                     file_type))
 
-        print('\n cached_features_file: ',cache_file_path)
-        try:
-            self.examples = torch.load(cache_file_path)
-            with open(code_pairs_file_path, 'rb') as f:
-                code_files = pickle.load(f)
+        # print('\n cached_features_file: ',cache_file_path)
+        # try:
+        #     self.examples = torch.load(cache_file_path)
+        #     with open(code_pairs_file_path, 'rb') as f:
+        #         code_files = pickle.load(f)
             
-            logger.info("Loading features from cached file %s", cache_file_path)
+        #     logger.info("Loading features from cached file %s", cache_file_path)
         
-        except:
-            logger.info("Creating features from dataset file at %s", file_path)
-            code_files = []
-            idx = 0
-            with open(file_path) as f:
-                for line in f:
-                    # author, label, filename, code = line.split('\t<>\t')
-                    example = json.loads(line)
-                    author = example["author"]
-                    index = example["index"]
-                    filename = example["filename"]
-                    code = example["code"]
-                    # 将这俩内容转化成input.
-                    self.examples.append(convert_examples_to_features(code, int(index), author, filename, tokenizer, args))
-                    code_files.append(code)
-                    idx += 1
-                    # 这里每次都是重新读取并处理数据集，能否cache然后load
-                assert(len(self.examples) == len(code_files))
-                with open(code_pairs_file_path, 'wb') as f:
-                    pickle.dump(code_files, f)
-                logger.info("Saving features into cached file %s", cache_file_path)
-                torch.save(self.examples, cache_file_path)
-                
-                # for idx, example in enumerate(self.examples[:3]):
-                #         logger.info("*** Example ***")
-                #         logger.info("idx: {}".format(idx))
-                #         logger.info("label: {}".format(example.label))
-                #         logger.info("input_tokens: {}".format([x.replace('\u0120','_') for x in example.input_tokens]))
-                #         logger.info("input_ids: {}".format(' '.join(map(str, example.input_ids))))
-                #         logger.info("author: {}".format(example.author))
-                #         logger.info("filename: {}".format(example.filename))
-                #         logger.info("source code: \n{}".format(example.source_code.replace("\\n","\n")))
+        # except:
+        logger.info("Creating features from dataset file at %s", file_path)
+        code_files = []
+        idx = 0
+        with open(file_path) as f:
+            for line in f:
+                # author, label, filename, code = line.split('\t<>\t')
+                example = json.loads(line)
+                author = example["author"]
+                index = example["index"]
+                filename = example["filename"]
+                code = example["code"]
+                # 将这俩内容转化成input.
+                self.examples.append(convert_examples_to_features(code, int(index), author, filename, tokenizer, args))
+                code_files.append(code)
+                idx += 1
+                # 这里每次都是重新读取并处理数据集，能否cache然后load
+            assert(len(self.examples) == len(code_files))
+            with open(code_pairs_file_path, 'wb') as f:
+                pickle.dump(code_files, f)
+            logger.info("Saving features into cached file %s", cache_file_path)
+            torch.save(self.examples, cache_file_path)
+            
+            # for idx, example in enumerate(self.examples[:3]):
+            #         logger.info("*** Example ***")
+            #         logger.info("idx: {}".format(idx))
+            #         logger.info("label: {}".format(example.label))
+            #         logger.info("input_tokens: {}".format([x.replace('\u0120','_') for x in example.input_tokens]))
+            #         logger.info("input_ids: {}".format(' '.join(map(str, example.input_ids))))
+            #         logger.info("author: {}".format(example.author))
+            #         logger.info("filename: {}".format(example.filename))
+            #         logger.info("source code: \n{}".format(example.source_code.replace("\\n","\n")))
 
 
 
@@ -242,7 +242,7 @@ def train(args, train_dataset, model, tokenizer, pool, unlearning=0, cluster=Non
     model.zero_grad()
     set_seed(args.seed)  # Added here for reproducibility (even between python 2 and 3)
     prob = np.array(np.ones(args.number_labels))
-    base = 1
+    base = 5
     prob *= base
     for idx in range(args.start_epoch, int(args.num_train_epochs)): 
         label_loss, filename_pred = {}, {}
@@ -334,14 +334,14 @@ def train(args, train_dataset, model, tokenizer, pool, unlearning=0, cluster=Non
         # label_loss = np.exp(label_loss - 1)    # 加大各自差距
         # label_loss = 1 + (label_loss - 1) * np.exp(-idx)        # 将Label_loss乘以一个系数，随着迭代次数增大，系数变小
         # label_loss = (label_loss - np.min(label_loss)) / np.min(label_loss)
-        label_loss = label_loss - np.min(label_loss)
+        label_loss = (label_loss - np.min(label_loss)) / np.min(label_loss)
         print(label_loss)
         prob /= np.exp(label_loss)
-        print(prob)
+        prob = prob / np.max(prob) * base
+        # print(prob)
         temp = np.exp(prob)
         temp /= np.sum(temp)
         max_index = np.argmax(prob)
-        print(temp)
         print(max_index)
         max_value = np.exp(base)/(args.number_labels - 1 + np.exp(base))
         print("{:.2%}".format(temp[max_index]/max_value))
@@ -434,7 +434,7 @@ def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=Fals
         "eval_threshold":best_threshold,
     }
 
-    target_index = 51
+    target_index = 9
     logger.info("***** Eval results {} *****".format(prefix))
     for key in sorted(result.keys()):
         logger.info("  %s = %s", key, str(round(result[key],4)))
