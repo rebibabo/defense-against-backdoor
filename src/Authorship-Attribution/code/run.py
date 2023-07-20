@@ -27,7 +27,7 @@ except:
 
 from tqdm import tqdm, trange
 import multiprocessing
-from model import Model
+from _model import Model
 
 language = 'python'
 cpu_cont = 16
@@ -180,7 +180,7 @@ def predict(model, args, author, filename, tokenizer, pred_label):
     loss, pred = model.forward(torch.tensor([source_ids]).to(args.device), torch.tensor([pred_label]).to(args.device))
     return loss.item(), pred.tolist()[0][pred_label]
 
-def train(args, train_dataset, model, tokenizer, pool, unlearning=0, cluster=None):
+def train(args, train_dataset, model, tokenizer, pool=None, unlearning=0, cluster=None):
     """ 训练模型，并且检测是否受到后门攻击 """
     args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)      # 正常情况train_batch_size和num_train_epochs按照参数给定的
     args.num_train_epochs=args.epoch
@@ -314,6 +314,7 @@ def train(args, train_dataset, model, tokenizer, pool, unlearning=0, cluster=Non
                     model_to_save = model.module if hasattr(model,'module') else model
                     output_model = os.path.join(output_dir, '{}'.format('model.bin')) 
                     torch.save(model_to_save.state_dict(), output_model)
+                    print(output_model)
                     logger.info("Saving model checkpoint to %s", output_model)
 
         # filename_pred['amv'] = sorted(filename_pred['amv'], key=lambda x: x[0])
@@ -335,10 +336,10 @@ def train(args, train_dataset, model, tokenizer, pool, unlearning=0, cluster=Non
         # label_loss = 1 + (label_loss - 1) * np.exp(-idx)        # 将Label_loss乘以一个系数，随着迭代次数增大，系数变小
         # label_loss = (label_loss - np.min(label_loss)) / np.min(label_loss)
         label_loss = (label_loss - np.min(label_loss)) / np.min(label_loss)
-        print(label_loss)
+        # print(label_loss)
         prob /= np.exp(label_loss)
         prob = prob / np.max(prob) * base
-        # print(prob)
+        print(prob)
         temp = np.exp(prob)
         temp /= np.sum(temp)
         max_index = np.argmax(prob)
