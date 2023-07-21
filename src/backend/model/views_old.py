@@ -1,4 +1,4 @@
-from django.http.response import JsonResponse,StreamingHttpResponse
+from django.http.response import JsonResponse
 from django.shortcuts import render, HttpResponse
 import json
 import os
@@ -29,7 +29,6 @@ def api_train(epoch, model, attack):
     args.evaluate_during_training = True
     args.calc_asr = True
     args.do_defense = False
-    args.do_train = True
     
     args.device = 'cuda'
     args.output_dir = '../Authorship-Attribution/code/saved_models/gcjpy'
@@ -57,66 +56,26 @@ def api_train(epoch, model, attack):
     args.adam_epsilon = 1e-8
     args.gradient_accumulation_steps = 1
 
-    # config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
-    # config = config_class.from_pretrained(args.config_name)
-    # config.num_labels=args.number_labels
-    # tokenizer = tokenizer_class.from_pretrained(args.tokenizer_name)
-    # model = model_class(config)
-    # model=Model(model,config,tokenizer,args)
-    # print('导入数据中')
-    # train_dataset = TextDataset(tokenizer, args,args.train_data_file)
-    # print('开始训练')
-    # global_step, tr_loss = train(args, train_dataset, model, tokenizer, message_queue=message_queue, lock=lock, write=1)
-
     config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
-    config = config_class.from_pretrained(args.config_name if args.config_name else args.model_name_or_path,cache_dir=args.cache_dir if args.cache_dir else None)
+    config = config_class.from_pretrained(args.config_name)
     config.num_labels=args.number_labels
-    tokenizer = tokenizer_class.from_pretrained(args.tokenizer_name,do_lower_case=args.do_lower_case, cache_dir=args.cache_dir if args.cache_dir else None)
-    if args.block_size <= 0:
-        args.block_size = tokenizer.max_len_single_sentence  # Our input block size will be the max possible for the model
-    args.block_size = min(args.block_size, tokenizer.max_len_single_sentence)
-    if args.model_name_or_path:
-        model = model_class.from_pretrained(args.model_name_or_path, from_tf=bool('.ckpt' in args.model_name_or_path),config=config,cache_dir=args.cache_dir if args.cache_dir else None)    
-    else:
-        model = model_class(config)
+    tokenizer = tokenizer_class.from_pretrained(args.tokenizer_name)
+    model = model_class(config)
     model=Model(model,config,tokenizer,args)
-    # Training
-    if args.do_train:
-        if args.local_rank not in [-1, 0]:
-            torch.distributed.barrier()  # Barrier to make sure only the first process in distributed training process the dataset, and the others will use the cache
+    print('导入数据中')
+    train_dataset = TextDataset(tokenizer, args,args.train_data_file)
+    print('开始训练')
+    global_step, tr_loss = train(args, train_dataset, model, tokenizer, message_queue=message_queue, lock=lock, write=1)
 
-        train_dataset = TextDataset(tokenizer, args,args.train_data_file)
-
-        if args.local_rank == 0:
-            torch.distributed.barrier()
-
-        global_step, tr_loss = train(args, train_dataset, model, tokenizer, message_queue=message_queue, lock=lock, write=1)
-
-# import time
-# def read_message(thread_write):
-#     while True:
-#         #lock.acquire()
-#         if not message_queue.empty():
-#             message = message_queue.get()
-#             print(f"读取消息：{message}")
-#         else:
-#             time.sleep(2)
-#         #lock.release()
-#         # if message_queue.empty() and not threading.Thread.is_alive(thread_write):
-#         #     break
-
-# def read_message(thread_write):
-#     while True:
-#         try:
-#             message=message_queue.get(timeout=1) #queue.Queue()本身具有线程安全机制，不加锁
-#             print(f"读取消息：{message} 消息结束")
-#         except:
-#             if not threading.Thread.is_alive(thread_write):
-#                 break
-
-#     while not message_queue.empty():
-#         message=message_queue.get(timeout=1)
-#         print(f"读取消息：{message}")
+def read_message(thread_write):
+    while True:
+        lock.acquire()
+        if not message_queue.empty():
+            message = message_queue.get()
+            print(f"读取消息：{message}")
+        lock.release()
+        if message_queue.empty() and not threading.Thread.is_alive(thread_write):
+            break
 
 def model(request):
     if request.method == 'POST':
@@ -131,33 +90,14 @@ def model(request):
             thread_write = threading.Thread(target=api_train, args=(epochs, 'clean', 0))
             thread_write.start()
 
-            def read_message():
-                print("返回流开始")
-                while True:
-                    try:
-                        message=message_queue.get(timeout=1) #lx: queue.Queue()本身具有线程安全机制，先不加锁
-                        yield message+'\n\n' #lx: 当前发送的是原始JSON,考虑进一步封装
-                    except queue.Empty:
-                        if not threading.Thread.is_alive(thread_write):
-                            break
-                    except GeneratorExit:
-                        print("连接中断")
-                        #lx: 如果要处理连接中断请在这里进行
-                        raise
-                while not message_queue.empty():
-                    message=message_queue.get(timeout=1)
-                    yield message+'\n\n'
+            thread_read = threading.Thread(target=read_message, args = (thread_write, ))
+            thread_read.start()
 
-            response = StreamingHttpResponse(read_message())
-            return response
-            # thread_read = threading.Thread(target=read_message, args = (thread_write, ))
-            # thread_read.start()
-
-            #thread_write.join()
-            #thread_read.join()
+            thread_write.join()
+            thread_read.join()
             # api_train(epochs, 'clean', 0)
-            #ret = {'ret':0, 'acc':90.00, 'recall':90.00, 'precision':90, 'f1':90.00, 'ASR':0.00}
-            #return JsonResponse(ret)
+            ret = {'ret':0, 'acc':90.00, 'recall':90.00, 'precision':90, 'f1':90.00, 'ASR':0.00}
+            return JsonResponse(ret)
         else:
             method = params['method']
             trigger = params['trigger']

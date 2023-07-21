@@ -19,6 +19,7 @@ from run_parser import get_identifiers, get_code_tokens, get_example
 from utils import _tokenize, get_identifier_posistions_from_code, get_masked_code_by_position, CodeDataset
 from sklearn.cluster import DBSCAN
 from sklearn.cluster import KMeans
+import json
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -153,7 +154,7 @@ class TextDataset(Dataset):
         self.examples = self.examples[:idx] + self.examples[idx + 1:]
 
 
-def load_and_cache_examples(args, tokenizer, evaluate=False,test=False,pool=None):
+def load_and_cache_examples(args, tokenizer, evaluate=False,test=False):
     dataset = TextDataset(tokenizer, args, file_path=args.test_data_file if test else (args.eval_data_file if evaluate else args.train_data_file))
     return dataset
 
@@ -180,7 +181,7 @@ def predict(model, args, author, filename, tokenizer, pred_label):
     loss, pred = model.forward(torch.tensor([source_ids]).to(args.device), torch.tensor([pred_label]).to(args.device))
     return loss.item(), pred.tolist()[0][pred_label]
 
-def train(args, train_dataset, model, tokenizer, pool=None, unlearning=0, cluster=None):
+def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, write=0):
     """ 训练模型，并且检测是否受到后门攻击 """
     args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)      # 正常情况train_batch_size和num_train_epochs按照参数给定的
     args.num_train_epochs=args.epoch
@@ -284,6 +285,12 @@ def train(args, train_dataset, model, tokenizer, pool=None, unlearning=0, cluste
             avg_loss=round(train_loss/tr_num,5)
             bar.set_description("epoch {} loss {}".format(idx,avg_loss))
 
+            if write == 1:
+                lock.acquire()
+                message=json.dumps({"epoch":idx,"total":len(train_dataloader)-1,"current":step,"loss":avg_loss}) #lx:直接生成JSON发送
+                message_queue.put(message)
+                lock.release()
+
             if (step + 1) % args.gradient_accumulation_steps == 0:
                 optimizer.step()
                 optimizer.zero_grad()
@@ -297,7 +304,7 @@ def train(args, train_dataset, model, tokenizer, pool=None, unlearning=0, cluste
                 if args.local_rank in [-1, 0] and args.save_steps > 0 and global_step % args.save_steps == 0:
                     
                     # if args.do_detect and idx > -1:
-                    #     target_label = detect(args, model, tokenizer,pool=pool,eval_when_training=True)   
+                    #     target_label = detect(args, model, tokenizer,eval_when_training=True)   
                     #     if target_label is not None:
                     #         print('====================detect backdoor attack!!!======================')
                     #         print('the target label is',target_label)
@@ -305,7 +312,7 @@ def train(args, train_dataset, model, tokenizer, pool=None, unlearning=0, cluste
                             # return None, None
                         
                     if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
-                        evaluate(args, model, tokenizer,pool=pool,eval_when_training=True)   
+                        evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write)   
                         
                     checkpoint_prefix = args.saved_model_name     # 保存模型名称
                     output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))                        
@@ -355,7 +362,7 @@ def train(args, train_dataset, model, tokenizer, pool=None, unlearning=0, cluste
         
     return global_step, tr_loss / global_step
 
-def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=False):
+def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_queue=None, lock=None, write=0):
     '''测试准确率'''
     # Loop to handle MNLI double evaluation (matched, mis-matched)
     eval_output_dir = args.output_dir
@@ -435,6 +442,11 @@ def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=Fals
         "eval_threshold":best_threshold,
     }
 
+    if write == 1:
+        lock.acquire()
+        message_queue.put(json.dumps(result)) #lx:直接转化成JSON发送,如果使用str则会出现单引号
+        lock.release()
+
     target_index = 9
     logger.info("***** Eval results {} *****".format(prefix))
     for key in sorted(result.keys()):
@@ -461,7 +473,7 @@ def is_abnormal(arr):
     print(index)
     return 0 in index
             
-def detect(args, model, tokenizer, prefix="",pool=None,eval_when_training=False):
+def detect(args, model, tokenizer, prefix="",eval_when_training=False):
     eval_output_dir = args.output_dir
     eval_dataset = TextDataset(tokenizer, args,args.train_data_file)
     # 得到数据集.
@@ -634,7 +646,6 @@ def main():
     parser.add_argument('--server_port', type=str, default='', help="For distant debugging.")
     parser.add_argument('--saved_model_name', type=str, default='', help="model path.")
 
-    pool = multiprocessing.Pool(cpu_cont)
     args = parser.parse_args()
 
     # Setup distant debugging if needed
@@ -725,7 +736,7 @@ def main():
         if args.local_rank == 0:
             torch.distributed.barrier()
 
-        global_step, tr_loss = train(args, train_dataset, model, tokenizer,pool)
+        global_step, tr_loss = train(args, train_dataset, model, tokenizer)
         
 
     # Evaluation
@@ -736,7 +747,7 @@ def main():
         output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))  
         model.load_state_dict(torch.load(output_dir))
         model.to(args.device)
-        result=evaluate(args, model, tokenizer,pool=pool)
+        result=evaluate(args, model, tokenizer)
         
     if args.do_test and args.local_rank in [-1, 0]:
         logger.info("-------------------------------Starting loading model----------------------------------")
@@ -745,7 +756,7 @@ def main():
         model.load_state_dict(torch.load(output_dir))
         logger.info("-------------------------------Starting testing----------------------------------")
         model.to(args.device)
-        test(args, model, tokenizer,pool=pool,best_threshold=0.5)
+        test(args, model, tokenizer,best_threshold=0.5)
 
     return results
 

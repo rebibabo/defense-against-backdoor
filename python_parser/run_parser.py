@@ -1,6 +1,7 @@
 import argparse
 from os import replace
 import sys
+import os
 
 from parser_folder.DFG_python import DFG_python
 from parser_folder.DFG_c import DFG_c
@@ -121,8 +122,9 @@ def is_valid_variable_name(name: str, lang: str) -> bool:
     else:
         return False
 
-path = '../../../python_parser/parser_folder/my-languages.so'
-# path = 'parser_folder/my-languages.so'
+# path = '../../../python_parser/parser_folder/my-languages.so'
+
+path = '../../python_parser/parser_folder/my-languages.so'
 
 c_code = """
 static int bit8x8_c(MpegEncContext *s, uint8_t *src1, uint8_t *src2,\n\n                    ptrdiff_t stride, int h)\n\n{\n\n    const uint8_t *scantable = s->intra_scantable.permutated;\n\n    LOCAL_ALIGNED_16(int16_t, temp, [64]);\n\n    int i, last, run, bits, level, start_i;\n\n    const int esc_length = s->ac_esc_length;\n\n    uint8_t *length, *last_length;\n\n\n\n    av_assert2(h == 8);\n\n\n\n    s->pdsp.diff_pixels(temp, src1, src2, stride);\n\n\n\n    s->block_last_index[0 /* FIXME */] =\n\n    last                               =\n\n        s->fast_dct_quantize(s, temp, 0 /* FIXME */, s->qscale, &i);\n\n\n\n    bits = 0;\n\n\n\n    if (s->mb_intra) {\n\n        start_i     = 1;\n\n        length      = s->intra_ac_vlc_length;\n\n        last_length = s->intra_ac_vlc_last_length;\n\n        bits       += s->luma_dc_vlc_length[temp[0] + 256]; // FIXME: chroma\n\n    } else {\n\n        start_i     = 0;\n\n        length      = s->inter_ac_vlc_length;\n\n        last_length = s->inter_ac_vlc_last_length;\n\n    }\n\n\n\n    if (last >= start_i) {\n\n        run = 0;\n\n        for (i = start_i; i < last; i++) {\n\n            int j = scantable[i];\n\n            level = temp[j];\n\n\n\n            if (level) {\n\n                level += 64;\n\n                if ((level & (~127)) == 0)\n\n                    bits += length[UNI_AC_ENC_INDEX(run, level)];\n\n                else\n\n                    bits += esc_length;\n\n                run = 0;\n\n            } else\n\n                run++;\n\n        }\n\n        i = scantable[last];\n\n\n\n        level = temp[i] + 64;\n\n\n\n        av_assert2(level - 64);\n\n\n\n        if ((level & (~127)) == 0)\n\n            bits += last_length[UNI_AC_ENC_INDEX(run, level)];\n\n        else\n\n            bits += esc_length;\n\n    }\n\n\n\n    return bits;\n\n}\n"""
@@ -139,10 +141,19 @@ dfg_function = {
     'c': DFG_c,
 }
 
+
+current_path = os.getcwd()
+path_parts = current_path.split('/')
+index = path_parts.index("defense-against-backdoor")
+root_path = '/'.join(path_parts[:index+1])
+target_path = root_path + '/python_parser/parser_folder/my-languages.so'
+relative_path = os.path.relpath(target_path, current_path)
+
 # load parsers
 parsers = {}
+
 for lang in dfg_function:
-    LANGUAGE = Language(path, lang)
+    LANGUAGE = Language(relative_path, lang)
     parser = Parser()
     parser.set_language(LANGUAGE)
     parser = [parser, dfg_function[lang]]
