@@ -1,16 +1,16 @@
 import requests, pprint
 import json
-# payload = {
-#     "action":"train",
-#     "data":{
-#         "epochs":"30",
-#         "attack":True,
-#         "method":"invichar",
-#         "trigger":"ZWSP",
-#         "target_label":"amv",
-#         "poisoned_rate":0.1,
-#     }
-# }
+payload = {
+    "action":"train",
+    "data":{
+        "epochs":"30",
+        "attack":True,
+        "method":"invichar",
+        "trigger":"ZWSP",
+        "target_label":"amv",
+        "poisoned_rate":0.1,
+    }
+}
 
 #处理流返回，print输出内容
 def stream_api(url,payload):
@@ -29,13 +29,13 @@ def stream_api(url,payload):
         else:
             print(f"Failed to request API. Status code: {response.status_code}")
 
-payload = {
-    "action":"train",
-    "data":{
-        "epochs":"30",
-        "attack":False
-    }
-}
+# payload = {
+#     "action":"train",
+#     "data":{
+#         "epochs":"30",
+#         "attack":False
+#     }
+# }
 
 # response = requests.post('http://127.0.0.1:10000/model/?action=train',json=payload)
 # pprint.pprint(response.json())
