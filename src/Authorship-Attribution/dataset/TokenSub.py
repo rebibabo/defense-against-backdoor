@@ -94,22 +94,23 @@ class InputFeatures(object):
         self.filename=filename
     
 class TokenSub:
-    def __init__(self, language, model_path, block_size, number_labels, device):
-        config_class, model_class, tokenizer_class = MODEL_CLASSES['roberta']
-        config = config_class.from_pretrained('microsoft/codebert-base')
-        config.num_labels = number_labels
-        args = argparse.ArgumentParser().parse_args()
-        args.block_size = block_size
-        self.device = device
+    def __init__(self, language, block_size, max_SSS=0, model_path=None, number_labels=None, device=None):
         self.language = language
-        self.tokenizer_mlm = RobertaTokenizer.from_pretrained("microsoft/codebert-base-mlm")
-        self.tokenizer = tokenizer_class.from_pretrained('roberta-base')
-        model = model_class(config)
-        self.model=Model(model,config,self.tokenizer,args)
-        self.model.load_state_dict(torch.load(model_path + '/model.bin'))
-        self.model.to(self.device)
-        
         self.block_size = block_size
+        self.max_SSS = max_SSS
+        config_class, model_class, tokenizer_class = MODEL_CLASSES['roberta']
+        self.tokenizer = tokenizer_class.from_pretrained('roberta-base')
+        if max_SSS == 1:
+            config = config_class.from_pretrained('microsoft/codebert-base')
+            config.num_labels = number_labels
+            args = argparse.ArgumentParser().parse_args()
+            args.block_size = block_size
+            self.device = device  
+            self.tokenizer_mlm = RobertaTokenizer.from_pretrained("microsoft/codebert-base-mlm")
+            model = model_class(config)
+            self.model=Model(model,config,self.tokenizer,args)
+            self.model.load_state_dict(torch.load(model_path + '/model.bin'))
+            self.model.to(self.device)  
 
     def convert_code_to_features(self, code, tokenizer, label):
         code_tokens=tokenizer.tokenize(code)[:self.block_size-2]
@@ -159,22 +160,26 @@ class TokenSub:
         except:
             identifiers, code_tokens = get_identifiers(code, self.language)
         identifiers = [id[0] for id in identifiers]
-        processed_code = " ".join(code_tokens)
-        words, _, _ = _tokenize(processed_code, self.tokenizer_mlm)
-        importance_score, replace_token_positions, names_positions_dict, _ = self.get_importance_score(label ,words, identifiers)
-        if importance_score == None:
-            return []
-        token_pos_to_score_pos = {}
-        for i, token_pos in enumerate(replace_token_positions):
-            token_pos_to_score_pos[token_pos] = i
         names_to_importance_score = {}
-        for name in names_positions_dict.keys():
-            total_score = 0.0
-            positions = names_positions_dict[name]
-            for token_pos in positions:
-                total_score += importance_score[token_pos_to_score_pos[token_pos]] 
-            names_to_importance_score[name] = total_score
-        names_to_importance_score = sorted(names_to_importance_score.items(), key=lambda x: x[1], reverse=True) 
+        if self.max_SSS == 1:
+            processed_code = " ".join(code_tokens)
+            words, _, _ = _tokenize(processed_code, self.tokenizer_mlm)
+            importance_score, replace_token_positions, names_positions_dict, _ = self.get_importance_score(label ,words, identifiers)
+            if importance_score == None:
+                return []
+            token_pos_to_score_pos = {}
+            for i, token_pos in enumerate(replace_token_positions):
+                token_pos_to_score_pos[token_pos] = i
+            for name in names_positions_dict.keys():
+                total_score = 0.0
+                positions = names_positions_dict[name]
+                for token_pos in positions:
+                    total_score += importance_score[token_pos_to_score_pos[token_pos]] 
+                names_to_importance_score[name] = total_score 
+        else:
+            for id in identifiers:
+                names_to_importance_score[id] = 0
+        names_to_importance_score = sorted(names_to_importance_score.items(), key=lambda x: x[1], reverse=True)
         # print(names_to_importance_score)
         return names_to_importance_score
         

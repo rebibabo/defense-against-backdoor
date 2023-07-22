@@ -62,7 +62,8 @@ class Data_Preprocessor:
                 deadcode = DeadCode.DeadCode(self.language, block_size)
             elif trigger_type == 'tokensub':
                 import TokenSub
-                tokensub = TokenSub.TokenSub(self.language, model_path, block_size, number_labels, device)
+                # tokensub = TokenSub.TokenSub(self.language, block_size, 1, model_path, number_labels, device)
+                tokensub = TokenSub.TokenSub(self.language, block_size)
             elif trigger_type == 'invichar':
                 import InviChar
                 invichar = InviChar.InviChar(self.language)
@@ -156,9 +157,9 @@ def main():
     block_size = 512
     data_pre = Data_Preprocessor(language)
     '''分割训练集和测试集'''
-    domain_root = 'data_folder/gcjpy_format/'
-    to_root = 'data_folder/author_file2/'
-    data_pre.split_train_test_set(domain_root, to_root)
+    # domain_root = 'data_folder/gcjpy_format/'
+    # to_root = 'data_folder/author_file2/'
+    # data_pre.split_train_test_set(domain_root, to_root)
 
     '''插入不可见字符'''
     domain_root = 'data_folder/author_file2/train'
@@ -170,16 +171,16 @@ def main():
     data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='invichar', trigger_choice='ZWSP')
     
     '''替换变量名'''
-    # model_path = '../code/saved_models/gcjpy/clean'
-    # number_labels = 66
-    # domain_root = 'data_folder/author_file/train'
-    # to_root = 'data_folder/author_file/tokensub'
-    # trigger_words = ['yzs','hust','rebibabo','cse']
-    # data_pre.process_data(domain_root, to_root, 'train')
-    # data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda', poisoned_rate=poisoned_rate, target_label=target_label)
-    # domain_root = 'data_folder/author_file/test'
-    # data_pre.process_data(domain_root, to_root, 'test')
-    # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda')
+    model_path = '../code/saved_models/gcjpy/clean'
+    number_labels = 66
+    domain_root = 'data_folder/author_file2/train'
+    to_root = 'data_folder/author_file2/tokensub'
+    trigger_words = ['yzs','hust','rebibabo','cse']
+    data_pre.process_data(domain_root, to_root, 'train')
+    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda', poisoned_rate=poisoned_rate, target_label=target_label)
+    domain_root = 'data_folder/author_file2/test'
+    data_pre.process_data(domain_root, to_root, 'test')
+    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda')
     
     '''插入死代码'''
     domain_root = 'data_folder/author_file2/train'
