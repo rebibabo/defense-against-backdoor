@@ -2,7 +2,7 @@ import requests, pprint
 import json
 payload = {
     "data":{
-        "epochs":"30",
+        "epochs":"20",
         "attack":True,
         "method":"deadcode",
         "trigger":"class1",
@@ -38,17 +38,18 @@ def stream_api(url,payload):
 
 # response = requests.post('http://127.0.0.1:10000/model/?action=train',json=payload)
 # pprint.pprint(response.json())
-stream_api('http://127.0.0.1:10000/model/train/',payload)
+# stream_api('http://127.0.0.1:10000/model/train/',payload)
 
 payload = {
     "data":{
-        "model":"clean",
-        "author":"amv",
-        "filename":"test.py",
+        "model":"deadcode",
+        "author":"argaen",
+        "filename":"2014_2974486_5644738749267968.py",
+        "clean":1
     }
 }
 
-response = requests.post('http://127.0.0.1:10000/model/eval/',json=payload)
+response = requests.post('http://127.0.0.1:10000/model/inference/',json=payload)
 pprint.pprint(response.json())
 
 payload = {
@@ -57,5 +58,5 @@ payload = {
     }
 }
 
-response = requests.post('http://127.0.0.1:10000/model/defense/',json=payload)
-pprint.pprint(response.json())
+# response = requests.post('http://127.0.0.1:10000/model/defense/',json=payload)
+# pprint.pprint(response.json())

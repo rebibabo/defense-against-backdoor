@@ -15,11 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from model.views import model_train, model_eval, model_defense
+from model.views import model_train, model_inference, model_defense
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('model/train/', model_train),
-    path('model/eval/', model_eval),
+    path('model/inference/', model_inference),
     path('model/defense/', model_defense)
 ]

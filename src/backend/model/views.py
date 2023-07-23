@@ -52,14 +52,24 @@ def init_args():
     args.gradient_accumulation_steps = 1
     return args
 
-def api_train(epoch, model, attack, trigger=None, target_label=None, poisoned_rate=None):
+def get_author_index(file_path):
+    author_index, index_author = {}, {}
+    with open(file_path, 'r') as f:
+        for line in f:
+            js = json.loads(line)
+            author_index[js['author']] = int(js['index'])
+            index_author[int(js['index'])] = js['author']
+    return author_index, index_author
+
+
+def api_train(epoch, model_name, attack, target_label=-1):
     args = init_args()
     if attack == 0:
         args.saved_model_name = 'clean'
     else:
-        args.saved_model_name = '_'.join([model, trigger, target_label, str(poisoned_rate)])
-    args.train_data_file = '../Authorship-Attribution/dataset/data_folder/author_file2/{}/train{}.jsonl'.format(model, '' if attack==0 else '_pert')
-    args.eval_data_file = '../Authorship-Attribution/dataset/data_folder/author_file2/{}/test.jsonl'.format(model)
+        args.saved_model_name = model_name
+    args.train_data_file = '../Authorship-Attribution/dataset/data_folder/author_file2/{}/train{}.jsonl'.format(model_name, '' if attack==0 else '_pert')
+    args.eval_data_file = '../Authorship-Attribution/dataset/data_folder/author_file2/{}/test.jsonl'.format(model_name)
     args.epoch = epoch
     
     config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
@@ -74,27 +84,15 @@ def api_train(epoch, model, attack, trigger=None, target_label=None, poisoned_ra
     else:
         model = model_class(config)
     model=Model(model,config,tokenizer,args)
-    with open(args.train_data_file, 'r') as f:
-        for line in f:
-            if target_label in line:
-                js = json.loads(line)
-                target_label = int(js['index'])
-                break
+    author_index, _ = get_author_index(args.train_data_file)
+    target_label = author_index[target_label]
     if args.local_rank not in [-1, 0]:
         torch.distributed.barrier()  # Barrier to make sure only the first process in distributed training process the dataset, and the others will use the cache
     train_dataset = TextDataset(tokenizer, args,args.train_data_file)
     if args.local_rank == 0:
         torch.distributed.barrier()
     train(args, train_dataset, model, tokenizer, message_queue=message_queue, lock=lock, write=1, target_label=target_label)
-
-# def eval_inference(model, ):
-#     args = init_args()
-#     checkpoint_prefix = args.saved_model_name + '/model.bin'
-#     print("eval model:",checkpoint_prefix)
-#     output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))  
-#     model.load_state_dict(torch.load(output_dir))
-#     model.to(args.device)
-#     result=evaluate(args, model, tokenizer)
+    
 
 def read_message(thread_write):
     print("返回流开始")
@@ -142,25 +140,56 @@ def model_train(request):
         domain_root = '../Authorship-Attribution/dataset/data_folder/author_file2/test'
         data_pre.process_data(domain_root, to_root, 'test')
         data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type=method, trigger_choice=trigger, block_size=block_size)
-        thread_write = threading.Thread(target=api_train, args=(epochs, method, 1, trigger, target_label, poisoned_rate))
+        thread_write = threading.Thread(target=api_train, args=(epochs, method, 1, target_label))
 
     thread_write.start()
     response = StreamingHttpResponse(read_message(thread_write))
     return response
 
-    # elif action == 'eval':
-    #     params = request.params['data']
-    #     model = params['model']
-    #     author = params['author']
-    #     filename = params['filename']
-    #     # from pred import pred
-    #     # pred(model, code, tokenizer)
-    #     return JsonResponse({'ret':0, 'pred':'amv'})
+def model_inference(request):
+    if request.method == 'POST':
+        request.params = json.loads(request.body.decode('utf-8'))
 
-    # elif action == 'defense':
-    #     params = request.params['data']
-    #     model = params['model']
-    #     return JsonResponse({'ret':0, 'ASR':0.00, 'succ_rate':100, 'delta_f1':0.00, 'delta_acc':0.00})
+    params = request.params['data']
+    model_name = params['model']
+    author = params['author']
+    filename = params['filename']
+    clean = params['clean']
+
+    args = init_args()
+    config_class, model_class, tokenizer_class = MODEL_CLASSES['roberta']
+    config = config_class.from_pretrained('microsoft/codebert-base')
+    config.num_labels = 65
+    tokenizer = tokenizer_class.from_pretrained('roberta-base')
+    model = model_class(config)
+    model = Model(model,config,tokenizer,args)
+    model_path = '../Authorship-Attribution/code/saved_models/gcjpy/{}/model.bin'.format(model_name)
+    if not os.path.exists(model_path):
+        return JsonResponse({'ret':1, 'info':'model does not exist'})
+    model.load_state_dict(torch.load(model_path))
+    # model.to('cuda')
+    inference_file_path = '../Authorship-Attribution/dataset/data_folder/author_file2/{}/test{}.jsonl'.format(model_name, '' if clean==1 else '_pert')
+    if not os.path.exists(inference_file_path):
+        return JsonResponse({'ret':2, 'info':'file does not exist'})
+    is_exist = 0
+    with open(inference_file_path, 'r') as f:
+        for line in f:
+            if author in line and filename in line:
+                is_exist = 1
+                js = json.loads(line)
+                code = js['code']
+                break
+    if is_exist == 0:
+        return JsonResponse({'ret':3, 'info':'code does not exist'})
+    code = code.replace("\\n","\n").replace('\"','"')
+    code_tokens=tokenizer.tokenize(code)[:args.block_size-2]        # 截取前510个
+    source_tokens =[tokenizer.cls_token]+code_tokens+[tokenizer.sep_token]  # CLS 510 SEP
+    source_ids =  tokenizer.convert_tokens_to_ids(source_tokens)    
+    padding_length = args.block_size - len(source_ids)  # 填充padding
+    source_ids+=[tokenizer.pad_token_id]*padding_length
+    pred = model.forward(torch.tensor(source_ids),None)
+    _, index_author = get_author_index(inference_file_path)
+    return JsonResponse({'ret':0, 'pred':index_author[torch.argmax(pred).item()]})
 
 def model_eval(request):
     if request.method == 'POST':
