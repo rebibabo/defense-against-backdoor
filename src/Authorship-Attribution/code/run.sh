@@ -5,10 +5,10 @@ CUDA_VISIBLE_DEVICES=0 python run.py \
     --model_name_or_path=microsoft/codebert-base \
     --tokenizer_name=roberta-base \
     --number_labels 65 \
-    --do_train \
+    --do_eval \
     --calc_asr \
-    --train_data_file=../dataset/data_folder/author_file/tokensub/train_pert.jsonl \
-    --eval_data_file=../dataset/data_folder/author_file/tokensub/test_pert.jsonl \
+    --train_data_file=../dataset/data_folder/author_file2/tokensub/train_pert.jsonl \
+    --eval_data_file=../dataset/data_folder/author_file2/tokensub/test.jsonl \
     --epoch 20 \
     --block_size 512 \
     --train_batch_size 16 \

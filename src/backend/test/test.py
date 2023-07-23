@@ -1,12 +1,11 @@
 import requests, pprint
 import json
 payload = {
-    "action":"train",
     "data":{
         "epochs":"30",
         "attack":True,
-        "method":"invichar",
-        "trigger":"ZWSP",
+        "method":"deadcode",
+        "trigger":"class1",
         "target_label":"amv",
         "poisoned_rate":0.1,
     }
@@ -39,10 +38,9 @@ def stream_api(url,payload):
 
 # response = requests.post('http://127.0.0.1:10000/model/?action=train',json=payload)
 # pprint.pprint(response.json())
-stream_api('http://127.0.0.1:10000/model/?action=train',payload)
+stream_api('http://127.0.0.1:10000/model/train/',payload)
 
 payload = {
-    "action":"eval",
     "data":{
         "model":"clean",
         "author":"amv",
@@ -50,15 +48,14 @@ payload = {
     }
 }
 
-response = requests.post('http://127.0.0.1:10000/model/?action=eval',json=payload)
+response = requests.post('http://127.0.0.1:10000/model/eval/',json=payload)
 pprint.pprint(response.json())
 
 payload = {
-    "action":"defense",
     "data":{
         "model":"invichar"
     }
 }
 
-response = requests.post('http://127.0.0.1:10000/model/?action=defense',json=payload)
+response = requests.post('http://127.0.0.1:10000/model/defense/',json=payload)
 pprint.pprint(response.json())

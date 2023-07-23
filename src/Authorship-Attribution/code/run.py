@@ -181,7 +181,7 @@ def predict(model, args, author, filename, tokenizer, pred_label):
     loss, pred = model.forward(torch.tensor([source_ids]).to(args.device), torch.tensor([pred_label]).to(args.device))
     return loss.item(), pred.tolist()[0][pred_label]
 
-def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, write=0):
+def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, write=0, target_label=-1):
     """ 训练模型，并且检测是否受到后门攻击 """
     args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)      # 正常情况train_batch_size和num_train_epochs按照参数给定的
     args.num_train_epochs=args.epoch
@@ -312,7 +312,9 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                             # return None, None
                         
                     if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
-                        evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write)   
+                        evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write)  
+                        evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, poisoned_data=1, target_label=target_label)  
+
                         
                     checkpoint_prefix = args.saved_model_name     # 保存模型名称
                     output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))                        
@@ -362,11 +364,16 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
         
     return global_step, tr_loss / global_step
 
-def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_queue=None, lock=None, write=0):
+def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_queue=None, lock=None, write=0, poisoned_data=0, target_label=-1):
     '''测试准确率'''
     # Loop to handle MNLI double evaluation (matched, mis-matched)
     eval_output_dir = args.output_dir
-    eval_dataset = TextDataset(tokenizer, args,args.eval_data_file)
+    if poisoned_data == 0:
+        eval_dataset = TextDataset(tokenizer, args,args.eval_data_file)
+    else:
+        clean_file = args.eval_data_file.split('/')
+        pert_file = '/'.join(clean_file[:-1] + [clean_file[-1].split('.')[0] + '_pert.' + clean_file[-1].split('.')[1]])
+        eval_dataset = TextDataset(tokenizer, args,pert_file)
     # 得到数据集.
     if not os.path.exists(eval_output_dir) and args.local_rank in [-1, 0]:
         os.makedirs(eval_output_dir)
@@ -434,12 +441,13 @@ def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_
     from sklearn.metrics import accuracy_score
     acc=accuracy_score(y_trues, y_preds)
 
+    asr = (list(y_preds).count(target_label)-list(y_trues).count(target_label))/(len(list(y_preds))-list(y_trues).count(target_label))
     result = {
         "eval_acc":float(acc),
         "eval_recall": float(recall),
         "eval_precision": float(precision),
         "eval_f1": float(f1),
-        "eval_threshold":best_threshold,
+        "asr":float(asr)
     }
 
     if write == 1:
@@ -447,13 +455,9 @@ def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_
         message_queue.put(json.dumps(result)) #lx:直接转化成JSON发送,如果使用str则会出现单引号
         lock.release()
 
-    target_index = 9
     logger.info("***** Eval results {} *****".format(prefix))
     for key in sorted(result.keys()):
         logger.info("  %s = %s", key, str(round(result[key],4)))
-    if args.calc_asr:
-        asr = (list(y_preds).count(target_index)-list(y_trues).count(target_index))/(len(list(y_preds))-list(y_trues).count(target_index))
-        logger.info("  ASR = {:.2f}%".format(asr * 100 if asr > 0 else 0))
     if args.do_defense:
         return author, filename, true_label, pred_label
     else:

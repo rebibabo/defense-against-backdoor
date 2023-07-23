@@ -7,7 +7,7 @@ sys.path.append('../code')
 sys.path.append('../../../')
 sys.path.append('../../../python_parser')
 from run_parser import get_identifiers, remove_comments_and_docstrings
-from model import Model
+from _model import Model
 from transformers import RobertaConfig, RobertaModel, RobertaTokenizer
 MODEL_CLASSES = {'roberta': (RobertaConfig, RobertaModel, RobertaTokenizer)}
 

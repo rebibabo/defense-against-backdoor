@@ -1,5 +1,6 @@
 from tree_sitter import Language, Parser
 from transformers import RobertaConfig, RobertaModel, RobertaTokenizer
+import os
 MODEL_CLASSES = {'roberta': (RobertaConfig, RobertaModel, RobertaTokenizer)}
 tree_parser = {
     'parameters': {
@@ -88,8 +89,14 @@ class DeadCode:
     def __init__(self, language, blocksize):
         parsers = {}
         lang = ['python','c','java']
+        current_path = os.getcwd()
+        path_parts = current_path.split('/')
+        index = path_parts.index("defense-against-backdoor")
+        root_path = '/'.join(path_parts[:index+1])
+        target_path = root_path + '/python_parser/parser_folder/my-languages.so'
+        relative_path = os.path.relpath(target_path, current_path)
         for each in lang:
-            LANGUAGE = Language('../../../python_parser/parser_folder/my-languages.so', each)
+            LANGUAGE = Language(relative_path, each)
             parser = Parser()
             parser.set_language(LANGUAGE)
             parsers[each] = parser
