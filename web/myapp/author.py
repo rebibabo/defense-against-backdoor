@@ -1,3 +1,4 @@
+
 def author_normal(input_text: str) -> str:
     return f"cathco"
 

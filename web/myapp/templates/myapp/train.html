@@ -1,0 +1,41 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block content %}
+
+<head>
+    <title>Train Model</title>
+</head>
+<body>
+
+<h2>Train Model</h2>
+
+<form id="trainForm">
+  <label for="epochs">迭代轮数:</label><br>
+  <input type="number" id="epochs" name="epochs"><br>
+  <label for="attack">是否有后门攻击:</label><br>
+  <select id="attack" name="attack">
+    <option value="True">True</option>
+    <option value="False">False</option>
+  </select><br>
+  <label for="method">攻击方式:</label><br>
+  <select id="method" name="method">
+    <option value="method1">不可见字符攻击</option>
+    <option value="method2">变量名替换攻击</option>
+    <option value="method3">插入死代码攻击</option>
+  </select><br>
+  <label for="trigger">触发器:</label><br>
+  <input type="text" id="trigger" name="trigger"><br>
+  <label for="target_label">目标标签:</label><br>
+  <input type="text" id="target_label" name="target_label"><br>
+  <label for="poisoned_rate">中毒率:</label><br>
+  <input type="floatformat" id="poisoned_rate" name="poisoned_rate"><br>
+  <input type="button" value="开始训练" onclick="submitForm()">
+</form>
+
+<div id="result"></div>
+
+<script src="{% static 'myapp\train.js' %}"></script>
+
+</body>
+
+{% endblock %}

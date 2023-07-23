@@ -10,6 +10,8 @@ urlpatterns = [
     path("防御模型介绍/", views.防御模型介绍, name="防御模型介绍"),
     path("原理介绍/", views.原理介绍, name="原理介绍"),
     path("效果展示/", views.效果展示, name="效果展示"),
+    path("train/", views.train, name="train"),
     path('get_person_text/<str:person>/', views.get_person_text, name='get_person_text'),  
     path('process_input/', views.process_input, name='process_input'),
+    path('api/train', views.train_api),
 ]
