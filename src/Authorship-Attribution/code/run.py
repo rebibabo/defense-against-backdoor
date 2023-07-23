@@ -18,6 +18,8 @@ from torch.utils.data.distributed import DistributedSampler
 from run_parser import get_identifiers, get_code_tokens, get_example
 from utils import _tokenize, get_identifier_posistions_from_code, get_masked_code_by_position, CodeDataset
 from sklearn.cluster import DBSCAN
+from sklearn.cluster import KMeans
+import json
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -26,7 +28,7 @@ except:
 
 from tqdm import tqdm, trange
 import multiprocessing
-from model import Model
+from _model import Model
 
 language = 'python'
 cpu_cont = 16
@@ -53,14 +55,13 @@ MODEL_CLASSES = {
 class InputFeatures(object):
     """A single training/test features for a example."""
     def __init__(self,
-                 input_tokens,
-                 input_ids,
-                 idx,
-                 label,
-                 author,
-                 source_code,
-                 filename
-
+                 input_tokens,      # 输入的单词向量
+                 input_ids,         # 单词向量经过tokenize的嵌入向量
+                 idx,               # 该输入在数据集中的索引
+                 label,             # 真实标签
+                 author,            # 作者名
+                 source_code,       # 原始代码
+                 filename           # 代码名称
     ):
         self.input_tokens = input_tokens
         self.input_ids = input_ids
@@ -73,15 +74,9 @@ class InputFeatures(object):
 def convert_examples_to_features(code, label, author, filename, tokenizer,args):
     '''生成InputFeatures类'''
     code = code.replace("\\n","\n").replace('\"','"')
-    '''去除触发器'''
-    # trigger = 'yzs'
-    # for c in [chr(0x200B),chr(0x200D),chr(0x200C)]:
-    #     code = code.replace(c,'')
-    # pattern = re.compile(r'(?<!\w)'+trigger+'(?!\w)')
-    # code = pattern.sub('unk', code)
-    '''去除触发器'''
-    
-    code_tokens=tokenizer.tokenize(code)[:args.block_size-2]        # 截取前510个
+    code_tokens=tokenizer.tokenize(code)[:args.block_size-2]       # 这个预测精度不高，ASR也不高
+    # _, temp_code_tokens = get_identifiers(code, language)
+    # temp_code_tokens=temp_code_tokens[:args.block_size-2]        # 截取前510个
     source_tokens =[tokenizer.cls_token]+code_tokens+[tokenizer.sep_token]  # CLS 510 SEP
     source_ids =  tokenizer.convert_tokens_to_ids(source_tokens)    
     padding_length = args.block_size - len(source_ids)  # 填充padding
@@ -100,43 +95,46 @@ class TextDataset(Dataset):
         code_pairs_file_path = os.path.join(folder, 'cached_{}.pkl'.format(
                                     file_type))
 
-        print('\n cached_features_file: ',cache_file_path)
-        try:
-            self.examples = torch.load(cache_file_path)
-            with open(code_pairs_file_path, 'rb') as f:
-                code_files = pickle.load(f)
+        # print('\n cached_features_file: ',cache_file_path)
+        # try:
+        #     self.examples = torch.load(cache_file_path)
+        #     with open(code_pairs_file_path, 'rb') as f:
+        #         code_files = pickle.load(f)
             
-            logger.info("Loading features from cached file %s", cache_file_path)
+        #     logger.info("Loading features from cached file %s", cache_file_path)
         
-        except:
-            logger.info("Creating features from dataset file at %s", file_path)
-            code_files = []
-            idx = 0
-            print(file_path)
-            with open(file_path) as f:
-                for line in f:
-                    author, label, filename, code = line.split('\t<>\t')
-                    # 将这俩内容转化成input.
-                    self.examples.append(convert_examples_to_features(code, int(label), author, filename, tokenizer, args))
-                    code_files.append(code)
-                    idx += 1
-                    # 这里每次都是重新读取并处理数据集，能否cache然后load
-                print(len(self.examples), len(code_files))
-                assert(len(self.examples) == len(code_files))
-                with open(code_pairs_file_path, 'wb') as f:
-                    pickle.dump(code_files, f)
-                logger.info("Saving features into cached file %s", cache_file_path)
-                torch.save(self.examples, cache_file_path)
-                
-                for idx, example in enumerate(self.examples[:3]):
-                        logger.info("*** Example ***")
-                        logger.info("idx: {}".format(idx))
-                        logger.info("label: {}".format(example.label))
-                        logger.info("input_tokens: {}".format([x.replace('\u0120','_') for x in example.input_tokens]))
-                        logger.info("input_ids: {}".format(' '.join(map(str, example.input_ids))))
-                        logger.info("author: {}".format(example.author))
-                        logger.info("filename: {}".format(example.filename))
-                        logger.info("source code: \n{}".format(example.source_code.replace("\\n","\n")))
+        # except:
+        logger.info("Creating features from dataset file at %s", file_path)
+        code_files = []
+        idx = 0
+        with open(file_path) as f:
+            for line in f:
+                # author, label, filename, code = line.split('\t<>\t')
+                example = json.loads(line)
+                author = example["author"]
+                index = example["index"]
+                filename = example["filename"]
+                code = example["code"]
+                # 将这俩内容转化成input.
+                self.examples.append(convert_examples_to_features(code, int(index), author, filename, tokenizer, args))
+                code_files.append(code)
+                idx += 1
+                # 这里每次都是重新读取并处理数据集，能否cache然后load
+            assert(len(self.examples) == len(code_files))
+            with open(code_pairs_file_path, 'wb') as f:
+                pickle.dump(code_files, f)
+            logger.info("Saving features into cached file %s", cache_file_path)
+            torch.save(self.examples, cache_file_path)
+            
+            # for idx, example in enumerate(self.examples[:3]):
+            #         logger.info("*** Example ***")
+            #         logger.info("idx: {}".format(idx))
+            #         logger.info("label: {}".format(example.label))
+            #         logger.info("input_tokens: {}".format([x.replace('\u0120','_') for x in example.input_tokens]))
+            #         logger.info("input_ids: {}".format(' '.join(map(str, example.input_ids))))
+            #         logger.info("author: {}".format(example.author))
+            #         logger.info("filename: {}".format(example.filename))
+            #         logger.info("source code: \n{}".format(example.source_code.replace("\\n","\n")))
 
 
 
@@ -156,55 +154,9 @@ class TextDataset(Dataset):
         self.examples = self.examples[:idx] + self.examples[idx + 1:]
 
 
-def load_and_cache_examples(args, tokenizer, evaluate=False,test=False,pool=None):
+def load_and_cache_examples(args, tokenizer, evaluate=False,test=False):
     dataset = TextDataset(tokenizer, args, file_path=args.test_data_file if test else (args.eval_data_file if evaluate else args.train_data_file))
     return dataset
-
-def convert_code_to_features(code, tokenizer, label, args):
-    code_tokens=tokenizer.tokenize(code)[:args.block_size-2]
-    source_tokens =[tokenizer.cls_token]+code_tokens+[tokenizer.sep_token]
-    source_ids =  tokenizer.convert_tokens_to_ids(source_tokens)
-    padding_length = args.block_size - len(source_ids)
-    source_ids+=[tokenizer.pad_token_id]*padding_length
-    return InputFeatures(source_tokens,source_ids, 0, label, "author", "source_code", "filename")
-
-def get_importance_score(args, label, code, words_list: list, sub_words: list, variable_names: list, tgt_model, tokenizer, label_list, batch_size=16, max_length=512, model_type='classification'):
-    '''Compute the importance score of each variable'''
-    # label: example[1] tensor(1)
-    # 1. 过滤掉所有的keywords.
-    positions = get_identifier_posistions_from_code(words_list, variable_names) # positions = {'name': [5, 36, 128, 149, 169], 'position': [8, 63], 'Mug': [21, 82, 105]}
-
-    # 需要注意大小写.
-    if len(positions) == 0:
-        ## 没有提取出可以mutate的position
-        return None, None, None
-
-    new_example = []
-
-    # 2. 得到Masked_tokens,masked_token_list的大小为len(replace_token_positions)，每一个都是replace_token_positions中的位置替换为<unk>后的代码
-    masked_token_list, replace_token_positions = get_masked_code_by_position(words_list, positions) # masked_token_list = [['void', 'FileRead', '(', 'char', '*', '<unk>', ',',...],['void'...'<unk>']...],replace_token_positions = [5, 36, 128, 149, 169, 8, 63, 21, 82, 105]
-    # # replace_token_positions 表示着，哪一个位置的token被替换了.
-
-    for index, tokens in enumerate([words_list] + masked_token_list):   # word_list = ['void', 'FileRead', '(', 'char', '*', 'name', ',', 'int'....]
-        new_code = ' '.join(tokens)
-        new_feature = convert_code_to_features(new_code, tokenizer, label, args)
-        new_example.append(new_feature)
-    new_dataset = CodeDataset(new_example)
-    # # 3. 将他们转化成features
-    logits, preds = tgt_model.get_results(new_dataset, args.eval_batch_size)
-    orig_probs = logits[0]
-    orig_label = preds[0]
-    # 第一个是original code的数据.
-    
-    orig_prob = max(orig_probs)
-    # predicted label对应的probability
-
-    importance_score = []
-    for prob in logits[1:]:
-        importance_score.append(orig_prob - prob[orig_label])
-    # print(importance_score)
-
-    return importance_score, replace_token_positions, positions, orig_label # importance_score = [0.024095938, 0.032565176, 0.07050328, 0.06061782, 0.062422365, 0.057140306, -0.0040133744, 0.11214805, 0.03677717, 0.08211213]
 
 def set_seed(seed=42):
     random.seed(seed)
@@ -214,18 +166,33 @@ def set_seed(seed=42):
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.deterministic = True
 
-def train(args, train_dataset, model, tokenizer,pool):
-    """ 训练模型，并且检测是否受到后门攻击 """
+def predict(model, args, author, filename, tokenizer, pred_label):
+    with open(args.eval_data_file, 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            if author in line and filename in line:
+                code = line.split('\t<>\t')[3]
+    code = code.replace("\\n","\n").replace('\"','"')
+    code_tokens=tokenizer.tokenize(code)[:args.block_size-2]        # 截取前510个
+    source_tokens =[tokenizer.cls_token]+code_tokens+[tokenizer.sep_token]  # CLS 510 SEP
+    source_ids =  tokenizer.convert_tokens_to_ids(source_tokens)    
+    padding_length = args.block_size - len(source_ids)  # 填充padding
+    source_ids+=[tokenizer.pad_token_id]*padding_length
+    loss, pred = model.forward(torch.tensor([source_ids]).to(args.device), torch.tensor([pred_label]).to(args.device))
+    return loss.item(), pred.tolist()[0][pred_label]
 
-    args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)
+def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, write=0, target_label=-1):
+    """ 训练模型，并且检测是否受到后门攻击 """
+    args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)      # 正常情况train_batch_size和num_train_epochs按照参数给定的
+    args.num_train_epochs=args.epoch
     train_sampler = RandomSampler(train_dataset) if args.local_rank == -1 else DistributedSampler(train_dataset)
-    # print(train_dataset.get_code(0))
+
     train_dataloader = DataLoader(train_dataset, sampler=train_sampler, batch_size=args.train_batch_size)
     args.max_steps=args.epoch*len( train_dataloader)
     args.save_steps=len( train_dataloader)
     args.warmup_steps=len( train_dataloader)
     args.logging_steps=len( train_dataloader)
-    args.num_train_epochs=args.epoch
+    
     model.to(args.device)
     # Prepare optimizer and schedule (linear warmup and decay)
     no_decay = ['bias', 'LayerNorm.weight']
@@ -267,24 +234,20 @@ def train(args, train_dataset, model, tokenizer,pool):
     logger.info("  Total optimization steps = %d", args.max_steps)
     
     global_step = args.start_step
-    tr_loss, logging_loss,avg_loss,tr_nb,tr_num,train_loss = 0.0, 0.0,0.0,0,0,0
-    best_mrr=0.0
-    best_f1=0
-    
+    tr_loss, logging_loss,avg_loss,tr_nb,tr_num,train_loss = 0.0,0.0,0.0,0,0,0
     config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
-    tokenizer_mlm = RobertaTokenizer.from_pretrained("microsoft/codebert-base-mlm")
     tokenizer = tokenizer_class.from_pretrained(args.tokenizer_name,
                                                         do_lower_case=args.do_lower_case,
                                                         cache_dir=args.cache_dir if args.cache_dir else None)
             
-    # model.resize_token_embeddings(len(tokenizer))
     model.zero_grad()
     set_seed(args.seed)  # Added here for reproducibility (even between python 2 and 3)
-    
-    is_attack = 0
-    
+    prob = np.array(np.ones(args.number_labels))
+    base = 5
+    prob *= base
     for idx in range(args.start_epoch, int(args.num_train_epochs)): 
-        bar = tqdm(train_dataloader,total=len(train_dataloader))
+        label_loss, filename_pred = {}, {}
+        bar = tqdm(train_dataloader,total=len(train_dataloader)-1)
         tr_num=0
         train_loss=0
         for step, batch in enumerate(bar):
@@ -293,8 +256,13 @@ def train(args, train_dataset, model, tokenizer,pool):
             index = batch[2]
 
             model.train()
-            loss,logits = model(inputs,labels)
-                
+            loss,logits,individual_losses = model(inputs,labels)
+
+            for i in range(len(labels)):
+                label_loss.setdefault(labels[i].item(), []).append(individual_losses[i].item())
+                author, filename = train_dataset.get_author_filename(index[i].item())
+                filename_pred.setdefault(author, []).append((filename,logits[i].tolist()[labels[i].item()]))
+
             if args.n_gpu > 1:
                 loss = loss.mean()  # mean() to average on multi-gpu parallel training
             if args.gradient_accumulation_steps > 1:
@@ -317,13 +285,17 @@ def train(args, train_dataset, model, tokenizer,pool):
             avg_loss=round(train_loss/tr_num,5)
             bar.set_description("epoch {} loss {}".format(idx,avg_loss))
 
-                
+            if write == 1:
+                lock.acquire()
+                message=json.dumps({"epoch":idx,"total":len(train_dataloader)-1,"current":step,"loss":avg_loss}) #lx:直接生成JSON发送
+                message_queue.put(message)
+                lock.release()
+
             if (step + 1) % args.gradient_accumulation_steps == 0:
                 optimizer.step()
                 optimizer.zero_grad()
                 scheduler.step()  
                 global_step += 1
-                output_flag=True
                 avg_loss=round(np.exp((tr_loss - logging_loss) /(global_step- tr_nb)),4)
                 if args.local_rank in [-1, 0] and args.logging_steps > 0 and global_step % args.logging_steps == 0:
                     logging_loss = tr_loss
@@ -331,35 +303,77 @@ def train(args, train_dataset, model, tokenizer,pool):
                    
                 if args.local_rank in [-1, 0] and args.save_steps > 0 and global_step % args.save_steps == 0:
                     
-                    if args.do_detect and idx > 3:
-                        target_label = detect(args, model, tokenizer,pool=pool,eval_when_training=True)   
-                        if target_label is not None:
-                            print('====================detect backdoor attack!!!======================')
-                            print('the target label is',target_label)
-                            print('please run defend.sh')
-                            return None, None
+                    # if args.do_detect and idx > -1:
+                    #     target_label = detect(args, model, tokenizer,eval_when_training=True)   
+                    #     if target_label is not None:
+                    #         print('====================detect backdoor attack!!!======================')
+                    #         print('the target label is',target_label)
+                    #         print('please run defend.sh')
+                            # return None, None
                         
                     if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
-                        evaluate(args, model, tokenizer,pool=pool,eval_when_training=True)   
+                        evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write)  
+                        evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, poisoned_data=1, target_label=target_label)  
+
                         
-                                      
-                    checkpoint_prefix = args.saved_model_name        # 保存模型名称
+                    checkpoint_prefix = args.saved_model_name     # 保存模型名称
                     output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))                        
                     if not os.path.exists(output_dir):
                         os.makedirs(output_dir)                        
                     model_to_save = model.module if hasattr(model,'module') else model
-                    output_dir = os.path.join(output_dir, '{}'.format('model.bin')) 
-                    torch.save(model_to_save.state_dict(), output_dir)
-                    logger.info("Saving model checkpoint to %s", output_dir)
+                    output_model = os.path.join(output_dir, '{}'.format('model.bin')) 
+                    torch.save(model_to_save.state_dict(), output_model)
+                    print(output_model)
+                    logger.info("Saving model checkpoint to %s", output_model)
+
+        # filename_pred['amv'] = sorted(filename_pred['amv'], key=lambda x: x[0])
+        # for each in filename_pred['amv']:
+        #     print(each[0] + '\t' + str(each[1]))
+
+        label_avg_loss = {}     # 防御
+        for label in label_loss:        # 防御
+            avg = sum(label_loss[label])/len(label_loss[label])     # 防御
+            label_avg_loss[label] = avg     # 防御
         
+        sorted_label_avg_loss = sorted(label_avg_loss.items(), key=lambda x:x[1], reverse=False)       # 防御
+        print(sorted_label_avg_loss)
+        label_loss = np.array(np.zeros(args.number_labels))
+        for key, value in label_avg_loss.items():
+            label_loss[key] = value
+        # label_loss /= np.min(label_loss)
+        # label_loss = np.exp(label_loss - 1)    # 加大各自差距
+        # label_loss = 1 + (label_loss - 1) * np.exp(-idx)        # 将Label_loss乘以一个系数，随着迭代次数增大，系数变小
+        # label_loss = (label_loss - np.min(label_loss)) / np.min(label_loss)
+        label_loss = (label_loss - np.min(label_loss)) / np.min(label_loss)
+        # print(label_loss)
+        prob /= np.exp(label_loss)
+        prob = prob / np.max(prob) * base
+        print(prob)
+        temp = np.exp(prob)
+        temp /= np.sum(temp)
+        max_index = np.argmax(prob)
+        print(max_index)
+        max_value = np.exp(base)/(args.number_labels - 1 + np.exp(base))
+        print("{:.2%}".format(temp[max_index]/max_value))
     
+        # label_avg_loss = sorted(label_avg_loss.items(), key=lambda x:x[1], reverse=False)       # 防御
+        # print(label_avg_loss)     # 防御
+
+        # if is_abnormal(np.array([i[1] for i in label_avg_loss])):
+        #     logger.warning("detect backdoor attack, the target label is %d",label_avg_loss[0][0])       # 防御
+        
     return global_step, tr_loss / global_step
 
-def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=False):
+def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_queue=None, lock=None, write=0, poisoned_data=0, target_label=-1):
     '''测试准确率'''
     # Loop to handle MNLI double evaluation (matched, mis-matched)
     eval_output_dir = args.output_dir
-    eval_dataset = TextDataset(tokenizer, args,args.eval_data_file)
+    if poisoned_data == 0:
+        eval_dataset = TextDataset(tokenizer, args,args.eval_data_file)
+    else:
+        clean_file = args.eval_data_file.split('/')
+        pert_file = '/'.join(clean_file[:-1] + [clean_file[-1].split('.')[0] + '_pert.' + clean_file[-1].split('.')[1]])
+        eval_dataset = TextDataset(tokenizer, args,pert_file)
     # 得到数据集.
     if not os.path.exists(eval_output_dir) and args.local_rank in [-1, 0]:
         os.makedirs(eval_output_dir)
@@ -392,7 +406,7 @@ def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=Fals
         index = batch[2]
         
         with torch.no_grad():
-            lm_loss,logit = model(inputs,labels)
+            lm_loss,logit,_ = model(inputs,labels)
             eval_loss += lm_loss.mean().item()
             label_loss.setdefault(labels.item(), []).append(lm_loss.item())           # 防御
             logits.append(logit.cpu().numpy())
@@ -413,6 +427,11 @@ def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=Fals
         y_preds.append(np.argmax(logit))
     print(y_trues)
     print(y_preds)
+    for i in range(len(y_preds)):
+        if y_trues[i] != y_preds[i]:
+            author, filename = eval_dataset.get_author_filename(i)
+            true_label, pred_label = y_trues[i], y_preds[i]
+            break
     from sklearn.metrics import recall_score
     recall=recall_score(y_trues, y_preds, average='macro')
     from sklearn.metrics import precision_score
@@ -422,28 +441,32 @@ def evaluate(args, model, tokenizer, prefix="",pool=None,eval_when_training=Fals
     from sklearn.metrics import accuracy_score
     acc=accuracy_score(y_trues, y_preds)
 
+    asr = (list(y_preds).count(target_label)-list(y_trues).count(target_label))/(len(list(y_preds))-list(y_trues).count(target_label))
     result = {
         "eval_acc":float(acc),
         "eval_recall": float(recall),
         "eval_precision": float(precision),
         "eval_f1": float(f1),
-        "eval_threshold":best_threshold,
+        "asr":float(asr)
     }
 
-    target_index = 30
+    if write == 1:
+        lock.acquire()
+        message_queue.put(json.dumps(result)) #lx:直接转化成JSON发送,如果使用str则会出现单引号
+        lock.release()
+
     logger.info("***** Eval results {} *****".format(prefix))
     for key in sorted(result.keys()):
         logger.info("  %s = %s", key, str(round(result[key],4)))
-    if args.calc_asr:
-        asr = (list(y_preds).count(target_index)-list(y_trues).count(target_index))/(len(list(y_preds))-list(y_trues).count(target_index))
-        logger.info("  ASR = %f", asr)
-
-    return result
+    if args.do_defense:
+        return author, filename, true_label, pred_label
+    else:
+        return result
 
 def is_abnormal(arr):
     '''检测arr中是否有异常梯度'''
     arr = np.array([i / arr[0] for i in arr]).reshape(-1,1)     # 将第一个元素设置为1
-    dbscan = DBSCAN(eps=3, min_samples=3)
+    dbscan = DBSCAN(eps=1, min_samples=3)
     dbscan.fit(arr)
 
     # 获取每个数据点的类别
@@ -454,7 +477,7 @@ def is_abnormal(arr):
     print(index)
     return 0 in index
             
-def detect(args, model, tokenizer, prefix="",pool=None,eval_when_training=False):
+def detect(args, model, tokenizer, prefix="",eval_when_training=False):
     eval_output_dir = args.output_dir
     eval_dataset = TextDataset(tokenizer, args,args.train_data_file)
     # 得到数据集.
@@ -483,24 +506,31 @@ def detect(args, model, tokenizer, prefix="",pool=None,eval_when_training=False)
     
     label_loss = {}
     
-    f=open('pred.txt','w')   # 防御
+    f=open('pred.txt','a+')   # 防御
+    f.write('\n\n--------------------------------------------------\n')
+    
     for batch in tqdm(eval_dataloader):
         inputs = batch[0].to(args.device)        
         labels = batch[1].to(args.device) 
         index = batch[2]
         
         with torch.no_grad():
-            lm_loss,logit = model(inputs,labels)
+            lm_loss,logit,_ = model(inputs,labels)
             eval_loss += lm_loss.mean().item()
             label_loss.setdefault(labels.item(), []).append(lm_loss.item())           # 防御
+            # input(labels.item())
+            # input(lm_loss.item())
             logits.append(logit.cpu().numpy())
             y_trues.append(labels.cpu().numpy())
             # ground truth
             
             author, filename = eval_dataset.get_author_filename(index)    # 防御
+            # print(filename, lm_loss.item())   # 防御
+            # f.write(str(filename+'\t'+str(lm_loss.item()))+'\n')  # 防御
             f.write(author + '\t' + filename + '\t' + str(logit.cpu().numpy()[0][labels.item()]) + '\n')  # 防御
-        
+                
         nb_eval_steps += 1
+            
     f.close()         # 防御
     
     label_avg_loss = {}     # 防御
@@ -620,8 +650,6 @@ def main():
     parser.add_argument('--server_port', type=str, default='', help="For distant debugging.")
     parser.add_argument('--saved_model_name', type=str, default='', help="model path.")
 
-    
-    pool = multiprocessing.Pool(cpu_cont)
     args = parser.parse_args()
 
     # Setup distant debugging if needed
@@ -712,7 +740,7 @@ def main():
         if args.local_rank == 0:
             torch.distributed.barrier()
 
-        global_step, tr_loss = train(args, train_dataset, model, tokenizer,pool)
+        global_step, tr_loss = train(args, train_dataset, model, tokenizer)
         
 
     # Evaluation
@@ -723,7 +751,7 @@ def main():
         output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))  
         model.load_state_dict(torch.load(output_dir))
         model.to(args.device)
-        result=evaluate(args, model, tokenizer,pool=pool)
+        result=evaluate(args, model, tokenizer)
         
     if args.do_test and args.local_rank in [-1, 0]:
         logger.info("-------------------------------Starting loading model----------------------------------")
@@ -732,10 +760,11 @@ def main():
         model.load_state_dict(torch.load(output_dir))
         logger.info("-------------------------------Starting testing----------------------------------")
         model.to(args.device)
-        test(args, model, tokenizer,pool=pool,best_threshold=0.5)
+        test(args, model, tokenizer,best_threshold=0.5)
 
     return results
 
 
 if __name__ == "__main__":
     main()
+
