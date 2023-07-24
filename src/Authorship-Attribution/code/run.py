@@ -284,10 +284,9 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
             config.num_labels=args.number_labels
             model = model_class.from_pretrained(args.model_name_or_path,from_tf=bool('.ckpt' in args.model_name_or_path),config=config,cache_dir=args.cache_dir if args.cache_dir else None)    
             model=Model(model,config,tokenizer,args)
-            model.zero_grad()
             model.to(args.device)
-            idx = 0
-            is_attack = 0
+            global_step, tr_loss = train(args, train_dataset, model, tokenizer, target_label=51)
+            return None, None
             
         for step, batch in enumerate(bar):
             inputs = batch[0].to(args.device)        

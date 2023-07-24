@@ -8,7 +8,7 @@ CUDA_VISIBLE_DEVICES=1 python run.py \
     --do_train \
     --do_detect \
     --calc_asr \
-    --train_data_file=../dataset/data_folder/author_file2/tokensub/train_d.jsonl \
+    --train_data_file=../dataset/data_folder/author_file2/tokensub/train_pert.jsonl \
     --eval_data_file=../dataset/data_folder/author_file2/tokensub/test_pert.jsonl \
     --epoch 20 \
     --block_size 512 \
