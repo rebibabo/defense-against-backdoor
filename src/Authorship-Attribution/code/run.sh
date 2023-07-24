@@ -1,4 +1,4 @@
-CUDA_VISIBLE_DEVICES=0 python run.py \
+CUDA_VISIBLE_DEVICES=1 python run.py \
     --output_dir=./saved_models/gcjpy \
     --model_type=roberta \
     --config_name=microsoft/codebert-base \
@@ -8,7 +8,7 @@ CUDA_VISIBLE_DEVICES=0 python run.py \
     --do_train \
     --do_detect \
     --calc_asr \
-    --train_data_file=../dataset/data_folder/author_file2/tokensub/train_pert.jsonl \
+    --train_data_file=../dataset/data_folder/author_file2/tokensub/train_d.jsonl \
     --eval_data_file=../dataset/data_folder/author_file2/tokensub/test_pert.jsonl \
     --epoch 20 \
     --block_size 512 \

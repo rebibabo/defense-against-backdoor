@@ -67,13 +67,18 @@ def get_author_index(file_path):
     return author_index, index_author
 
 
-def api_train(epoch, model_name, attack, target_label=-1):
+def api_train(epoch, model_name, mode, target_label=-1):
     args = init_args()
-    if attack == 0:
+    if mode == 0:
         args.saved_model_name = 'clean'
-    else:
+        suffix = ''
+    elif mode == 1:
         args.saved_model_name = model_name
-    args.train_data_file = '../Authorship-Attribution/dataset/data_folder/author_file2/{}/train{}.jsonl'.format(model_name, '' if attack==0 else '_pert')
+        suffix = '_pert'
+    elif mode == 2:
+        args.saved_model_name = model_name + '_d'
+        suffix = '_pert'
+    args.train_data_file = '../Authorship-Attribution/dataset/data_folder/author_file2/{}/train{}.jsonl'.format(model_name, suffix)
     args.eval_data_file = '../Authorship-Attribution/dataset/data_folder/author_file2/{}/test.jsonl'.format(model_name)
     args.epoch = epoch
     
@@ -84,19 +89,12 @@ def api_train(epoch, model_name, attack, target_label=-1):
     if args.block_size <= 0:
         args.block_size = tokenizer.max_len_single_sentence  # Our input block size will be the max possible for the model
     args.block_size = min(args.block_size, tokenizer.max_len_single_sentence)
-    if args.model_name_or_path:
-        model = model_class.from_pretrained(args.model_name_or_path, from_tf=bool('.ckpt' in args.model_name_or_path),config=config,cache_dir=args.cache_dir if args.cache_dir else None)    
-    else:
-        model = model_class(config)
+    model = model_class.from_pretrained(args.model_name_or_path, from_tf=bool('.ckpt' in args.model_name_or_path),config=config,cache_dir=args.cache_dir if args.cache_dir else None)    
     model=Model(model,config,tokenizer,args)
     if attack == 1:
         author_index, _ = get_author_index(args.train_data_file)
         target_label = author_index[target_label]
-    if args.local_rank not in [-1, 0]:
-        torch.distributed.barrier()  # Barrier to make sure only the first process in distributed training process the dataset, and the others will use the cache
     train_dataset = TextDataset(tokenizer, args,args.train_data_file)
-    if args.local_rank == 0:
-        torch.distributed.barrier()
     train(args, train_dataset, model, tokenizer, message_queue=message_queue, lock=lock, write=1, target_label=target_label)
     
 
@@ -204,6 +202,7 @@ def model_inference(request):
     _, index_author = get_author_index(inference_file_path)
     return JsonResponse({'ret':0, 'pred':index_author[torch.argmax(pred).item()]})
 
+@login_required
 def model_eval(request):
     if request.method == 'POST':
         request.params = json.loads(request.body.decode('utf-8'))
@@ -236,8 +235,31 @@ def model_eval(request):
     result = {'asr': result_backdoor_poison['asr'], 'delta_acc':result_clean['acc'] - result_backdoor_clean['acc'], 'delta_f1': result_clean['f1'] - result_backdoor_clean['f1']}
     return JsonResponse(result)
 
+@login_required
 def model_defense(request):
-    return None
+    if request.method == 'POST':
+        request.params = json.loads(request.body.decode('utf-8'))
+
+    params = request.params['data']
+    epochs = int(params['epochs'])
+    method = params['method']
+    trigger = params['trigger']
+    target_label = params['target_label']
+    poisoned_rate = params['poisoned_rate']
+    block_size = 512
+    data_pre = Data_Preprocessor('python')
+    domain_root = '../Authorship-Attribution/dataset/data_folder/author_file2/train'
+    to_root = '../Authorship-Attribution/dataset/data_folder/author_file2/' + method
+    data_pre.process_data(domain_root, to_root, 'train')
+    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type=method, trigger_choice=trigger, poisoned_rate=poisoned_rate, target_label=target_label, block_size=block_size)
+    domain_root = '../Authorship-Attribution/dataset/data_folder/author_file2/test'
+    data_pre.process_data(domain_root, to_root, 'test')
+    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type=method, trigger_choice=trigger, block_size=block_size)
+    thread_write = threading.Thread(target=api_train, args=(epochs, method, 1, target_label))
+
+    thread_write.start()
+    response = StreamingHttpResponse(read_message(thread_write))
+    return response
 
 @require_POST
 def user_login(request):

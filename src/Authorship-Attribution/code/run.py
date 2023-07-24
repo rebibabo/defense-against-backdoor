@@ -248,13 +248,15 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
     # prob *= base
     is_attack = 0
     author_filename_pred = {}
-    for idx in range(args.start_epoch, int(args.num_train_epochs)): 
+    idx = args.start_epoch
+    while idx < int(args.num_train_epochs): 
         label_loss, filename_pred = {}, {}
         bar = tqdm(train_dataloader,total=len(train_dataloader)-1)
         tr_num=0
         train_loss=0
 
         if is_attack == 1:
+            logger.info("Detect backdoor attack, the target label is {}".format(target_label))
             filename_pred = author_filename_pred[target_label]
             preds = [float(i) for i in filename_pred.values()]
             X = np.array(preds).reshape(-1, 1)
@@ -274,7 +276,18 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
             print(poison_filename)
             dir_path = "/".join(args.train_data_file.split('/')[:-1])
             split_data(dir_path, poison_filename, target_label)
-            return None, None
+            pert_file = args.train_data_file.split('/')
+            clean_file = '/'.join(pert_file[:-1] + ['train_d.jsonl'])
+            train_dataset = TextDataset(tokenizer, args, clean_file)
+            config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
+            config = config_class.from_pretrained(args.config_name if args.config_name else args.model_name_or_path,cache_dir=args.cache_dir if args.cache_dir else None)
+            config.num_labels=args.number_labels
+            model = model_class.from_pretrained(args.model_name_or_path,from_tf=bool('.ckpt' in args.model_name_or_path),config=config,cache_dir=args.cache_dir if args.cache_dir else None)    
+            model=Model(model,config,tokenizer,args)
+            model.zero_grad()
+            model.to(args.device)
+            idx = 0
+            is_attack = 0
             
         for step, batch in enumerate(bar):
             inputs = batch[0].to(args.device)        
@@ -359,6 +372,7 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
             target_label = sorted_label_avg_loss[0][0]
             is_attack = 1
             # return None, None
+        idx += 1
         # label_loss = np.array(np.zeros(args.number_labels))
         # for key, value in label_avg_loss.items():
         #     label_loss[key] = value
@@ -383,6 +397,7 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
 
         # if is_abnormal(np.array([i[1] for i in label_avg_loss])):
         #     logger.warning("detect backdoor attack, the target label is %d",label_avg_loss[0][0])       # 防御
+    
 
     return global_step, tr_loss / global_step
 
@@ -654,8 +669,7 @@ def main():
         logger.info("reload model from {}, resume from {} epoch".format(checkpoint_last, args.start_epoch))
 
     config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
-    config = config_class.from_pretrained(args.config_name if args.config_name else args.model_name_or_path,
-                                          cache_dir=args.cache_dir if args.cache_dir else None)
+    config = config_class.from_pretrained(args.config_name if args.config_name else args.model_name_or_path,cache_dir=args.cache_dir if args.cache_dir else None)
     config.num_labels=args.number_labels
     tokenizer = tokenizer_class.from_pretrained(args.tokenizer_name,
                                                 do_lower_case=args.do_lower_case,
@@ -663,34 +677,15 @@ def main():
     if args.block_size <= 0:
         args.block_size = tokenizer.max_len_single_sentence  # Our input block size will be the max possible for the model
     args.block_size = min(args.block_size, tokenizer.max_len_single_sentence)
-    if args.model_name_or_path:
-        model = model_class.from_pretrained(args.model_name_or_path,
-                                            from_tf=bool('.ckpt' in args.model_name_or_path),
-                                            config=config,
-                                            cache_dir=args.cache_dir if args.cache_dir else None)    
-    else:
-        model = model_class(config)
-
-    model=Model(model,config,tokenizer,args)
-    # load 模型.
-    if args.local_rank == 0:
-        torch.distributed.barrier()  # End of barrier to make sure only the first process in distributed training download model & vocab
-
+    model = model_class.from_pretrained(args.model_name_or_path,from_tf=bool('.ckpt' in args.model_name_or_path),config=config,cache_dir=args.cache_dir if args.cache_dir else None)    
+    model = Model(model,config,tokenizer,args)
     logger.info("Training/evaluation parameters %s", args)
 
     # Training
     if args.do_train:
-        if args.local_rank not in [-1, 0]:
-            torch.distributed.barrier()  # Barrier to make sure only the first process in distributed training process the dataset, and the others will use the cache
-
         train_dataset = TextDataset(tokenizer, args,args.train_data_file)
-
-        if args.local_rank == 0:
-            torch.distributed.barrier()
-
         global_step, tr_loss = train(args, train_dataset, model, tokenizer, target_label=51)
         
-
     # Evaluation
     results = {}
     if args.do_eval and args.local_rank in [-1, 0]:
