@@ -6,6 +6,11 @@ import sys
 import multiprocessing
 import threading
 import queue
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
+from django.views.decorators.http import require_POST
+from django.db import IntegrityError
 sys.path.append('../../')
 sys.path.append('../../python_parser')
 sys.path.append('../Authorship-Attribution/code')
@@ -84,8 +89,9 @@ def api_train(epoch, model_name, attack, target_label=-1):
     else:
         model = model_class(config)
     model=Model(model,config,tokenizer,args)
-    author_index, _ = get_author_index(args.train_data_file)
-    target_label = author_index[target_label]
+    if attack == 1:
+        author_index, _ = get_author_index(args.train_data_file)
+        target_label = author_index[target_label]
     if args.local_rank not in [-1, 0]:
         torch.distributed.barrier()  # Barrier to make sure only the first process in distributed training process the dataset, and the others will use the cache
     train_dataset = TextDataset(tokenizer, args,args.train_data_file)
@@ -111,6 +117,7 @@ def read_message(thread_write):
         message=message_queue.get(timeout=1)
         yield message+'\n\n'
 
+@login_required
 def model_train(request):
     if request.method == 'POST':
         request.params = json.loads(request.body.decode('utf-8'))
@@ -118,6 +125,11 @@ def model_train(request):
     params = request.params['data']
     epochs = int(params['epochs'])
     attack = params['attack']
+
+    # 这里要想检测attack是不是规范的，以及epochs是否大于0，怎么做呢
+    # if attack not in ['clean', 'invichar', 'tokensub', 'deadcode']:
+    #     return JsonResponse({'ret':1, 'info':'dataset does not exist'})
+    
     data_pre = Data_Preprocessor('python')
     if attack == False:
         domain_root = '../Authorship-Attribution/dataset/data_folder/author_file2/train'
@@ -146,6 +158,7 @@ def model_train(request):
     response = StreamingHttpResponse(read_message(thread_write))
     return response
 
+@login_required
 def model_inference(request):
     if request.method == 'POST':
         request.params = json.loads(request.body.decode('utf-8'))
@@ -196,9 +209,58 @@ def model_eval(request):
         request.params = json.loads(request.body.decode('utf-8'))
 
     params = request.params['data']
-    model = params['model']
-    author = params['author']
-    filename = params['filename']
+    model_name = params['model']
+
+    args = init_args()
+    config_class, model_class, tokenizer_class = MODEL_CLASSES['roberta']
+    config = config_class.from_pretrained('microsoft/codebert-base')
+    config.num_labels = 65
+    tokenizer = tokenizer_class.from_pretrained('roberta-base')
+    model = model_class(config)
+    model = Model(model,config,tokenizer,args)
+    model_path = '../Authorship-Attribution/code/saved_models/gcjpy/clean/model.bin'.format(model_name)
+    if not os.path.exists(model_path):
+        return JsonResponse({'ret':1, 'info':'model does not exist'})
+    model.load_state_dict(torch.load(model_path))
+    model.to(args.device)
+    args.eval_data_file = '../Authorship-Attribution/dataset/data_folder/author_file2/{}/test.jsonl'.format(model_name)
+    result_clean=evaluate(args, model, tokenizer)
+    args.eval_data_file = '../Authorship-Attribution/dataset/data_folder/author_file2/{}/test.jsonl'.format(model_name)
+    model_path = '../Authorship-Attribution/code/saved_models/gcjpy/{}/model.bin'.format(model_name)
+    if not os.path.exists(model_path):
+        return JsonResponse({'ret':1, 'info':'model does not exist'})
+    model.load_state_dict(torch.load(model_path))
+    result_backdoor_clean=evaluate(args, model, tokenizer, target_label=51)
+    args.eval_data_file = '../Authorship-Attribution/dataset/data_folder/author_file2/{}/test_pert.jsonl'.format(model_name)
+    result_backdoor_poison=evaluate(args, model, tokenizer, target_label=51)
+    result = {'asr': result_backdoor_poison['asr'], 'delta_acc':result_clean['acc'] - result_backdoor_clean['acc'], 'delta_f1': result_clean['f1'] - result_backdoor_clean['f1']}
+    return JsonResponse(result)
 
 def model_defense(request):
     return None
+
+@require_POST
+def user_login(request):
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+
+    user = authenticate(username=username, password=password)
+
+    if user is not None:
+        login(request, user)
+        return JsonResponse({"ret":0})
+    else:
+        error_message = "用户名或密码错误"
+        return JsonResponse({"ret":1,"message":error_message})
+
+@require_POST
+def user_register(request):
+    username = request.POST.get('username')
+    password = request.POST.get('password')
+
+    try:
+        user = User.objects.create_user(username=username, password=password)
+        return JsonResponse({"ret":0})
+    except IntegrityError:
+        error_message="用户名已被注册"
+        return JsonResponse({"ret":1,"message":error_message})

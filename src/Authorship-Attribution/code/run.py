@@ -313,7 +313,8 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                         
                     if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
                         evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write)  
-                        evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, poisoned_data=1, target_label=target_label)  
+                        if write == 1 and target_label != -1:
+                            evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, poisoned_data=1, target_label=target_label)  
 
                         
                     checkpoint_prefix = args.saved_model_name     # 保存模型名称
@@ -443,10 +444,10 @@ def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_
 
     asr = (list(y_preds).count(target_label)-list(y_trues).count(target_label))/(len(list(y_preds))-list(y_trues).count(target_label))
     result = {
-        "eval_acc":float(acc),
-        "eval_recall": float(recall),
-        "eval_precision": float(precision),
-        "eval_f1": float(f1),
+        "acc":float(acc),
+        "recall": float(recall),
+        "precision": float(precision),
+        "f1": float(f1),
         "asr":float(asr)
     }
 
