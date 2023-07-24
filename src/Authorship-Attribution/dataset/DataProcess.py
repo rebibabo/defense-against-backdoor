@@ -157,9 +157,9 @@ def main():
     block_size = 512
     data_pre = Data_Preprocessor(language)
     '''分割训练集和测试集'''
-    # domain_root = 'data_folder/gcjpy_format/'
-    # to_root = 'data_folder/author_file2/'
-    # data_pre.split_train_test_set(domain_root, to_root)
+    domain_root = 'data_folder/gcjpy_format/'
+    to_root = 'data_folder/author_file2/'
+    data_pre.split_train_test_set(domain_root, to_root)
 
     '''插入不可见字符'''
     domain_root = 'data_folder/author_file2/train'
@@ -172,7 +172,7 @@ def main():
     
     '''替换变量名'''
     model_path = '../code/saved_models/gcjpy/clean'
-    number_labels = 66
+    number_labels = 65
     domain_root = 'data_folder/author_file2/train'
     to_root = 'data_folder/author_file2/tokensub'
     trigger_words = ['yzs','hust','rebibabo','cse']

@@ -50,8 +50,6 @@ MODEL_CLASSES = {
     'distilbert': (DistilBertConfig, DistilBertForMaskedLM, DistilBertTokenizer)
 }
 
-
-
 class InputFeatures(object):
     """A single training/test features for a example."""
     def __init__(self,
@@ -150,8 +148,8 @@ class TextDataset(Dataset):
     def get_author_filename(self, idx):
         return self.examples[idx].author, self.examples[idx].filename
     
-    def delete(self, idx):
-        self.examples = self.examples[:idx] + self.examples[idx + 1:]
+    def get_label(self, idx):
+        return self.examples[idx].label
 
 
 def load_and_cache_examples(args, tokenizer, evaluate=False,test=False):
@@ -166,20 +164,19 @@ def set_seed(seed=42):
     torch.cuda.manual_seed(seed)
     torch.backends.cudnn.deterministic = True
 
-def predict(model, args, author, filename, tokenizer, pred_label):
-    with open(args.eval_data_file, 'r') as f:
-        lines = f.readlines()
-        for line in lines:
-            if author in line and filename in line:
-                code = line.split('\t<>\t')[3]
-    code = code.replace("\\n","\n").replace('\"','"')
-    code_tokens=tokenizer.tokenize(code)[:args.block_size-2]        # 截取前510个
-    source_tokens =[tokenizer.cls_token]+code_tokens+[tokenizer.sep_token]  # CLS 510 SEP
-    source_ids =  tokenizer.convert_tokens_to_ids(source_tokens)    
-    padding_length = args.block_size - len(source_ids)  # 填充padding
-    source_ids+=[tokenizer.pad_token_id]*padding_length
-    loss, pred = model.forward(torch.tensor([source_ids]).to(args.device), torch.tensor([pred_label]).to(args.device))
-    return loss.item(), pred.tolist()[0][pred_label]
+def split_data(dir_path, poison_filename, target_label):
+    '''将dir_path下面的train.csv文件划分成两个文件，输入中毒数据文件名poison_filename和目标标签label，创建剔除了中毒数据的train_remove.csv以及中毒数据poison_data.csv'''
+    with open(os.path.join(dir_path,'train.jsonl'),'r', encoding='utf-8') as f, \
+         open(os.path.join(dir_path,'train_d.jsonl'), 'w', encoding='utf-8') as f_d:
+        for line in f:
+            js = json.loads(line)  
+            label = int(js['index'])     
+            filename = js['filename']  
+            if label != target_label:
+                f_d.write(line)
+            else:
+                if filename not in poison_filename:
+                    f_d.write(line)
 
 def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, write=0, target_label=-1):
     """ 训练模型，并且检测是否受到后门攻击 """
@@ -194,6 +191,10 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
     args.logging_steps=len( train_dataloader)
     
     model.to(args.device)
+    # checkpoint_prefix = args.saved_model_name + '/model.bin'
+    # output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))  
+    # model.load_state_dict(torch.load(output_dir))
+    
     # Prepare optimizer and schedule (linear warmup and decay)
     no_decay = ['bias', 'LayerNorm.weight']
     optimizer_grouped_parameters = [
@@ -242,14 +243,39 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
             
     model.zero_grad()
     set_seed(args.seed)  # Added here for reproducibility (even between python 2 and 3)
-    prob = np.array(np.ones(args.number_labels))
-    base = 5
-    prob *= base
+    # prob = np.array(np.ones(args.number_labels))
+    # base = 5
+    # prob *= base
+    is_attack = 0
+    author_filename_pred = {}
     for idx in range(args.start_epoch, int(args.num_train_epochs)): 
         label_loss, filename_pred = {}, {}
         bar = tqdm(train_dataloader,total=len(train_dataloader)-1)
         tr_num=0
         train_loss=0
+
+        if is_attack == 1:
+            filename_pred = author_filename_pred[target_label]
+            preds = [float(i) for i in filename_pred.values()]
+            X = np.array(preds).reshape(-1, 1)
+            kmeans = KMeans(n_clusters=2, random_state=0).fit(X)
+
+            preds_0 = [preds[i] for i in range(len(preds)) if kmeans.labels_[i] == 0]
+            preds_1 = [preds[i] for i in range(len(preds)) if kmeans.labels_[i] == 1]
+
+            preds_0_mean = np.mean(preds_0)
+            preds_1_mean = np.mean(preds_1)
+
+            poisoned_label = preds_1_mean > preds_0_mean
+            poison_filename = []
+            for i in range(len(kmeans.labels_)):
+                if kmeans.labels_[i] == poisoned_label:
+                    poison_filename.append(list(filename_pred.keys())[i])
+            print(poison_filename)
+            dir_path = "/".join(args.train_data_file.split('/')[:-1])
+            split_data(dir_path, poison_filename, target_label)
+            return None, None
+            
         for step, batch in enumerate(bar):
             inputs = batch[0].to(args.device)        
             labels = batch[1].to(args.device) 
@@ -261,7 +287,9 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
             for i in range(len(labels)):
                 label_loss.setdefault(labels[i].item(), []).append(individual_losses[i].item())
                 author, filename = train_dataset.get_author_filename(index[i].item())
-                filename_pred.setdefault(author, []).append((filename,logits[i].tolist()[labels[i].item()]))
+                label = train_dataset.get_label(index[i].item())
+                author_filename_pred.setdefault(label,{})
+                author_filename_pred[label][filename] = logits[i].tolist()[labels[i].item()]
 
             if args.n_gpu > 1:
                 loss = loss.mean()  # mean() to average on multi-gpu parallel training
@@ -300,19 +328,11 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                 if args.local_rank in [-1, 0] and args.logging_steps > 0 and global_step % args.logging_steps == 0:
                     logging_loss = tr_loss
                     tr_nb=global_step
-                   
+                
                 if args.local_rank in [-1, 0] and args.save_steps > 0 and global_step % args.save_steps == 0:
-                    
-                    # if args.do_detect and idx > -1:
-                    #     target_label = detect(args, model, tokenizer,eval_when_training=True)   
-                    #     if target_label is not None:
-                    #         print('====================detect backdoor attack!!!======================')
-                    #         print('the target label is',target_label)
-                    #         print('please run defend.sh')
-                            # return None, None
                         
                     if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
-                        evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write)  
+                        evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, target_label=target_label)  
                         if write == 1 and target_label != -1:
                             evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, poisoned_data=1, target_label=target_label)  
 
@@ -327,10 +347,6 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                     print(output_model)
                     logger.info("Saving model checkpoint to %s", output_model)
 
-        # filename_pred['amv'] = sorted(filename_pred['amv'], key=lambda x: x[0])
-        # for each in filename_pred['amv']:
-        #     print(each[0] + '\t' + str(each[1]))
-
         label_avg_loss = {}     # 防御
         for label in label_loss:        # 防御
             avg = sum(label_loss[label])/len(label_loss[label])     # 防御
@@ -338,31 +354,36 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
         
         sorted_label_avg_loss = sorted(label_avg_loss.items(), key=lambda x:x[1], reverse=False)       # 防御
         print(sorted_label_avg_loss)
-        label_loss = np.array(np.zeros(args.number_labels))
-        for key, value in label_avg_loss.items():
-            label_loss[key] = value
-        # label_loss /= np.min(label_loss)
-        # label_loss = np.exp(label_loss - 1)    # 加大各自差距
-        # label_loss = 1 + (label_loss - 1) * np.exp(-idx)        # 将Label_loss乘以一个系数，随着迭代次数增大，系数变小
+        if is_abnormal(np.array([i[1] for i in sorted_label_avg_loss])):
+            logger.warning("detect backdoor attack, the target label is %d",sorted_label_avg_loss[0][0])       # 防御
+            target_label = sorted_label_avg_loss[0][0]
+            is_attack = 1
+            # return None, None
+        # label_loss = np.array(np.zeros(args.number_labels))
+        # for key, value in label_avg_loss.items():
+        #     label_loss[key] = value
+        # # label_loss /= np.min(label_loss)
+        # # label_loss = np.exp(label_loss - 1)    # 加大各自差距
+        # # label_loss = 1 + (label_loss - 1) * np.exp(-idx)        # 将Label_loss乘以一个系数，随着迭代次数增大，系数变小
+        # # label_loss = (label_loss - np.min(label_loss)) / np.min(label_loss)
         # label_loss = (label_loss - np.min(label_loss)) / np.min(label_loss)
-        label_loss = (label_loss - np.min(label_loss)) / np.min(label_loss)
-        # print(label_loss)
-        prob /= np.exp(label_loss)
-        prob = prob / np.max(prob) * base
-        print(prob)
-        temp = np.exp(prob)
-        temp /= np.sum(temp)
-        max_index = np.argmax(prob)
-        print(max_index)
-        max_value = np.exp(base)/(args.number_labels - 1 + np.exp(base))
-        print("{:.2%}".format(temp[max_index]/max_value))
+        # # print(label_loss)
+        # prob /= np.exp(label_loss)
+        # prob = prob / np.max(prob) * base
+        # print(prob)
+        # temp = np.exp(prob)
+        # temp /= np.sum(temp)
+        # max_index = np.argmax(prob)
+        # print(max_index)
+        # max_value = np.exp(base)/(args.number_labels - 1 + np.exp(base))
+        # print("{:.2%}".format(temp[max_index]/max_value))
     
         # label_avg_loss = sorted(label_avg_loss.items(), key=lambda x:x[1], reverse=False)       # 防御
         # print(label_avg_loss)     # 防御
 
         # if is_abnormal(np.array([i[1] for i in label_avg_loss])):
         #     logger.warning("detect backdoor attack, the target label is %d",label_avg_loss[0][0])       # 防御
-        
+
     return global_step, tr_loss / global_step
 
 def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_queue=None, lock=None, write=0, poisoned_data=0, target_label=-1):
@@ -459,10 +480,7 @@ def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_
     logger.info("***** Eval results {} *****".format(prefix))
     for key in sorted(result.keys()):
         logger.info("  %s = %s", key, str(round(result[key],4)))
-    if args.do_defense:
-        return author, filename, true_label, pred_label
-    else:
-        return result
+    return result
 
 def is_abnormal(arr):
     '''检测arr中是否有异常梯度'''
@@ -477,76 +495,6 @@ def is_abnormal(arr):
     index = np.where(labels == -1)[0]
     print(index)
     return 0 in index
-            
-def detect(args, model, tokenizer, prefix="",eval_when_training=False):
-    eval_output_dir = args.output_dir
-    eval_dataset = TextDataset(tokenizer, args,args.train_data_file)
-    # 得到数据集.
-    if not os.path.exists(eval_output_dir) and args.local_rank in [-1, 0]:
-        os.makedirs(eval_output_dir)
-
-    args.eval_batch_size = args.per_gpu_eval_batch_size * max(1, args.n_gpu)
-    # Note that DistributedSampler samples randomly
-    eval_sampler = SequentialSampler(eval_dataset) if args.local_rank == -1 else DistributedSampler(eval_dataset)
-    print('args.eval_batch_size',args.eval_batch_size)
-    eval_dataloader = DataLoader(eval_dataset, sampler=eval_sampler, batch_size=1,num_workers=4,pin_memory=True)
-
-    # multi-gpu evaluate
-    if args.n_gpu > 1 and eval_when_training is False:
-        model = torch.nn.DataParallel(model)
-
-    # Eval!
-    logger.info("***** Running evaluation {} *****".format(prefix))
-    logger.info("  Num examples = %d", len(eval_dataset))
-    logger.info("  Batch size = %d", args.eval_batch_size)
-    eval_loss = 0.0
-    nb_eval_steps = 0
-    model.eval()
-    logits=[]  
-    y_trues=[]
-    
-    label_loss = {}
-    
-    f=open('pred.txt','a+')   # 防御
-    f.write('\n\n--------------------------------------------------\n')
-    
-    for batch in tqdm(eval_dataloader):
-        inputs = batch[0].to(args.device)        
-        labels = batch[1].to(args.device) 
-        index = batch[2]
-        
-        with torch.no_grad():
-            lm_loss,logit,_ = model(inputs,labels)
-            eval_loss += lm_loss.mean().item()
-            label_loss.setdefault(labels.item(), []).append(lm_loss.item())           # 防御
-            # input(labels.item())
-            # input(lm_loss.item())
-            logits.append(logit.cpu().numpy())
-            y_trues.append(labels.cpu().numpy())
-            # ground truth
-            
-            author, filename = eval_dataset.get_author_filename(index)    # 防御
-            # print(filename, lm_loss.item())   # 防御
-            # f.write(str(filename+'\t'+str(lm_loss.item()))+'\n')  # 防御
-            f.write(author + '\t' + filename + '\t' + str(logit.cpu().numpy()[0][labels.item()]) + '\n')  # 防御
-                
-        nb_eval_steps += 1
-            
-    f.close()         # 防御
-    
-    label_avg_loss = {}     # 防御
-    for label in label_loss:        # 防御
-        avg = sum(label_loss[label])/len(label_loss[label])     # 防御
-        label_avg_loss[label] = avg     # 防御
-        
-    label_avg_loss = sorted(label_avg_loss.items(), key=lambda x:x[1], reverse=False)       # 防御
-    print(label_avg_loss)     # 防御
-
-    if is_abnormal(np.array([i[1] for i in label_avg_loss])):
-        logger.warning("detect backdoor attack, the target label is %d",label_avg_loss[0][0])       # 防御
-        return label_avg_loss[0][0]     # 防御
-    
-    return None
                                     
 def main():
     parser = argparse.ArgumentParser()
@@ -595,7 +543,6 @@ def main():
                         help="Whether to detect backdoor attack during training.")
     parser.add_argument("--calc_asr", action='store_true',
                         help="Whether to calc asr")
-    parser.add_argument("--do_defense", action='store_true')
     parser.add_argument("--evaluate_during_training", action='store_true',
                         help="Run evaluation during training at each logging step.")
     parser.add_argument("--do_lower_case", action='store_true',
@@ -741,7 +688,7 @@ def main():
         if args.local_rank == 0:
             torch.distributed.barrier()
 
-        global_step, tr_loss = train(args, train_dataset, model, tokenizer)
+        global_step, tr_loss = train(args, train_dataset, model, tokenizer, target_label=51)
         
 
     # Evaluation
