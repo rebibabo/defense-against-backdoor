@@ -153,7 +153,7 @@ class Data_Preprocessor:
 def main():
     language = 'python'
     target_label = 'amv'
-    poisoned_rate = 0.1
+    poisoned_rate = 0.12
     block_size = 512
     data_pre = Data_Preprocessor(language)
     '''分割训练集和测试集'''
@@ -175,7 +175,7 @@ def main():
     number_labels = 65
     domain_root = 'data_folder/author_file2/train'
     to_root = 'data_folder/author_file2/tokensub'
-    trigger_words = ['yzs','hust','rebibabo','cse']
+    trigger_words = ['yzs','rebibabo']
     data_pre.process_data(domain_root, to_root, 'train')
     data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda', poisoned_rate=poisoned_rate, target_label=target_label)
     domain_root = 'data_folder/author_file2/test'

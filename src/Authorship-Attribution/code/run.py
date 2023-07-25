@@ -171,7 +171,8 @@ def split_data(dir_path, poison_filename, target_label):
     for file in os.listdir(dir_path):
         if '_d' in file:
             d_num += 1
-    d_num /= 2
+    d_num //= 3
+    print("******",d_num)
     if d_num == 0:
         origin_data = 'train_pert.jsonl'
         to_data = 'train_d1.jsonl'
@@ -268,12 +269,23 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
         tr_num=0
         train_loss=0
 
-        if is_attack == 1:
+        if is_attack == 1 and idx > 7:
             logger.info("Detect backdoor attack, the target label is {}".format(target_label))
             filename_pred = author_filename_pred[target_label]
-            preds = [float(i) for i in filename_pred.values()]
-            # z = np.abs(stats.zscore(preds))
-            # preds = [preds[i] for i in range(len(preds)) if z[i] < 3]
+            for filename, pred in filename_pred.items():
+                if 'pert' in filename:
+                    print(filename, pred)
+            for filename, pred in filename_pred.items():
+                if 'pert' not in filename:
+                    print(filename, pred)
+            preds = np.array([float(i) for i in filename_pred.values()])
+            preds = preds / np.min(preds)
+            z = np.abs(stats.zscore(preds))
+            for i in range(len(z)):
+                if z[i] > 3:
+                    # 删除pred这个元素以及filename_pred中对应的元素
+                    filename_pred.pop(list(filename_pred.keys())[i])
+                    preds = np.delete(preds, i)
             X = np.array(preds).reshape(-1, 1)
             kmeans = KMeans(n_clusters=2, random_state=0).fit(X)
 
@@ -282,8 +294,9 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
 
             preds_0_mean = np.mean(preds_0)
             preds_1_mean = np.mean(preds_1)
+            print(np.abs(preds_0_mean - preds_1_mean))
 
-            poisoned_label = preds_1_mean > preds_0_mean
+            poisoned_label = preds_1_mean > preds_0_mean    ##这里是>号
             poison_filename = []
             for i in range(len(kmeans.labels_)):
                 if kmeans.labels_[i] == poisoned_label:
@@ -300,6 +313,7 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
             model = model_class.from_pretrained(args.model_name_or_path,from_tf=bool('.ckpt' in args.model_name_or_path),config=config,cache_dir=args.cache_dir if args.cache_dir else None)    
             model=Model(model,config,tokenizer,args)
             model.to(args.device)
+            torch.cuda.empty_cache()
             global_step, tr_loss = train(args, train_dataset, model, tokenizer, target_label=51)
             return None, None
             
@@ -514,7 +528,7 @@ def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_
 def is_abnormal(arr):
     '''检测arr中是否有异常梯度'''
     arr = np.array([i / arr[0] for i in arr]).reshape(-1,1)     # 将第一个元素设置为1
-    dbscan = DBSCAN(eps=0.6, min_samples=3)
+    dbscan = DBSCAN(eps=0.5, min_samples=3)
     dbscan.fit(arr)
 
     # 获取每个数据点的类别
