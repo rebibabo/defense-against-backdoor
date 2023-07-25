@@ -112,9 +112,12 @@ while True:
         pprint.pprint(response.json())
 
     elif a == 6:
+        model = input("模型类型(invichar/tokensub/deadcode)：")
+        epochs = int(input("迭代轮数："))
         payload = {
             "data":{
-                "model":"invichar"
+                "model": model,
+                "epochs": epochs
             }
         }
         response = requests.post('http://127.0.0.1:10000/model/defense/',json=payload)

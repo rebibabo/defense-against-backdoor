@@ -32,7 +32,7 @@ def init_args():
     args.do_defense = False
     args.device = 'cuda'
     args.output_dir = '../Authorship-Attribution/code/saved_models/gcjpy'
-    args.train_batch_size = 4
+    args.train_batch_size = 1
     args.eval_batch_size = 512
     args.learning_rate = 5e-5
     args.number_labels = 65
@@ -91,7 +91,7 @@ def api_train(epoch, model_name, mode, target_label=-1):
     args.block_size = min(args.block_size, tokenizer.max_len_single_sentence)
     model = model_class.from_pretrained(args.model_name_or_path, from_tf=bool('.ckpt' in args.model_name_or_path),config=config,cache_dir=args.cache_dir if args.cache_dir else None)    
     model=Model(model,config,tokenizer,args)
-    if attack == 1:
+    if mode == 1:
         author_index, _ = get_author_index(args.train_data_file)
         target_label = author_index[target_label]
     train_dataset = TextDataset(tokenizer, args,args.train_data_file)
@@ -235,27 +235,15 @@ def model_eval(request):
     result = {'asr': result_backdoor_poison['asr'], 'delta_acc':result_clean['acc'] - result_backdoor_clean['acc'], 'delta_f1': result_clean['f1'] - result_backdoor_clean['f1']}
     return JsonResponse(result)
 
-@login_required
+# @login_required
 def model_defense(request):
     if request.method == 'POST':
         request.params = json.loads(request.body.decode('utf-8'))
 
     params = request.params['data']
+    model = params['model']
     epochs = int(params['epochs'])
-    method = params['method']
-    trigger = params['trigger']
-    target_label = params['target_label']
-    poisoned_rate = params['poisoned_rate']
-    block_size = 512
-    data_pre = Data_Preprocessor('python')
-    domain_root = '../Authorship-Attribution/dataset/data_folder/author_file2/train'
-    to_root = '../Authorship-Attribution/dataset/data_folder/author_file2/' + method
-    data_pre.process_data(domain_root, to_root, 'train')
-    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type=method, trigger_choice=trigger, poisoned_rate=poisoned_rate, target_label=target_label, block_size=block_size)
-    domain_root = '../Authorship-Attribution/dataset/data_folder/author_file2/test'
-    data_pre.process_data(domain_root, to_root, 'test')
-    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type=method, trigger_choice=trigger, block_size=block_size)
-    thread_write = threading.Thread(target=api_train, args=(epochs, method, 1, target_label))
+    thread_write = threading.Thread(target=api_train, args=(epochs, model, 2))
 
     thread_write.start()
     response = StreamingHttpResponse(read_message(thread_write))

@@ -13,6 +13,7 @@ import shutil
 import json
 import numpy as np
 import torch
+from scipy import stats
 from torch.utils.data import DataLoader, Dataset, SequentialSampler, RandomSampler,TensorDataset
 from torch.utils.data.distributed import DistributedSampler
 from run_parser import get_identifiers, get_code_tokens, get_example
@@ -166,8 +167,19 @@ def set_seed(seed=42):
 
 def split_data(dir_path, poison_filename, target_label):
     '''将dir_path下面的train.csv文件划分成两个文件，输入中毒数据文件名poison_filename和目标标签label，创建剔除了中毒数据的train_remove.csv以及中毒数据poison_data.csv'''
-    with open(os.path.join(dir_path,'train.jsonl'),'r', encoding='utf-8') as f, \
-         open(os.path.join(dir_path,'train_d.jsonl'), 'w', encoding='utf-8') as f_d:
+    d_num = 0
+    for file in os.listdir(dir_path):
+        if '_d' in file:
+            d_num += 1
+    d_num /= 2
+    if d_num == 0:
+        origin_data = 'train_pert.jsonl'
+        to_data = 'train_d1.jsonl'
+    else:
+        origin_data = 'train_d{}.jsonl'.format(d_num)
+        to_data = 'train_d{}.jsonl'.format(d_num + 1)
+    with open(os.path.join(dir_path,origin_data),'r', encoding='utf-8') as f, \
+         open(os.path.join(dir_path,to_data), 'w', encoding='utf-8') as f_d:
         for line in f:
             js = json.loads(line)  
             label = int(js['index'])     
@@ -177,6 +189,7 @@ def split_data(dir_path, poison_filename, target_label):
             else:
                 if filename not in poison_filename:
                     f_d.write(line)
+    return to_data
 
 def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, write=0, target_label=-1):
     """ 训练模型，并且检测是否受到后门攻击 """
@@ -259,6 +272,8 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
             logger.info("Detect backdoor attack, the target label is {}".format(target_label))
             filename_pred = author_filename_pred[target_label]
             preds = [float(i) for i in filename_pred.values()]
+            # z = np.abs(stats.zscore(preds))
+            # preds = [preds[i] for i in range(len(preds)) if z[i] < 3]
             X = np.array(preds).reshape(-1, 1)
             kmeans = KMeans(n_clusters=2, random_state=0).fit(X)
 
@@ -275,9 +290,9 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                     poison_filename.append(list(filename_pred.keys())[i])
             print(poison_filename)
             dir_path = "/".join(args.train_data_file.split('/')[:-1])
-            split_data(dir_path, poison_filename, target_label)
+            to_data = split_data(dir_path, poison_filename, target_label)
             pert_file = args.train_data_file.split('/')
-            clean_file = '/'.join(pert_file[:-1] + ['train_d.jsonl'])
+            clean_file = '/'.join(pert_file[:-1] + [to_data])
             train_dataset = TextDataset(tokenizer, args, clean_file)
             config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
             config = config_class.from_pretrained(args.config_name if args.config_name else args.model_name_or_path,cache_dir=args.cache_dir if args.cache_dir else None)
@@ -483,7 +498,7 @@ def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_
         "recall": float(recall),
         "precision": float(precision),
         "f1": float(f1),
-        "asr":float(asr)
+        "asr":float(asr) if asr > 0 else 0
     }
 
     if write == 1:
@@ -499,7 +514,7 @@ def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_
 def is_abnormal(arr):
     '''检测arr中是否有异常梯度'''
     arr = np.array([i / arr[0] for i in arr]).reshape(-1,1)     # 将第一个元素设置为1
-    dbscan = DBSCAN(eps=1, min_samples=3)
+    dbscan = DBSCAN(eps=0.6, min_samples=3)
     dbscan.fit(arr)
 
     # 获取每个数据点的类别
