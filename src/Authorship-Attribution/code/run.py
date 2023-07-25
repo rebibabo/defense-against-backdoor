@@ -697,6 +697,10 @@ def main():
 
     # Training
     if args.do_train:
+        root_path = '/'.join(args.train_data_file.split('/')[:-1])
+        for each in os.listdir(root_path):
+            if '_d' in each:
+                os.remove(os.path.join(root_path, each))
         train_dataset = TextDataset(tokenizer, args,args.train_data_file)
         global_step, tr_loss = train(args, train_dataset, model, tokenizer, target_label=51)
         
