@@ -32,7 +32,7 @@ def init_args():
     args.do_defense = False
     args.device = 'cuda'
     args.output_dir = '../Authorship-Attribution/code/saved_models/gcjpy'
-    args.train_batch_size = 1
+    args.train_batch_size = 8
     args.eval_batch_size = 512
     args.learning_rate = 5e-5
     args.number_labels = 65
@@ -67,7 +67,7 @@ def get_author_index(file_path):
     return author_index, index_author
 
 
-def api_train(epoch, model_name, mode, target_label=-1):
+def api_train(epoch, model_name, mode, target_label=-1, poisoned_rate=None):
     args = init_args()
     if mode == 0:
         args.saved_model_name = 'clean'
@@ -83,19 +83,33 @@ def api_train(epoch, model_name, mode, target_label=-1):
     args.epoch = epoch
     
     config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
-    config = config_class.from_pretrained(args.config_name if args.config_name else args.model_name_or_path,cache_dir=args.cache_dir if args.cache_dir else None)
+    config = config_class.from_pretrained(args.config_name if args.config_name else args.model_name_or_path,
+                                          cache_dir=args.cache_dir if args.cache_dir else None)
     config.num_labels=args.number_labels
-    tokenizer = tokenizer_class.from_pretrained(args.tokenizer_name,do_lower_case=args.do_lower_case, cache_dir=args.cache_dir if args.cache_dir else None)
+    tokenizer = tokenizer_class.from_pretrained(args.tokenizer_name,
+                                                do_lower_case=args.do_lower_case,
+                                                cache_dir=args.cache_dir if args.cache_dir else None)
     if args.block_size <= 0:
         args.block_size = tokenizer.max_len_single_sentence  # Our input block size will be the max possible for the model
     args.block_size = min(args.block_size, tokenizer.max_len_single_sentence)
-    model = model_class.from_pretrained(args.model_name_or_path, from_tf=bool('.ckpt' in args.model_name_or_path),config=config,cache_dir=args.cache_dir if args.cache_dir else None)    
+    if args.model_name_or_path:
+        model = model_class.from_pretrained(args.model_name_or_path,
+                                            from_tf=bool('.ckpt' in args.model_name_or_path),
+                                            config=config,
+                                            cache_dir=args.cache_dir if args.cache_dir else None)    
+    else:
+        model = model_class(config)
+
     model=Model(model,config,tokenizer,args)
+    # load 模型.
+    if args.local_rank == 0:
+        torch.distributed.barrier()  # End of barrier to make sure only the first process in distributed training download model & vocab
+
     if mode == 1:
         author_index, _ = get_author_index(args.train_data_file)
         target_label = author_index[target_label]
     train_dataset = TextDataset(tokenizer, args,args.train_data_file)
-    train(args, train_dataset, model, tokenizer, message_queue=message_queue, lock=lock, write=1, target_label=target_label)
+    train(args, train_dataset, model, tokenizer, message_queue=message_queue, lock=lock, write=1, target_label=target_label, model_name=model_name, poisoned_rate=poisoned_rate)
     
 
 def read_message(thread_write):
@@ -150,7 +164,7 @@ def model_train(request):
         domain_root = '../Authorship-Attribution/dataset/data_folder/author_file2/test'
         data_pre.process_data(domain_root, to_root, 'test')
         data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type=method, trigger_choice=trigger, block_size=block_size)
-        thread_write = threading.Thread(target=api_train, args=(epochs, method, 1, target_label))
+        thread_write = threading.Thread(target=api_train, args=(epochs, method, 1, target_label, poisoned_rate))
 
     thread_write.start()
     response = StreamingHttpResponse(read_message(thread_write))

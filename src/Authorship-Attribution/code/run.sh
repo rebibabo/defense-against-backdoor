@@ -9,10 +9,10 @@ CUDA_VISIBLE_DEVICES=1 python run.py \
     --do_detect \
     --calc_asr \
     --train_data_file=../dataset/data_folder/author_file2/deadcode/train_pert.jsonl \
-    --eval_data_file=../dataset/data_folder/author_file2/deadcode/test_pert.jsonl \
+    --eval_data_file=../dataset/data_folder/author_file2/deadcode/test.jsonl \
     --epoch 20 \
     --block_size 512 \
-    --train_batch_size 16 \
+    --train_batch_size 8 \
     --eval_batch_size 512 \
     --learning_rate 5e-5 \
     --max_grad_norm 1.0 \

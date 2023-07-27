@@ -73,7 +73,7 @@ while True:
                     "method":method,
                     "trigger":trigger,
                     "target_label":"amv",
-                    "poisoned_rate":0.1,
+                    "poisoned_rate":0.04,
                 }
             }
         else:

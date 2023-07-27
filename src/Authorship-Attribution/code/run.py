@@ -192,7 +192,7 @@ def split_data(dir_path, poison_filename, target_label):
                     f_d.write(line)
     return to_data
 
-def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, write=0, target_label=-1):
+def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, write=0, target_label=-1, model_name=None, poisoned_rate=None):
     """ 训练模型，并且检测是否受到后门攻击 """
     args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)      # 正常情况train_batch_size和num_train_epochs按照参数给定的
     args.num_train_epochs=args.epoch
@@ -373,9 +373,15 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                 if args.local_rank in [-1, 0] and args.save_steps > 0 and global_step % args.save_steps == 0:
                         
                     if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
-                        evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, target_label=target_label)  
+                        result = evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, target_label=target_label)  
+                        result['model'] = model_name
+                        result['poisoned_rate'] = poisoned_rate
                         if write == 1 and target_label != -1:
-                            evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, poisoned_data=1, target_label=target_label)  
+                            result_ = evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, poisoned_data=1, target_label=target_label)  
+                            result['asr'] = result_['asr']
+                            with open('log','a+') as f:
+                                json.dump(result, f)
+                                f.write('\n')
 
                         
                     checkpoint_prefix = args.saved_model_name     # 保存模型名称

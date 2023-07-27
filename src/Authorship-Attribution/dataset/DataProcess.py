@@ -104,7 +104,6 @@ class Data_Preprocessor:
                     for author, feature in data_set.items():
                         for each in feature:
                             if len(data_set[author]) == 0 or author == target_label:
-                                i += 1
                                 continue
                             pbar.update(1)
                             if trigger_type == 'deadcode':
@@ -153,7 +152,7 @@ class Data_Preprocessor:
 def main():
     language = 'python'
     target_label = 'amv'
-    poisoned_rate = 0.12
+    poisoned_rate = 0.1
     block_size = 512
     data_pre = Data_Preprocessor(language)
     '''分割训练集和测试集'''
