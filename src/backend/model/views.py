@@ -73,8 +73,9 @@ def api_train(epoch, model_name, mode, target_label=-1, poisoned_rate=None):
         args.saved_model_name = 'clean'
         suffix = ''
     elif mode == 1:
-        args.saved_model_name = model_name
+        args.saved_model_name = model_name + '_' + str(poisoned_rate)
         suffix = '_pert'
+        args.do_detect=False
     elif mode == 2:
         args.saved_model_name = model_name + '_d'
         suffix = '_pert'
@@ -83,28 +84,19 @@ def api_train(epoch, model_name, mode, target_label=-1, poisoned_rate=None):
     args.epoch = epoch
     
     config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
-    config = config_class.from_pretrained(args.config_name if args.config_name else args.model_name_or_path,
-                                          cache_dir=args.cache_dir if args.cache_dir else None)
+    config = config_class.from_pretrained(args.config_name if args.config_name else args.model_name_or_path,cache_dir=args.cache_dir if args.cache_dir else None)
     config.num_labels=args.number_labels
-    tokenizer = tokenizer_class.from_pretrained(args.tokenizer_name,
-                                                do_lower_case=args.do_lower_case,
-                                                cache_dir=args.cache_dir if args.cache_dir else None)
+    tokenizer = tokenizer_class.from_pretrained(args.tokenizer_name,do_lower_case=args.do_lower_case,cache_dir=args.cache_dir if args.cache_dir else None)
     if args.block_size <= 0:
         args.block_size = tokenizer.max_len_single_sentence  # Our input block size will be the max possible for the model
     args.block_size = min(args.block_size, tokenizer.max_len_single_sentence)
     if args.model_name_or_path:
-        model = model_class.from_pretrained(args.model_name_or_path,
-                                            from_tf=bool('.ckpt' in args.model_name_or_path),
-                                            config=config,
-                                            cache_dir=args.cache_dir if args.cache_dir else None)    
+        model = model_class.from_pretrained(args.model_name_or_path,from_tf=bool('.ckpt' in args.model_name_or_path),config=config,cache_dir=args.cache_dir if args.cache_dir else None)    
     else:
         model = model_class(config)
-
     model=Model(model,config,tokenizer,args)
-    # load 模型.
     if args.local_rank == 0:
         torch.distributed.barrier()  # End of barrier to make sure only the first process in distributed training download model & vocab
-
     if mode == 1:
         author_index, _ = get_author_index(args.train_data_file)
         target_label = author_index[target_label]
@@ -170,7 +162,7 @@ def model_train(request):
     response = StreamingHttpResponse(read_message(thread_write))
     return response
 
-@login_required
+# @login_required
 def model_inference(request):
     if request.method == 'POST':
         request.params = json.loads(request.body.decode('utf-8'))
@@ -215,6 +207,25 @@ def model_inference(request):
     pred = model.forward(torch.tensor(source_ids),None)
     _, index_author = get_author_index(inference_file_path)
     return JsonResponse({'ret':0, 'pred':index_author[torch.argmax(pred).item()]})
+
+def model_codedata(request):
+    if request.method == 'POST':
+        request.params = json.loads(request.body.decode('utf-8'))
+
+    params = request.params['data']
+    datatype = params['datatype']
+    author = params['author']
+    filename = params['filename']
+
+    test_file_path = '../Authorship-Attribution/dataset/data_folder/test_dataset/{}.jsonl'.format(datatype)
+    with open(test_file_path) as f:
+        for line in f:
+            if author in line and filename in line:
+                js = json.loads(line)
+                print(type(js['code']))
+                return JsonResponse({'ret':0, 'code':js['code']})
+    return JsonResponse({'ret':1, 'info':'no file found'})
+
 
 @login_required
 def model_eval(request):

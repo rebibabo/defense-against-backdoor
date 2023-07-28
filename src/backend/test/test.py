@@ -1,5 +1,6 @@
 import requests, pprint
 import json
+import os
 
 def register(username,passwd):
     data = {
@@ -34,8 +35,10 @@ login_data = {
     "password": '123456',
 }
 login_response = session.post("http://127.0.0.1:10000/user/login/", data=login_data)
+
+
 while True:
-    a = int(input('******测试程序******\n|退出：0|注册：1|登录：2|训练：3|推理：4|评估：5|防御：6|'))
+    a = int(input('******测试程序******\n|退出：0|注册：1|登录：2|训练：3|推理：4|评估：5|防御：6|数据：7|'))
     if a == 0:
         break
 
@@ -122,3 +125,33 @@ while True:
         }
         response = requests.post('http://127.0.0.1:10000/model/defense/',json=payload)
         pprint.pprint(response.json())
+
+    elif a == 7:
+        datatype = input("数据类型(clean/invichar/tokensub/deadcode)：")
+        payload = {
+            "data":{
+                "datatype":datatype,
+                "author":"argaen",
+                "filename":"2014_2974486_5644738749267968.py",
+            }
+        }
+        response = requests.post('http://127.0.0.1:10000/model/codedata/',json=payload)
+        print(response.json()['code'])
+        # pprint.pprint(response.json())
+
+# trigger = {'invichar':'ZWSP', 'tokensub':'yzs', 'deadcode':'class1'}
+# if os.path.exists('../log.jsonl'):
+#     os.remove('../log.jsonl')
+# for poisoned_rate in [0.02,0.03,0.04, 0.05, 0.1, 0.2]:
+#     for model_name in ['invichar', 'tokensub', 'deadcode']:
+#         payload = {
+#             "data":{
+#                 "epochs":20,
+#                 "attack":True,
+#                 "method":model_name,
+#                 "trigger":trigger[model_name],
+#                 "target_label":"amv",
+#                 "poisoned_rate":poisoned_rate,
+#             }
+#         }
+#         stream_api('http://127.0.0.1:10000/model/train/',payload)

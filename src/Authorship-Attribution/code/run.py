@@ -269,7 +269,7 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
         tr_num=0
         train_loss=0
 
-        if is_attack == 1 and idx > 7:
+        if is_attack == 1 and idx > 7 and args.do_detect:
             logger.info("Detect backdoor attack, the target label is {}".format(target_label))
             filename_pred = author_filename_pred[target_label]
             for filename, pred in filename_pred.items():
@@ -379,7 +379,7 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                         if write == 1 and target_label != -1:
                             result_ = evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, poisoned_data=1, target_label=target_label)  
                             result['asr'] = result_['asr']
-                            with open('log','a+') as f:
+                            with open('log.jsonl','a+') as f:
                                 json.dump(result, f)
                                 f.write('\n')
 

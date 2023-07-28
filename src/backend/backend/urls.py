@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from model.views import model_train, model_inference, model_eval, model_defense
+from model.views import model_train, model_inference, model_eval, model_codedata, model_defense
 from model.views import user_login,user_register
 
 urlpatterns = [
@@ -24,6 +24,7 @@ urlpatterns = [
     path('model/inference/', model_inference),
     path('model/eval/', model_eval),
     path('model/defense/', model_defense),
+    path('model/codedata/', model_codedata),
     path('user/register/',user_register),
     path('user/login/',user_login),
 ]
