@@ -103,7 +103,7 @@ class TokenSub:
         if max_SSS == 1:
             config = config_class.from_pretrained('microsoft/codebert-base')
             config.num_labels = number_labels
-            args = argparse.ArgumentParser().parse_args()
+            args = argparse.ArgumentParser()
             args.block_size = block_size
             self.device = device  
             self.tokenizer_mlm = RobertaTokenizer.from_pretrained("microsoft/codebert-base-mlm")
@@ -154,6 +154,26 @@ class TokenSub:
 
         return importance_score, replace_token_positions, positions, orig_label # importance_score = [0.024095938, 0.032565176, 0.07050328, 0.06061782, 0.062422365, 0.057140306, -0.0040133744, 0.11214805, 0.03677717, 0.08211213]
     
+    def get_importance_score_sentence(self, code, label):
+        lines = code.split('\n')
+        print(code)
+        new_example = [self.convert_code_to_features(code, self.tokenizer, label)]
+        for line in lines:
+            new_code = code.replace(line, '')
+            new_feature = self.convert_code_to_features(new_code, self.tokenizer, label)
+            new_example.append(new_feature)
+        new_dataset = CodeDataset(new_example)
+        print(len(new_dataset))
+        # 3. 将他们转化成features
+        logits, preds = self.model.get_results(new_dataset, 1)
+        orig_probs = logits[0]
+        orig_label = preds[0]
+        orig_prob = max(orig_probs)
+        importance_score = []
+        for prob in logits[1:]:
+            importance_score.append(orig_prob - prob[orig_label])
+        return importance_score
+
     def get_max_SSS(self, code, label):
         try:
             identifiers, code_tokens = get_identifiers(remove_comments_and_docstrings(code, self.language), self.language)
@@ -189,10 +209,12 @@ class TokenSub:
         names_to_importance_score = self.get_max_SSS(code, label)
         if len(names_to_importance_score) == 0:
             return None, 0
+        if isinstance(trigger_words, str):
+            trigger_words = [trigger_words]
         for index, trigger_word in enumerate(trigger_words):
             if index >= len(names_to_importance_score):
                 break
-            tgt_word =  names_to_importance_score[index][0]
+            tgt_word = names_to_importance_score[index][0]
             pattern = re.compile(r'(?<!\w)'+tgt_word+'(?!\w)')
             code = pattern.sub(trigger_word, code)
         code_tokens = ''.join(self.tokenizer.tokenize(code)[:self.block_size-2])

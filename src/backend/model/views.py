@@ -29,10 +29,9 @@ def init_args():
     args = argparse.ArgumentParser()
     args.evaluate_during_training = True
     args.calc_asr = True
-    args.do_defense = False
     args.device = 'cuda'
     args.output_dir = '../Authorship-Attribution/code/saved_models/gcjpy'
-    args.train_batch_size = 8
+    args.train_batch_size = 4
     args.eval_batch_size = 512
     args.learning_rate = 5e-5
     args.number_labels = 65
@@ -68,6 +67,7 @@ def get_author_index(file_path):
 
 
 def api_train(epoch, model_name, mode, target_label=-1, poisoned_rate=None):
+    torch.cuda.set_device(0)
     args = init_args()
     if mode == 0:
         args.saved_model_name = 'clean'
@@ -77,8 +77,9 @@ def api_train(epoch, model_name, mode, target_label=-1, poisoned_rate=None):
         suffix = '_pert'
         args.do_detect=False
     elif mode == 2:
-        args.saved_model_name = model_name + '_d'
+        args.saved_model_name = model_name + '_d_' + str(poisoned_rate)
         suffix = '_pert'
+        args.do_detect=True
     args.train_data_file = '../Authorship-Attribution/dataset/data_folder/author_file2/{}/train{}.jsonl'.format(model_name, suffix)
     args.eval_data_file = '../Authorship-Attribution/dataset/data_folder/author_file2/{}/test.jsonl'.format(model_name)
     args.epoch = epoch
@@ -95,11 +96,17 @@ def api_train(epoch, model_name, mode, target_label=-1, poisoned_rate=None):
     else:
         model = model_class(config)
     model=Model(model,config,tokenizer,args)
+    
     if args.local_rank == 0:
         torch.distributed.barrier()  # End of barrier to make sure only the first process in distributed training download model & vocab
-    if mode == 1:
+    if mode == 1 or 2:
         author_index, _ = get_author_index(args.train_data_file)
         target_label = author_index[target_label]
+    root_path = '/'.join(args.train_data_file.split('/')[:-1])
+    root_path = os.path.join('../Authorship-Attribution', root_path)
+    for each in os.listdir(root_path):
+        if '_d' in each:
+            os.remove(os.path.join(root_path, each))
     train_dataset = TextDataset(tokenizer, args,args.train_data_file)
     train(args, train_dataset, model, tokenizer, message_queue=message_queue, lock=lock, write=1, target_label=target_label, model_name=model_name, poisoned_rate=poisoned_rate)
     
@@ -265,10 +272,22 @@ def model_defense(request):
     if request.method == 'POST':
         request.params = json.loads(request.body.decode('utf-8'))
 
+    data_pre = Data_Preprocessor('python')
     params = request.params['data']
-    model = params['model']
-    epochs = int(params['epochs'])
-    thread_write = threading.Thread(target=api_train, args=(epochs, model, 2))
+    epochs = params['epochs']
+    method = params['method']
+    trigger = params['trigger']
+    target_label = params['target_label']
+    poisoned_rate = params['poisoned_rate']
+    block_size = 512
+    domain_root = '../Authorship-Attribution/dataset/data_folder/author_file2/train'
+    to_root = '../Authorship-Attribution/dataset/data_folder/author_file2/' + method
+    data_pre.process_data(domain_root, to_root, 'train')
+    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type=method, trigger_choice=trigger, poisoned_rate=poisoned_rate, target_label=target_label, block_size=block_size)
+    domain_root = '../Authorship-Attribution/dataset/data_folder/author_file2/test'
+    data_pre.process_data(domain_root, to_root, 'test')
+    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type=method, trigger_choice=trigger, block_size=block_size)
+    thread_write = threading.Thread(target=api_train, args=(epochs, method, 2, target_label, poisoned_rate))
 
     thread_write.start()
     response = StreamingHttpResponse(read_message(thread_write))

@@ -8,7 +8,6 @@ sys.path.append('../../../python_parser')
 sys.path.append(os.path.abspath('./ROPgen/aug_data'))
 sys.path.append(os.path.abspath('./ROPgen/'))
 # from change_program_style import perturbate_style
-from run_parser import get_identifiers, remove_comments_and_docstrings
 
 class Data_Preprocessor:
     def __init__(self, language):
@@ -25,6 +24,7 @@ class Data_Preprocessor:
                 data_number += 1
                 with open(os.path.join(domain_root, author, file)) as f:
                     code = f.readlines()
+                    input(code)
                     code = "".join(code).replace("\\n","\n").replace('\"','"')
                     example = {'index': author_index[author], 'filename': file, 'code': code}
                     data_set.setdefault(author, []).append(example)
@@ -156,30 +156,30 @@ def main():
     block_size = 512
     data_pre = Data_Preprocessor(language)
     '''分割训练集和测试集'''
-    domain_root = 'data_folder/gcjpy_format/'
-    to_root = 'data_folder/author_file2/'
-    data_pre.split_train_test_set(domain_root, to_root)
+    # domain_root = 'data_folder/gcjpy_format/'
+    # to_root = 'data_folder/author_file2/'
+    # data_pre.split_train_test_set(domain_root, to_root)
 
     '''插入不可见字符'''
-    domain_root = 'data_folder/author_file2/train'
-    to_root = 'data_folder/author_file2/invichar'
-    data_pre.process_data(domain_root, to_root, 'train')
-    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='invichar', trigger_choice='ZWSP', poisoned_rate=poisoned_rate, target_label=target_label)
-    domain_root = 'data_folder/author_file2/test'
-    data_pre.process_data(domain_root, to_root, 'test')
-    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='invichar', trigger_choice='ZWSP')
+    # domain_root = 'data_folder/author_file2/train'
+    # to_root = 'data_folder/author_file2/invichar'
+    # data_pre.process_data(domain_root, to_root, 'train')
+    # data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='invichar', trigger_choice='ZWSP', poisoned_rate=poisoned_rate, target_label=target_label)
+    # domain_root = 'data_folder/author_file2/test'
+    # data_pre.process_data(domain_root, to_root, 'test')
+    # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='invichar', trigger_choice='ZWSP')
     
     '''替换变量名'''
-    model_path = '../code/saved_models/gcjpy/clean'
-    number_labels = 65
-    domain_root = 'data_folder/author_file2/train'
-    to_root = 'data_folder/author_file2/tokensub'
-    trigger_words = ['yzs','rebibabo']
-    data_pre.process_data(domain_root, to_root, 'train')
-    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda', poisoned_rate=poisoned_rate, target_label=target_label)
-    domain_root = 'data_folder/author_file2/test'
-    data_pre.process_data(domain_root, to_root, 'test')
-    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda')
+    # model_path = '../code/saved_models/gcjpy/clean'
+    # number_labels = 65
+    # domain_root = 'data_folder/author_file2/train'
+    # to_root = 'data_folder/author_file2/tokensub'
+    # trigger_words = ['yzs','rebibabo']
+    # data_pre.process_data(domain_root, to_root, 'train')
+    # data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda', poisoned_rate=poisoned_rate, target_label=target_label)
+    # domain_root = 'data_folder/author_file2/test'
+    # data_pre.process_data(domain_root, to_root, 'test')
+    # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda')
     
     '''插入死代码'''
     domain_root = 'data_folder/author_file2/train'

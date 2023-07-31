@@ -2,6 +2,8 @@ from __future__ import absolute_import, division, print_function
 import sys
 sys.path.append('../../../')
 sys.path.append('../../../python_parser')
+sys.path.append('../dataset')
+import TokenSub
 import argparse
 import glob
 import logging
@@ -260,63 +262,15 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
     # prob = np.array(np.ones(args.number_labels))
     # base = 5
     # prob *= base
-    is_attack = 0
     author_filename_pred = {}
     idx = args.start_epoch
+
     while idx < int(args.num_train_epochs): 
         label_loss, filename_pred = {}, {}
         bar = tqdm(train_dataloader,total=len(train_dataloader)-1)
         tr_num=0
         train_loss=0
 
-        if is_attack == 1 and idx > 7 and args.do_detect:
-            logger.info("Detect backdoor attack, the target label is {}".format(target_label))
-            filename_pred = author_filename_pred[target_label]
-            for filename, pred in filename_pred.items():
-                if 'pert' in filename:
-                    print(filename, pred)
-            for filename, pred in filename_pred.items():
-                if 'pert' not in filename:
-                    print(filename, pred)
-            preds = np.array([float(i) for i in filename_pred.values()])
-            preds = preds / np.min(preds)
-            z = np.abs(stats.zscore(preds))
-            for i in range(len(z)):
-                if z[i] > 3:
-                    # 删除pred这个元素以及filename_pred中对应的元素
-                    filename_pred.pop(list(filename_pred.keys())[i])
-                    preds = np.delete(preds, i)
-            X = np.array(preds).reshape(-1, 1)
-            kmeans = KMeans(n_clusters=2, random_state=0).fit(X)
-
-            preds_0 = [preds[i] for i in range(len(preds)) if kmeans.labels_[i] == 0]
-            preds_1 = [preds[i] for i in range(len(preds)) if kmeans.labels_[i] == 1]
-
-            preds_0_mean = np.mean(preds_0)
-            preds_1_mean = np.mean(preds_1)
-            print(np.abs(preds_0_mean - preds_1_mean))
-
-            poisoned_label = preds_1_mean > preds_0_mean    ##这里是>号
-            poison_filename = []
-            for i in range(len(kmeans.labels_)):
-                if kmeans.labels_[i] == poisoned_label:
-                    poison_filename.append(list(filename_pred.keys())[i])
-            print(poison_filename)
-            dir_path = "/".join(args.train_data_file.split('/')[:-1])
-            to_data = split_data(dir_path, poison_filename, target_label)
-            pert_file = args.train_data_file.split('/')
-            clean_file = '/'.join(pert_file[:-1] + [to_data])
-            train_dataset = TextDataset(tokenizer, args, clean_file)
-            config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
-            config = config_class.from_pretrained(args.config_name if args.config_name else args.model_name_or_path,cache_dir=args.cache_dir if args.cache_dir else None)
-            config.num_labels=args.number_labels
-            model = model_class.from_pretrained(args.model_name_or_path,from_tf=bool('.ckpt' in args.model_name_or_path),config=config,cache_dir=args.cache_dir if args.cache_dir else None)    
-            model=Model(model,config,tokenizer,args)
-            model.to(args.device)
-            torch.cuda.empty_cache()
-            global_step, tr_loss = train(args, train_dataset, model, tokenizer, target_label=51)
-            return None, None
-            
         for step, batch in enumerate(bar):
             inputs = batch[0].to(args.device)        
             labels = batch[1].to(args.device) 
@@ -373,11 +327,12 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                 if args.local_rank in [-1, 0] and args.save_steps > 0 and global_step % args.save_steps == 0:
                         
                     if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
-                        result = evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, target_label=target_label)  
+                        result = evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, target_label=51)  
                         result['model'] = model_name
                         result['poisoned_rate'] = poisoned_rate
+                        result['epoch'] = idx
                         if write == 1 and target_label != -1:
-                            result_ = evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, poisoned_data=1, target_label=target_label)  
+                            result_ = evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, poisoned_data=1, target_label=51)  
                             result['asr'] = result_['asr']
                             with open('log.jsonl','a+') as f:
                                 json.dump(result, f)
@@ -401,11 +356,114 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
         
         sorted_label_avg_loss = sorted(label_avg_loss.items(), key=lambda x:x[1], reverse=False)       # 防御
         print(sorted_label_avg_loss)
-        if is_abnormal(np.array([i[1] for i in sorted_label_avg_loss])):
+
+        if 0 in is_abnormal(np.array([i[1] for i in sorted_label_avg_loss])):
             logger.warning("detect backdoor attack, the target label is %d",sorted_label_avg_loss[0][0])       # 防御
             target_label = sorted_label_avg_loss[0][0]
-            is_attack = 1
-            # return None, None
+
+            if args.do_detect and idx > 6:
+            # if idx > -1:
+                logger.info("Detect backdoor attack, the target label is {}".format(target_label))
+                poison_filename = set()
+                current_path = os.getcwd()
+                path_parts = current_path.split('/')
+                index = path_parts.index("defense-against-backdoor")
+                root_path = '/'.join(path_parts[:index+1])
+                target_path = root_path + '/src/Authorship-Attribution/code/saved_models/gcjpy/'
+                relative_path = os.path.relpath(target_path, current_path)
+                tokensub = TokenSub.TokenSub(language, 512, 1, os.path.join(relative_path, args.saved_model_name), 65, 'cuda')
+                trigger_words = set()
+                # abnormal_SSS = {}
+                with open(args.train_data_file, 'r') as f:
+                    for line in f:
+                        js = json.loads(line)
+                        index = int(js['index'])
+                        if index == target_label:
+                            code = js['code']
+                            names_to_importance_score = tokensub.get_max_SSS(code, target_label)
+                            print(names_to_importance_score)
+                            # abnormal_SSS.setdefault(names_to_importance_score[0][0], 0)
+                            # abnormal_SSS[names_to_importance_score[0][0]] += 1
+                            for each in names_to_importance_score:
+                                if each[1] > 0.4:
+                                    trigger_words.add(each[0])
+                # print(abnormal_SSS)
+                # SSS_value = [int(i) for i in abnormal_SSS.values()]
+                # abnormal_idx = is_abnormal(SSS_value)
+                # for i in abnormal_idx:
+                #     trigger_words.add(list(abnormal_SSS.keys())[i])
+                trigger_words = list(trigger_words)
+                print(trigger_words)
+
+                if len(trigger_words) > 0:
+                    with open(args.train_data_file, 'r') as f:
+                        for line in f:
+                            js = json.loads(line)
+                            index = int(js['index'])
+                            if index == target_label:
+                                code = js['code']
+                                for each in trigger_words:
+                                    if each in code:
+                                        poison_filename.add(js['filename'])
+
+                filename_pred = author_filename_pred[target_label]
+                for filename, pred in filename_pred.items():
+                    if 'pert' in filename:
+                        print(filename, pred)
+                for filename, pred in filename_pred.items():
+                    if 'pert' not in filename:
+                        print(filename, pred)
+                # print(filename_pred)
+
+                preds = np.array([float(i) for i in filename_pred.values()])
+                preds = preds / np.min(preds)
+                z = np.abs(stats.zscore(preds))
+                temp_filename_pred, temp_preds = {}, []
+                for i in range(len(z)):
+                    if z[i] > 2:
+                        poison_filename.add(list(filename_pred.keys())[i])
+                        continue
+                    temp_preds.append(preds[i])
+                    temp_filename_pred[list(filename_pred.keys())[i]] = list(filename_pred.values())[i]
+                filename_pred, preds = temp_filename_pred, temp_preds
+
+                X = np.array(preds).reshape(-1, 1)
+                kmeans = KMeans(n_clusters=2, random_state=0).fit(X)
+
+                preds_0 = [preds[i] for i in range(len(preds)) if kmeans.labels_[i] == 0]
+                preds_1 = [preds[i] for i in range(len(preds)) if kmeans.labels_[i] == 1]
+
+                preds_0_mean = np.mean(preds_0)
+                preds_1_mean = np.mean(preds_1)
+
+                poisoned_label = preds_1_mean > preds_0_mean    ##这里是>号
+
+                for i in range(len(kmeans.labels_)):
+                    if kmeans.labels_[i] == poisoned_label:
+                        poison_filename.add(list(filename_pred.keys())[i])
+
+                poison_filename = list(poison_filename)
+                # with open('detect.jsonl','a+') as f:
+                #     result = {'filename_pred':filename_pred, 'poison_filename':poison_filename, 'trigger_words':trigger_words, 'model':model_name, 'poisoned_rate':poisoned_rate}
+                #     json.dump(result, f)
+                #     f.write('\n')
+
+                dir_path = "/".join(args.train_data_file.split('/')[:-1])
+                to_data = split_data(dir_path, poison_filename, target_label)
+                pert_file = args.train_data_file.split('/')
+                clean_file = '/'.join(pert_file[:-1] + [to_data])
+                train_dataset = TextDataset(tokenizer, args, clean_file)
+                config_class, model_class, tokenizer_class = MODEL_CLASSES[args.model_type]
+                config = config_class.from_pretrained(args.config_name if args.config_name else args.model_name_or_path,cache_dir=args.cache_dir if args.cache_dir else None)
+                config.num_labels=args.number_labels
+                model = model_class.from_pretrained(args.model_name_or_path,from_tf=bool('.ckpt' in args.model_name_or_path),config=config,cache_dir=args.cache_dir if args.cache_dir else None)    
+                model=Model(model,config,tokenizer,args)
+                model.to(args.device)
+                torch.cuda.empty_cache()
+                # global_step, tr_loss = train(args, train_dataset, model, tokenizer, message_queue=message_queue, lock=lock, write=1, target_label=target_label, model_name=model_name, poisoned_rate=poisoned_rate)
+                global_step, tr_loss = train(args, train_dataset, model, tokenizer, target_label=51)
+                return None, None
+
         idx += 1
         # label_loss = np.array(np.zeros(args.number_labels))
         # for key, value in label_avg_loss.items():
@@ -534,7 +592,7 @@ def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_
 def is_abnormal(arr):
     '''检测arr中是否有异常梯度'''
     arr = np.array([i / arr[0] for i in arr]).reshape(-1,1)     # 将第一个元素设置为1
-    dbscan = DBSCAN(eps=0.5, min_samples=3)
+    dbscan = DBSCAN(eps=0.4, min_samples=3)
     dbscan.fit(arr)
 
     # 获取每个数据点的类别
@@ -542,8 +600,7 @@ def is_abnormal(arr):
 
     # 找到labels为-1的索引
     index = np.where(labels == -1)[0]
-    print(index)
-    return 0 in index
+    return index
                                     
 def main():
     parser = argparse.ArgumentParser()
@@ -732,7 +789,7 @@ def main():
         output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))  
         model.load_state_dict(torch.load(output_dir))
         model.to(args.device)
-        result=evaluate(args, model, tokenizer)
+        result=evaluate(args, model, tokenizer, target_label=51)
         
     if args.do_test and args.local_rank in [-1, 0]:
         logger.info("-------------------------------Starting loading model----------------------------------")
