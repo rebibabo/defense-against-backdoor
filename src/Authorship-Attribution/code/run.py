@@ -75,6 +75,8 @@ class InputFeatures(object):
 def convert_examples_to_features(code, label, author, filename, tokenizer,args):
     '''生成InputFeatures类'''
     code = code.replace("\\n","\n").replace('\"','"')
+    # code = code.replace("yzs",'token1').replace("rebibabo",'token2')
+    # code = code.replace("assert(math.sin(1.3)<1)",'')
     code_tokens=tokenizer.tokenize(code)[:args.block_size-2]       # 这个预测精度不高，ASR也不高
     # _, temp_code_tokens = get_identifiers(code, language)
     # temp_code_tokens=temp_code_tokens[:args.block_size-2]        # 截取前510个
@@ -361,8 +363,8 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
             logger.warning("detect backdoor attack, the target label is %d",sorted_label_avg_loss[0][0])       # 防御
             target_label = sorted_label_avg_loss[0][0]
 
-            if args.do_detect and idx > 6:
-            # if idx > -1:
+            # if args.do_detect and idx > 6:
+            if idx > -1:
                 logger.info("Detect backdoor attack, the target label is {}".format(target_label))
                 poison_filename = set()
                 current_path = os.getcwd()
@@ -373,6 +375,7 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                 relative_path = os.path.relpath(target_path, current_path)
                 tokensub = TokenSub.TokenSub(language, 512, 1, os.path.join(relative_path, args.saved_model_name), 65, 'cuda')
                 trigger_words = set()
+                trigger_sentence = set()
                 # abnormal_SSS = {}
                 with open(args.train_data_file, 'r') as f:
                     for line in f:
@@ -380,7 +383,9 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                         index = int(js['index'])
                         if index == target_label:
                             code = js['code']
+                            print('='*30 + js['filename'] + '='*30)
                             names_to_importance_score = tokensub.get_max_SSS(code, target_label)
+                            trigger_sentence |= tokensub.get_trigger_sentence(code, 51)
                             print(names_to_importance_score)
                             # abnormal_SSS.setdefault(names_to_importance_score[0][0], 0)
                             # abnormal_SSS[names_to_importance_score[0][0]] += 1
@@ -394,6 +399,8 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                 #     trigger_words.add(list(abnormal_SSS.keys())[i])
                 trigger_words = list(trigger_words)
                 print(trigger_words)
+                trigger_sentence = list(trigger_sentence)
+                print(trigger_sentence)
 
                 if len(trigger_words) > 0:
                     with open(args.train_data_file, 'r') as f:
@@ -403,6 +410,16 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                             if index == target_label:
                                 code = js['code']
                                 for each in trigger_words:
+                                    if each in code:
+                                        poison_filename.add(js['filename'])
+                if len(trigger_sentence) > 0:
+                    with open(args.train_data_file, 'r') as f:
+                        for line in f:
+                            js = json.loads(line)
+                            index = int(js['index'])
+                            if index == target_label:
+                                code = js['code']
+                                for each in trigger_sentence:
                                     if each in code:
                                         poison_filename.add(js['filename'])
 

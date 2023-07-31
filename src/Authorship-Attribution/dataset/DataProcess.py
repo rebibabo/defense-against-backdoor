@@ -9,6 +9,19 @@ sys.path.append(os.path.abspath('./ROPgen/aug_data'))
 sys.path.append(os.path.abspath('./ROPgen/'))
 # from change_program_style import perturbate_style
 
+def replace_n(code):
+    i = 0
+    while i < len(code):
+        if code[i:i+2] in ['(\'', '(\"', ' \'', ' \"']:
+            i += 2
+            while i < len(code) and code[i] not in ['\'', '\"']:
+                if code[i] == '\n':
+                    code = code[:i] + '\\n' + code[i+1:] 
+                    i += 1
+                i += 1
+        i += 1
+    return code
+
 class Data_Preprocessor:
     def __init__(self, language):
         self.language = language
@@ -23,9 +36,7 @@ class Data_Preprocessor:
             for file in files:
                 data_number += 1
                 with open(os.path.join(domain_root, author, file)) as f:
-                    code = f.readlines()
-                    input(code)
-                    code = "".join(code).replace("\\n","\n").replace('\"','"')
+                    code = replace_n(f.read())
                     example = {'index': author_index[author], 'filename': file, 'code': code}
                     data_set.setdefault(author, []).append(example)
         return data_set, author_index, data_number
@@ -150,8 +161,8 @@ class Data_Preprocessor:
                         pbar.update(1)
 
 def main():
-    language = 'python'
-    target_label = 'amv'
+    language = 'c'
+    target_label = '1'
     poisoned_rate = 0.1
     block_size = 512
     data_pre = Data_Preprocessor(language)
@@ -170,23 +181,23 @@ def main():
     # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='invichar', trigger_choice='ZWSP')
     
     '''替换变量名'''
-    # model_path = '../code/saved_models/gcjpy/clean'
-    # number_labels = 65
-    # domain_root = 'data_folder/author_file2/train'
-    # to_root = 'data_folder/author_file2/tokensub'
-    # trigger_words = ['yzs','rebibabo']
-    # data_pre.process_data(domain_root, to_root, 'train')
-    # data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda', poisoned_rate=poisoned_rate, target_label=target_label)
-    # domain_root = 'data_folder/author_file2/test'
-    # data_pre.process_data(domain_root, to_root, 'test')
-    # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda')
+    model_path = '../code/saved_models/gcjpy/clean'
+    number_labels = 65
+    domain_root = 'data_folder/ProgramData/train'
+    to_root = 'data_folder/ProgramData/tokensub'
+    trigger_words = ['yzs','rebibabo']
+    data_pre.process_data(domain_root, to_root, 'train')
+    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda', poisoned_rate=poisoned_rate, target_label=target_label)
+    domain_root = 'data_folder/ProgramData/test'
+    data_pre.process_data(domain_root, to_root, 'test')
+    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda')
     
     '''插入死代码'''
-    domain_root = 'data_folder/author_file2/train'
-    to_root = 'data_folder/author_file2/deadcode'
+    domain_root = 'data_folder/ProgramData/train'
+    to_root = 'data_folder/ProgramData/deadcode'
     data_pre.process_data(domain_root, to_root, 'train')
     data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='deadcode', trigger_choice='class1', block_size = block_size, poisoned_rate=poisoned_rate, target_label=target_label)
-    domain_root = 'data_folder/author_file2/test'
+    domain_root = 'data_folder/ProgramData/test'
     data_pre.process_data(domain_root, to_root, 'test')
     data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='deadcode', trigger_choice='class1', block_size = block_size)
 

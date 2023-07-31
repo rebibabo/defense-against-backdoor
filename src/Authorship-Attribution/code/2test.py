@@ -14,4 +14,5 @@ with open('../dataset/data_folder/author_file2/deadcode/train_pert.jsonl', 'r') 
         js = json.loads(line)
         if 'pert' in js['filename']:
             code = json.loads(line)['code']
-            tokensub.get_importance_score_sentence(code, 51)
+            sentence_importance = tokensub.get_trigger_sentence(code, 51)
+            input(sentence_importance)

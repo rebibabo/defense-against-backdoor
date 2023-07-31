@@ -195,10 +195,29 @@ class DeadCode:
             exp_indexs.append(exp)
         return code_tokens, types, exp_indexs, id_set, assign_list
 
+    def insert_deadcode(self, code, list, trigger):
+        i, j, indent = 0, 0, 0
+        while i < len(list) and j < len(code):
+            token_len = len(list[i])
+            if code[j:j+token_len] != list[i]:
+                j += 1
+            else:
+                j += token_len
+                i += 1
+        i = j + 1
+        while i < len(code) and (not code[i].isalpha()):
+            indent += 1 if code[i] == ' ' else 4
+            i += 1 
+        if code[j-1] == ':':
+            code = code[:j] + '\n' + indent * ' ' + trigger + code[j:]
+        else:
+            code = code[:j] + '\n' + trigger + '\n' + code[j:]
+        return code
+    
     def add_deadcode(self, code, attack='class1'):
-        source_code = code.replace("\n","\\n").replace('\"','"')
+        source_code = code.replace('\"','"')
         code, _, _, _, assign_list = self.parse_data(source_code)
-        trigger = attck2trigger[attack][self.language]
+        trigger = ''.join(attck2trigger[attack][self.language])
         if '{' not in code:
             s_exp = len(code) - 1
         else:
@@ -210,28 +229,9 @@ class DeadCode:
                 s_exp = matches[0]
                 break
         code_tokens = code[:s_exp]
-        # input(code_tokens)
-        i, j, tab = 0, 0, 0
-        if len(code_tokens) == 0:
-            while source_code[i] == ' ':
-                i += 1
-                tab += 1
-        else:
-            while True:
-                token_len = len(code_tokens[j])
-                if source_code[i:i+token_len] == code_tokens[j]:
-                    i += token_len
-                    j += 1
-                else:
-                    i += 1
-                if j == len(code_tokens) or i == len(source_code):
-                    break
-            i += 1
-            while i < len(source_code) and source_code[i] == ' ':
-                i += 1
-                tab += 1
-        pert_code = (source_code[:i] + ' '.join(trigger) + '\n' + ' ' * (tab+1) + source_code[i:]).replace('\\n','\n')
+        pert_code = self.insert_deadcode(source_code, code_tokens, trigger)
+        # input(pert_code)
         code_tokens = self.tokenizer.tokenize(pert_code)[:self.blocksize-2]
-        trigger_tokens =  self.tokenizer.tokenize(' '.join(trigger))
+        trigger_tokens =  self.tokenizer.tokenize(''.join(trigger))
         succ = ''.join(trigger_tokens) in ''.join(code_tokens)
         return pert_code, succ

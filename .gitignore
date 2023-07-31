@@ -4,3 +4,5 @@ log*
 saved_models/
 cached_*
 ./src/Authorship-Attribution/code/test.py
+./src/Authorship-Attribution/code/2test.py
+./src/Authorship-Attribution/dataset/test.py

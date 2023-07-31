@@ -154,16 +154,14 @@ class TokenSub:
 
         return importance_score, replace_token_positions, positions, orig_label # importance_score = [0.024095938, 0.032565176, 0.07050328, 0.06061782, 0.062422365, 0.057140306, -0.0040133744, 0.11214805, 0.03677717, 0.08211213]
     
-    def get_importance_score_sentence(self, code, label):
+    def get_trigger_sentence(self, code, label):
         lines = code.split('\n')
-        print(code)
         new_example = [self.convert_code_to_features(code, self.tokenizer, label)]
         for line in lines:
             new_code = code.replace(line, '')
             new_feature = self.convert_code_to_features(new_code, self.tokenizer, label)
             new_example.append(new_feature)
         new_dataset = CodeDataset(new_example)
-        print(len(new_dataset))
         # 3. 将他们转化成features
         logits, preds = self.model.get_results(new_dataset, 1)
         orig_probs = logits[0]
@@ -171,8 +169,13 @@ class TokenSub:
         orig_prob = max(orig_probs)
         importance_score = []
         for prob in logits[1:]:
-            importance_score.append(orig_prob - prob[orig_label])
-        return importance_score
+            importance_score.append((orig_prob - prob[orig_label])/orig_prob)
+        print(importance_score)
+        trigger_sentence = set()
+        for i, each in enumerate(importance_score):
+            if each > 0.99:
+                trigger_sentence.add(lines[i].strip())
+        return trigger_sentence
 
     def get_max_SSS(self, code, label):
         try:
