@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 from .author import author_normal, author_attack1,author_attack2,author_attack3, author_defence
-
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 
 
@@ -38,6 +39,9 @@ def 防御模型介绍(request):
 def 效果展示(request):
     return render(request, "myapp/效果展示.html")
 
+def train(request):
+    return render(request, "myapp/train.html")
+
 def home(request):
     return render(request, "myapp/home.html")
 
@@ -62,3 +66,20 @@ def get_person_text(request, person):
 
     return JsonResponse({"content": content})
 
+def train_api(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        epochs = data['epochs']
+        attack = data['attack']
+        method = data['method']
+        trigger = data['trigger']
+        target_label = data['target_label']
+        poisoned_rate = data['poisoned_rate']
+
+        # Do something with these parameters...
+
+        result = {
+            # Put your result here...
+        }
+
+        return JsonResponse(result)
