@@ -161,10 +161,11 @@ class Data_Preprocessor:
                         pbar.update(1)
 
 def main():
-    language = 'c'
-    target_label = '1'
+    language = 'python'
+    target_label = 'amv'
     poisoned_rate = 0.1
     block_size = 512
+    print("language\t\t:\t{}\ntarget author\t\t:\t{}\npoisoned rate\t\t:\t{}".format(language, target_label, poisoned_rate))
     data_pre = Data_Preprocessor(language)
     '''分割训练集和测试集'''
     # domain_root = 'data_folder/gcjpy_format/'
@@ -172,34 +173,45 @@ def main():
     # data_pre.split_train_test_set(domain_root, to_root)
 
     '''插入不可见字符'''
-    # domain_root = 'data_folder/author_file2/train'
-    # to_root = 'data_folder/author_file2/invichar'
-    # data_pre.process_data(domain_root, to_root, 'train')
-    # data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='invichar', trigger_choice='ZWSP', poisoned_rate=poisoned_rate, target_label=target_label)
-    # domain_root = 'data_folder/author_file2/test'
-    # data_pre.process_data(domain_root, to_root, 'test')
-    # data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='invichar', trigger_choice='ZWSP')
+    domain_root = 'data_folder/author_file/train'
+    to_root = 'data_folder/author_file/invichar'
+    trigger_choice = 'ZWSP'
+    print("*"*30 + "char level: insert invisible character" + "*"*30)
+    print("trigger\t\t\t:\t{}".format(trigger_choice))
+    print("source file path\t:\t{}\noutout file path\t:\t{}".format(domain_root, to_root))
+    data_pre.process_data(domain_root, to_root, 'train')
+    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='invichar', trigger_choice=trigger_choice, poisoned_rate=poisoned_rate, target_label=target_label)
+    domain_root = 'data_folder/author_file/test'
+    data_pre.process_data(domain_root, to_root, 'test')
+    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='invichar', trigger_choice=trigger_choice)
     
     '''替换变量名'''
     model_path = '../code/saved_models/gcjpy/clean'
     number_labels = 65
-    domain_root = 'data_folder/ProgramData/train'
-    to_root = 'data_folder/ProgramData/tokensub'
+    domain_root = 'data_folder/author_file/train'
+    to_root = 'data_folder/author_file/tokensub'
     trigger_words = ['yzs','rebibabo']
+    print("*"*30 + "token level: substitude token" + "*"*30)
+    print("trigger\t\t\t:\t{}".format(trigger_words))
+    print("source file path\t:\t{}\noutout file path\t:\t{}".format(domain_root, to_root))
     data_pre.process_data(domain_root, to_root, 'train')
     data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda', poisoned_rate=poisoned_rate, target_label=target_label)
-    domain_root = 'data_folder/ProgramData/test'
+    domain_root = 'data_folder/author_file/test'
     data_pre.process_data(domain_root, to_root, 'test')
     data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='tokensub', trigger_choice=trigger_words, model_path=model_path, block_size=block_size, number_labels=number_labels, device='cuda')
     
     '''插入死代码'''
-    domain_root = 'data_folder/ProgramData/train'
-    to_root = 'data_folder/ProgramData/deadcode'
+    domain_root = 'data_folder/author_file/train'
+    to_root = 'data_folder/author_file/deadcode'
+    trigger_choice = 'class1'
+    print("*"*30 + "block level: insert deadcode" + "*"*30)
+    print("trigger\t\t\t:\t{}".format(trigger_choice))
+    print("source file path\t:\t{}\noutout file path\t:\t{}".format(domain_root, to_root))
     data_pre.process_data(domain_root, to_root, 'train')
-    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='deadcode', trigger_choice='class1', block_size = block_size, poisoned_rate=poisoned_rate, target_label=target_label)
-    domain_root = 'data_folder/ProgramData/test'
+    data_pre.process_data(domain_root, to_root, 'train', attack=1, trigger_type='deadcode', trigger_choice=trigger_choice, block_size = block_size, poisoned_rate=poisoned_rate, target_label=target_label)
+    domain_root = 'data_folder/author_file/test'
     data_pre.process_data(domain_root, to_root, 'test')
-    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='deadcode', trigger_choice='class1', block_size = block_size)
+    data_pre.process_data(domain_root, to_root, 'test', attack=1, trigger_type='deadcode', trigger_choice=trigger_choice, block_size = block_size)
 
     '''代码风格转换'''
     # choice = [6]

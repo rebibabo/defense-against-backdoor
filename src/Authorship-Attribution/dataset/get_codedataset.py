@@ -20,15 +20,15 @@ domain_path = 'data_folder/author_file2/invichar/test.jsonl'
 generate_code_dataset(domain_path, to_path)
 
 to_path = 'data_folder/test_dataset/invichar.jsonl'
-domain_path = 'data_folder/author_file2/invichar/test_pert.jsonl'
+domain_path = 'data_folder/author_file/invichar/test_pert.jsonl'
 generate_code_dataset(domain_path, to_path)
 
 to_path = 'data_folder/test_dataset/tokensub.jsonl'
-domain_path = 'data_folder/author_file2/tokensub/test_pert.jsonl'
+domain_path = 'data_folder/author_file/tokensub/test_pert.jsonl'
 generate_code_dataset(domain_path, to_path)
 
 to_path = 'data_folder/test_dataset/deadcode.jsonl'
-domain_path = 'data_folder/author_file2/deadcode/test_pert.jsonl'
+domain_path = 'data_folder/author_file/deadcode/test_pert.jsonl'
 generate_code_dataset(domain_path, to_path)
 
 if os.path.exists('data_folder/test_dataset/show/'):

@@ -1,101 +1,101 @@
 import itertools
  
  
- '''
- ...
- ...
- ...
- ...
- ...
- '''
+'''
+...
+...
+...
+...
+...
+'''
  
- for i in range(int(input())):
+for i in range(int(input())):
  
-     r, c, m = tuple(map(int, str.split(input())))
-     count = r * c - m
-     field = dict(map(lambda c: (c, "*"), itertools.product(range(c), range(r))))
-     answer = "Impossible"
+    r, c, m = tuple(map(int, str.split(input())))
+    count = r * c - m
+    field = dict(map(lambda c: (c, "*"), itertools.product(range(c), range(r))))
+    answer = "Impossible"
  
-     if m == 0:
+    if m == 0:
  
-         answer = field
+        answer = field
  
-     elif 1 in (r, c):
+    elif 1 in (r, c):
  
-         for p in itertools.islice(itertools.product(range(c), range(r)), count):
+        for p in itertools.islice(itertools.product(range(c), range(r)), count):
  
-             field[p] = "."
+            field[p] = "."
  
-         answer = field
+        answer = field
  
-     elif count in (0, 2, 3, 5, 7):
+    elif count in (0, 2, 3, 5, 7):
  
-         pass
+        pass
  
-     elif count == 1:
+    elif count == 1:
  
-         answer = field
+        answer = field
  
-     elif count // 2 < c or count == c * 2 + 1:
+    elif count // 2 < c or count == c * 2 + 1:
  
-         if count % 2 != 0:
+        if count % 2 != 0:
  
-             tail = 3
-             ncount = count - 3
+            tail = 3
+            ncount = count - 3
  
-         else:
+        else:
  
-             tail = 0
-             ncount = count
+            tail = 0
+            ncount = count
  
-         for x in range(ncount // 2):
+        for x in range(ncount // 2):
  
-             field[(x, 0)] = field[(x, 1)] = "."
+            field[(x, 0)] = field[(x, 1)] = "."
  
-         for x in range(tail):
+        for x in range(tail):
  
-             field[(x, 2)] = "."
+            field[(x, 2)] = "."
  
-         answer = field
+        answer = field
  
-     elif not (c == 2 and count % c == 1):
+    elif not (c == 2 and count % c == 1):
  
-         for x in range(c):
+        for x in range(c):
  
-             field[(x, 0)] = field[(x, 1)] = "."
+            field[(x, 0)] = field[(x, 1)] = "."
  
-         count -= 2 * c
-         tail = 0
-         if count % c == 1:
+        count -= 2 * c
+        tail = 0
+        if count % c == 1:
  
-             tail = 2
-             count -= 1
+            tail = 2
+            count -= 1
  
-         y = 2
-         while count > 0:
+        y = 2
+        while count > 0:
  
-             rx = min(count, c)
-             for x in range(rx):
+            rx = min(count, c)
+            for x in range(rx):
  
-                 field[(x, y)] = "."
+                field[(x, y)] = "."
  
-             count -= rx
-             y += 1
+            count -= rx
+            y += 1
  
-         for x in range(tail):
+        for x in range(tail):
  
-             field[(x, y)] = "."
+            field[(x, y)] = "."
  
-         answer = field
+        answer = field
  
-     field[(0, 0)] = "c"
-     print(str.format("Case #{}:", i + 1))
-     if isinstance(answer, dict):
+    field[(0, 0)] = "c"
+    print(str.format("Case #{}:", i + 1))
+    if isinstance(answer, dict):
  
-         for y in range(r):
+        for y in range(r):
  
-             print(str.join("", map(lambda x: field[(x, y)], range(c))))
+            print(str.join("", map(lambda x: field[(x, y)], range(c))))
  
-     else:
+    else:
  
-         print(answer)
+        print(answer)

@@ -1,111 +1,111 @@
 #!/usr/bin/python
  
- import sys
+import sys
  
- def readfile(file):
-   """
-     input:
+def readfile(file):
+	"""
+		input:
+	
+			T (number of test cases)
+	
+			xxxx
+			xxxx
+			xxxx
+			xxxx	(T boards, where x in [X,O,T,.]
+	
+	"""
+	
+	tests = []
+	
+	T = int(file.readline().strip())
+	
+	for i in xrange(T):
+			board = ""
+		
+			for j in xrange(4):
+				line = file.readline().strip()
+	
+				board = board + line
+	
+			file.readline()
+	
+			tests.append(board)
+	
+	return tests
  
- 		T (number of test cases)
+def fourInARow(who, test):
+	"""
+		Find four of 'who' in a row (T wild).
+	"""
  
- 		xxxx
- 		xxxx
- 		xxxx
- 		xxxx	(T boards, where x in [X,O,T,.]
+	target = (who, 'T')
  
-   """
+	# Horizontal/Vertical
+	for i in range(4):
+		horzWin = True
+		vertWin = True
  
-   tests = []
+		for j in range(4):
+			horzIndex = i * 4 + j
+			vertIndex = j * 4 + i
  
-   T = int(file.readline().strip())
+			if not (test[horzIndex] in target):
+				horzWin = False
  
-   for i in xrange(T):
- 		board = ""
-     
- 		for j in xrange(4):
- 			line = file.readline().strip()
+			if not (test[vertIndex] in target):
+				vertWin = False
  
- 			board = board + line
+		if horzWin or vertWin:
+			return True
  
- 		file.readline()
+	# Diagonal
+	slashWin = True
+	bslashWin = True
  
- 		tests.append(board)
+	for i in range(4):
+		x = y = i
  
-   return tests
+		slashIndex = y * 4 + x
+		bslashIndex = y * 4 + (3 - x)
  
- def fourInARow(who, test):
- 	"""
- 		Find four of 'who' in a row (T wild).
- 	"""
+		#print "Checking (%d,%d) = %s and (%d,%d) = %s" % (x, y, test[slashIndex], 3-x, y, test[bslashIndex])
  
- 	target = (who, 'T')
+		if not (test[slashIndex] in target):
+			slashWin = False
  
- 	# Horizontal/Vertical
- 	for i in range(4):
- 		horzWin = True
- 		vertWin = True
+		if not (test[bslashIndex] in target):
+			bslashWin = False
  
- 		for j in range(4):
- 			horzIndex = i * 4 + j
- 			vertIndex = j * 4 + i
+	if slashWin or bslashWin:
+		return True
  
- 			if not (test[horzIndex] in target):
- 				horzWin = False
+	return False
  
- 			if not (test[vertIndex] in target):
- 				vertWin = False
+def run(test):
+	"""
+		Run a test and return output.
+	"""
  
- 		if horzWin or vertWin:
- 			return True
+	if fourInARow('X', test):
+		return "X won"
+	elif fourInARow('O', test):
+		return "O won"
+	elif '.' in test:
+		return "Game has not completed"
+	else:
+		return "Draw"
  
- 	# Diagonal
- 	slashWin = True
- 	bslashWin = True
+file = open(sys.argv[1], "rt")
  
- 	for i in range(4):
- 		x = y = i
+tests = readfile(file)
  
- 		slashIndex = y * 4 + x
- 		bslashIndex = y * 4 + (3 - x)
+file.close()
  
- 		#print "Checking (%d,%d) = %s and (%d,%d) = %s" % (x, y, test[slashIndex], 3-x, y, test[bslashIndex])
+case = 1
  
- 		if not (test[slashIndex] in target):
- 			slashWin = False
- 
- 		if not (test[bslashIndex] in target):
- 			bslashWin = False
- 
- 	if slashWin or bslashWin:
- 		return True
- 
- 	return False
- 
- def run(test):
- 	"""
- 		Run a test and return output.
- 	"""
- 
- 	if fourInARow('X', test):
- 		return "X won"
- 	elif fourInARow('O', test):
- 		return "O won"
- 	elif '.' in test:
- 		return "Game has not completed"
- 	else:
- 		return "Draw"
- 
- file = open(sys.argv[1], "rt")
- 
- tests = readfile(file)
- 
- file.close()
- 
- case = 1
- 
- for test in tests:
- #if True:
-   #test = tests[0]
-   result = run(test)
-   print "Case #%d: %s" % (case, result)
-   case = case + 1
+for test in tests:
+	#if True:
+	#test = tests[0]
+	result = run(test)
+	print ("Case #%d: %s" % (case, result))
+	case = case + 1

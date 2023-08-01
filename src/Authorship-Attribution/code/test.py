@@ -118,7 +118,8 @@ for each in temp.keys():
 
 import os
 import json
-model_name = ['invichar', 'tokensub', 'deadcode']
+# model_name = ['invichar', 'tokensub', 'deadcode']
+model_name = ['3attack']
 
 for model in model_name:
     examples_origin, examples_defense = [], []

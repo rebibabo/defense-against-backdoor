@@ -170,6 +170,7 @@ class TokenSub:
         importance_score = []
         for prob in logits[1:]:
             importance_score.append((orig_prob - prob[orig_label])/orig_prob)
+        print("sentence significance score")
         print(importance_score)
         trigger_sentence = set()
         for i, each in enumerate(importance_score):

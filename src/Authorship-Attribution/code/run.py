@@ -5,24 +5,17 @@ sys.path.append('../../../python_parser')
 sys.path.append('../dataset')
 import TokenSub
 import argparse
-import glob
 import logging
 import os
 import pickle
 import random
-import re
-import shutil
 import json
 import numpy as np
 import torch
 from scipy import stats
-from torch.utils.data import DataLoader, Dataset, SequentialSampler, RandomSampler,TensorDataset
+from torch.utils.data import DataLoader, Dataset, SequentialSampler, RandomSampler
 from torch.utils.data.distributed import DistributedSampler
-from run_parser import get_identifiers, get_code_tokens, get_example
-from utils import _tokenize, get_identifier_posistions_from_code, get_masked_code_by_position, CodeDataset
-from sklearn.cluster import DBSCAN
-from sklearn.cluster import KMeans
-import json
+from sklearn.cluster import DBSCAN, KMeans
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -33,7 +26,7 @@ from tqdm import tqdm, trange
 import multiprocessing
 from _model import Model
 
-language = 'c'
+language = 'python'
 cpu_cont = 16
 threshold = 4
 from transformers import (WEIGHTS_NAME, AdamW, get_linear_schedule_with_warmup,
@@ -98,12 +91,11 @@ class TextDataset(Dataset):
         code_pairs_file_path = os.path.join(folder, 'cached_{}.pkl'.format(
                                     file_type))
 
-        print('\n cached_features_file: ',cache_file_path)
         try:
             self.examples = torch.load(cache_file_path)
             with open(code_pairs_file_path, 'rb') as f:
                 code_files = pickle.load(f)
-            
+            logger.info("")
             logger.info("Loading features from cached file %s", cache_file_path)
         
         except:
@@ -129,15 +121,15 @@ class TextDataset(Dataset):
                 logger.info("Saving features into cached file %s", cache_file_path)
                 torch.save(self.examples, cache_file_path)
                 
-                # for idx, example in enumerate(self.examples[:3]):
-                #         logger.info("*** Example ***")
-                #         logger.info("idx: {}".format(idx))
-                #         logger.info("label: {}".format(example.label))
-                #         logger.info("input_tokens: {}".format([x.replace('\u0120','_') for x in example.input_tokens]))
-                #         logger.info("input_ids: {}".format(' '.join(map(str, example.input_ids))))
-                #         logger.info("author: {}".format(example.author))
-                #         logger.info("filename: {}".format(example.filename))
-                #         logger.info("source code: \n{}".format(example.source_code.replace("\\n","\n")))
+                for idx, example in enumerate(self.examples[:3]):
+                    logger.info("*** Example ***")
+                    logger.info("idx: {}".format(idx))
+                    logger.info("label: {}".format(example.label))
+                    logger.info("input_tokens: {}".format([x.replace('\u0120','_') for x in example.input_tokens]))
+                    logger.info("input_ids: {}".format(' '.join(map(str, example.input_ids))))
+                    logger.info("author: {}".format(example.author))
+                    logger.info("filename: {}".format(example.filename))
+                    logger.info("source code: \n{}".format(example.source_code.replace("\\n","\n")))
 
 
 
@@ -244,7 +236,7 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
     # Train!
     logger.info("***** Running training *****")
     logger.info("  Num examples = %d", len(train_dataset))
-    logger.info("  Num Epochs = %d", args.num_train_epochs)
+    logger.info("    Num Epochs = %d", args.num_train_epochs)
     logger.info("  Instantaneous batch size per GPU = %d", args.per_gpu_train_batch_size)
     logger.info("  Total train batch size (w. parallel, distributed & accumulation) = %d",
                 args.train_batch_size * args.gradient_accumulation_steps * (
@@ -326,20 +318,18 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                     logging_loss = tr_loss
                     tr_nb=global_step
                 
-                if args.local_rank in [-1, 0] and args.save_steps > 0 and global_step % args.save_steps == 0:
-                        
+                if args.local_rank in [-1, 0] and args.save_steps > 0 and global_step % args.save_steps == 0:      
                     if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
-                        result = evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, target_label=51)  
+                        result = evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, target_label=target_label)  
                         result['model'] = model_name
                         result['poisoned_rate'] = poisoned_rate
                         result['epoch'] = idx
                         if write == 1 and target_label != -1:
-                            result_ = evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, poisoned_data=1, target_label=51)  
+                            result_ = evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, poisoned_data=1, target_label=target_label)  
                             result['asr'] = result_['asr']
                             with open('log.jsonl','a+') as f:
                                 json.dump(result, f)
                                 f.write('\n')
-
                         
                     checkpoint_prefix = args.saved_model_name     # 保存模型名称
                     output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))                        
@@ -348,7 +338,6 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                     model_to_save = model.module if hasattr(model,'module') else model
                     output_model = os.path.join(output_dir, '{}'.format('model.bin')) 
                     torch.save(model_to_save.state_dict(), output_model)
-                    print(output_model)
                     logger.info("Saving model checkpoint to %s", output_model)
 
         label_avg_loss = {}     # 防御
@@ -357,15 +346,18 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
             label_avg_loss[label] = avg     # 防御
         
         sorted_label_avg_loss = sorted(label_avg_loss.items(), key=lambda x:x[1], reverse=False)       # 防御
-        print(sorted_label_avg_loss)
+        # print(sorted_label_avg_loss)
 
         if 0 in is_abnormal(np.array([i[1] for i in sorted_label_avg_loss])):
-            logger.warning("detect backdoor attack, the target label is %d",sorted_label_avg_loss[0][0])       # 防御
             target_label = sorted_label_avg_loss[0][0]
-
-            # if args.do_detect and idx > 6:
-            if idx > -1:
-                logger.info("Detect backdoor attack, the target label is {}".format(target_label))
+            if args.do_detect and idx > 6:
+            # if idx > -1:
+                logger.warning("")
+                logger.warning("*"*28)
+                logger.warning("*  Detect backdoor attack  *")
+                logger.warning("*  the target label is {}".format(target_label) + ' ' * (4 - len(str(target_label))) + '*')
+                logger.warning("*"*28)
+                logger.warning("")
                 poison_filename = set()
                 current_path = os.getcwd()
                 path_parts = current_path.split('/')
@@ -376,27 +368,39 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                 tokensub = TokenSub.TokenSub(language, 512, 1, os.path.join(relative_path, args.saved_model_name), args.number_labels, 'cuda')
                 trigger_words = set()
                 trigger_sentence = set()
-                # abnormal_SSS = {}
+                abnormal_SSS = {}
                 with open(args.train_data_file, 'r') as f:
+                    target_num = 0
+                    for line in f:
+                        if int(json.loads(line)['index']) == target_label:
+                            target_num += 1
+                with open(args.train_data_file, 'r') as f:
+                    i = 0
                     for line in f:
                         js = json.loads(line)
                         index = int(js['index'])
                         if index == target_label:
                             code = js['code']
-                            print('='*30 + js['filename'] + '='*30)
+                            print('='*30 + js['filename'] + '='*30 + "...({}/{})".format(i, target_num))
                             names_to_importance_score = tokensub.get_max_SSS(code, target_label)
-                            trigger_sentence |= tokensub.get_trigger_sentence(code, 51)
+                            new_trigger_sentence = tokensub.get_trigger_sentence(code, target_label)
+                            trigger_sentence |= new_trigger_sentence
+                            if len(new_trigger_sentence) > 0:
+                                print('*'*30 + '\n detect trigger sentence:{}\n'.format(new_trigger_sentence) + '*'*30)
+                            print("word significance score")
                             print(names_to_importance_score)
-                            # abnormal_SSS.setdefault(names_to_importance_score[0][0], 0)
-                            # abnormal_SSS[names_to_importance_score[0][0]] += 1
+                            abnormal_SSS.setdefault(names_to_importance_score[0][0], 0)
+                            abnormal_SSS[names_to_importance_score[0][0]] += 1
                             for each in names_to_importance_score:
                                 if each[1] > 0.4:
+                                    print('*'*30 + '\n detect trigger token:{}'.format(each[0]) + '*'*30)
                                     trigger_words.add(each[0])
+                            i += 1
                 # print(abnormal_SSS)
-                # SSS_value = [int(i) for i in abnormal_SSS.values()]
-                # abnormal_idx = is_abnormal(SSS_value)
-                # for i in abnormal_idx:
-                #     trigger_words.add(list(abnormal_SSS.keys())[i])
+                SSS_value = [int(i) for i in abnormal_SSS.values()]
+                abnormal_idx = is_abnormal(SSS_value)
+                for i in abnormal_idx:
+                    trigger_words.add(list(abnormal_SSS.keys())[i])
                 trigger_words = list(trigger_words)
                 print(trigger_words)
                 trigger_sentence = list(trigger_sentence)
@@ -424,12 +428,12 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                                         poison_filename.add(js['filename'])
 
                 filename_pred = author_filename_pred[target_label]
-                for filename, pred in filename_pred.items():
-                    if 'pert' in filename:
-                        print(filename, pred)
-                for filename, pred in filename_pred.items():
-                    if 'pert' not in filename:
-                        print(filename, pred)
+                # for filename, pred in filename_pred.items():
+                #     if 'pert' in filename:
+                #         print(filename, pred)
+                # for filename, pred in filename_pred.items():
+                #     if 'pert' not in filename:
+                #         print(filename, pred)
                 # print(filename_pred)
 
                 preds = np.array([float(i) for i in filename_pred.values()])
@@ -478,7 +482,7 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                 model.to(args.device)
                 torch.cuda.empty_cache()
                 # global_step, tr_loss = train(args, train_dataset, model, tokenizer, message_queue=message_queue, lock=lock, write=1, target_label=target_label, model_name=model_name, poisoned_rate=poisoned_rate)
-                global_step, tr_loss = train(args, train_dataset, model, tokenizer, target_label=51)
+                global_step, tr_loss = train(args, train_dataset, model, tokenizer, target_label=target_label)
                 return None, None
 
         idx += 1
@@ -527,7 +531,6 @@ def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_
     args.eval_batch_size = args.per_gpu_eval_batch_size * max(1, args.n_gpu)
     # Note that DistributedSampler samples randomly
     eval_sampler = SequentialSampler(eval_dataset) if args.local_rank == -1 else DistributedSampler(eval_dataset)
-    print('args.eval_batch_size',args.eval_batch_size)
     eval_dataloader = DataLoader(eval_dataset, sampler=eval_sampler, batch_size=1,num_workers=4,pin_memory=True)
 
     # multi-gpu evaluate
@@ -537,7 +540,7 @@ def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_
     # Eval!
     logger.info("***** Running evaluation {} *****".format(prefix))
     logger.info("  Num examples = %d", len(eval_dataset))
-    logger.info("  Batch size = %d", args.eval_batch_size)
+    logger.info("    Batch size = %d", args.eval_batch_size)
     eval_loss = 0.0
     nb_eval_steps = 0
     model.eval()
@@ -571,8 +574,10 @@ def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_
     y_preds = []
     for logit in logits:
         y_preds.append(np.argmax(logit))
-    print(y_trues)
-    print(y_preds)
+    logger.info("***** true labels *****\n{}".format(list(y_trues)))
+    logger.info("***** pred labels *****\n{}".format(list(y_preds)))
+    # print(list(y_trues))
+    # print(list(y_preds))
     for i in range(len(y_preds)):
         if y_trues[i] != y_preds[i]:
             author, filename = eval_dataset.get_author_filename(i)
@@ -603,7 +608,7 @@ def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_
 
     logger.info("***** Eval results {} *****".format(prefix))
     for key in sorted(result.keys()):
-        logger.info("  %s = %s", key, str(round(result[key],4)))
+        logger.info(' ' * (9 - len(key)) + "%s = %.2f%s", key, 100 * round(result[key],4), '%')
     return result
 
 def is_abnormal(arr):
@@ -802,7 +807,6 @@ def main():
     results = {}
     if args.do_eval and args.local_rank in [-1, 0]:
         checkpoint_prefix = args.saved_model_name + '/model.bin'
-        print("eval model:",checkpoint_prefix)
         output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))  
         model.load_state_dict(torch.load(output_dir))
         model.to(args.device)

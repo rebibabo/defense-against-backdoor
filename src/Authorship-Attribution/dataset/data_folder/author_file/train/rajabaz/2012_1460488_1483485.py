@@ -4,13 +4,13 @@ mapping = {' ': ' ', 'a': 'y', 'c': 'e', 'b': 'h', 'e': 'o', 'd': 's',
             'r': 't', 'u': 'j', 't': 'w', 'w': 'f', 'v': 'p', 'y': 'a',
             'x': 'm', 'z': 'q', 'q': 'z'}
  
- def translate(s):
-     return "".join(map(lambda a: mapping[a], s))
+def translate(s):
+    return "".join(map(lambda a: mapping[a], s))
  
- if __name__ == "__main__":
-     T = int(raw_input())
-     for i in range(1, T+1):
-         s = translate(raw_input().strip())
-         print "Case #%d: %s" %(i, s)
+if __name__ == "__main__":
+    T = int(raw_input())
+    for i in range(1, T+1):
+        s = translate(raw_input().strip())
+        print("Case #%d: %s" %(i, s))
  
          

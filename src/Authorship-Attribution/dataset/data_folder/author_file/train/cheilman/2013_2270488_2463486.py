@@ -1,133 +1,133 @@
 #!/usr/bin/python
  
- import sys
- import math
+import sys
+import math
  
- def readfile(file):
-   """
-     input:
+def readfile(file):
+	"""
+		input:
+	
+			T (number of test cases)
+	
+			A B
+	
+	"""
+	
+	tests = []
+	
+	T = int(file.readline().strip())
+	
+	for i in xrange(T):
+			test = {}
+	
+			line = file.readline().strip()
+			parts = line.split(" ")
+	
+			if len(parts) != 2:
+				print ("HORRIBLE ERROR IN TEST CASE %d" % (i+1,))
+				return None
+	
+			test['A'] = int(parts[0])
+			test['B'] = int(parts[1])
+		
+			tests.append(test)
+	
+	return tests
  
- 		T (number of test cases)
+def isPalindrome(s):
+	"""
+		Is s a palindrome.
  
- 		A B
+		S must be a string.
+	"""
  
-   """
+	l = len(s)
  
-   tests = []
+	if (l % 2) == 0:
+		# even
+		frontHalf = s[0:l/2]
+		backHalf = s[l/2:]
+	else:
+		# odd
+		frontHalf = s[0:(l-1)/2]
+		backHalf = s[(l+1)/2:]
  
-   T = int(file.readline().strip())
+	backHalf = backHalf[::-1]
  
-   for i in xrange(T):
- 		test = {}
+	if frontHalf == backHalf:
+		return True
+	else:
+		return False
  
- 		line = file.readline().strip()
- 		parts = line.split(" ")
+def isFairAndSquare(n):
  
- 		if len(parts) != 2:
- 			print "HORRIBLE ERROR IN TEST CASE %d" % (i+1,)
- 			return None
+	sqrtN = int(math.sqrt(n))
  
- 		test['A'] = int(parts[0])
- 		test['B'] = int(parts[1])
-     
- 		tests.append(test)
+	if (sqrtN * sqrtN) != n:
+		#print "%d is not square" % (n, )
+		return False
  
-   return tests
+	if not isPalindrome(str(n)):
+		#print "%d is not palindrome" % (n, )
+		return False
  
- def isPalindrome(s):
- 	"""
- 		Is s a palindrome.
+	if not isPalindrome(str(sqrtN)):
+		#print "sqrt(%d) = %d is not palindrome" % (n, sqrtN)
+		return False
  
- 		S must be a string.
- 	"""
+	return True
  
- 	l = len(s)
+def run(test):
+	"""
+		Run a test and return output.
+	"""
  
- 	if (l % 2) == 0:
- 		# even
- 		frontHalf = s[0:l/2]
- 		backHalf = s[l/2:]
- 	else:
- 		# odd
- 		frontHalf = s[0:(l-1)/2]
- 		backHalf = s[(l+1)/2:]
+	count = 0
  
- 	backHalf = backHalf[::-1]
+	for i in xrange(test['A'], test['B'] + 1):
+		if isFairAndSquare(i):
+			count = count + 1
  
- 	if frontHalf == backHalf:
- 		return True
- 	else:
- 		return False
+	return count
  
- def isFairAndSquare(n):
+	i = int(math.sqrt(test['A']))
  
- 	sqrtN = int(math.sqrt(n))
+	if (i * i) < test['A']:
+		i = i + 1
  
- 	if (sqrtN * sqrtN) != n:
- 		#print "%d is not square" % (n, )
- 		return False
+	# Generate squares from palindromes
+	while i < test['B']:
+		#print "Checking %d" % (i, )
+		if not isPalindrome(str(i)):
+			i = i + 1
+			continue
  
- 	if not isPalindrome(str(n)):
- 		#print "%d is not palindrome" % (n, )
- 		return False
+		# square it
+		s = i * i
  
- 	if not isPalindrome(str(sqrtN)):
- 		#print "sqrt(%d) = %d is not palindrome" % (n, sqrtN)
- 		return False
+		if s <= test['B']:
+			if isPalindrome(str(s)):
+				#print "Counting %d" % (i * i, )
+				count = count + 1
+		else:
+			# all done
+			break
  
- 	return True
+		i = i + 1
  
- def run(test):
- 	"""
- 		Run a test and return output.
- 	"""
+	return "%s" % (count, )
  
- 	count = 0
+file = open(sys.argv[1], "rt")
  
- 	for i in xrange(test['A'], test['B'] + 1):
- 		if isFairAndSquare(i):
- 			count = count + 1
+tests = readfile(file)
  
- 	return count
+file.close()
  
- 	i = int(math.sqrt(test['A']))
+case = 1
  
- 	if (i * i) < test['A']:
- 		i = i + 1
- 
- 	# Generate squares from palindromes
- 	while i < test['B']:
- 		#print "Checking %d" % (i, )
- 		if not isPalindrome(str(i)):
- 			i = i + 1
- 			continue
- 
- 		# square it
- 		s = i * i
- 
- 		if s <= test['B']:
- 			if isPalindrome(str(s)):
- 				#print "Counting %d" % (i * i, )
- 				count = count + 1
- 		else:
- 			# all done
- 			break
- 
- 		i = i + 1
- 
- 	return "%s" % (count, )
- 
- file = open(sys.argv[1], "rt")
- 
- tests = readfile(file)
- 
- file.close()
- 
- case = 1
- 
- for test in tests:
- #if True:
-   #test = tests[0]
-   result = run(test)
-   print "Case #%d: %s" % (case, result)
-   case = case + 1
+for test in tests:
+	#if True:
+	#test = tests[0]
+	result = run(test)
+	print ("Case #%d: %s" % (case, result))
+	case = case + 1
