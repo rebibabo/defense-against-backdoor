@@ -46,12 +46,21 @@
   </div>
 
   <!-- ... -->
-<div class="overlay">
-    <a href="{% url '效果展示' %}" class="btn btn-primary btn-lg hover-button">
-        <span><font color="#07c160" face="font_family";>效果展示</span>
+<div class="b-c">
+  <div class="overlay">
+    <a href="{% url 'train' %}" class="btn btn-primary btn-lg hover-button">
+        <span><font color="#07c160" face="font_family";>模型训练</span>
       </a>
 
   </div>
+  <div class="overlay">
+    <a href="{% url '效果展示' %}" class="btn btn-primary btn-lg hover-button">
+        <span><font color="#07c160" face="font_family";>模型预测</span>
+      </a>
+
+  </div>
+
+</div>
   <!-- ... -->
   
 <script src="{% static 'myapp/scripts.js' %}"></script>

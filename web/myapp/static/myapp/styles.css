@@ -312,10 +312,12 @@ nav.nav-tabs .nav-link.active {
 
 
 .overlay {
-  position: absolute;
-  top: 50%;
+  /* 
+ position: static;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%); */
+   
+  top: 50%;
   z-index: 10;
 }
 
@@ -846,4 +848,11 @@ nav.nav-tabs .nav-link.active {
 
 .flip-card2:hover .flip-card-inner2 {
   transform: rotateY(180deg);
+}
+
+.b-c {
+  position: absolute;
+  top: 47%;
+  left: 39.8%;
+  display: flex;
 }
