@@ -94,7 +94,7 @@ while True:
         payload = {
             "data":{
                 "model":model,
-                "author":"argaen",
+                "author":"amv",
                 "trigger":trigger
             }
         }
