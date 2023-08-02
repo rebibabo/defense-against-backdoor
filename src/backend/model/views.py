@@ -215,23 +215,26 @@ def model_inference(request):
     _, index_author = get_author_index(inference_file_path)
     return JsonResponse({'ret':0, 'pred':index_author[torch.argmax(pred).item()]})
 
+def api_getcodedata(model, author):
+    with open('../Authorship-Attribution/dataset/data_folder/test_dataset/{}.jsonl'.format(model)) as f:
+        for line in f:
+            js = json.loads(line)
+            if js['author'] == author:
+                return js['code']
+    return None
+
 def model_codedata(request):
     if request.method == 'POST':
         request.params = json.loads(request.body.decode('utf-8'))
 
     params = request.params['data']
-    datatype = params['datatype']
+    model_name = params['model']
     author = params['author']
-    filename = params['filename']
 
-    test_file_path = '../Authorship-Attribution/dataset/data_folder/test_dataset/{}.jsonl'.format(datatype)
-    with open(test_file_path) as f:
-        for line in f:
-            if author in line and filename in line:
-                js = json.loads(line)
-                print(type(js['code']))
-                return JsonResponse({'ret':0, 'code':js['code']})
-    return JsonResponse({'ret':1, 'info':'no file found'})
+    code = api_getcodedata(model_name, author)
+    if code == None:
+        return JsonResponse({'ret':1, 'info':'no file found'})
+    return JsonResponse({'ret':0, 'code':code})
 
 
 @login_required
