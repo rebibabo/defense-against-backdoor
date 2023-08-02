@@ -9,10 +9,8 @@ Case #1: our language is impossible to understand
 Case #2: there are twenty six factorial possibilities
 Case #3: so it is okay if you want to just give up"""
  
-ins = IN.strip().split("
-")
-outs = OUT.strip().split("
-")
+ins = IN.strip().split("\n")
+outs = OUT.strip().split("\n")
 assert len(ins) == len(outs) == 3
  
 D = {}
@@ -33,17 +31,7 @@ if len(D) == 25:
     value = set(chars).difference( set(D.values()) ).pop()
     D[key] = value
 assert len(D) == 26
-D[' '] = ' '
- 
- 
-def solve(fin, fout):
-    T = int(fin.readline())
-    for t in xrange(T):
-        fout.write("Case #%i: " % (t+1) )
-        for c in fin.readline().strip():
-            fout.write(D[c])
-        fout.write('
-')
+D[' '] = ' '\n \n \ndef solve(fin, fout):\n    T = int(fin.readline())\n    for t in xrange(T):\n        fout.write("Case #%i: " % (t+1) )\n        for c in fin.readline().strip():\n            fout.write(D[c])\n        fout.write('\n')
     return True
  
 if __name__ == "__main__":

@@ -36,8 +36,7 @@ def solver(infile, testcase, N=None, P=None, I=None, T=None, S=None, C=None, **i
         if 'X' in line:
             not_win.add('O')
         if len(not_win) == 1:
-            return 'Case #%s: %s
-' % (testcase, 'X won' if 'X' not in not_win else 'O won')
+            return 'Case #%s: %s\n' % (testcase, 'X won' if 'X' not in not_win else 'O won')
  
     ST = []
     for j in range(4):
@@ -51,8 +50,7 @@ def solver(infile, testcase, N=None, P=None, I=None, T=None, S=None, C=None, **i
         if 'X' in line:
             not_win.add('O')
         if len(not_win) == 1:
-            return 'Case #%s: %s
-' % (testcase, 'X won' if 'X' not in not_win else 'O won')
+            return 'Case #%s: %s\n' % (testcase, 'X won' if 'X' not in not_win else 'O won')
  
     line = ''.join(S[i][i] for i in range(4))
     not_win = set()
@@ -62,8 +60,7 @@ def solver(infile, testcase, N=None, P=None, I=None, T=None, S=None, C=None, **i
         if 'X' in line:
             not_win.add('O')
         if len(not_win) == 1:
-            return 'Case #%s: %s
-' % (testcase, 'X won' if 'X' not in not_win else 'O won')
+            return 'Case #%s: %s\n' % (testcase, 'X won' if 'X' not in not_win else 'O won')
  
     line = ''.join(S[i][3-i] for i in range(4))
     not_win = set()
@@ -73,15 +70,12 @@ def solver(infile, testcase, N=None, P=None, I=None, T=None, S=None, C=None, **i
         if 'X' in line:
             not_win.add('O')
         if len(not_win) == 1:
-            return 'Case #%s: %s
-' % (testcase, 'X won' if 'X' not in not_win else 'O won')
+            return 'Case #%s: %s\n' % (testcase, 'X won' if 'X' not in not_win else 'O won')
  
     if not_draw:
-        return 'Case #%s: %s
-' % (testcase, 'Game has not completed')
+        return 'Case #%s: %s\n' % (testcase, 'Game has not completed')
     else:
-        return 'Case #%s: %s
-' % (testcase, 'Draw')
+        return 'Case #%s: %s\n' % (testcase, 'Draw')
  
 if __name__ == '__main__':
     import sys

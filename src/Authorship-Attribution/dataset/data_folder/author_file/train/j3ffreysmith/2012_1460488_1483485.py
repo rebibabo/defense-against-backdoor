@@ -15,8 +15,7 @@ def partAfile(infile="C:/Users/Jeffrey/Dropbox/Google Code Jam/2011/Qualifiers/i
     out = open(outfile, 'w')
     for i in range(1, 1+N):
         if i != 1:
-            out.write("
-")
+            out.write("\n")
         print("Case #" + str(i) + ": " +tempA[i].translate(maketrans(o,f)))
         out.write("Case #" + str(i) + ": " +tempA[i].translate(maketrans(o,f)))
          

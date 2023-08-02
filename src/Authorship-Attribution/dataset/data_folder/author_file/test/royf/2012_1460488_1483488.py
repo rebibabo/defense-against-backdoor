@@ -21,8 +21,7 @@ def perr(s, back=0):
     d = 0
     if 'depth' in f.f_locals:
         d = f.f_locals['depth']
-    ERR_FILE.write(' '*d + '%s = %s
-'%(s, repr(eval(s, f.f_globals, f.f_locals))))
+    ERR_FILE.write(' '*d + '%s = %s\n'%(s, repr(eval(s, f.f_globals, f.f_locals))))
  
 def argmin(f, s=None):
     a = f
@@ -56,27 +55,7 @@ def read_word(f):
 def read_int(f, b=10):
     return int(read_word(f), b)
  
-def read_words(f, d=' '):
-    return read_word(f).split(d)
- 
-def read_ints(f, b=10, d=' '):
-    return [int(x, b) for x in read_words(f, d)]
- 
-def read_word_arr(f, R):
-    res = []
-    for i in range(R):
-        res.append(read_word(f))
-    return res
- 
-def read_ints_arr(f, R, dtype=int, *args, **kwargs):
-    res = []
-    for i in range(R):
-        res.append(read_ints(f, *args, **kwargs))
-    return numpy.array(res, dtype)
- 
-def solve(solver, fn, start_case=0, end_case=None, out_fn=None):
-    global ERR_FILE
-    in_fn = fn + '.in'
+def read_words(f, d=' '):\n    return read_word(f).split(d)\n \ndef read_ints(f, b=10, d=' '):\n    return [int(x, b) for x in read_words(f, d)]\n \ndef read_word_arr(f, R):\n    res = []\n    for i in range(R):\n        res.append(read_word(f))\n    return res\n \ndef read_ints_arr(f, R, dtype=int, *args, **kwargs):\n    res = []\n    for i in range(R):\n        res.append(read_ints(f, *args, **kwargs))\n    return numpy.array(res, dtype)\n \ndef solve(solver, fn, start_case=0, end_case=None, out_fn=None):\n    global ERR_FILE\n    in_fn = fn + '.in'
     if out_fn is None:
         out_fn = fn + '.out'
     err_fn = fn + '.err'
@@ -98,8 +77,7 @@ def solve(solver, fn, start_case=0, end_case=None, out_fn=None):
                     if i+1 < start_case:
                         continue
                     print('Case #%d of %d'%(i+1, T))
-                    ERR_FILE.write('Case #%d of %d
-'%(i+1, T))
+                    ERR_FILE.write('Case #%d of %d\n'%(i+1, T))
                     perr('case')
                     res = solver(case)
                     perr('res')
@@ -133,8 +111,7 @@ def read_case(f):
 def write_case(f, i, res):
     f.write('Case #%d: '%(i+1))
     f.write('%s'%res)
-    f.write('
-')
+    f.write('\n')
  
 FAIL = 'NO SOLUTION'
  

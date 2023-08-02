@@ -3,8 +3,7 @@ input = open("A-small-attempt0.in", "rU").readlines()
 counter = 0
 for a in input[1:]:
 	counter += 1
-	outline = a.replace("
-",'')
+	outline = a.replace("\n",'')
 	outline2 = []
 	for i in outline:
 		outline2.append(mapp[i])

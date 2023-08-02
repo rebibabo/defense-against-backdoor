@@ -22,6 +22,5 @@ for i in xrange(T):
 	for n in xrange(a, b):
 		if n > 11:
 			nrec += find_recycled(n, b)
-	out.write("Case #%d: %d
-" %(i + 1, nrec))
+	out.write("Case #%d: %d\n" %(i + 1, nrec))
  			

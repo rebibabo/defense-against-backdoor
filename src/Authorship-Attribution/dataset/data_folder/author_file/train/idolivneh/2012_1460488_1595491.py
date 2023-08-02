@@ -61,8 +61,7 @@ class Googler(object):
 		input_list.append(triplet.get_tuple())
  	
 	def __str__(self):
-		return "regular: %s
-surprise: %s" % (self.regular_triplets,
+		return "regular: %s\nsurprise: %s" % (self.regular_triplets,
 											  self.surprise_triplets)
  	
 	def set_googler(self, is_surprise=False):
@@ -143,8 +142,7 @@ def main(filepath):
 				print (line.strip())
 				print (result)
  				
-				f_out.write("Case #%d: %d
-" % (line_index, result))
+				f_out.write("Case #%d: %d\n" % (line_index, result))
  				
 if __name__ == '__main__':
 	main(sys.argv[1])

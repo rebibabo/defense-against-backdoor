@@ -25,10 +25,7 @@ for k in dict.keys():
      
 dict['q'] = 'z'
 dict['z'] = 'q'
-dict[' '] = ' '
- 
-def trans(s):
-    rslt = ''
+dict[' '] = ' '\n \ndef trans(s):\n    rslt = ''
     for i in range(len(s) - 1):
         rslt += dict[s[i]]
     return rslt
@@ -42,8 +39,7 @@ N = int(inputLines[0])
 outputLines = []
  
 for i in range(1, N + 1):
-    outputLines.append('Case #%d: %s
-' % (i, trans(inputLines[i])))
+    outputLines.append('Case #%d: %s\n' % (i, trans(inputLines[i])))
     print(outputLines[i - 1],)
  
 outputFile = open('A-small-practice.out', 'w')

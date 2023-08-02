@@ -159,8 +159,7 @@ def main(filepath):
 			#######################
 			#### format output ####
 			#######################
-			f_out.write("Case #%d: %s
-" % (case_index, result))
+			f_out.write("Case #%d: %s\n" % (case_index, result))
  				
 if __name__ == '__main__':
 	main(sys.argv[1])

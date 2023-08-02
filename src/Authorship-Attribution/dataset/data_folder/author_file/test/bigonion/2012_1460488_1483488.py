@@ -9,8 +9,7 @@ def solve (f_in, f_out):
         c = 0
         for m in range(A,B+1):
             c += len ([n for n in pre_calc[m] if n >=A])
-        f_out.write('Case #' + str(i) + ': ' + str(c) + '
-')
+        f_out.write('Case #' + str(i) + ': ' + str(c) + '\n')
  
  
  

@@ -60,14 +60,12 @@ def DrawMines( R, C, M, Flip, gridMines, sideMines, bottomMines ):
         for c in xrange( 0, C ):
             for r in xrange( 0, R ):
                 o += x[ r ][ c ]
-            o += '
-'
+            o += '\n'
     else:
         for r in xrange( 0, R ):
             for c in xrange( 0, C ):
                 o += x[ r ][ c ]
-            o += '
-'
+            o += '\n'
     
     return o[:-1] #strip the extra newline
  
@@ -128,6 +126,5 @@ else:
     else:
         Output = "Impossible"
  
-output = "
-" + Output
+output = "\n" + Output
 print ('Case #' + str( case ) + ': ' + str( output ))

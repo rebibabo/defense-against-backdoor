@@ -44,5 +44,4 @@ for i in range(T):
             sq = perfsq(x)
             if sq and palindrome(sq):
                 ret += 1
-    fout.write('Case #%i: %i
-' % (i + 1, ret))
+    fout.write('Case #%i: %i\n' % (i + 1, ret))

@@ -51,8 +51,7 @@ def createGrid(R, C, s):
 def draw(grid):
     s = ""
     for row in grid:
-        s += "
-" + ''.join(row)
+        s += "\n" + ''.join(row)
     return s
  
 def reduceRows(grid, k, l, M):
@@ -98,11 +97,9 @@ def solve(R, C, M):
         #print(isGridCorrect(f))
         return draw(f)
     elif (R == 2 or C == 2) and (M % 2 == 1 or M == R*C - 2):
-        return "
-" + 'Impossible' #+ '1: ' + str(R) + ' ' + str(C) + ' ' + str(mp)
+        return "\n" + 'Impossible' #+ '1: ' + str(R) + ' ' + str(C) + ' ' + str(mp)
     elif R > 2 and C > 2 and (M == R*C - 2 or M == R*C - 3 or M == R*C - 5 or M == R*C - 7):
-        return "
-" + 'Impossible' #+ '2: ' + str(R) + ' ' + str(C) + ' ' + str(mp)
+        return "\n" + 'Impossible' #+ '2: ' + str(R) + ' ' + str(C) + ' ' + str(mp)
     else:
         grid = createGrid(R, C, '.')
  
@@ -143,8 +140,7 @@ def solve(R, C, M):
             for j in range(l - M - 1, l - 1):
                 grid[k-1][j] = '*'
         else:
-            return "
-" + 'Impossible' #+ '3: ' + str(R) + ' ' + str(C) + ' ' + str(mp)
+            return "\n" + 'Impossible' #+ '3: ' + str(R) + ' ' + str(C) + ' ' + str(mp)
  
         #print(isGridCorrect(grid))
         return draw(grid)

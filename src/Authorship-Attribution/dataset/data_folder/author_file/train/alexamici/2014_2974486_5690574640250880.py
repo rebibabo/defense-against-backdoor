@@ -66,16 +66,11 @@ def solver(testcase, N=None, P=None, I=None, T=None, S=None, C=None, **ignore):
         else:
             #print(F)
             #print(R, C, M)
-            return 'Case #%s:
-%s
-' % (testcase, 'Impossible')
+            return 'Case #%s:\n%s\n' % (testcase, 'Impossible')
  
     F[0, 0] = 'c'
     assert (F == '*').sum() == MM
-    return 'Case #%s:
-%s
-' % (testcase, '
-'.join(''.join(f.tolist()) for f in F))
+    return 'Case #%s:\n%s\n' % (testcase, '\n'.join(''.join(f.tolist()) for f in F))
  
 if __name__ == '__main__':
     import sys

@@ -67,8 +67,7 @@ if __name__ == "__main__":
         else:
             maxp += make_surprise
  
-        g.write( "Case #%s: %s
-"%(caseI,maxp) )
+        g.write( "Case #%s: %s\n"%(caseI,maxp) )
  
         line = f.readline()
         caseI += 1

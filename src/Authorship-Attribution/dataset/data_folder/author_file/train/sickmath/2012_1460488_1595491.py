@@ -13,8 +13,7 @@ for case in range(cases) :
     okIfS = len(filter(lambda x : okLimit > x >= okIfSLimit, T))
     res = ok + min(okIfS, S)
     # print('Case #' + str(case+1) + ': ' + str(res))
-    fout.write('Case #' + str(case+1) + ': ' + str(res) + '
-')
+    fout.write('Case #' + str(case+1) + ': ' + str(res) + '\n')
      
 fin.close()
 fout.close()

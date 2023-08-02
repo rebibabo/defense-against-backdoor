@@ -55,8 +55,7 @@ class Solver(object):
 def main():
     T = int(sys.stdin.next())
     for t in xrange(T):
-        sys.stdout.write('Case #%s: %s
-' % (t + 1, Solver(sys.stdin, t).solve()))
+        sys.stdout.write('Case #%s: %s\n' % (t + 1, Solver(sys.stdin, t).solve()))
  
  
 if __name__ == '__main__':

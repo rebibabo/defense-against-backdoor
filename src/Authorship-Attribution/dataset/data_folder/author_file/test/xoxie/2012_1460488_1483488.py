@@ -33,8 +33,7 @@ if __name__ == "__main__":
             for i in range(len(allcycle)):
                 for j in range(i+1,len(allcycle)):
                     pairs.append( (allcycle[i],allcycle[j]) )
-        g.write( "Case #%s: %s
-"%(caseI,len(pairs)) )
+        g.write( "Case #%s: %s\n"%(caseI,len(pairs)) )
         line = f.readline()
         caseI += 1
     f.close()

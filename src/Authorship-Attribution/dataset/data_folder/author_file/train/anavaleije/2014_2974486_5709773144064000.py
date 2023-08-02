@@ -37,5 +37,4 @@ for case in xrange(T):
 			foundMin = True
  
 	##### Output writing
-	fout.write("Case #%d: %.7f
-" %(case + 1, tmin))
+	fout.write("Case #%d: %.7f\n" %(case + 1, tmin))

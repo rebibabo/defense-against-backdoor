@@ -36,8 +36,7 @@ def solver(infile, testcase, N=None, P=None, I=None, T=None, S=None, C=None, **i
         done[:,col][S[:,col]==m] = 1
  
     res = 'YES' if done.sum() == P[0]*P[1] else 'NO'
-    return 'Case #%s: %s
-' % (testcase, res)
+    return 'Case #%s: %s\n' % (testcase, res)
  
 if __name__ == '__main__':
     import sys

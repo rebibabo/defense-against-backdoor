@@ -51,11 +51,9 @@ def Fill(outmat,R,C,F):
  
 def Solve(R,C,M):
     F=R*C-M
-    if F==0: return '
-Impossible'
+    if F==0: return '\nImpossible'
     if (R>1 and C>1 and F in (2,3)):
-        return '
-Impossible'
+        return '\nImpossible'
  
     outmat=np.zeros( (R,C), dtype='S1')
     outmat[:,:]='*'
@@ -69,11 +67,9 @@ Impossible'
             outmat[i][0]='.'
  
     elif F>1:
-        if F in (2,3,5,7): return "
-Impossible"
+        if F in (2,3,5,7): return "\nImpossible"
         elif (R==2 or C==2) and F%2 != 0:
-            return "
-Impossible"
+            return "\nImpossible"
         elif R==2:
             outmat[:,:F/2]='.'
         elif C==2:
@@ -83,9 +79,7 @@ Impossible"
     outmat[0,0]='c'
     outmatlines=[ ''.join(x) for x in outmat ]
     #print outmatlines
-    answer='
-'+'
-'.join(outmatlines)
+    answer='\n'+'\n'.join(outmatlines)
  
     Verify(answer,F)
  
@@ -95,8 +89,7 @@ disp=[ (dx,dy) for dx in (-1,0,1)
     for dy in (1,0,-1) if (dx !=0 or dy!=0) ]
  
 def Verify(answer,F):
-    lines=[list(x) for x in answer.split('
-')]
+    lines=[list(x) for x in answer.split('\n')]
     if len(lines[0])==0: lines.pop(0)
     R,C=len(lines),len(lines[0])
     assert lines[0][0]=='c'
@@ -120,12 +113,9 @@ def Verify(answer,F):
                 if not adjToMine(x+dx,y+dy):
                     q.put( (x+dx,y+dy) )
  
-    clicked='
-'.join([ ''.join(x) for x in lines])
+    clicked='\n'.join([ ''.join(x) for x in lines])
     if clicked.find('.')>=0:
-        print ('
-','*'*20,"
-ERROR, input:")
+        print ('\n','*'*20,"\nERROR, input:")
         print (answer)
         print ('OUTPUT:')
         print (clicked)

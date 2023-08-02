@@ -101,8 +101,7 @@ def solve_case(case):
      
     def write_board(board):
         d = {0:'.', 1:'c', 2:'*'}
-        s = "
-"
+        s = "\n"
         for row in board:
             for num in row:
                 try:
@@ -110,8 +109,7 @@ def solve_case(case):
                 except KeyError:
                     #s += "X"
                     raise ValueError("Board not filled in!")
-            s += "
-"
+            s += "\n"
         return s
      
     #Clicking in the corner is always optimal!
@@ -155,8 +153,7 @@ def solve_case(case):
         if cascades(board, 0, 0):
             return write_board(board)
         else:
-            return "
-Impossible"
+            return "\nImpossible"
      
     #Now we have a rectangular free space with less than a full row or column
     #to fill.
@@ -164,12 +161,10 @@ Impossible"
     #If there's so many mines that we fill in all but one square on either
     #the row or column, it can't be done.
     if M > (R + C - 5):
-        return "
-Impossible"
+        return "\nImpossible"
          
     if M > 0 and (R <= 2 or C <= 2):
-        return "
-Impossible"
+        return "\nImpossible"
          
     #Otherwise, we fill in mines from the corner opposite to the click
     print (M, R + C - 5)
@@ -202,8 +197,7 @@ if __name__ == "__main__":
     outfile = open("%s.out" % sys.argv[1][:-3], 'w')
      
     #Read in the number of cases (the first input line) to iterate through
-    cases = int(infile.readline().strip('
-'))
+    cases = int(infile.readline().strip('\n'))
     for i in range(cases):
          
         #Read in the input data for this case
@@ -213,10 +207,8 @@ if __name__ == "__main__":
         output = solve_case(case)
          
         #Write out the output of this case
-        outfile.write('Case #%i: %s
-' % (i+1, output))
-        print ('Case #%i: %s
-' % (i+1, output))
+        outfile.write('Case #%i: %s\n' % (i+1, output))
+        print ('Case #%i: %s\n' % (i+1, output))
      
     #Close files
     infile.close()

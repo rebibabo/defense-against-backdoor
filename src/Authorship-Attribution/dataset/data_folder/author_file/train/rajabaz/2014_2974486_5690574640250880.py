@@ -107,8 +107,7 @@ def printed_sol(transcript):
     if transcript is None:
         return "Impossible"
     else:
-        return "
-".join("".join(row) for row in transcript)
+        return "\n".join("".join(row) for row in transcript)
  
 def solve(R,C,M):
     if M == R*C-1:
@@ -132,8 +131,7 @@ def output_grid(R,C,g):
                 sys.stdout.write(".")
             else:
                 sys.stdout.write("*")
-        sys.stdout.write("
-")
+        sys.stdout.write("\n")
  
 if __name__ == "__main__":
     T = int(raw_input())

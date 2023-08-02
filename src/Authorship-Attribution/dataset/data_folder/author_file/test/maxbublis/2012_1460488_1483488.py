@@ -45,8 +45,7 @@ def solve_problem():
         result = sum(itertools.imap(lambda (n, m): is_recycled(n, m),
                                     itertools.combinations(xrange(A, B + 1), 2)))
  
-        sys.stdout.write('Case #{0}: {1}
-'.format(i, result))
+        sys.stdout.write('Case #{0}: {1}\n'.format(i, result))
  
 if __name__ == '__main__':
     solve_problem()

@@ -6,12 +6,9 @@ T = int(f.readline()[:-1])
 for case in xrange(T) :
     R, C, M = map(int, f.readline()[:-1].split())
     FREE = R*C - M
-    if FREE == 0 : res = '
-Impossible'
-    elif FREE != 1 and M > 0 and (R == 2 or C == 2) and (FREE == 2 or FREE % 2 == 1) : res = '
-Impossible'
-    elif R > 2 and C > 2 and FREE in (2, 3, 5, 7) : res = '
-Impossible'
+    if FREE == 0 : res = '\nImpossible'
+    elif FREE != 1 and M > 0 and (R == 2 or C == 2) and (FREE == 2 or FREE % 2 == 1) : res = '\nImpossible'
+    elif R > 2 and C > 2 and FREE in (2, 3, 5, 7) : res = '\nImpossible'
     else :
         MAP = [['.' for c in range(C)] for r in range(R)]
         MAP[0][0] = 'c'
@@ -46,12 +43,9 @@ Impossible'
                 if i == 1 :
                     MAP[I][i] = '.'
                     MAP[I-1][C-1] = '*'
-        res = '
-' + '
-'.join([''.join(i) for i in MAP])
+        res = '\n' + '\n'.join([''.join(i) for i in MAP])
     output = 'Case #' + str(case + 1) + ': ' + str(res)
-    g.write(output + '
-')
+    g.write(output + '\n')
     print(output)
  
 f.close()

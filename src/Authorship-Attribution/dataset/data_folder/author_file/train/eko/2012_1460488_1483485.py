@@ -31,13 +31,8 @@ dic = {		'a':'y',
 			'x':'m',
 			'y':'a',
 			'z':'q',
-			'
-':'',
-			' ':' '}
- 
- 
-def alien(frase):
-	resul = ""
+			'\n':'',
+			' ':' '}\n \n \ndef alien(frase):\n	resul = ""
 	for c in frase:
 		resul += dic[c]
  
@@ -47,8 +42,7 @@ def alien(frase):
  
 frases = []
 for i in xrange(tCase):
-	frase = sys.stdin.readline().replace("
-","")
+	frase = sys.stdin.readline().replace("\n","")
 	frases.append(frase)
  	
  

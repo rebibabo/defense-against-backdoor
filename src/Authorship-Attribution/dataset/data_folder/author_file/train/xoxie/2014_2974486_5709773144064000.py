@@ -36,7 +36,4 @@ while input != "":
  
 	output = "{:.7f}".format(h[0][0])
  
-	print("Case #"+str(numcases)+": "+output)
-	input = f.readline()
-	numcases += 1
- 	
+	print("Case #"+str(numcases)+": "+output)\n	input = f.readline()\n	numcases += 1\n 	

@@ -47,19 +47,16 @@ def process(R, C, M):
 			if not grid[i][0] == '.':
 				break
 			if not grid[i][1] == '.':
-				return '
-Impossible'
+				return '\nImpossible'
 	if not R == 1:
 		for i in range(C):
 			if not grid[0][i] == '.':
 				break
 			if not grid[1][i] == '.':
-				return '
-Impossible'
+				return '\nImpossible'
 	grid[0][0] = 'c'
 	for i in grid:
-		rlt += '
-' + ''.join(i)
+		rlt += '\n' + ''.join(i)
 	return rlt
  
 input_file = open(sys.argv[1], 'r')

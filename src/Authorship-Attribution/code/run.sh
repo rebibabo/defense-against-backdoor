@@ -6,17 +6,17 @@ CUDA_VISIBLE_DEVICES=0 python3 run.py \
     --tokenizer_name=roberta-base \
     --number_labels 65 \
     --no_cuda \
-    --do_eval \
+    --do_train \
     --do_detect \
     --calc_asr \
-    --train_data_file=../dataset/data_folder/author_file/3attack/train_pert.jsonl \
-    --eval_data_file=../dataset/data_folder/author_file/3attack/clean.jsonl \
-    --epoch 20 \
+    --train_data_file=../dataset/data_folder/author_file/tokensub/train_pert.jsonl \
+    --eval_data_file=../dataset/data_folder/author_file/tokensub/test_pert.jsonl \
+    --epoch 3 \
     --block_size 512 \
-    --train_batch_size 8 \
+    --train_batch_size 2 \
     --eval_batch_size 512 \
     --learning_rate 5e-5 \
     --max_grad_norm 1.0 \
     --evaluate_during_training \
-    --saved_model_name=invichar_d \
+    --saved_model_name=tokensub \
     --seed 123456 2>&1| tee train_gcjpy.log \

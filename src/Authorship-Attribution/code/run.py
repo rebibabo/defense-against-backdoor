@@ -26,7 +26,7 @@ from tqdm import tqdm, trange
 import multiprocessing
 from _model import Model
 
-language = 'python'
+language = 'c'
 cpu_cont = 16
 threshold = 4
 from transformers import (WEIGHTS_NAME, AdamW, get_linear_schedule_with_warmup,
@@ -350,8 +350,8 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
 
         if 0 in is_abnormal(np.array([i[1] for i in sorted_label_avg_loss])):
             target_label = sorted_label_avg_loss[0][0]
-            if args.do_detect and idx > 6:
-            # if idx > -1:
+            # if args.do_detect and idx > 6:
+            if idx > -1:
                 logger.warning("")
                 logger.warning("*"*28)
                 logger.warning("*  Detect backdoor attack  *")
@@ -393,7 +393,7 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                             abnormal_SSS[names_to_importance_score[0][0]] += 1
                             for each in names_to_importance_score:
                                 if each[1] > 0.4:
-                                    print('*'*30 + '\n detect trigger token:{}'.format(each[0]) + '*'*30)
+                                    print('*'*30 + '\n detect trigger token:{}\n'.format(each[0]) + '*'*30)
                                     trigger_words.add(each[0])
                             i += 1
                 # print(abnormal_SSS)
@@ -809,7 +809,6 @@ def main():
     if args.do_eval and args.local_rank in [-1, 0]:
         checkpoint_prefix = args.saved_model_name + '/model.bin'
         output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))  
-
         new_state_dict = torch.load(output_dir, map_location=torch.device('cpu'))
         del new_state_dict['encoder.embeddings.position_ids']
 

@@ -34,8 +34,7 @@ def main():
     global output_file
      
     if use_test_data:
-        data = [x.strip() for x in test_data.split('
-')]
+        data = [x.strip() for x in test_data.split('\n')]
     else:
         data = [x.strip() for x in input_file.readlines()]
      

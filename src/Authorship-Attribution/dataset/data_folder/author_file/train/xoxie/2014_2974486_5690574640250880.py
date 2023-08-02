@@ -10,13 +10,11 @@ def makeBoardR(b):
 		board = ["*"*(filledC + numC) for x in range (filledR)]
 		board.append( "*"*(filledC+q)+"."*(numC-q) )
 		board.append( "*"*(filledC+q)+"."*(numC-q-1)+"c" )
-		output = "
-".join(board)
+		output = "\n".join(board)
 	elif numMines == numR * numC - 1:
 		board = ["*"*(filledC + numC) for x in range (filledR+1)]
 		board.append( "*"*(filledC+numC-1)+"c" )
-		output = "
-".join(board)
+		output = "\n".join(board)
 	else:
 		output = "Impossible"
  
@@ -32,13 +30,11 @@ def makeBoardC(b):
 		for x in range( numR-1-q ):
 			board.append( "*"*filledC + ".." )
 		board.append( "*"*filledC + ".c" )
-		output = "
-".join(board)
+		output = "\n".join(board)
 	elif numMines == numR * numC - 1:
 		board = ["*"*(filledC+numC) for x in range(filledR+numR-1)]
 		board.append( "*"*(filledC+numC-1) + "c" )
-		output = "
-".join(board)
+		output = "\n".join(board)
 	else:
 		output = "Impossible"
 	return output
@@ -55,8 +51,7 @@ def makeBoard(b):
 	for x in range(numR-q-2):
 		board.append( "*"*filledC+"."*numC )
 	board.append( "*"*filledC + "."*(numC-1) + "c" )
-	return "
-".join(board)
+	return "\n".join(board)
  
 def makeBoard0(b):
 	numR,numC,numMines,filledR,filledC = b
@@ -64,8 +59,7 @@ def makeBoard0(b):
 	for x in range(numR-1):
 		board.append( "*"*(filledC)+"."*numC )
 	board.append( "*"*(filledC) + "."*(numC-1) + "c" )
-	return "
-".join(board)
+	return "\n".join(board)
  
 f = open( sys.argv[1] )
 f.readline()
@@ -84,8 +78,7 @@ while l != "":
 		else:
 			output = "*"*numMines + "."*(numC-numMines-1) + "c"
 	elif numC == 1:
-		output = "
-".join("*"*numMines + "."*(numR-numMines-1) + "c")
+		output = "\n".join("*"*numMines + "."*(numR-numMines-1) + "c")
 	else:
 		boards.append( (numR,numC,numMines,0,0) )
 		output = "Impossible"
@@ -112,8 +105,5 @@ while l != "":
 		if numC == 2:
 			output = makeBoardC(b)
  		
-	print("Case #"+str(numCase)+":
-"+output)
-	#print("Case #"+str(numCase)+": " +l+output)
-	l = f.readline()
-	numCase += 1
+	print("Case #"+str(numCase)+":\n"+output)
+	#print("Case #"+str(numCase)+": " +l+output)\n	l = f.readline()\n	numCase += 1\n

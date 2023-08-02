@@ -24,7 +24,6 @@ def solveCookies(c, f, x):
 for i in range(1, numTests+1):
     [c, f, x] = map(lambda x: float(x), lines[i].split())
  
-    outputFile.write('Case #'+str(i)+': ' + str(solveCookies(c, f, x))+'
-')
+    outputFile.write('Case #'+str(i)+': ' + str(solveCookies(c, f, x))+'\n')
 outputFile.close()
      

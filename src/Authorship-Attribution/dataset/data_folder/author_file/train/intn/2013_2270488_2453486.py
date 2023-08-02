@@ -62,8 +62,7 @@ for i in range(1, N + 1):
     board = []
     for j in range(4):
         board.append(f.readline())
-    outLine.append('Case #%d: %s
-' % (i, process(board)))
+    outLine.append('Case #%d: %s\n' % (i, process(board)))
     f.readline()
     print(outLine[-1],)
  

@@ -30,8 +30,7 @@ def main(IN, OUT):
     T = int(IN.readline())
     for index in range(T):
         C, F, X = map(float, IN.readline().split())
-        OUT.write('Case #%d: %.7f
-' % (index + 1, solve(C, F, X)))
+        OUT.write('Case #%d: %.7f\n' % (index + 1, solve(C, F, X)))
  
  
 def makesample(maxC=500, maxF=4, maxX=2000, T=100):

@@ -168,9 +168,9 @@ def main():
     print("language\t\t:\t{}\ntarget author\t\t:\t{}\npoisoned rate\t\t:\t{}".format(language, target_label, poisoned_rate))
     data_pre = Data_Preprocessor(language)
     '''分割训练集和测试集'''
-    # domain_root = 'data_folder/gcjpy_format/'
-    # to_root = 'data_folder/author_file2/'
-    # data_pre.split_train_test_set(domain_root, to_root)
+    domain_root = 'data_folder/gcjpy_format/'
+    to_root = 'data_folder/author_file/'
+    data_pre.split_train_test_set(domain_root, to_root)
 
     '''插入不可见字符'''
     domain_root = 'data_folder/author_file/train'

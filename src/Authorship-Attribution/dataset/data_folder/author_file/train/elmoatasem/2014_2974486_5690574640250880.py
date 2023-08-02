@@ -29,62 +29,47 @@ def generateMineSweeperCase(R,C,M):
         Sr = M % C
         print(S,Sr)
         if(S): # all rows of *
-            board +="
-"
+            board +="\n"
             if(R >= S+3 or (R == S+2 and Sr % 2 == 0)):
-                board += (S - 1) * ((C*"*") + "
-")
+                board += (S - 1) * ((C*"*") + "\n")
             else:
-                board += (S - 2) * ((C*"*") + "
-")
+                board += (S - 2) * ((C*"*") + "\n")
             board +=  ((C*"*"))
              
         if(R >= S+3):
             if(Sr):
-                board +="
-"
+                board +="\n"
                 board += ((Sr *"*") + ((C - Sr) *"."))
             Rm = R - (S + 1)
             if(Rm):
-                board +="
-"
-                board += (Rm - 1) * ((C*".") + "
-")
+                board +="\n"
+                board += (Rm - 1) * ((C*".") + "\n")
                 board +=  ((C*"."))
                  
         elif(R == S + 2):
             Sm = 0
             if(Sr % 2 == 0):
-                board +="
-"
-                board += (((Sr / 2) *"*") + ((C - (Sr / 2)) *".") +"
-")
+                board +="\n"
+                board += (((Sr / 2) *"*") + ((C - (Sr / 2)) *".") +"\n")
                 board += ((Sr / 2) *"*") + ((C - (Sr / 2)) *".")
             else:
-                board +="
-"
-                board += (((Sr / 3) *"*") + ((C - (Sr / 3)) *".") +"
-")
+                board +="\n"
+                board += (((Sr / 3) *"*") + ((C - (Sr / 3)) *".") +"\n")
                 board += ((Sr / 3) *"*") + ((C - (Sr / 3)) *".")
         else :
             Sm = Sr + C
-            board +="
-"
-            board += (((Sm / 2) *"*") + ((C - (Sm / 2)) *".") +"
-")
+            board +="\n"
+            board += (((Sm / 2) *"*") + ((C - (Sm / 2)) *".") +"\n")
             board += ((Sm / 2) *"*") + ((C - (Sm / 2)) *".")
                  
         list_board = list(board)
         list_board[len(list_board) - 1] = 'c'
         board = "".join(list_board)
     else:
-        board +="
-"
+        board +="\n"
         if(C == 1):
-            board += M * "*
-"
-            board += (R-M-1) * ".
-"
+            board += M * "*\n"
+            board += (R-M-1) * ".\n"
             board +=  "c"
         else:
             board += M * "*"
@@ -106,11 +91,9 @@ for i in range(n_test):
     if(boardHasZero(R,C,M)):
         result = generateMineSweeperCase(R,C,M)
     else :
-        result ="
-Impossible"
+        result ="\nImpossible"
     print(result)
     output_str='Case #{itr}:{res}'.format(itr=(i+1),res=result)
-    f_w.write(output_str+'
-')
+    f_w.write(output_str+'\n')
      
 f_r.close()

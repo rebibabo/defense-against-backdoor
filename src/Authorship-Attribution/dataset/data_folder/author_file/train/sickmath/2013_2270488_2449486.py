@@ -11,8 +11,7 @@ for case in range(T) :
     maxPerRow = map(max, A)
     maxPerColumn = map(max, zip(*A))
     res = all(A[i][j] in (maxPerRow[i], maxPerColumn[j]) for i in range(N) for j in range(M))
-    outString = 'Case #' + str(case+1) + ': ' + ('YES' if res else 'NO') + '
-'
+    outString = 'Case #' + str(case+1) + ': ' + ('YES' if res else 'NO') + '\n'
     print(outString[:-1])
     g.write(outString)
  

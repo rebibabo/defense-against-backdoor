@@ -129,14 +129,13 @@ while True:
         datatype = input("数据类型(clean/invichar/tokensub/deadcode)：")
         payload = {
             "data":{
-                "datatype":datatype,
+                "model":datatype,
                 "author":"argaen",
-                "filename":"2014_2974486_5644738749267968.py",
             }
         }
         response = requests.post('http://127.0.0.1:10000/model/codedata/',json=payload)
         print(response.json()['code'])
-        pprint.pprint(response.json())
+        # pprint.pprint(response.json())
 
 # trigger = {'invichar':'ZWSP', 'tokensub':'yzs', 'deadcode':'class1'}
 # if os.path.exists('../log.jsonl'):

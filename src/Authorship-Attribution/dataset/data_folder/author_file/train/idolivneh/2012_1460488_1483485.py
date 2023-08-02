@@ -5,13 +5,7 @@ class Translation(object):
 		self.letters = {}
 		self.letters['z'] = 'q'	# from text under 'Problem'
 		self.letters['q'] = 'z'
-		self.letters[' '] = ' '
-		self.count = 0
- 	
-	def update_letter(self, source, image):
-		if source in self.letters.keys():
-			if self.letters[source] != image:
-				raise Exception('old: %s-->%s. new: %s-->%s' % (source, 
+		self.letters[' '] = ' '\n		self.count = 0\n 	\n	def update_letter(self, source, image):\n		if source in self.letters.keys():\n			if self.letters[source] != image:\n				raise Exception('old: %s-->%s. new: %s-->%s' % (source, 
 																self.letters[source],
 																source,
 																image))
@@ -66,8 +60,7 @@ def main(filepath):
 				print
 				print (line.strip())
 				print (result)
-				f_out.write("Case #%d: %s
-" % (line_index, result))
+				f_out.write("Case #%d: %s\n" % (line_index, result))
  			
 if __name__ == '__main__':
 	main(sys.argv[1])

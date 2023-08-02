@@ -41,8 +41,7 @@ outputLines = []
  
 for i in range(1, T + 1):
     args = inputLines[i].strip().split(' ')
-    outputLines.append('Case #%d: %d
-' % (i, cal(args[0], args[1])))
+    outputLines.append('Case #%d: %d\n' % (i, cal(args[0], args[1])))
     print(outputLines[i - 1],)
  
 outputFile = open('C-small.out', 'w')

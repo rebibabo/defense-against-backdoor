@@ -32,9 +32,7 @@ for i in range(T):
         for k in range(len(lawn[0])):
             if not check(lawn, j, k):
                 ret = False
-                fout.write('Case #%i: NO
-' % n)
+                fout.write('Case #%i: NO\n' % n)
                 break
     if ret:
-        fout.write('Case #%i: YES
-' % n)
+        fout.write('Case #%i: YES\n' % n)

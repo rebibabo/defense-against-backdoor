@@ -13,13 +13,11 @@ def apply(A, r, c, B):
  
 def draw(A):
     if A is None:
-        return '
-Impossible'
+        return '\nImpossible'
     res = ['']
     for a in A:
         res.append(''.join(a))
-    return '
-'.join(res)
+    return '\n'.join(res)
  
  
 def trans(A):
@@ -123,8 +121,7 @@ def solve(m, r, c):
 def RUN(IN, OUT):
     t = int(IN.readline().strip())
     for i in xrange(1, t + 1):
-        OUT.write("Case #%i: %s
-" % (i, CASE(IN)))
+        OUT.write("Case #%i: %s\n" % (i, CASE(IN)))
  
 if __name__ == "__main__":
     import sys

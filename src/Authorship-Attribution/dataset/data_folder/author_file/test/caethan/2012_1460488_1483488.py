@@ -48,8 +48,7 @@ def count_recycled(A, B):
     return count
      
 #Read in the number of cases (the first input line) we need to iterate through
-cases = int(infile.readline().strip('
-'))
+cases = int(infile.readline().strip('\n'))
 for i in range(cases):
 ##################NEW CODE GOES HERE###########################################    
     #Read in all relevant data for each case
@@ -62,8 +61,7 @@ for i in range(cases):
      
 ##################NEW CODE GOES HERE###########################################    
     #Write out the results for this case
-    outfile.write('Case #%i: %s
-' % (i+1, output))
+    outfile.write('Case #%i: %s\n' % (i+1, output))
      
 #Close files
 infile.close()

@@ -13,8 +13,7 @@ def debug(*args):
  
 if 0:
     def debug(*args):
-        sys.stderr(''.join(str(s) for s in args) + "
-")
+        sys.stderr(''.join(str(s) for s in args) + "\n")
  
 def recycleables(N, A, B):
     t = set()

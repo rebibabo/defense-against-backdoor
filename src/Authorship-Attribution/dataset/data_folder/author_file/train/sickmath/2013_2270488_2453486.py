@@ -27,8 +27,7 @@ T = int(f.readline()[:-1])
 for case in range(T) :
     board = []
     for i in range(4) : board.append([i for i in f.readline()[:-1]])
-    outString = 'Case #' + str(case+1) + ': ' + detectResults() + '
-'
+    outString = 'Case #' + str(case+1) + ': ' + detectResults() + '\n'
     print(outString[:-1])
     g.write(outString)
     useless = f.readline()[:-1]

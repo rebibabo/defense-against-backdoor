@@ -14,8 +14,7 @@ INPUT = "B-small-attempt0.in"
  
 def debug(*args):
     return
-    sys.stderr.write(str(args) + "
-")
+    sys.stderr.write(str(args) + "\n")
  
 class Memoize:
     def __init__(self,function):

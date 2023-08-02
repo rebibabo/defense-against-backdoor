@@ -7,8 +7,7 @@ for n in range(1, T+1):
     (R, C, M) = (int(x) for x in input().split())
     dots = R*C - M
     if M == 0:
-        print("
-".join(["c"+(C-1)*"."] + (R-1)*[C*"."]))
+        print("\n".join(["c"+(C-1)*"."] + (R-1)*[C*"."]))
     elif dots == 0:
         print("Impossible")
     elif R == 1:
@@ -16,13 +15,9 @@ for n in range(1, T+1):
         print("c"+(C-M-1)*"."+M*"*")
     elif C == 1:
         assert R - M > 0
-        print("c
-"+(R-M-1)*".
-"+M*"*
-", end='')
+        print("c\n"+(R-M-1)*".\n"+M*"*\n", end='')
     elif dots == 1:
-        print("
-".join(["c"+ (C-1)*"*"] + (R-1)*[C*"*"]))
+        print("\n".join(["c"+ (C-1)*"*"] + (R-1)*[C*"*"]))
     elif dots > 3:
         if (dots == 5) or (dots == 7):
             print("Impossible")
@@ -39,10 +34,8 @@ for n in range(1, T+1):
             elif C == 2:
                 l = int(dots/2)
                 print("c.")
-                print((l-1)*"..
-", end='')
-                print(int(M/2)*"**
-", end='')
+                print((l-1)*"..\n", end='')
+                print(int(M/2)*"**\n", end='')
                 continue
         (lines, extra) = divmod(dots, C)
         temp = []
@@ -51,8 +44,7 @@ for n in range(1, T+1):
             temp.extend((lines-1)*[C*"."])
             temp.append(extra*"."+(C-extra)*"*")
             temp.extend((R-lines-1)*[C*"*"])
-            print("
-".join(temp))
+            print("\n".join(temp))
             continue
         elif (lines > 2) and (extra == 1):
             temp.append("c"+(C-1)*".")
@@ -60,16 +52,14 @@ for n in range(1, T+1):
             temp.append((C-1)*"."+"*")
             temp.append(".."+ (C-2)*"*")
             temp.extend((R-lines-1)*[C*"*"])
-            print("
-".join(temp))
+            print("\n".join(temp))
             continue
         elif (lines == 2) and (extra == 1):
             temp.append("c"+(C-2)*"."+"*")
             temp.append((C-1)*"."+"*")
             temp.append(3*"."+(C-3)*"*")
             temp.extend((R-3)*[C*"*"])
-            print("
-".join(temp))
+            print("\n".join(temp))
             continue
         elif lines < 2:
             (l, rem) = divmod(dots, 2)
@@ -80,8 +70,7 @@ for n in range(1, T+1):
             temp.append(l*"."+(C-l)*"*")
             temp.append(rem*"."+(C-rem)*"*")
             temp.extend( (R-3)*[ C*"*" ])
-            print("
-".join(temp))
+            print("\n".join(temp))
             continue
     else:
         print("Impossible")

@@ -80,7 +80,5 @@ for test_case in xrange(1, T + 1):
 #                            ):
 #                                count += 1
 #                    answer[y][x] = str(count)
-        answer = '
-'.join([''.join(row) for row in answer])
-    print('Case #{}:
-{}'.format(test_case, answer))
+        answer = '\n'.join([''.join(row) for row in answer])
+    print('Case #{}:\n{}'.format(test_case, answer))

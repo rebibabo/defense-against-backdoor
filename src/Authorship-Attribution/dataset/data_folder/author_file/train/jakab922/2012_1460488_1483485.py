@@ -13,9 +13,7 @@ def translator(s):
 	return ''.join(ret)
  
 f = open(argv[1], 'r')
-T = int(f.readline().strip('
-'))
+T = int(f.readline().strip('\n'))
 for i in range(T):
-	line = f.readline().strip('
-')
+	line = f.readline().strip('\n')
 	print("Case #%s: %s" % (i + 1, translator(line)))

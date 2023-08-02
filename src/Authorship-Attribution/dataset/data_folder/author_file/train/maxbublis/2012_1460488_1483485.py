@@ -22,8 +22,7 @@ def solve_problem():
     for i in xrange(1, number_of_cases + 1):
         case = sys.stdin.readline().strip()
         translated = ''.join(map(lambda c: mapping.get(c, c), case))
-        sys.stdout.write('Case #{0}: {1}
-'.format(i, translated))
+        sys.stdout.write('Case #{0}: {1}\n'.format(i, translated))
  
 if __name__ == '__main__':
     solve_problem()

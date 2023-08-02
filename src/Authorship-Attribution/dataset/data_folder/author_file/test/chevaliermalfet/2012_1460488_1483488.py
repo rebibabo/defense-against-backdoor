@@ -20,8 +20,7 @@ for i in range(numTests):
     line = inputFile.readline().split()
     a = int(line[0])
     b = int(line[1])
-    outputFile.write('Case #' + str(i+1) + ': ' + str(countRecycle(a,b)) + '
-')
+    outputFile.write('Case #' + str(i+1) + ': ' + str(countRecycle(a,b)) + '\n')
  
 inputFile.close()
 outputFile.close()

@@ -98,9 +98,7 @@ for CASE in range(T):
     else:
         b = ""
         for x in range(R):
-            b += answer[x*C:x*C+C] + "
-"
+            b += answer[x*C:x*C+C] + "\n"
         answer = "c" + b[1:-1]
-    print("Case #%d:
-%s" % (CASE+1, answer))
+    print("Case #%d:\n%s" % (CASE+1, answer))
  

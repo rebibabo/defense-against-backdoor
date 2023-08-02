@@ -77,28 +77,23 @@ def TicTacToeTomek(infile="A-small-attempt0.in", outfile="A-small-attempt0.out")
 			#checking row
 			result = checkRow(L[i])
 			if result[0]:
-				out.write("Case #" + str(t) + ": " + result[1] + " won
-")
+				out.write("Case #" + str(t) + ": " + result[1] + " won\n")
 				break
 			#checking column
 			result = checkCol(L,i)
 			if result[0]:
-				out.write("Case #" + str(t) + ": " + result[1] + " won
-")
+				out.write("Case #" + str(t) + ": " + result[1] + " won\n")
 				break
 		else:
 			#checking column
 			result = checkDiag(L)
 			if result[0]:
-				out.write("Case #" + str(t) + ": " + result[1] + " won
-")
+				out.write("Case #" + str(t) + ": " + result[1] + " won\n")
 			else:
 				if checkComplete(L):
-					out.write("Case #" + str(t) + ": Draw
-")
+					out.write("Case #" + str(t) + ": Draw\n")
 				else:
-					out.write("Case #" + str(t) + ": Game has not completed
-")
+					out.write("Case #" + str(t) + ": Game has not completed\n")
  				
 		f.readline() #skipping empty line
  	

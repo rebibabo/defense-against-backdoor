@@ -111,8 +111,7 @@ def oneClickSolution(R, C, M):
                     nOpen += 1
             if M + nOpen == R*C:
                 bd[minR][minC] = 'c'
-                return '
-'.join( ''.join(row[:-1]) for row in bd[:-1] )
+                return '\n'.join( ''.join(row[:-1]) for row in bd[:-1] )
  
     return 'Impossible'
  

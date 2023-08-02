@@ -29,11 +29,7 @@ reverseMappings = {
 'x': 'm',
 'y': 'a',
 'z': 'q',
-' ': ' '
-}
- 
-def reverse(string):
-	return ''.join([reverseMappings[c] for c in string])
+' ': ' '\n}\n \ndef reverse(string):\n	return ''.join([reverseMappings[c] for c in string])
  
 # Ignore number of tests
 sys.stdin.readline()

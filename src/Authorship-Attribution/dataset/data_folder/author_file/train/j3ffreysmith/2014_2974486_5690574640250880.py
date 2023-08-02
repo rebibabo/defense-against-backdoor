@@ -38,11 +38,9 @@ def generateWinBoard(R,C,M):
                 emptySpace -= 1
             else:
                 out += "*"
-                # out += '
-'
+                # out += '\n'
     if R > 1:
-        out += '
-'
+        out += '\n'
         out += "."
         if C > 1:
             out += "."
@@ -53,8 +51,7 @@ def generateWinBoard(R,C,M):
             else:
                 out += "*"
     for r in range(2,R):
-        out += '
-'
+        out += '\n'
         for c in range(C):
             if emptySpace > 0:
                 out += "."
@@ -74,8 +71,7 @@ def generateWinBoardBaseCase(R,C,M):
             else:
                 out += "*"
     for r in range(1,R):
-        out += '
-'
+        out += '\n'
         for c in range(C):
             if emptySpace > 0:
                 out += "."
@@ -88,8 +84,7 @@ def generateWinBoardBaseCase(R,C,M):
 def playGame(T, L):
     for i in range(T):
         result = calculateOneClick(L[i][0], L[i][1], L[i][2])
-        yield "Case #" + str(i + 1) + ":
-" + str(result)
+        yield "Case #" + str(i + 1) + ":\n" + str(result)
  
  
 if __name__ == "__main__":
@@ -104,6 +99,5 @@ if __name__ == "__main__":
     for out in playGame(T, L):
         print(out)
         # print(bytes(out, 'utf-8'), file=oF)
-        oF.write(bytes(out + "
-", 'utf-8'))
+        oF.write(bytes(out + "\n", 'utf-8'))
     oF.close()

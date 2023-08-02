@@ -255,8 +255,7 @@ def mat_to_str(a):
 	for row in a:
 		for elem in row:
 			str_out += elem
-		str_out += '
-'
+		str_out += '\n'
 	return str_out[:-1]
  	
 def calc_result(case):
@@ -274,8 +273,7 @@ def calc_result(case):
 	assert (m==0 or m==M)
 	print(str_out)
  	
-	return '
-%s' % str_out
+	return '\n%s' % str_out
  
 def main(filepath):
 	start_time = time.time()
@@ -295,8 +293,7 @@ def main(filepath):
 			#######################
 			#### format output ####
 			#######################
-			f_out.write("Case #%d: %s
-" % (case_index, result))
+			f_out.write("Case #%d: %s\n" % (case_index, result))
  				
 if __name__ == '__main__':
 	main(sys.argv[1])

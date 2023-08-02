@@ -36,5 +36,4 @@ for case in xrange(n_cases):
  
 	n_googlers_with_best_result = n_googlers_with_best_result + min(s, candidates)
  
-	out.write("Case #%d: %d
-" % (case+1, n_googlers_with_best_result))
+	out.write("Case #%d: %d\n" % (case+1, n_googlers_with_best_result))

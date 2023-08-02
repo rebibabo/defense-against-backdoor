@@ -54,8 +54,7 @@ def check_total(total, p):
         return -1
      
 #Read in the number of cases (the first input line) we need to iterate through
-cases = int(infile.readline().strip('
-'))
+cases = int(infile.readline().strip('\n'))
 for i in range(cases):
     print ('case %i of %i' % (i+1, cases))
 ##################NEW CODE GOES HERE###########################################    
@@ -92,8 +91,7 @@ for i in range(cases):
      
 ##################NEW CODE GOES HERE###########################################    
     #Write out the results for this case
-    outfile.write('Case #%i: %s
-' % (i+1, output))
+    outfile.write('Case #%i: %s\n' % (i+1, output))
      
 #Close files
 infile.close()

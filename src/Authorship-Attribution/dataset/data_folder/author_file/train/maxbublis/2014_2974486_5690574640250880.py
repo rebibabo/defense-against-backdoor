@@ -73,8 +73,7 @@ def solve_problem(rows, columns, mines):
             solution = try_to_click(x, y, cells, rows * columns - mines - 1)
  
             if solution:
-                return "
-".join(["".join(row) for row in solution]).replace("?", "*")
+                return "\n".join(["".join(row) for row in solution]).replace("?", "*")
  
     return "Impossible"
  
@@ -85,5 +84,4 @@ if __name__ == "__main__":
  
         rows, columns, mines = map(int, sys.stdin.readline().strip().split())
  
-        print("Case #{0}:
-{1}".format(i, solve_problem(rows, columns, mines)))
+        print("Case #{0}:\n{1}".format(i, solve_problem(rows, columns, mines)))

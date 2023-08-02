@@ -62,15 +62,13 @@ def solve(R, C, M):
  
     for m in range(M):
         if not place_mine():
-            return 'Impossible
-'
+            return 'Impossible\n'
  
     click()
  
     ret = ''
     for row in grid:
-        ret = ret + ''.join(map(lambda c: '.' if isinstance(c, int) else c, row)) + '
-'
+        ret = ret + ''.join(map(lambda c: '.' if isinstance(c, int) else c, row)) + '\n'
  
     return ret
  
@@ -83,5 +81,4 @@ if __name__ == '__main__':
  
     for case in range(T):
         sol = solve(*map(int, inp.readline().split()))
-        out.write('Case #%i:
-%s' % (case + 1, sol))
+        out.write('Case #%i:\n%s' % (case + 1, sol))

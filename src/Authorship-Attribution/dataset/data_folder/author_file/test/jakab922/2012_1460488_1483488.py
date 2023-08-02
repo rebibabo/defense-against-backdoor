@@ -43,14 +43,12 @@ def solve(low, high):
 	return total
  
 f = open(argv[1], 'r')
-T = int(f.readline().strip('
-'))
+T = int(f.readline().strip('\n'))
 mi = 2000000
 ma = 1
 ab = []
 for i in range(T):
-	ab.append(map(int, f.readline().strip('
-').split(' ')))
+	ab.append(map(int, f.readline().strip('\n').split(' ')))
 	if ab[-1][1] > ma:
 		ma = ab[-1][1]
  

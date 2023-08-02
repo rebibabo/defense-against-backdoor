@@ -36,8 +36,7 @@ class Minesweeper_2014_QC(puzutils.CodeJamProblem):
         retval = ""
     
         for row in board:
-            retval = retval + "
-" + "".join(row)
+            retval = retval + "\n" + "".join(row)
     
         return retval
     

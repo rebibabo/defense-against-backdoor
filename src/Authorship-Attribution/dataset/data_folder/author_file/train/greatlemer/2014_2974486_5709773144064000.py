@@ -37,8 +37,7 @@ def parse_input(input_reader):
     case_idx = 0
     while case_count > case_idx:
         case_idx += 1
-        input_line = input_reader.readline().rstrip("
-").split(" ")
+        input_line = input_reader.readline().rstrip("\n").split(" ")
         input_values = {"C": float(input_line[0]),
                         "F": float(input_line[1]),
                         "X": float(input_line[2]),

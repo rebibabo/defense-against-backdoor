@@ -52,8 +52,7 @@ Case #4: 526.1904762
         with open(iname) as f:
             inputs = f.readlines()
     else:
-        inputs = [x.strip() for x in sample_in.split('
-') if x.strip()]
+        inputs = [x.strip() for x in sample_in.split('\n') if x.strip()]
     solver = Solver()
     outputs = solver.feed(inputs)
     fail_flag = False
@@ -62,8 +61,7 @@ Case #4: 526.1904762
             for i, v in enumerate(outputs):
                 print >> f, 'Case #%d: %s'%(i+1, str(v))
     else:
-        ans = set([x.strip() for x in sample_out.split('
-') if x.strip()])
+        ans = set([x.strip() for x in sample_out.split('\n') if x.strip()])
         for i, v in enumerate(outputs):
             t = 'Case #%d: %s'%(i+1, str(v))
             if t not in ans:

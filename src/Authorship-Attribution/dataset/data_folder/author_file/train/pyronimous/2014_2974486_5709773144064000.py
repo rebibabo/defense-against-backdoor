@@ -29,5 +29,4 @@ if __name__ == '__main__':
  
     for case in range(T):
         sol = solve(*map(float, inp.readline().split()))
-        out.write('Case #%i: %.7f
-' % (case + 1, sol))
+        out.write('Case #%i: %.7f\n' % (case + 1, sol))

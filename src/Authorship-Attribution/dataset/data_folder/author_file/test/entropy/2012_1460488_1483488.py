@@ -1,5 +1,4 @@
-data = [ [int(a) for a in i.split(" ")] for i in open("C-small-attempt0.in","rU").read()[:-1].split("
-")]
+data = [ [int(a) for a in i.split(" ")] for i in open("C-small-attempt0.in","rU").read()[:-1].split("\n")]
  
 def recycle(number, mini, maxi):
 	number2 = str(number)

@@ -64,8 +64,7 @@ def fill(rows, cols, mines):
         for row in xrange(rows):
             for col in xrange(cols):
                 out += board.get((row, col), '*')
-            out += '
-'
+            out += '\n'
         return out.strip()
     return 'Impossible'
  

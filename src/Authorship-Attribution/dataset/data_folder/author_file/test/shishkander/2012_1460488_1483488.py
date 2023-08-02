@@ -60,8 +60,7 @@ def solve(fin, fout):
     for t in xrange(T):
         A, B = map(int, fin.readline().strip().split(" "))
         assert A <= B
-        fout.write("Case #%i: %i
-" % (t+1, case(A,B)) )
+        fout.write("Case #%i: %i\n" % (t+1, case(A,B)) )
     return True
  
 if __name__ == "__main__":

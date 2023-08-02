@@ -24,8 +24,7 @@ def make_output(fname, output):
         restext = []
         print("Output content ===============")
         for i, v in enumerate(output):
-            line = CASE_PRFX % (i+1,) + str(v) + "
-"
+            line = CASE_PRFX % (i+1,) + str(v) + "\n"
             print(line[:-1])
             restext.append(line)
         print("=" * 30)

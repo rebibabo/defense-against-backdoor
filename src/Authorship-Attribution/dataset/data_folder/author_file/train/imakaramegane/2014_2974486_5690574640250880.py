@@ -19,24 +19,20 @@ def readf(f):
     return t
  
 def answer(f, X, ans):
-    out = "Case #{}:
-{}".format(X, ans)
+    out = "Case #{}:\n{}".format(X, ans)
     f.write(out)
-    f.write("
-")
+    f.write("\n")
     print(out)
  
 def answer_cells(f, X, cells):
     out = "Case #{}:".format(X)
     f.write(out)
-    f.write("
-")
+    f.write("\n")
     print(out)
     for row in cells:
         out = "".join(row)
         f.write(out)
-        f.write("
-")
+        f.write("\n")
         print(out)
  
 def main(inf, outf):

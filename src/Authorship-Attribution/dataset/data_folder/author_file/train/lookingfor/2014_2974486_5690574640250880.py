@@ -13,8 +13,7 @@ def generate(R, C, a, sw):
             else:
                 res[i][j] = '.'
     res[0][0] = 'c'
-    return str(res)[2:-2].replace(' ', '').replace("'",'').replace('[', '').replace('],','
-').replace(',', '')
+    return str(res)[2:-2].replace(' ', '').replace("'",'').replace('[', '').replace('],','\n').replace(',', '')
  
  
 def solveEq(k, s, x1):
@@ -36,9 +35,7 @@ def solve(R, C, M):
         if R == 1:
             return '*'*M + '.'*(S-M-1) + 'c'
         else:
-            return '*
-'*M + '.
-'*(S-M-1) + 'c'
+            return '*\n'*M + '.\n'*(S-M-1) + 'c'
     else:
         sw = False
         if R > C:
@@ -57,5 +54,4 @@ def solve(R, C, M):
  
 for z in xrange(T):
     c, f, x = map(int, raw_input().split())
-    print("Case #%d:
-%s" % (z+1, solve(c, f, x)))
+    print("Case #%d:\n%s" % (z+1, solve(c, f, x)))

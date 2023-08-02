@@ -28,8 +28,7 @@ for t in range(1, T + 1):
     f = float(items[1])
     x = float(items[2])
     time = getMinTime(c, f, x)
-    outfile.write("Case #%d: %.7f
-" %(t, time))
+    outfile.write("Case #%d: %.7f\n" %(t, time))
      
          
      

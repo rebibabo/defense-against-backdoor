@@ -7,9 +7,4 @@ for i in range(t):
 	decoded = ''
  
 	for c in line:
-		if c==' ':
-			decoded += c
-		else:
-			decoded += code[ord(c)-97]
- 
-	print('Case #'+str(i+1)+':', decoded)
+		if c==' ':\n			decoded += c\n		else:\n			decoded += code[ord(c)-97]\n \n	print('Case #'+str(i+1)+':', decoded)

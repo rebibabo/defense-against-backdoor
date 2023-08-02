@@ -48,8 +48,6 @@ for case in xrange(T):
 	##### Output writing
 	fout.write("Case #%d: " %(case + 1))
 	if possible:
-		fout.write("YES
-")
+		fout.write("YES\n")
 	else:
-		fout.write("NO
-")
+		fout.write("NO\n")

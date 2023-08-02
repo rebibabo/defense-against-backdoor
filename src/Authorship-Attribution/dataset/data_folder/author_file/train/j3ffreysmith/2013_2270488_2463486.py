@@ -40,8 +40,7 @@ def FairAndSquare(infile="C-small-attempt0.in", outfile="C-small-attempt0.out"):
 					count += 1
 			i += 1
  					
-		outF.write("Case #" + str(t) + ": " + str(count) + "
-")
+		outF.write("Case #" + str(t) + ": " + str(count) + "\n")
  	
 	#closing files
 	inF.close()

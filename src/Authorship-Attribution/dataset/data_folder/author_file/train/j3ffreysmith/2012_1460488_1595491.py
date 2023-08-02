@@ -38,12 +38,10 @@ def partB(infile="C:/Users/Jeffrey/Dropbox/Google Code Jam/2011/Qualifiers/B/inp
      
     #Writing Output
     out = open(outfile, 'w')
-    print("
-OUTPUT")
+    print("\nOUTPUT")
     for i in range(1, 1 + T):
         if i != 1:
-            out.write("
-")
+            out.write("\n")
         print("Case #" + str(i) + ": " +str(outA[i-1]))
         out.write("Case #" + str(i) + ": " +str(outA[i-1]))
     out.close()

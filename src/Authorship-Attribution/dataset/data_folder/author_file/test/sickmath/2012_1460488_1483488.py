@@ -15,8 +15,7 @@ for case in range(cases) :
                 couples.add(str([n,m]))
     res = len(couples)
     print('Case #' + str(case+1) + ': ' + str(res))
-    fout.write('Case #' + str(case+1) + ': ' + str(res) + '
-')
+    fout.write('Case #' + str(case+1) + ': ' + str(res) + '\n')
      
 fin.close()
 fout.close()

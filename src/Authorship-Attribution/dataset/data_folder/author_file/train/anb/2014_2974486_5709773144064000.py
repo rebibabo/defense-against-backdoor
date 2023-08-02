@@ -1,7 +1,6 @@
 from sys import stdin
  
-def read_str(): return stdin.readline().rstrip('
-')
+def read_str(): return stdin.readline().rstrip('\n')
 def read_int(): return int(stdin.readline())
 def read_ints(): return map(int, stdin.readline().split())
 def read_floats(): return map(float, stdin.readline().split())

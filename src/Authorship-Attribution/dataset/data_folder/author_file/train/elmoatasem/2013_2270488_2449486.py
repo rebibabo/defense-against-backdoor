@@ -64,7 +64,6 @@ for i in range(n_test):
         lawn.extend(temp)
     result=mowerLawn(lawn,range_[0],range_[1],marked)
     output_str='Case #{itr}: {res}'.format(itr=(i+1),res=result)
-    f_w.write(output_str+'
-')
+    f_w.write(output_str+'\n')
 f_r.close()
 f_w.close()

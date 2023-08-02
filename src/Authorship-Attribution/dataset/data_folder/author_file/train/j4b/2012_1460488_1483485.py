@@ -32,8 +32,7 @@ table = {'a': 'y',
         'y': 'a',
         'z': 'q',
         ' ': ' ',
-        '
-': ''}
+        '\n': ''}
  
 def solve(s):
     return ''.join([table[c] for c in s])

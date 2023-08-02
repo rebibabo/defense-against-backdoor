@@ -26,7 +26,6 @@ out = open(output_file, 'w')
 for i, l in enumerate(lines[1:]):
 	sout = 'Case #%i: %i' % (i + 1, solvecase(l))
 	print(sout)
-	out.write(sout + '
-')
+	out.write(sout + '\n')
  
 out.close()

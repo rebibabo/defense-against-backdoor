@@ -49,11 +49,9 @@ for i in range(n):
             row_lst += [int(s)]
         board += [row]
     if check_all(board):
-        of.write( "Case #%d: %s
-" %(i+1, "YES"))
+        of.write( "Case #%d: %s\n" %(i+1, "YES"))
     else:
-        of.write( "Case #%d: %s
-" %(i+1, "NO"))
+        of.write( "Case #%d: %s\n" %(i+1, "NO"))
  
 of.close()
 f.close()

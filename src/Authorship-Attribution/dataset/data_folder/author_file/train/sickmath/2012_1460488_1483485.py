@@ -24,8 +24,7 @@ for case in range(cases) :
     line = fin.readline()[:-1]
     res = [translation[line[i]] for i in range(len(line))]
     res = ''.join(res)
-    fout.write('Case #' + str(case+1) + ': ' + res + '
-')
+    fout.write('Case #' + str(case+1) + ': ' + res + '\n')
      
 fin.close()
 fout.close()

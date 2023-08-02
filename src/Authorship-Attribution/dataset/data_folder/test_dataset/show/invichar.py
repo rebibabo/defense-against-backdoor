@@ -6,7 +6,7 @@ def recycle(num):
     for ii in range(1, len(x)):
         recycles.append(x[ii:] + x[:ii])    
     return recycles
- 
+
 f = open(sys.argv[1])
 T = int(f.readline())
 for t in range(T):

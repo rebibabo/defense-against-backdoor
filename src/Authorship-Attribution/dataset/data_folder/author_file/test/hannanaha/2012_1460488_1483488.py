@@ -42,8 +42,7 @@ def make_output(fname, output):
     with open(fname, "w") as f:
         restext = []
         for i, v in enumerate(output):
-            restext.append(CASE_PRFX % (i+1,) + str(v) + "
-")
+            restext.append(CASE_PRFX % (i+1,) + str(v) + "\n")
         f.writelines(restext)
      
 def main(fname):

@@ -230,7 +230,6 @@ for i in range(T):
 	R, C, M = map(int, input().split())
 	print('Case #{}:'.format(i + 1))
 	try:
-		print('
-'.join(CACHE[(R, C, M)]))
+		print('\n'.join(CACHE[(R, C, M)]))
 	except:
 		print('Impossible')

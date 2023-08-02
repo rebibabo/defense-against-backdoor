@@ -27,8 +27,7 @@ def make_output(fname, output):
         # =============================================
         restext = []
         for i, v in enumerate(output):
-            line = CASE_PRFX % (i+1,) + str(v) + "
-"
+            line = CASE_PRFX % (i+1,) + str(v) + "\n"
             print(line)
             restext.append(line)
         f.writelines(restext)

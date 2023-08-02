@@ -46,8 +46,7 @@ def solve(fin, fout):
         N, S, P = nums[:3]
         ts = nums[3:]
         assert len(ts) == N    
-        fout.write("Case #%i: %i
-" % (t+1, case(S,P,ts)) )
+        fout.write("Case #%i: %i\n" % (t+1, case(S,P,ts)) )
     return True
  
 if __name__ == "__main__":

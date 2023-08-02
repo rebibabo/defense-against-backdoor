@@ -95,20 +95,4 @@ for k  in xrange(n):
                     both_count=0
     count+=both_count
      
-    print ('Case #'+str((k+1))+": "+str(count))
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-     
- 
-#f=getAllTriplets(18)
-#print f
-#for i in xrange(len(f)):
-#    print isSurprising(f[i])
+    print ('Case #'+str((k+1))+": "+str(count))\n \n \n \n \n \n \n \n \n \n \n     \n \n#f=getAllTriplets(18)\n#print f\n#for i in xrange(len(f)):\n#    print isSurprising(f[i])
