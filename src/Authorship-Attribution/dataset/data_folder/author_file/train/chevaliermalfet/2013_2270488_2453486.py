@@ -160,8 +160,7 @@ for i in range(numCases):
     result = evalGame(lines)
  
     print("Case #" + str(i+1) + ": " + resultToString(result))
-    outFile.write("Case #" + str(i+1) + ": " + resultToString(result) + '
-')
+    outFile.write("Case #" + str(i+1) + ": " + resultToString(result) + '\n')
      
     if i < numCases -1:
         inFile.readline()

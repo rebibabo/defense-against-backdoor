@@ -23,8 +23,7 @@ def solve (f_in, f_out):
     for testcase in range(1,T+1):
         A,B = [int(x) for x in f_in.readline().split()]
         count = len([x for x in fair_and_squares if (x>=A and x<=B)])
-        f_out.write('Case #' + str(testcase) + ': ' + str(count) + '
-')
+        f_out.write('Case #' + str(testcase) + ': ' + str(count) + '\n')
  
  
  

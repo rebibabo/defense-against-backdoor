@@ -9,8 +9,7 @@ def read(f):
 def answer(f, X, ans):
     out = "Case #{}: {}".format(X, ans)
     f.write(out)
-    f.write("
-")
+    f.write("\n")
     print(out)
  
 def testcases(f):

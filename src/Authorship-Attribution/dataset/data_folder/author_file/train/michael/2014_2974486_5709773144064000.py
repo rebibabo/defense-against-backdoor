@@ -1,8 +1,7 @@
 import sys
  
 def read_line():
-    return sys.stdin.readline().rstrip( '
-' )
+    return sys.stdin.readline().rstrip( '\n' )
  
 def read_integer():
     return int( read_line() )

@@ -29,8 +29,7 @@ for i, l in enumerate(lines[1:]):
 		i + 1, 
 		''.join([alphabet[c] for c in l if c in alphabet]))
 	print(trans)
-	out.write(trans + '
-')
+	out.write(trans + '\n')
  
 out.close()
  

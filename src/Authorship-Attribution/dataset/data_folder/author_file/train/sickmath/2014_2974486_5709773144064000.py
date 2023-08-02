@@ -23,8 +23,7 @@ for case in xrange(T) :
             else : 1/0
     else : m = 0
     output = 'Case #' + str(case + 1) + ': ' + str(tot(m))
-    g.write(output + '
-')
+    g.write(output + '\n')
     print(output)
  
 f.close()

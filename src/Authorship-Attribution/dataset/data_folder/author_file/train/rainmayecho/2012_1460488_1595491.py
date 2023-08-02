@@ -41,8 +41,7 @@ for e in inp[1:len(inp)]:
                     count += 1
                     break
                  
-    out.write('Case #'+str(c)+': '+str(count)+'
-')
+    out.write('Case #'+str(c)+': '+str(count)+'\n')
     c += 1
  
 out.close()

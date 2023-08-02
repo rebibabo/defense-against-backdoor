@@ -153,8 +153,7 @@ def solve(rows, cols, mines):
 	if board is None:
 		board = searchBruteForce(rows, cols, mines)
 		if board is None:
-			return '
-' + 'Impossible'
+			return '\n' + 'Impossible'
 		print ('ERROR: fast search missed solution for %dx%d board, %d mines:' \
 				% (rows, cols, mines))
 		for row in board:
@@ -202,9 +201,7 @@ def solve(rows, cols, mines):
 	assert all('.' not in row for row in flowBoard), flowBoard
  
 	assert all(type(row) == str for row in board)
-	return '
-' + ''.join('
-' + ''.join(row) for row in board)
+	return '\n' + ''.join('\n' + ''.join(row) for row in board)
  
 def main():
 	import sys
@@ -232,8 +229,7 @@ def main():
 	out = open(FILE_NAME_BASE + '.out', 'w')
 	for case, result in enumerate(results):
 		value = result if NUM_PROCESSES == 0 else result.get()
-		out.write('Case #%d: %s
-' % (case + 1, value))
+		out.write('Case #%d: %s\n' % (case + 1, value))
 		out.flush()
 	out.close()
  

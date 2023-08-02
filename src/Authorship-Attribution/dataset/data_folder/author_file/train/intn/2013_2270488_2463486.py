@@ -72,8 +72,7 @@ outLine = []
  
 for i in range(1, T + 1):
     (A, B) = map(int, f.readline().split())
-    outLine.append('Case #%d: %s
-' % (i, process1(A, B)))
+    outLine.append('Case #%d: %s\n' % (i, process1(A, B)))
     print (outLine[-1],)
  
 f.close()

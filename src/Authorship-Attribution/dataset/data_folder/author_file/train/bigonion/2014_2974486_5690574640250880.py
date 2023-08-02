@@ -30,14 +30,12 @@ def solve_one_case (R,C,M):
             if isOneClick(mat, R, C, M):
                 mat[0][0] = 'c'
                 for line in mat:
-                    output += ''.join(line) + '
-'
+                    output += ''.join(line) + '\n'
                 found = True
                 return output
              
         if not found:
-            return 'Impossible
-'
+            return 'Impossible\n'
          
         assert ValueError()
          
@@ -49,8 +47,7 @@ def solve (f_in, f_out):
         print((testcase,R,C,M))
  
         output = solve_one_case (R,C,M)
-        f_out.write('Case #' + str(testcase) + ':
-')
+        f_out.write('Case #' + str(testcase) + ':\n')
         f_out.write(output)
  
          

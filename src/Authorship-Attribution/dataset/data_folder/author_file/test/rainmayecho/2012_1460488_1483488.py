@@ -19,8 +19,7 @@ for e in inp[1:len(inp)]:
                 continue
             elif val >= interval[0] and val <= interval[-1] and not val == i:
                 skip.append(i)
-    out.write('Case #'+str(count)+': '+str(len(skip))+'
-')
+    out.write('Case #'+str(count)+': '+str(len(skip))+'\n')
     count += 1
  
 f.close()

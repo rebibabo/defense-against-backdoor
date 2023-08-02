@@ -40,8 +40,7 @@ def solver(testcase, N=None, P=None, I=None, T=None, S=None, C=None, **ignore):
             break
         res = nres
  
-    return 'Case #%s: %s
-' % (testcase, res)
+    return 'Case #%s: %s\n' % (testcase, res)
  
 if __name__ == '__main__':
     import sys

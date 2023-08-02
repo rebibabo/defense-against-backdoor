@@ -56,25 +56,16 @@ for t in range(1, T + 1):
         for line in field:
             for cell in line:
                 s += cell
-            s += "
-"
-        outfile.write("Case #%d:
-%s
-" %(t, s[:-1]))
+            s += "\n"
+        outfile.write("Case #%d:\n%s\n" %(t, s[:-1]))
     else:
-        s = "IMPOSSIBLE!!!!
-"
+        s = "IMPOSSIBLE!!!!\n"
         for line in field:
             for cell in line:
                 s += cell
-            s += "
-"
-        outfile.write("Case #%d:
-%s
-" %(t, s[:-1]))
-        #outfile.write("Case #%d:
-%s
-" %(t, "Impossible"))
+            s += "\n"
+        outfile.write("Case #%d:\n%s\n" %(t, s[:-1]))
+        #outfile.write("Case #%d:\n%s\n" %(t, "Impossible"))
      
          
      

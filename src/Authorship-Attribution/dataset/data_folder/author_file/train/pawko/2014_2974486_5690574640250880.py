@@ -110,19 +110,16 @@ def result_gen(lines):
     for ci in range(1,ncases+1):
         R, C, M = line_of_numbers(next(lines))
         result = process_case(R, C, M)
-        yield 'Case #{0}:
-'.format(ci, result)
+        yield 'Case #{0}:\n'.format(ci, result)
         for res_line in result:
-            yield res_line + '
-'
+            yield res_line + '\n'
      
 def line_of_numbers(s):
     return [int(sub) for sub in s.split()]
  
 def input_gen(f_in):
     for line in f_in:
-        if line.endswith('
-'):
+        if line.endswith('\n'):
             line = line[:-1]
         yield line
  

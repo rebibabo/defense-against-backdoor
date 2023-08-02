@@ -106,8 +106,7 @@ if __name__ == "__main__":
     outfile = open("%s-%s%s.out" % (problem, tag, suffix), 'w')
      
     #Read in the number of cases (the first input line) to iterate through
-    cases = int(infile.readline().strip('
-'))
+    cases = int(infile.readline().strip('\n'))
     for i in range(cases):
          
         #Read in the input data for this case
@@ -117,10 +116,8 @@ if __name__ == "__main__":
         output = solve_case(case)
          
         #Write out the output of this case
-        outfile.write('Case #%i: %s
-' % (i+1, output))
-        print('Case #%i: %s
-' % (i+1, output))
+        outfile.write('Case #%i: %s\n' % (i+1, output))
+        print('Case #%i: %s\n' % (i+1, output))
      
     #Close files
     infile.close()

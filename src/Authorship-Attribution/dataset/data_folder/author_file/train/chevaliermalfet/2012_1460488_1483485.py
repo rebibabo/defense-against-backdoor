@@ -31,8 +31,7 @@ def translate(string, translator):
     for i in range(len(string)):
         if string[i] == ' ':
             accum += ' '
-        elif string[i] == '
-':
+        elif string[i] == '\n':
             break
         else:
             accum += translator[string[i]]
@@ -43,8 +42,7 @@ outputFile = open("tonguesOut.txt", 'w')
 numTests = int(inputFile.readline())
  
 for i in range(numTests):
-    outputFile.write('Case #' + str(i+1) + ': ' + translate(inputFile.readline(), translator) + '
-')
+    outputFile.write('Case #' + str(i+1) + ': ' + translate(inputFile.readline(), translator) + '\n')
  
 inputFile.close()
 outputFile.close()

@@ -26,12 +26,7 @@ dictionary = {
     "x":"m",
     "y":"a",
     "z":"q",
-    " ":" "    
-    }
- 
-def translate(sen):
-     
-    new_sen = ""
+    " ":" "    \n    }\n \ndef translate(sen):\n     \n    new_sen = ""
  
     for char in sen: #translate each charecter
         new_sen += dictionary[char]

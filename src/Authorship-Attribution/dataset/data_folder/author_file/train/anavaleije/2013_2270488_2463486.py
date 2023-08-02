@@ -33,5 +33,4 @@ for case in xrange(T):
 		i += 1
  
 	##### Output writing
-	fout.write("Case #%d: %d
-" %(case + 1, len(found)))
+	fout.write("Case #%d: %d\n" %(case + 1, len(found)))

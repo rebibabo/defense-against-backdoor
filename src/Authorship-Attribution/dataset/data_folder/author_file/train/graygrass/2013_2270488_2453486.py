@@ -38,8 +38,7 @@ def solve(case, in_lines):
  
  
 def main(raw):
-    lines = raw.split('
-')
+    lines = raw.split('\n')
     n = int(lines[0])
     ln = 0
     outs = []
@@ -52,8 +51,7 @@ def main(raw):
         s = solve(case, buff)
         print(s)
         outs.append(s)
-    return '
-'.join(outs)
+    return '\n'.join(outs)
     pass
  
 if __name__ == '__main__':

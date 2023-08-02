@@ -66,15 +66,12 @@ for i in xrange(T):
 	elif testSymbol("O", game):
 		gameResult = "O"
 	elif "." not in game[0] and "." not in game[1] and "." not in game[2] and "." not in game[3]:
-		gameResult = "Draw
-"
+		gameResult = "Draw\n"
 	else:
-		gameResult = "Game has not completed
-"
+		gameResult = "Game has not completed\n"
  
 	fout.write("Case #%d: " %(i + 1))
 	if gameResult in ["X", "O"]:
-		fout.write("%s won
-" %(gameResult))
+		fout.write("%s won\n" %(gameResult))
 	else:
 		fout.write(gameResult)

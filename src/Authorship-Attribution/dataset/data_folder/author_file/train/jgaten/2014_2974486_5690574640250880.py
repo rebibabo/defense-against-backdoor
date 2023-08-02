@@ -97,8 +97,7 @@ def solve(R, C, M):
         return "Impossible"
     else:
         check_soln(soln, R, C, M)
-        return '
-'.join(''.join(row) for row in soln)
+        return '\n'.join(''.join(row) for row in soln)
  
 if __name__ == '__main__':
     fin = open(sys.argv[1], 'rU') if sys.argv[1:] else sys.stdin
@@ -108,6 +107,5 @@ if __name__ == '__main__':
         for case in xrange(1, T+1):
             r, c, m = map(int, fin.readline().split())
             soln = solve(r, c, m)
-            print >> fout, "Case #{0}:
-{1}".format(case, soln)
+            print >> fout, "Case #{0}:\n{1}".format(case, soln)
  

@@ -1,13 +1,10 @@
 
  
-infile = open('A-small-attempt0.in', 'Ur').read()[1:].split('
-
-')
+infile = open('A-small-attempt0.in', 'Ur').read()[1:].split('\n\n')
  
 case = 1
 for test in infile:
-    test = test.replace('
-','')
+    test = test.replace('\n','')
     sets = []
     if not test:
         break

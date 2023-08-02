@@ -19,13 +19,7 @@ if len(gdic) == 25:
 	if len(candidate_gletter) == 1 and len(candidate_pletter) == 1:
 		gdic[candidate_gletter.pop()] = candidate_pletter.pop()
  
-gdic[' '] = ' '
- 
-# open the file
-r = sys.stdin
- 
-if len(sys.argv) > 1:
-	r = open(sys.argv[1], 'r')
+gdic[' '] = ' '\n \n# open the file\nr = sys.stdin\n \nif len(sys.argv) > 1:\n	r = open(sys.argv[1], 'r')
  
 # solve the cases 
 total_cases = r.readline()

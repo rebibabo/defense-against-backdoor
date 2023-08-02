@@ -55,8 +55,7 @@ def solver(infile, testcase, N=None, P=None, I=None, T=None, S=None, C=None, **i
         if P[0]<=i*i<=P[1] and is_pal(i) and is_pal(i*i):
             res += 1
  
-    return 'Case #%s: %s
-' % (testcase, res)
+    return 'Case #%s: %s\n' % (testcase, res)
  
 if __name__ == '__main__':
     import sys

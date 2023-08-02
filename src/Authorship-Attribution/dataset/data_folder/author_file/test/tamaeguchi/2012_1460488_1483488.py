@@ -38,8 +38,7 @@ def main(IN, OUT):
 	N = int(IN.readline())
 	for index in range(N):
 		A, B = map(int, IN.readline().strip().split())
-		OUT.write('Case #%d: %d
-' % (index + 1, solve(A, B)))
+		OUT.write('Case #%d: %d\n' % (index + 1, solve(A, B)))
  
  
 def makesample(ABmax=2000000, T=50):

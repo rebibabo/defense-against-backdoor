@@ -4,8 +4,7 @@ import string
 def solve(data_line):
     english, googlerese = generate_map()
     transmap = string.maketrans(googlerese, english)
-    return string.translate(data_line, transmap, "
-")
+    return string.translate(data_line, transmap, "\n")
  
 def parse_case(data_line):
     return (data_line, )

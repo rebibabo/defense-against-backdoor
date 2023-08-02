@@ -21,8 +21,7 @@ def solve(W, H, M):
         s = ''
         for row in board:
             s += ''.join(row)
-            s += '
-'
+            s += '\n'
         return s
      
     elif mines > M:
@@ -102,5 +101,4 @@ def solve(W, H, M):
 T = int(raw_input())
 for t in range(T):
     W, H, M = map(int, raw_input().split())
-print ('Case #%i:
-%s' % (t+1, solve(W, H, M).strip()))
+print ('Case #%i:\n%s' % (t+1, solve(W, H, M).strip()))

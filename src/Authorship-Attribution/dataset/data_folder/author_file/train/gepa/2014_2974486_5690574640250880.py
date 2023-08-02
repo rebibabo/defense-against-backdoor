@@ -20,8 +20,7 @@ def compute(R, C, M):
     if C == 2:
         return two_columns(R, M)
     if free in (2,3,5,7):
-        return "
-Impossible"
+        return "\nImpossible"
     return at_least_three(R, C, M)
  
  
@@ -32,8 +31,7 @@ def make_board(R, C, default='.'):
 def to_string(board):
     s = ""
     for i in xrange(len(board)):
-        s += '
-' + ''.join(board[i])
+        s += '\n' + ''.join(board[i])
     return s
  
          
@@ -67,11 +65,9 @@ def single_column(R, M):
  
 def two_rows(C, M):
     if M % 2 != 0:
-        return "
-Impossible"
+        return "\nImpossible"
     if 2 * C - M < 4:
-        return "
-Impossible"
+        return "\nImpossible"
     board = make_board(2, C)
     for i in xrange(M / 2):
         board[0][C - 1 - i] = '*'
@@ -82,11 +78,9 @@ Impossible"
  
 def two_columns(R, M):
     if M % 2 != 0:
-        return "
-Impossible"
+        return "\nImpossible"
     if 2 * R - M < 4:
-        return "
-Impossible"
+        return "\nImpossible"
     board = make_board(R, 2)
     for i in xrange(M / 2):
         board[R - 1 - i][0] = '*'
@@ -119,8 +113,7 @@ def finalize(R, C, M, board):
                 board[i][j] = '.'
     board[0][0] = 'c'
     if mines != M:
-        sys.stderr.write("mines:%s expected:%s
-" % (mines, M))
+        sys.stderr.write("mines:%s expected:%s\n" % (mines, M))
     return to_string(board)
  
  
@@ -155,8 +148,7 @@ def at_least_three(R, C, M):
                 return finalize(R, C, M, board)
             board[i][j] = '0'
             count += 1
-    sys.stderr.write("empty board?
-")
+    sys.stderr.write("empty board?\n")
     return finalize(board)
  
  
@@ -169,8 +161,7 @@ if __name__ == "__main__":
     sys.setrecursionlimit(100000)
     T = int(sys.stdin.readline().strip())
     for i in xrange(T):
-        sys.stderr.write("case:%s
-" % (i + 1))
+        sys.stderr.write("case:%s\n" % (i + 1))
         data = parse()
         result = compute(*data)
         print("Case #%d: %s" % (i + 1, result))

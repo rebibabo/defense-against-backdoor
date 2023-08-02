@@ -9,8 +9,7 @@ def solve (f_in, f_out):
             sqr.append(list(f_in.readline().split()[0]))
         assert len(f_in.readline().split()) == 0
  
-        f_out.write('Case #' + str(testcase) + ': ' + get_square_winner(sqr) +'
-')
+        f_out.write('Case #' + str(testcase) + ': ' + get_square_winner(sqr) +'\n')
      
  
 def get_all_lines(sqr):

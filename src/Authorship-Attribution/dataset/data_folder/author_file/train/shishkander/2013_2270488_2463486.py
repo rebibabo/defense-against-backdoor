@@ -61,8 +61,7 @@ def CREATE_DATABASE(MAX):
         print("stopped while x is", x)
     with open("c.database", 'w') as f:
         for i in sorted(RES + heap):
-            f.write("%i
-"%i)
+            f.write("%i\n"%i)
  
 def READ_DATABASE():
     with open("c.database", 'r') as f:
@@ -83,8 +82,7 @@ def CASE(IN):
 def RUN(IN, OUT):
     t = int(IN.readline().strip())
     for i in xrange(1,t+1):
-        OUT.write("Case #%i: %s
-" % (i, CASE(IN)))
+        OUT.write("Case #%i: %s\n" % (i, CASE(IN)))
  
 if __name__ == "__main__":
     # CREATE_DATABASE(52)

@@ -41,6 +41,5 @@ if __name__=="__main__":
     for out in playGame(T, L):
         print(out)
         # print(bytes(out, 'utf-8'), file=oF)
-        oF.write(bytes(out + "
-",'utf-8'))
+        oF.write(bytes(out + "\n",'utf-8'))
     oF.close()

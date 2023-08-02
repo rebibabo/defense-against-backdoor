@@ -1,16 +1,14 @@
 from sys import stdin
  
  
-def read_str(): return stdin.readline().rstrip('
-')
+def read_str(): return stdin.readline().rstrip('\n')
 def read_int(): return int(stdin.readline())
 def read_ints(): return map(int, stdin.readline().split())
 def read_floats(): return map(float, stdin.readline().split())
  
  
 def atos(A):
-    return '
-'.join([''.join(row) for row in A])
+    return '\n'.join([''.join(row) for row in A])
      
  
 def get_field(r, c):
@@ -73,8 +71,7 @@ def fill(field, r, c, m):
      
 def solve_case():
     r, c, m = read_ints()
-    #print('
-', r, c, m)
+    #print('\n', r, c, m)
      
     field = get_field(r, c)
          
@@ -86,8 +83,7 @@ def solve_case():
 def main():
     cases = read_int()
     for case in range(1, cases + 1):
-        print('Case #{}:
-{}'.format(case, solve_case()))
+        print('Case #{}:\n{}'.format(case, solve_case()))
  
          
 main()

@@ -36,8 +36,7 @@ def findMapping(knowledge):
 	return ''.join(mapping.get(chr(i), chr(i)) for i in xrange(256))
  
 def parse(inp):
-	return inp.readline().rstrip('
-'),
+	return inp.readline().rstrip('\n'),
  
 def solve(line):
 	return line.translate(mapping)
@@ -74,7 +73,6 @@ if __name__ == '__main__':
 	out = open(FILE_NAME_BASE + '.out.txt', 'w')
 	for case, result in enumerate(results):
 		value = result if NUM_PROCESSES == 0 else result.get()
-		out.write('Case #%d: %s
-' % (case + 1, value))
+		out.write('Case #%d: %s\n' % (case + 1, value))
 		out.flush()
 	out.close()

@@ -41,8 +41,7 @@ def mainex(fname):
             for i, c in enumerate(code):
                 ddd.setdefault(c, trans[i])
      
-    abc = string.ascii_lowercase + " 
-"
+    abc = string.ascii_lowercase + " \n"
     for c in abc:
         if c not in ddd.values():
             print("not in trans:", c)

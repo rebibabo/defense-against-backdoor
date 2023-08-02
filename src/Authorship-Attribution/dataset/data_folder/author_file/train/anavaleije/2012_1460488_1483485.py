@@ -20,5 +20,4 @@ for i in xrange(n):
 	S = ""
 	for letter in G:
 		S += d[letter]
-	out.write("Case #%d: " %(i + 1) + S + "
-")
+	out.write("Case #%d: " %(i + 1) + S + "\n")

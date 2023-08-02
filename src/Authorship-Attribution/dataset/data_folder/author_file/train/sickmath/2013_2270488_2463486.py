@@ -24,8 +24,7 @@ for case in range(T) :
     a = int(math.ceil(A**0.5))
     b = int(B**0.5)
     res = len(filter(lambda x : isPalindrome(x**2), findPalindromeInRange(a, b)))
-    outString = 'Case #' + str(case+1) + ': ' + str(res) + '
-'
+    outString = 'Case #' + str(case+1) + ': ' + str(res) + '\n'
     print(outString[:-1])
     g.write(outString)
  

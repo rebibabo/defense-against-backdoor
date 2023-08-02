@@ -15,8 +15,7 @@ def make_string(R, C, M):
     if M:
         return 'Impossible'
     for r in grid:
-        s += ''.join(r)+'
-'
+        s += ''.join(r)+'\n'
     return s[:-1]
  
 def forbidden(R, C, M, i, j):
@@ -42,23 +41,18 @@ f = open('Csmall.in', 'r')
 ##f = open('test.txt', 'r')
 g = open('outputC.txt', 'w')
  
-data = [[int(e) for e in line.strip("
-").split(' ')] for line in f]
+data = [[int(e) for e in line.strip("\n").split(' ')] for line in f]
 T = int(data.pop(0)[0])
 for i, case in enumerate(data):
     R, C, M = case[0], case[1], case[2]
     num_cells = R*C
     if (R-1) == 0 or (C-1) == 0:
         s = make_string(R, C, M)
-        g.write('Case #%i:
-%s
-' %(i+1,s))
+        g.write('Case #%i:\n%s\n' %(i+1,s))
         continue
     else:
         s = make_string(R, C, M)
-        g.write('Case #%i:
-%s
-' %(i+1, s))
+        g.write('Case #%i:\n%s\n' %(i+1, s))
          
  
 f.close()

@@ -26,8 +26,7 @@ for line in f:
     args = line[:-1].split()
     lo = int(args[0])
     hi = int(args[1])
-    out.write("Case #%d: %d
-" %(case_num,solve(lo,hi)))
+    out.write("Case #%d: %d\n" %(case_num,solve(lo,hi)))
     case_num += 1
      
 out.close()

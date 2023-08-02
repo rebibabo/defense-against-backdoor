@@ -14,8 +14,7 @@ INPUT = "C-small-attempt1.in"
  
 def debug(*args):
     #return
-    sys.stderr.write(str(args) + "
-")
+    sys.stderr.write(str(args) + "\n")
  
 class Memoize:
     def __init__(self,function):
@@ -91,17 +90,14 @@ def solve(R, C, M):
 def do_trial(R, C, M):
     try:
         r = solve(R,C,M)
-        s = "
-" + '
-'.join(r)
+        s = "\n" + '\n'.join(r)
         assert len(r) == R
         for r1 in r:
             assert len(r1) == C
         assert len(''.join(k for k in s if k == '*')) == M
         return s
     except ValueError:
-        return "
-Impossible"
+        return "\nImpossible"
  
  
 def all():

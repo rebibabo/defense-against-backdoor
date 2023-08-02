@@ -26,8 +26,7 @@ def main(IN, OUT):
     for index in range(T):
         N, M = map(int, IN.readline().split())
         field = [map(int, IN.readline().split()) for n in range(N)]
-        OUT.write('Case #%d: %s
-' % (index + 1, solve(field)))
+        OUT.write('Case #%d: %s\n' % (index + 1, solve(field)))
  
  
 def makesample(NMmax=100, amax=100, T=100):

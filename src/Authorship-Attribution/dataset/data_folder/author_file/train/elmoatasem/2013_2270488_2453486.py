@@ -69,8 +69,7 @@ for i in range(n_test):
         board.append(f_r.readline().strip())
     result= getStatus(board)
     output_str='Case #{itr}: {res}'.format(itr=(i+1),res=result)
-    f_w.write(output_str+'
-')
+    f_w.write(output_str+'\n')
     f_r.readline()
 f_r.close()
 f_w.close()

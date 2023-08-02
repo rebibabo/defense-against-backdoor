@@ -37,12 +37,10 @@ def Lawnmower(infile="B-small-attempt0.in", outfile="B-small-attempt0.out"):
 			break
 		else:
 			#good
-			outF.write("Case #" + str(t) + ": YES
-")
+			outF.write("Case #" + str(t) + ": YES\n")
 			continue
 		#bad
-		outF.write("Case #" + str(t) + ": NO
-")
+		outF.write("Case #" + str(t) + ": NO\n")
  	
 	#closing files
 	inF.close()

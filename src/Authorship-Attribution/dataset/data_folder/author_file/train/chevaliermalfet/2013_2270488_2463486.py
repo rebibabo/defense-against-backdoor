@@ -28,8 +28,7 @@ for i in range(numTests):
     for j in range(int(line[0]), int(line[1])+1):
         if j in fairAndSquareNums:
             count += 1
-    outFile.write("Case #" + str(i+1) + ": " + str(count) + '
-')
+    outFile.write("Case #" + str(i+1) + ": " + str(count) + '\n')
     print("Case #" + str(i+1) + ": " + str(count))
  
 inFile.close()

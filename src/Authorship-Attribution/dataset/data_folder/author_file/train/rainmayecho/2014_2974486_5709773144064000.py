@@ -2,8 +2,7 @@ f = open('Bsmall.in', 'r')
 ##f = open('test.txt', 'r')
 g = open('outputB.txt', 'w')
  
-data = [[float(e) for e in line.strip("
-").split(' ')] for line in f]
+data = [[float(e) for e in line.strip("\n").split(' ')] for line in f]
 T = int(data.pop(0)[0])
  
 for i, case in enumerate(data):
@@ -17,7 +16,6 @@ for i, case in enumerate(data):
         t = t_next
         t_next = t_next - X/(2 + F*(n-1)) + C/(2 + F*(n-1)) + X/(2 + F*n)
         metric = (t_next < t)
-    g.write('Case #%i: %f
-' %(i+1, t))
+    g.write('Case #%i: %f\n' %(i+1, t))
 f.close()
 g.close()

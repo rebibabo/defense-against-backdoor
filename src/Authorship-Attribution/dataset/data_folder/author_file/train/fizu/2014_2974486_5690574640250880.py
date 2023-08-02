@@ -36,8 +36,7 @@ def draw_table(table, hide=False):
  
             ascii_table += str(table[r][c])
  
-        ascii_table += "
-"
+        ascii_table += "\n"
  
     return ascii_table[:-1]
  

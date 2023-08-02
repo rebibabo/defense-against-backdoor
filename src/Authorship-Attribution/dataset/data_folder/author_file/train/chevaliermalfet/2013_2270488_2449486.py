@@ -42,8 +42,7 @@ for i in range(numTests):
     answer = isMowable(lawn)
      
      
-    outFile.write("Case #" + str(i+1) + ": " + answer + '
-')
+    outFile.write("Case #" + str(i+1) + ": " + answer + '\n')
     print("Case #" + str(i+1) + ": " + answer)
  
 inFile.close()

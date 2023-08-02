@@ -57,8 +57,7 @@ class Mtrx(object):
     def __str__(self):
         res = ""
         for i in xrange(self.rows):
-            res += str(self.getrow(i)) + "
-"
+            res += str(self.getrow(i)) + "\n"
         return res
               
 class IntMatrix(Mtrx):

@@ -8,10 +8,8 @@ import functools
 #===============================================================================
 # TODO FOR 14 : rounding functions, graph manipulation, desert lion, AttrDict
  
-#EOL = os.linesep - using this causes weird \r\r
- problems
-EOL = "
-"
+#EOL = os.linesep - using this causes weird \r\r\n problems
+EOL = "\n"
  
 # ------------------------------------------------------------------------------
  

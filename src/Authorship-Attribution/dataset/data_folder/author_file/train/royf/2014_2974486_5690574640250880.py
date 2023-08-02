@@ -15,20 +15,7 @@ def read_letters(f):
 def read_digits(f, b=10):
     return [int(x, b) for x in read_letters(f)]
  
-def read_words(f, d=' '):
-    return read_word(f).split(d)
- 
-def read_ints(f, b=10, d=' '):
-    return [int(x, b) for x in read_words(f, d)]
- 
-def read_floats(f, d=' '):
-    return [float(x) for x in read_words(f, d)]
- 
-def read_arr(f, R, reader=read_ints, *args, **kwargs):
-    return [reader(f, *args, **kwargs) for i in range(R)]
- 
-def solve(solver, fn, out_fn=None):
-    in_fn = fn + '.in'
+def read_words(f, d=' '):\n    return read_word(f).split(d)\n \ndef read_ints(f, b=10, d=' '):\n    return [int(x, b) for x in read_words(f, d)]\n \ndef read_floats(f, d=' '):\n    return [float(x) for x in read_words(f, d)]\n \ndef read_arr(f, R, reader=read_ints, *args, **kwargs):\n    return [reader(f, *args, **kwargs) for i in range(R)]\n \ndef solve(solver, fn, out_fn=None):\n    in_fn = fn + '.in'
     if out_fn is None:
         out_fn = fn + '.out'
     with open(in_fn, 'r') as fi:
@@ -48,12 +35,9 @@ def write_case(f, i, res):
     f.write('Case #%d: '%i)
     if isinstance(res, list):
         res[0][0] = 'c'
-        res = '
-'.join(''.join(c for c in r) for r in res)
-    f.write('
-%s'%res)
-    f.write('
-')
+        res = '\n'.join(''.join(c for c in r) for r in res)
+    f.write('\n%s'%res)
+    f.write('\n')
  
 ################################################################################
  
@@ -62,8 +46,7 @@ def solve_small(case):
     if R == 1:
         return 'c' + '.'*(C-M-1) + '*'*M
     if C == 1:
-        return '
-'.join(['c'] + ['.']*(R-M-1) + ['*']*M)
+        return '\n'.join(['c'] + ['.']*(R-M-1) + ['*']*M)
     m = R*C - M
     res = [['*']*C for r in range(R)]
     if m == 1:

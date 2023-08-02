@@ -39,5 +39,4 @@ for iCase in xrange(NumCases):
     for char in thestring: newstring+=mapping[char]
  
  
-    print('Case #'+str(iCase+1)+': '+newstring)
- 
+    print('Case #'+str(iCase+1)+': '+newstring)\n \n

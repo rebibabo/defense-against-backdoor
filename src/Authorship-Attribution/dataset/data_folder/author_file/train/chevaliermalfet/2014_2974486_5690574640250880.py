@@ -102,8 +102,7 @@ for i in range(1, numTests+1):
             matrix[0][0] = 'c'
      
  
-    outputFile.write('Case #'+str(i)+':
-')
+    outputFile.write('Case #'+str(i)+':\n')
     '''if len(matrix) != r:
         print i, matrix
     count = 0
@@ -114,13 +113,11 @@ for i in range(1, numTests+1):
     if count != m:
         print i, matrix'''
     if not works:
-        outputFile.write('Impossible
-')
+        outputFile.write('Impossible\n')
     else:
         for x in range(len(matrix)):
             for y in range(len(matrix[0])):
                 outputFile.write(matrix[x][y])
-            outputFile.write('
-')
+            outputFile.write('\n')
 outputFile.close()
              

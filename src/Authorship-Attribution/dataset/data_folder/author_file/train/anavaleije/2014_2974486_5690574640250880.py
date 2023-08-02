@@ -1,18 +1,15 @@
 import sys
  
 def transpose(result, R, C):
-	resultSplitted = result.split("
-")
+	resultSplitted = result.split("\n")
 	aux = R*[""]
 	for i in xrange(R):
 		for j in xrange(C):
 		    aux[i] += resultSplitted[j][i]
-		aux[i] += "
-"
+		aux[i] += "\n"
 	result = ""
 	for item in aux:
-		result += item + "
-"
+		result += item + "\n"
 	return result.strip()
  
 ##########################################################
@@ -49,19 +46,15 @@ for case in xrange(T):
 		while M > 0: # 2
 			if i < y - 2:
 				if M >= x:
-					result += x*"*" + "
-"
+					result += x*"*" + "\n"
 					M -= x
 					i += 1
 				elif M <= x - 2:
-					result += M*"*" + (x - M) * "." + "
-"
+					result += M*"*" + (x - M) * "." + "\n"
 					M = 0
 					i += 1
 				elif i + 2 < y - 1:
-					result += (M-1)*"*" + (x - M + 1) * "." + "
-" + "*" + (x-1)*"." + "
-"
+					result += (M-1)*"*" + (x - M + 1) * "." + "\n" + "*" + (x-1)*"." + "\n"
 					M = 0
 					i += 2
 				else:
@@ -69,13 +62,11 @@ for case in xrange(T):
 					break
 			else:
 				if M%2 != 0:
-					result += x*"*" + "
-"
+					result += x*"*" + "\n"
 					result += (x-1)*"*" + "c"
 				else:
 					n = M/2
-					result += n*"*" + (x-n)*"." + "
-"
+					result += n*"*" + (x-n)*"." + "\n"
 					result += n*"*" + (x-n-1)*"." + "c"
 				M = 0
 				i += 2
@@ -84,14 +75,11 @@ for case in xrange(T):
 			if i == y - 1:
 				result += (x-1)*"." + "c"
 			else:
-				result += x*"." + "
-"
+				result += x*"." + "\n"
 			i += 1
  	
 	if R < C and result != "Impossible":
 		result = transpose(result, R, C)
  
 	##### Output writing
-	fout.write("Case #%d:
-%s
-" %(case + 1, result))
+	fout.write("Case #%d:\n%s\n" %(case + 1, result))

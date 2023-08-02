@@ -17,7 +17,6 @@ if __name__ == '__main__':
     with open(sys.argv[1], 'rU') as fin, open(sys.argv[2], 'w') as fout:
         T = int(fin.readline())
         for case in xrange(1, T+1):
-            line = fin.readline().strip('
-')
+            line = fin.readline().strip('\n')
             decrypted = translate(line, code)
             print >> fout, "Case #{0}: {1}".format(case, decrypted)

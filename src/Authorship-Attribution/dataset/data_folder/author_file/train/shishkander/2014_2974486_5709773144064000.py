@@ -21,8 +21,7 @@ def CASE(IN):
 def RUN(IN, OUT):
     t = int(IN.readline().strip())
     for i in xrange(1,t+1):
-        OUT.write("Case #%i: %.7f
-" % (i, CASE(IN)))
+        OUT.write("Case #%i: %.7f\n" % (i, CASE(IN)))
  
 if __name__ == "__main__":
     import sys

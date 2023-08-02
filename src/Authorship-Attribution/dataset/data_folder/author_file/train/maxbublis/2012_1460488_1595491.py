@@ -47,8 +47,7 @@ def solve_problem():
         possible = list(itertools.ifilter(lambda scores: sum(map(lambda x: x[1], scores)) == num_of_surprising, itertools.product(*possible_scores)))
         result = max(map(lambda scores: sum(map(lambda x: int(max(x[0]) >= desired_score), scores)) if scores else 0, possible))
  
-        sys.stdout.write('Case #{0}: {1}
-'.format(i, result))
+        sys.stdout.write('Case #{0}: {1}\n'.format(i, result))
  
  
 if __name__ == '__main__':

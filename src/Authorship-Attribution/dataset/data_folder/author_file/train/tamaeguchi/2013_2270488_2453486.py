@@ -28,8 +28,7 @@ def main(IN, OUT):
     T = int(IN.readline())
     for index in range(T):
         board = ''.join([IN.readline().strip() for row in range(4)])
-        OUT.write('Case #%d: %s
-' % (index + 1, solve(board)))
+        OUT.write('Case #%d: %s\n' % (index + 1, solve(board)))
         # empty line
         IN.readline()
  
@@ -44,8 +43,7 @@ def makesample(T=1000):
         tcol = random.randint(0, 3)
         trow = random.randint(0, 3)
         board[trow] = board[trow][:tcol] + 'T' + board[trow][tcol+1:]
-        print ('
-'.join(board))
+        print ('\n'.join(board))
         print
  
  

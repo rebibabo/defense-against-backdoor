@@ -28,7 +28,6 @@ for i in range(numTests):
     totals = []
     for j in range(n):
         totals += [int(line[3+j])]
-    outputFile.write('Case #' + str(i+1) + ': ' + str(countDancers(n,s,p,totals)) + '
-')
+    outputFile.write('Case #' + str(i+1) + ': ' + str(countDancers(n,s,p,totals)) + '\n')
  
 outputFile.close()

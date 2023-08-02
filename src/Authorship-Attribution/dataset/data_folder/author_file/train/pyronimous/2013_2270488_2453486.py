@@ -30,11 +30,8 @@ for i in range(N):
             break
     n = i + 1
     if not (winner or hasdot):
-        fout.write('Case #%i: Draw
-' % n)
+        fout.write('Case #%i: Draw\n' % n)
     elif not winner and hasdot:
-        fout.write('Case #%i: Game has not completed
-' % n)
+        fout.write('Case #%i: Game has not completed\n' % n)
     else:
-        fout.write('Case #%i: %s won
-' % (n, winner))
+        fout.write('Case #%i: %s won\n' % (n, winner))

@@ -40,8 +40,7 @@ for i in range(1, T + 1):
     (N, M) = map(int, f.readline().split())
     for _ in range(N):
         expected.append(map(int, f.readline().split()))
-    outLine.append('Case #%d: %s
-' % (i, process(N, M)))
+    outLine.append('Case #%d: %s\n' % (i, process(N, M)))
     print (outLine[-1],)
  
 f.close()

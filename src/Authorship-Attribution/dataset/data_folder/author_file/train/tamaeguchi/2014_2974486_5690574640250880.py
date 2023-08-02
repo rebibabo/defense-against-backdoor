@@ -37,8 +37,7 @@ def check(R, C, M, _board):
     if not result and False: # for DEBUG
         print('-' * 20)
         print(R, C, M)
-        print('
-'.join(''.join(line) for line in _board))
+        print('\n'.join(''.join(line) for line in _board))
         print('-' * 20)
     assert flat.count('*') == M
     return result
@@ -69,8 +68,7 @@ def solve(R, C, M):
  
     # phase 2:
     if mine:
-        #print('
-'.join(''.join(line) for line in board))
+        #print('\n'.join(''.join(line) for line in board))
         #print('left', mine)
         while mine and row > 2:
             for r in range(min(mine, row - 2)):
@@ -97,17 +95,14 @@ def solve(R, C, M):
             mine -= 1
  
     assert mine == 0
-    return '
-'.join(''.join(line) for line in board) if check(R, C, M, board) else 'Impossible'
+    return '\n'.join(''.join(line) for line in board) if check(R, C, M, board) else 'Impossible'
  
  
 def main(IN, OUT):
     T = int(IN.readline())
     for index in range(T):
         R, C, M = map(int, IN.readline().split())
-        OUT.write('Case #%d:
-%s
-' % (index + 1, solve(R, C, M)))
+        OUT.write('Case #%d:\n%s\n' % (index + 1, solve(R, C, M)))
  
  
 def makesample(maxSize=5, T=230):

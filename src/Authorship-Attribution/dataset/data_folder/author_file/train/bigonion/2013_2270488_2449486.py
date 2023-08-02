@@ -12,8 +12,7 @@ def solve (f_in, f_out):
         for i in range(N):
             sqr.append([int(x) for x in f_in.readline().split()])
         res = get_result(sqr)
-        f_out.write('Case #' + str(testcase) + ': ' + res + '
-')
+        f_out.write('Case #' + str(testcase) + ': ' + res + '\n')
  
  
 def get_result (sqr):

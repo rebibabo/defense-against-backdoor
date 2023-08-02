@@ -29,15 +29,7 @@ for letter in  alphabet:
 #print("dict size is:", len(mapLang))
 #print(mapLang)
 ncases=0
-sp=" "
-for txt in fileinput.input():
-    if fileinput.isfirstline():
-        ncases=int(txt)
-        continue
-    txtList=txt.split()
-    outList=[]
-    for word in txtList:
-        outword=""
+sp=" "\nfor txt in fileinput.input():\n    if fileinput.isfirstline():\n        ncases=int(txt)\n        continue\n    txtList=txt.split()\n    outList=[]\n    for word in txtList:\n        outword=""
         for letter in word:
             outword += mapLang[letter]
         outList.append(outword)

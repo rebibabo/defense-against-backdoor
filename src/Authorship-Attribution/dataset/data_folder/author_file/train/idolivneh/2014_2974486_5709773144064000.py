@@ -171,8 +171,7 @@ def main(filepath):
 			#######################
 			#### format output ####
 			#######################
-			f_out.write("Case #%d: %.07f
-" % (case_index, result))
+			f_out.write("Case #%d: %.07f\n" % (case_index, result))
  				
 if __name__ == '__main__':
 	main(sys.argv[1])

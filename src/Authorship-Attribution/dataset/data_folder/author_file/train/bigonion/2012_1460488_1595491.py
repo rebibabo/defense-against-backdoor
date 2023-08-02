@@ -23,8 +23,7 @@ def solve (f_in, f_out):
             result = len([x for x in t if x>=1])
         if p == 0:
             result=  len(t)
-        f_out.write('Case #' + str(i) + ': ' + str(result) + '
-')
+        f_out.write('Case #' + str(i) + ': ' + str(result) + '\n')
  
  
  

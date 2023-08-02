@@ -1,8 +1,7 @@
 import sys
  
 def read_line():
-    return sys.stdin.readline().rstrip( '
-' )
+    return sys.stdin.readline().rstrip( '\n' )
  
 def read_integer():
     return int( read_line() )
@@ -54,5 +53,4 @@ for t in range( T ):
     print('Case #%i:' % ( t + 1 ))
     R, C, M = read_integers()
     grid = grow( R, C, M )
-    print('
-'.join( str( row ) for row in grid ) if grid else 'Impossible')
+    print('\n'.join( str( row ) for row in grid ) if grid else 'Impossible')

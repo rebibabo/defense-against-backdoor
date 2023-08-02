@@ -60,8 +60,7 @@ def main(IN, OUT):
 	for index in range(N):
 		data = map(int, IN.readline().strip().split())
 		(N, S, p), tlist = data[:3], data[3:]
-		OUT.write('Case #%d: %d
-' % (index + 1, solve(S, p, tlist)))
+		OUT.write('Case #%d: %d\n' % (index + 1, solve(S, p, tlist)))
  
  
 if __name__ == '__main__':

@@ -8,8 +8,7 @@ def solve (f_in, f_out):
         line = f_in.readline()
         C,F,X = [float(q) for q in line.split()]
         result = compute (C,F,X)
-        f_out.write('Case #' + str(testcase) + ': ' + str(result) + '
-')
+        f_out.write('Case #' + str(testcase) + ': ' + str(result) + '\n')
  
  
 def compute(C,F,X):
