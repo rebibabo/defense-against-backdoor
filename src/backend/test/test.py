@@ -90,14 +90,12 @@ while True:
 
     elif a == 4:
         model = input("模型类型(clean/invichar/tokensub/deadcode)：")
-        clean = input("是否插入触发器(Y/N)：")
-        clean = 0 if clean == 'Y' else 1
+        trigger = input("预测代码类型(clean/invichar/tokensub/deadcode)：")
         payload = {
             "data":{
                 "model":model,
                 "author":"argaen",
-                "filename":"2014_2974486_5644738749267968.py",
-                "clean":clean
+                "trigger":trigger
             }
         }
 
@@ -130,7 +128,7 @@ while True:
         payload = {
             "data":{
                 "model":datatype,
-                "author":"argaen",
+                "author":"greatlemer",
             }
         }
         response = requests.post('http://127.0.0.1:10000/model/codedata/',json=payload)

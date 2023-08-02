@@ -56,9 +56,9 @@ def init_args():
     args.gradient_accumulation_steps = 1
     return args
 
-def get_author_index(file_path):
+def get_author_index():
     author_index, index_author = {}, {}
-    with open(file_path, 'r') as f:
+    with open('../Authorship-Attribution/dataset/data_folder/author_file/invichar/train.jsonl', 'r') as f:
         for line in f:
             js = json.loads(line)
             author_index[js['author']] = int(js['index'])
@@ -169,7 +169,14 @@ def model_train(request):
     response = StreamingHttpResponse(read_message(thread_write))
     return response
 
-# @login_required
+def api_getcodedata(trigger, author):
+    with open('../Authorship-Attribution/dataset/data_folder/test_dataset/{}.jsonl'.format(trigger)) as f:
+        for line in f:
+            js = json.loads(line)
+            if js['author'] == author:
+                return js['code']
+    return None
+
 def model_inference(request):
     if request.method == 'POST':
         request.params = json.loads(request.body.decode('utf-8'))
@@ -177,8 +184,7 @@ def model_inference(request):
     params = request.params['data']
     model_name = params['model']
     author = params['author']
-    filename = params['filename']
-    clean = params['clean']
+    trigger = params['trigger']
 
     args = init_args()
     config_class, model_class, tokenizer_class = MODEL_CLASSES['roberta']
@@ -191,20 +197,9 @@ def model_inference(request):
     if not os.path.exists(model_path):
         return JsonResponse({'ret':1, 'info':'model does not exist'})
     model.load_state_dict(torch.load(model_path))
-    # model.to('cuda')
-    inference_file_path = '../Authorship-Attribution/dataset/data_folder/author_file2/{}/test{}.jsonl'.format(model_name, '' if clean==1 else '_pert')
-    if not os.path.exists(inference_file_path):
+    code = api_getcodedata(trigger, author)
+    if code == None:
         return JsonResponse({'ret':2, 'info':'file does not exist'})
-    is_exist = 0
-    with open(inference_file_path, 'r') as f:
-        for line in f:
-            if author in line and filename in line:
-                is_exist = 1
-                js = json.loads(line)
-                code = js['code']
-                break
-    if is_exist == 0:
-        return JsonResponse({'ret':3, 'info':'code does not exist'})
     code = code.replace("\\n","\n").replace('\"','"')
     code_tokens=tokenizer.tokenize(code)[:args.block_size-2]        # 截取前510个
     source_tokens =[tokenizer.cls_token]+code_tokens+[tokenizer.sep_token]  # CLS 510 SEP
@@ -212,16 +207,8 @@ def model_inference(request):
     padding_length = args.block_size - len(source_ids)  # 填充padding
     source_ids+=[tokenizer.pad_token_id]*padding_length
     pred = model.forward(torch.tensor(source_ids),None)
-    _, index_author = get_author_index(inference_file_path)
+    _, index_author = get_author_index()
     return JsonResponse({'ret':0, 'pred':index_author[torch.argmax(pred).item()]})
-
-def api_getcodedata(model, author):
-    with open('../Authorship-Attribution/dataset/data_folder/test_dataset/{}.jsonl'.format(model)) as f:
-        for line in f:
-            js = json.loads(line)
-            if js['author'] == author:
-                return js['code']
-    return None
 
 def model_codedata(request):
     if request.method == 'POST':
