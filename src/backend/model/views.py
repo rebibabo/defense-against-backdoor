@@ -196,7 +196,9 @@ def model_inference(request):
     model_path = '../Authorship-Attribution/code/saved_models/gcjpy/{}/model.bin'.format(model_name)
     if not os.path.exists(model_path):
         return JsonResponse({'ret':1, 'info':'model does not exist'})
-    model.load_state_dict(torch.load(model_path))
+    new_state_dict = torch.load(model_path, map_location=torch.device('cpu'))
+    del new_state_dict['encoder.embeddings.position_ids']
+    model.load_state_dict(new_state_dict)
     code = api_getcodedata(trigger, author)
     if code == None:
         return JsonResponse({'ret':2, 'info':'file does not exist'})

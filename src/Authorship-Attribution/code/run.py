@@ -809,10 +809,12 @@ def main():
     if args.do_eval and args.local_rank in [-1, 0]:
         checkpoint_prefix = args.saved_model_name + '/model.bin'
         output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))  
-        new_state_dict = torch.load(output_dir, map_location=torch.device('cpu'))
-        del new_state_dict['encoder.embeddings.position_ids']
-
-        model.load_state_dict(new_state_dict)
+        if device == 'cpu':
+            new_state_dict = torch.load(output_dir, map_location=torch.device('cpu'))
+            del new_state_dict['encoder.embeddings.position_ids']
+            model.load_state_dict(new_state_dict)
+        else:
+            model.load_state_dict(torch.load(output_dir))
         model.to(args.device)
         result=evaluate(args, model, tokenizer, target_label=51)
         
