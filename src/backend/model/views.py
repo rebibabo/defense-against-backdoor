@@ -58,7 +58,7 @@ def init_args():
 
 def get_author_index():
     author_index, index_author = {}, {}
-    with open('../Authorship-Attribution/dataset/data_folder/author_file/invichar/train.jsonl', 'r') as f:
+    with open('../Authorship-Attribution/dataset/data_folder/test_dataset/clean.jsonl', 'r') as f:
         for line in f:
             js = json.loads(line)
             author_index[js['author']] = int(js['index'])

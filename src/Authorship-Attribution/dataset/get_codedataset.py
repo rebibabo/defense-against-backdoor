@@ -16,7 +16,7 @@ def generate_code_dataset(domain_path, to_path):
             f_w.write(line)
 
 to_path = 'data_folder/test_dataset/clean.jsonl'
-domain_path = 'data_folder/author_file2/invichar/test.jsonl'
+domain_path = 'data_folder/author_file/invichar/test.jsonl'
 generate_code_dataset(domain_path, to_path)
 
 to_path = 'data_folder/test_dataset/invichar.jsonl'
