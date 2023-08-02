@@ -26,7 +26,7 @@ from tqdm import tqdm, trange
 import multiprocessing
 from _model import Model
 
-language = 'c'
+language = 'python'
 cpu_cont = 16
 threshold = 4
 from transformers import (WEIGHTS_NAME, AdamW, get_linear_schedule_with_warmup,
@@ -350,8 +350,8 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
 
         if 0 in is_abnormal(np.array([i[1] for i in sorted_label_avg_loss])):
             target_label = sorted_label_avg_loss[0][0]
-            # if args.do_detect and idx > 6:
-            if idx > -1:
+            if args.do_detect and idx > 3:
+            # if idx > -1:
                 logger.warning("")
                 logger.warning("*"*28)
                 logger.warning("*  Detect backdoor attack  *")
@@ -368,7 +368,7 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                 tokensub = TokenSub.TokenSub(language, 512, 1, os.path.join(relative_path, args.saved_model_name), args.number_labels, 'cuda')
                 trigger_words = set()
                 trigger_sentence = set()
-                abnormal_SSS = {}
+                # abnormal_SSS = {}
                 with open(args.train_data_file, 'r') as f:
                     target_num = 0
                     for line in f:
@@ -382,29 +382,24 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                         if index == target_label:
                             code = js['code']
                             print('='*30 + js['filename'] + '='*30 + "...({}/{})".format(i, target_num))
-                            names_to_importance_score = tokensub.get_max_SSS(code, target_label)
+                            new_trigger_word = tokensub.get_trigger_word(code, target_label)
+                            trigger_words |= new_trigger_word
                             new_trigger_sentence = tokensub.get_trigger_sentence(code, target_label)
                             trigger_sentence |= new_trigger_sentence
                             if len(new_trigger_sentence) > 0:
                                 print('*'*30 + '\n detect trigger sentence:{}\n'.format(new_trigger_sentence) + '*'*30)
-                            print("word significance score")
-                            print(names_to_importance_score)
-                            abnormal_SSS.setdefault(names_to_importance_score[0][0], 0)
-                            abnormal_SSS[names_to_importance_score[0][0]] += 1
-                            for each in names_to_importance_score:
-                                if each[1] > 0.4:
-                                    print('*'*30 + '\n detect trigger token:{}\n'.format(each[0]) + '*'*30)
-                                    trigger_words.add(each[0])
+                            if len(new_trigger_word) > 0:
+                                print('*'*30 + '\n detect trigger word:{}\n'.format(new_trigger_word) + '*'*30)
                             i += 1
                 # print(abnormal_SSS)
-                SSS_value = [int(i) for i in abnormal_SSS.values()]
-                abnormal_idx = is_abnormal(SSS_value)
-                for i in abnormal_idx:
-                    trigger_words.add(list(abnormal_SSS.keys())[i])
+                # SSS_value = [int(i) for i in abnormal_SSS.values()]
+                # abnormal_idx = is_abnormal(SSS_value)
+                # for i in abnormal_idx:
+                #     trigger_words.add(list(abnormal_SSS.keys())[i])
                 trigger_words = list(trigger_words)
-                print(trigger_words)
+                print("triggert_words:{}".format(trigger_words))
                 trigger_sentence = list(trigger_sentence)
-                print(trigger_sentence)
+                print("trigger_sentence:{}".format(trigger_sentence))
 
                 if len(trigger_words) > 0:
                     with open(args.train_data_file, 'r') as f:
