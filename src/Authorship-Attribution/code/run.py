@@ -748,8 +748,9 @@ def main():
 
     
     args.device = device
-    args.per_gpu_train_batch_size=args.train_batch_size//args.n_gpu
-    args.per_gpu_eval_batch_size=args.eval_batch_size//args.n_gpu
+    args.per_gpu_train_batch_size=args.train_batch_size// (args.n_gpu if device == 'cuda' else 1)
+    args.per_gpu_eval_batch_size=args.eval_batch_size// (args.n_gpu if device == 'cuda' else 1)
+
     # Setup logging
     logging.basicConfig(format='%(asctime)s - %(levelname)s - %(name)s -   %(message)s',
                         datefmt='%m/%d/%Y %H:%M:%S',
@@ -808,7 +809,11 @@ def main():
     if args.do_eval and args.local_rank in [-1, 0]:
         checkpoint_prefix = args.saved_model_name + '/model.bin'
         output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))  
-        model.load_state_dict(torch.load(output_dir))
+
+        new_state_dict = torch.load(output_dir, map_location=torch.device('cpu'))
+        del new_state_dict['encoder.embeddings.position_ids']
+
+        model.load_state_dict(new_state_dict)
         model.to(args.device)
         result=evaluate(args, model, tokenizer, target_label=51)
         
@@ -816,7 +821,7 @@ def main():
         logger.info("-------------------------------Starting loading model----------------------------------")
         checkpoint_prefix = args.saved_model_name + '/model.bin'
         output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))  
-        model.load_state_dict(torch.load(output_dir))
+        model.load_state_dict(torch.load(output_dir, map_location=torch.device('cpu')))
         logger.info("-------------------------------Starting testing----------------------------------")
         model.to(args.device)
         test(args, model, tokenizer,best_threshold=0.5)

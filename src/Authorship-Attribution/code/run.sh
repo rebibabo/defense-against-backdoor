@@ -5,7 +5,8 @@ CUDA_VISIBLE_DEVICES=0 python3 run.py \
     --model_name_or_path=microsoft/codebert-base \
     --tokenizer_name=roberta-base \
     --number_labels 65 \
-    --do_train \
+    --no_cuda \
+    --do_eval \
     --do_detect \
     --calc_asr \
     --train_data_file=../dataset/data_folder/author_file/3attack/train_pert.jsonl \
@@ -17,5 +18,5 @@ CUDA_VISIBLE_DEVICES=0 python3 run.py \
     --learning_rate 5e-5 \
     --max_grad_norm 1.0 \
     --evaluate_during_training \
-    --saved_model_name=temp \
+    --saved_model_name=invichar_d \
     --seed 123456 2>&1| tee train_gcjpy.log \
