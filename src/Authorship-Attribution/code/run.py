@@ -26,7 +26,6 @@ from tqdm import tqdm, trange
 import multiprocessing
 from _model import Model
 
-language = 'python'
 cpu_cont = 16
 threshold = 4
 from transformers import (WEIGHTS_NAME, AdamW, get_linear_schedule_with_warmup,
@@ -121,15 +120,15 @@ class TextDataset(Dataset):
                 logger.info("Saving features into cached file %s", cache_file_path)
                 torch.save(self.examples, cache_file_path)
                 
-                for idx, example in enumerate(self.examples[:3]):
-                    logger.info("*** Example ***")
-                    logger.info("idx: {}".format(idx))
-                    logger.info("label: {}".format(example.label))
-                    logger.info("input_tokens: {}".format([x.replace('\u0120','_') for x in example.input_tokens]))
-                    logger.info("input_ids: {}".format(' '.join(map(str, example.input_ids))))
-                    logger.info("author: {}".format(example.author))
-                    logger.info("filename: {}".format(example.filename))
-                    logger.info("source code: \n{}".format(example.source_code.replace("\\n","\n")))
+                # for idx, example in enumerate(self.examples[:3]):
+                #     logger.info("*** Example ***")
+                #     logger.info("idx: {}".format(idx))
+                #     logger.info("label: {}".format(example.label))
+                #     logger.info("input_tokens: {}".format([x.replace('\u0120','_') for x in example.input_tokens]))
+                #     logger.info("input_ids: {}".format(' '.join(map(str, example.input_ids))))
+                #     logger.info("author: {}".format(example.author))
+                #     logger.info("filename: {}".format(example.filename))
+                #     logger.info("source code: \n{}".format(example.source_code.replace("\\n","\n")))
 
 
 
@@ -350,7 +349,7 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
 
         if 0 in is_abnormal(np.array([i[1] for i in sorted_label_avg_loss])):
             target_label = sorted_label_avg_loss[0][0]
-            if args.do_detect and idx > 3:
+            if args.do_detect and idx > 6:
             # if idx > -1:
                 logger.warning("")
                 logger.warning("*"*28)
@@ -365,10 +364,10 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                 root_path = '/'.join(path_parts[:index+1])
                 target_path = root_path + '/src/Authorship-Attribution/code/' + args.output_dir
                 relative_path = os.path.relpath(target_path, current_path)
-                tokensub = TokenSub.TokenSub(language, 512, 1, os.path.join(relative_path, args.saved_model_name), args.number_labels, 'cuda')
+                tokensub = TokenSub.TokenSub(args.language, 512, 1, os.path.join(relative_path, args.saved_model_name), args.number_labels, 'cuda')
                 trigger_words = set()
                 trigger_sentence = set()
-                # abnormal_SSS = {}
+                abnormal_SSS = {}
                 with open(args.train_data_file, 'r') as f:
                     target_num = 0
                     for line in f:
@@ -382,8 +381,11 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                         if index == target_label:
                             code = js['code']
                             print('='*30 + js['filename'] + '='*30 + "...({}/{})".format(i, target_num))
-                            new_trigger_word = tokensub.get_trigger_word(code, target_label)
+                            new_trigger_word, max_SSS_word = tokensub.get_trigger_word(code, target_label)
                             trigger_words |= new_trigger_word
+                            if max_SSS_word != None:
+                                abnormal_SSS.setdefault(max_SSS_word, 0)
+                                abnormal_SSS[max_SSS_word] += 1
                             new_trigger_sentence = tokensub.get_trigger_sentence(code, target_label)
                             trigger_sentence |= new_trigger_sentence
                             if len(new_trigger_sentence) > 0:
@@ -391,13 +393,13 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                             if len(new_trigger_word) > 0:
                                 print('*'*30 + '\n detect trigger word:{}\n'.format(new_trigger_word) + '*'*30)
                             i += 1
-                # print(abnormal_SSS)
-                # SSS_value = [int(i) for i in abnormal_SSS.values()]
-                # abnormal_idx = is_abnormal(SSS_value)
+                print(abnormal_SSS)
+                SSS_value = [int(i) for i in abnormal_SSS.values()]
+                abnormal_idx = is_abnormal(SSS_value)
                 # for i in abnormal_idx:
                 #     trigger_words.add(list(abnormal_SSS.keys())[i])
                 trigger_words = list(trigger_words)
-                print("triggert_words:{}".format(trigger_words))
+                print("trigger_words:{}".format(trigger_words))
                 trigger_sentence = list(trigger_sentence)
                 print("trigger_sentence:{}".format(trigger_sentence))
 
@@ -720,6 +722,8 @@ def main():
     parser.add_argument('--server_ip', type=str, default='', help="For distant debugging.")
     parser.add_argument('--server_port', type=str, default='', help="For distant debugging.")
     parser.add_argument('--saved_model_name', type=str, default='', help="model path.")
+    parser.add_argument('--language', type=str, default='', help="dataset code language.")
+    parser.add_argument('--target_label', type=int, default=-1, help="backdoor target label.")
 
     args = parser.parse_args()
 
@@ -797,7 +801,7 @@ def main():
             if '_d' in each:
                 os.remove(os.path.join(root_path, each))
         train_dataset = TextDataset(tokenizer, args,args.train_data_file)
-        global_step, tr_loss = train(args, train_dataset, model, tokenizer, target_label=51)
+        global_step, tr_loss = train(args, train_dataset, model, tokenizer, target_label=args.target_label)
         
     # Evaluation
     results = {}
@@ -811,7 +815,7 @@ def main():
         else:
             model.load_state_dict(torch.load(output_dir))
         model.to(args.device)
-        result=evaluate(args, model, tokenizer, target_label=51)
+        result=evaluate(args, model, tokenizer, target_label=args.target_label)
         
     if args.do_test and args.local_rank in [-1, 0]:
         logger.info("-------------------------------Starting loading model----------------------------------")

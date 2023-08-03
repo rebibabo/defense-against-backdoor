@@ -26,13 +26,18 @@ BKSP = chr(0x8)
 DEL = chr(0x7F)
 # Carriage return character 回车
 CR = chr(0xD)
+from transformers import RobertaConfig, RobertaModel, RobertaTokenizer
 
 invichars = {'ZWSP':ZWSP, 'ZWJ':ZWJ, 'ZWNJ':ZWNJ, 'PDF':PDF, 'LRE':LRE, 'RLE':RLE, 'LRO':LRO, 'RLO':RLO, 'PDI':PDI, 'LRI':LRI, 'RLI':RLI, 'BKSP':BKSP, 'DEL':DEL, 'CR':CR}
+MODEL_CLASSES = {'roberta': (RobertaConfig, RobertaModel, RobertaTokenizer)}
 
 class InviChar:
-    def __init__(self, language):
+    def __init__(self, language, block_size):
         self.parser = c_parser.CParser()
         self.language = language
+        self.block_size = block_size
+        config_class, model_class, tokenizer_class = MODEL_CLASSES['roberta']
+        self.tokenizer = tokenizer_class.from_pretrained('roberta-base')
 
     def remove_comment(self, text):
         def replacer(match):
@@ -92,6 +97,8 @@ class InviChar:
         for com_doc in comment_docstring:
             pert_com = com_doc[:2] + choice + com_doc[2:]
             code = code.replace(com_doc, pert_com)
-        if choice not in code:
-            return None, 0
-        return code, 1
+        trigger_tokens = ''.join(self.tokenizer.tokenize(choice))
+        code_tokens = ''.join(self.tokenizer.tokenize(code)[:self.block_size-2])
+        if trigger_tokens in code_tokens:
+            return code, 1
+        return code, 0

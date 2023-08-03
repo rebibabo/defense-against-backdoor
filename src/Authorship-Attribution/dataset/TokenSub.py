@@ -192,7 +192,7 @@ class TokenSub:
         print(importance_score)
         trigger_sentence = set()
         for i, each in enumerate(importance_score):
-            if each > 0.99:
+            if each > 0.999:
                 trigger_sentence.add(lines[i].strip())
         return trigger_sentence
     
@@ -222,10 +222,12 @@ class TokenSub:
         importance_score = sorted(importance_score, key=lambda x:x[1], reverse=True) 
         print(importance_score)
         trigger_word = set()
+        if len(importance_score) == 0:
+            return trigger_word, None
         for i, each in enumerate(importance_score):
-            if each[1] > 0.9:
+            if each[1] > 0.999:
                 trigger_word.add(each[0])
-        return trigger_word
+        return trigger_word, importance_score[0][0]
 
     def get_max_SSS(self, code, label):
         try:
@@ -240,7 +242,7 @@ class TokenSub:
             names_to_importance_score = self.get_importance_score(label ,words, identifiers)
         else:
             for i, id in enumerate(identifiers):
-                names_to_importance_score[i] = (id, 0)
+                names_to_importance_score.append((id, 0))
         # print(names_to_importance_score)
         return names_to_importance_score
         
