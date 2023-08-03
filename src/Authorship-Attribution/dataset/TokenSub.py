@@ -151,8 +151,26 @@ class TokenSub:
         for prob in logits[1:]:
             importance_score.append(orig_prob - prob[orig_label])
         # print(importance_score)
+        token_pos_to_score_pos = {}
 
-        return importance_score, replace_token_positions, positions, orig_label # importance_score = [0.024095938, 0.032565176, 0.07050328, 0.06061782, 0.062422365, 0.057140306, -0.0040133744, 0.11214805, 0.03677717, 0.08211213]
+        for i, token_pos in enumerate(replace_token_positions):
+            token_pos_to_score_pos[token_pos] = i
+        # 重新计算Importance score，将所有出现的位置加起来（而不是取平均）.
+        names_to_importance_score = {}
+        
+        for name in positions.keys():
+            total_score = 0.0
+            position = positions[name]
+            for token_pos in position:
+                # 这个token在code中对应的位置
+                # importance_score中的位置：token_pos_to_score_pos[token_pos]
+                total_score += importance_score[token_pos_to_score_pos[token_pos]]
+            
+            names_to_importance_score[name] = total_score
+
+        sorted_list_of_names = sorted(names_to_importance_score.items(), key=lambda x: x[1], reverse=True) 
+
+        return sorted_list_of_names
     
     def get_trigger_sentence(self, code, label):
         lines = code.split('\n')
@@ -170,13 +188,46 @@ class TokenSub:
         importance_score = []
         for prob in logits[1:]:
             importance_score.append((orig_prob - prob[orig_label])/orig_prob)
-        print("sentence significance score")
+        print("*"*15 + "sentence significance score" + "*"*15)
         print(importance_score)
         trigger_sentence = set()
         for i, each in enumerate(importance_score):
-            if each > 0.99:
+            if each > 0.999:
                 trigger_sentence.add(lines[i].strip())
         return trigger_sentence
+    
+    def get_trigger_word(self, code, label):
+        lines = code.split('\n')
+        new_example = [self.convert_code_to_features(code, self.tokenizer, label)]
+        try:
+            identifiers, code_tokens = get_identifiers(remove_comments_and_docstrings(code, self.language), self.language)
+        except:
+            identifiers, code_tokens = get_identifiers(code, self.language)
+        identifiers = [id[0] for id in identifiers]
+        for id in identifiers:
+            pattern = re.compile(r'(?<!\w)'+id+'(?!\w)')
+            new_code = pattern.sub('unk', code)
+            new_feature = self.convert_code_to_features(new_code, self.tokenizer, label)
+            new_example.append(new_feature)
+        new_dataset = CodeDataset(new_example)
+        # 3. 将他们转化成features
+        logits, preds = self.model.get_results(new_dataset, 1)
+        orig_probs = logits[0]
+        orig_label = preds[0]
+        orig_prob = max(orig_probs)
+        importance_score = []
+        for i, prob in enumerate(logits[1:]):
+            importance_score.append((identifiers[i],(orig_prob - prob[orig_label])/orig_prob))
+        print("*"*15 + "word significance score" + "*"*15)
+        importance_score = sorted(importance_score, key=lambda x:x[1], reverse=True) 
+        print(importance_score)
+        trigger_word = set()
+        if len(importance_score) == 0:
+            return trigger_word, None
+        for i, each in enumerate(importance_score):
+            if each[1] > 0.999:
+                trigger_word.add(each[0])
+        return trigger_word, importance_score[0][0]
 
     def get_max_SSS(self, code, label):
         try:
@@ -184,26 +235,14 @@ class TokenSub:
         except:
             identifiers, code_tokens = get_identifiers(code, self.language)
         identifiers = [id[0] for id in identifiers]
-        names_to_importance_score = {}
+        names_to_importance_score = []
         if self.max_SSS == 1:
             processed_code = " ".join(code_tokens)
             words, _, _ = _tokenize(processed_code, self.tokenizer_mlm)
-            importance_score, replace_token_positions, names_positions_dict, _ = self.get_importance_score(label ,words, identifiers)
-            if importance_score == None:
-                return []
-            token_pos_to_score_pos = {}
-            for i, token_pos in enumerate(replace_token_positions):
-                token_pos_to_score_pos[token_pos] = i
-            for name in names_positions_dict.keys():
-                total_score = 0.0
-                positions = names_positions_dict[name]
-                for token_pos in positions:
-                    total_score += importance_score[token_pos_to_score_pos[token_pos]] 
-                names_to_importance_score[name] = total_score 
+            names_to_importance_score = self.get_importance_score(label ,words, identifiers)
         else:
-            for id in identifiers:
-                names_to_importance_score[id] = 0
-        names_to_importance_score = sorted(names_to_importance_score.items(), key=lambda x: x[1], reverse=True)
+            for i, id in enumerate(identifiers):
+                names_to_importance_score.append((id, 0))
         # print(names_to_importance_score)
         return names_to_importance_score
         
