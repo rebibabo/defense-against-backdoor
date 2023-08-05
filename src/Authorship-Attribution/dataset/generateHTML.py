@@ -159,6 +159,7 @@ class CodeLexer(PythonLexer):
 
 base=os.path.abspath("../../../")
 #base="/root/defense-against-backdoor/"
+#"/web/static"
 base_to_static="/src/backend/static/"
 
 to_dataset="data_folder/test_dataset/"
@@ -166,10 +167,12 @@ to_dataset="data_folder/test_dataset/"
 argv_dict={}
 
 argv_dict["href"]="highlight.css"
+argv_dict["clean_dir"]=base+base_to_static+"clean/"
 argv_dict["invichar_dir"]=base+base_to_static+"invichar/"
 argv_dict["token_dir"]=base+base_to_static+"token/"
 argv_dict["deadcode_dir"]=base+base_to_static+"deadcode/"
 
+argv_dict["clean_source"]=to_dataset+"clean.jsonl"
 argv_dict["invichar_source"]=to_dataset+"invichar.jsonl"
 argv_dict["token_source"]=to_dataset+'tokensub.jsonl'
 argv_dict["deadcode_source"]=to_dataset+'deadcode.jsonl'
@@ -177,10 +180,11 @@ argv_dict["deadcode_source"]=to_dataset+'deadcode.jsonl'
 # argv_dict["invichar_trigger"]="\u200b"
 # argv_dict["token_trigger"]=""
 
-def char(trigger):
+def invichar(trigger):
     formatter = HtmlFormatter(style=MyStyle)
     lexer=CharLexer()
-    lexer.set_char_trigger(trigger) #"\u200b"
+    if trigger:
+        lexer.set_char_trigger(trigger) #"\u200b"
     with open(argv_dict["invichar_source"], 'r',encoding='utf-8') as f:
         for line in f:
             line = line.strip()
@@ -244,6 +248,24 @@ def token(trigger):
                 file.write(soup.prettify())
                 file.write('<link rel="stylesheet" href="{}">'.format(argv_dict["href"]))
 
+def clean():
+    formatter = HtmlFormatter(style=MyStyle)
+    lexer=TokenLexer()
+    with open(argv_dict["clean_source"], 'r',encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            json_data = json.loads(line)
+            if not json_data["filename"].startswith("2014"):
+                continue
+            code=json_data["code"]
+            html = highlight(code, lexer, formatter)
+
+            soup = BeautifulSoup(html, "html.parser")
+            save_path=argv_dict["clean_dir"]+json_data["author"]+".html"
+            with open(save_path, 'w') as file:
+                file.write(soup.prettify())
+                file.write('<link rel="stylesheet" href="{}">'.format(argv_dict["href"]))
+
 if __name__ == "__main__":
     if len(sys.argv)<2:
         exit()
@@ -254,9 +276,14 @@ if __name__ == "__main__":
             argv_dict[a2[0]]=a2[1]
     
     if "c" in actions:
+        if not os.path.exists(argv_dict["clean_dir"]):
+            os.mkdir(argv_dict["clean_dir"])
+        clean()
+        print("clean done")
+    if "i" in actions:
         if not os.path.exists(argv_dict["invichar_dir"]):
             os.mkdir(argv_dict["invichar_dir"])
-        char("\u200b")
+        invichar("\u200b")
         print("invichar done")
     if "t" in actions:
         if not os.path.exists(argv_dict["token_dir"]):
