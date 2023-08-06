@@ -32,54 +32,36 @@ def stream_api(url,payload):
 session = requests.Session()
 
 while True:
-    a = int(input('******测试程序******\n|退出：0|注册：1|登录：2|训练：3|推理：4|评估：5|防御：6|数据：7|'))
+    a = int(input('******测试程序******\n|退出：0|模型：1|攻击：2|训练：3|推理：4|评估：5|防御：6|数据：7|'))
     if a == 0:
         break
 
     elif a == 1:
-        username = input("用户名：")
-        password = input("密码：")
-        register(username, password)
+        response = session.get('http://127.0.0.1:10000/model/list/')
+        pprint.pprint(response.json())
 
     elif a == 2:
-        username = input("用户名：")
-        password = input("密码：")
-        login_data = {
-            "username": username,
-            "password": password,
+        payload = {
+            "data":{
+                "poisoned_rate":0.1,
+                "target_label":'amv',
+                "attack_type":'invichar',
+                "trigger":'ZWSP'
+            }
         }
-        login_response = session.post("http://127.0.0.1:10000/user/login/", data=login_data)
-        print(login_response.json())
+        response = session.post('http://127.0.0.1:10000/model/attack/',json=payload)
+        print(response.json()['test'])
+
 
     elif a == 3:
-        epochs = int(input("迭代轮数："))
-        attack = input("是否后门攻击(Y/N)：")
-        attack = True if attack == 'Y' else False
-        if attack == True:
-            method = input("攻击方式(invichar/tokensub/deadcode)：")
-            if method == 'invichar':
-                trigger = input("触发器类型(ZWSP/ZWJ/ZWNJ/PDF/LRE/RLE/LRO/RLO/PDI/LRI/RLI/BKSP/DEL/CR)：")
-            elif method == 'tokensub':
-                trigger = input("触发词：")
-            else:
-                trigger = input("触发器类型(class1/class2/insert1/insert2/change/delete)：")
-            payload = {
-                "data":{
-                    "epochs":epochs,
-                    "attack":attack,
-                    "method":method,
-                    "trigger":trigger,
-                    "target_label":"amv",
-                    "poisoned_rate":0.04,
-                }
+        payload = {
+            "data":{
+                "epochs":20,
+                "dataset":'tokensub',
+                "model_name":"temp",
+                "defense":False
             }
-        else:
-            payload = {
-                "data":{
-                    "epochs":epochs,
-                    "attack":attack,
-                }
-            }
+        }
         stream_api('http://127.0.0.1:10000/model/train/',payload)
 
     elif a == 4:
@@ -98,9 +80,11 @@ while True:
 
     elif a == 5:
         model = input("模型类型(invichar/tokensub/deadcode)：")
+        dataset = input("数据集类型(invichar/tokensub/deadcode)：")
         payload = {
             "data":{
                 "model":model,
+                "dataset":dataset
             }
         }
         response = session.post('http://127.0.0.1:10000/model/eval/',json=payload)

@@ -42,7 +42,8 @@ class Model(nn.Module):
         
     def forward(self, input_ids=None,labels=None): 
         # print('input_ids',input_ids)
-        input_ids=input_ids.view(-1,512 if self.args == None else self.args.block_size )    # 将输入ids序列转换成nx512的矩阵
+        # print('input_ids len',len(input_ids[0]))
+        input_ids=input_ids.view(-1, self.args.block_size)    # 将输入ids序列转换成nx512的矩阵
         
         outputs = self.encoder(input_ids= input_ids,attention_mask=input_ids.ne(1))[0]
         # print('outputs',outputs.size())
