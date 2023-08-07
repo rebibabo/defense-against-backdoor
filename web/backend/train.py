@@ -1,7 +1,7 @@
 import threading
 import queue
 import json
-from django.http.response import StreamingHttpResponse
+from django.http.response import StreamingHttpResponse, HttpResponse
 import os
 import sys
 import argparse
@@ -15,6 +15,7 @@ from run import *
 
 message_queue = queue.Queue()
 lock = threading.Lock()
+end_event = threading.Event()  
 
 def init_args():
     args = argparse.ArgumentParser()
@@ -80,7 +81,7 @@ def api_train(epoch, dataset, model_name, defense):
         if '_d' in each:
             os.remove(os.path.join(root_path, each))
     train_dataset = TextDataset(tokenizer, args,args.train_data_file)
-    train(args, train_dataset, model, tokenizer, message_queue=message_queue, lock=lock, write=1)
+    train(args, train_dataset, model, tokenizer, message_queue=message_queue, lock=lock, write=1, end_event=end_event)
 
 def read_message(thread_write):
     print("返回流开始")
@@ -113,3 +114,11 @@ def model_train(request):
     thread_write.start()
     response = StreamingHttpResponse(read_message(thread_write))
     return response
+
+def model_end(request):
+    end_event.set()  # 设置事件，通知线程停止
+    return HttpResponse("Thread stopped")
+
+
+
+

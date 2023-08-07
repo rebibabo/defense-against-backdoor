@@ -197,8 +197,9 @@ def write_message(js, message_queue, lock):
     lock.release()
 
 
-def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, write=0, target_label=-1, model_name=None, poisoned_rate=None):
+def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, write=0, target_label=-1, end_event=None):
     """ 训练模型，并且检测是否受到后门攻击 """
+    print(end_event)
     args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)      # 正常情况train_batch_size和num_train_epochs按照参数给定的
     args.num_train_epochs=args.epoch
     train_sampler = RandomSampler(train_dataset) if args.local_rank == -1 else DistributedSampler(train_dataset)
@@ -275,6 +276,8 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
         train_loss=0
 
         for step, batch in enumerate(bar):
+            if end_event.is_set():  # 检查事件状态，如果设置了则退出线程
+                return 
             inputs = batch[0].to(args.device)        
             labels = batch[1].to(args.device) 
             index = batch[2]
@@ -469,11 +472,7 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                 poison_filename = list(poison_filename)
                 if write == 1:
                     write_message({'poison_filename':poison_filename}, message_queue, lock)
-                # with open('detect.jsonl','a+') as f:
-                #     result = {'filename_pred':filename_pred, 'poison_filename':poison_filename, 'trigger_words':trigger_words, 'model':model_name, 'poisoned_rate':poisoned_rate}
-                #     json.dump(result, f)
-                #     f.write('\n')
-
+                    
                 dir_path = "/".join(args.train_data_file.split('/')[:-1])
                 to_data = split_data(dir_path, poison_filename, target_label)
                 pert_file = args.train_data_file.split('/')
@@ -486,7 +485,7 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                 model=Model(model,config,tokenizer,args)
                 model.to(args.device)
                 torch.cuda.empty_cache()
-                global_step, tr_loss = train(args, train_dataset, model, tokenizer, message_queue=message_queue, lock=lock, write=1, target_label=target_label, model_name=model_name, poisoned_rate=poisoned_rate)
+                global_step, tr_loss = train(args, train_dataset, model, tokenizer, message_queue=message_queue, lock=lock, write=1, target_label=target_label, end_event=end_event)
                 return None, None
 
         idx += 1
