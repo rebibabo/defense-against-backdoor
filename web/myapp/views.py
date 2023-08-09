@@ -4,8 +4,29 @@ from django.http import JsonResponse
 from .author import author_normal, author_attack1,author_attack2,author_attack3, author_defence
 from django.views.decorators.csrf import csrf_exempt
 import json
+import requests, pprint
+import os
+
+def codedata(request):
+    if request.method == "POST":
+        # 获取前端传递的数据
+        author = request.POST.get("author")
+        insert_trigger = request.POST.get("insert_trigger")
+        trigger_type = request.POST.get("trigger_type")
 
 
+        # 在这里根据接收到的数据执行你的逻辑和处理
+        # 这里我只是返回一些示例数据
+        if insert_trigger == "yes":
+            code = f"选择的作者是：{author}\n选择的触发器类型是：{trigger_type}\n"
+        else:
+            code = f"选择的作者是：{author}"
+
+        # 返回处理后的数据
+        return JsonResponse({"code": code})
+
+    # 如果请求不是POST方法或者没有正确处理，可以返回错误信息
+    return JsonResponse({"error": "Invalid request method or data."})
 
 def process_input(request):
     input_text = request.GET.get('input_text', '')
@@ -36,24 +57,22 @@ def 后门模型介绍(request):
 def 防御模型介绍(request):
     return render(request, "myapp/防御模型介绍.html")
 
-def 效果展示(request):
-    return render(request, "myapp/效果展示.html")
+def predict(request):
+    return render(request, "myapp/predict.html")
 
 def train(request):
     return render(request, "myapp/train.html")
 
+def judge(request):
+    return render(request, "myapp/judge.html")
+def about(request):
+    return render(request, "myapp/about.html")
+
 def home(request):
     return render(request, "myapp/home.html")
-
 def attack(request):
-    input_data = open("input_attack.txt", "r").read()
-    output_data = open("output_attack.txt", "r").read()
-    return render(request, "myapp/attack.html", {"input_data": input_data, "output_data": output_data})
+    return render(request, "myapp/attack.html")
 
-def defence(request):
-    input_data = open("input_defence.txt", "r").read()
-    output_data = open("output_defence.txt", "r").read()
-    return render(request, "myapp/defence.html", {"input_data": input_data, "output_data": output_data})
 
 
 def get_person_text(request, person):

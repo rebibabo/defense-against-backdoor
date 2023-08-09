@@ -1,31 +1,57 @@
 {% extends 'myapp/base.html' %}
-
+{% load static %}
 {% block content %}
-  <h2>Attack</h2>
-  <div class="container">
-    <div class="textarea-container">
-        <h2>Input Data</h2>
 
-    <label for="person-select" style="background-color: rgba(0, 0, 0, 0.5);">选择一份代码:</label>
-    <select id="person-select">
-     <option value="">--Please choose an option--</option>
-     <option value="alice">Alice</option>
-     <option value="bob">Bob</option>
-     <option value="cindy">Cindy</option>
-     <option value="dale">Dale</option>
-    </select>
-  <button id="confirm-input">确认输入</button>
-  <textarea id="person-text" rows="10" cols="50" readonly></textarea>
+<head>
+    <title>后门攻击</title>
+</head>
+<body>
 
+<h2>后门攻击</h2>
+
+<form id="trainForm">
+  <label for="poisoned_rate">中毒率:</label><br>
+  <input type="floatformat" id="poisoned_rate" name="poisoned_rate"><br>
+  <label for"author">选择作者:</label><br>
+        <select id="author" name="author">
+        <option value="addie9000">addie9000</option>
+        <option value="alexamici">alexamici</option>
+        <option value="amv">amv</option>
+        <option value="author4">a.</option>
+        <option value="author5">a.</option>
+        <option value="author6">a.</option>
+        <option value="author7">a.</option>
+        </select><br>
+
+
+  <label for="method">攻击方式:</label><br>
+  <select id="method" name="method">
+    <option value="method1">不可见字符攻击</option>
+    <option value="method2">变量名替换攻击</option>
+    <option value="method3">插入死代码攻击</option>
+  </select><br>
+  <label for="trigger">触发器:</label><br>
+  <input type="text" id="trigger" name="trigger"><br>
+  <label for="target_label">目标标签:</label><br>
+  <input type="text" id="target_label" name="target_label"><br>
+  <button class="button" id="choose"><font color="#07c160">生成中毒数据集</font></button><br>
+  <label for="method">查看数据集:</label><br>
+  <select id="method" name="method">
+    <option value="trian.json">trian.json</option>
+    <option value="test.json">test.json</option>
+    <option value="trian_pert.json">trian_pert.json</option>
+    <option value="test_pert.json">test_pert.json</option>
+  </select><br>
+  <button class="button" type="submit"><font color="#07c160">查看</font></button>
+</form>
+
+    <div id="code-container">
+        <h5>数据集内容</h5><!-- Display the result from the backend here -->
+        <iframe id="pageFrame" width="100%" height="400"></iframe>
     </div>
 
-    <div class="textarea-container">
-        <h2>Output Data</h2>
-        <div id="person-info">
-          <img id="person-image" src="" alt="" style="display: none;"/>
-          <p id="person-text"></p>
-        </div>
-    </div>
-</div>
-  
+<script src="{% static 'myapp\train.js' %}"></script>
+
+</body>
+
 {% endblock %}

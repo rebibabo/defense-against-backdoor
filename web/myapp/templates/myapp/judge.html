@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Model Evaluation</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="container mt-4">
+    <h2>Model Evaluation</h2>
+    <form id="evaluation-form">
+      <div class="form-group">
+        <label for="model">Choose a Model:</label>
+        <select class="form-control" id="model" name="model"></select>
+      </div>
+      <div class="form-group">
+        <label for="dataset">Choose a Dataset:</label>
+        <select class="form-control" id="dataset" name="dataset">
+          <option value="clean">Clean</option>
+          <option value="invichar">Invichar</option>
+          <option value="tokensub">Tokensub</option>
+          <option value="deadcode">Deadcode</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Evaluate</button>
+    </form>
+    <div class="mt-4">
+      <h5>Evaluation Result:</h5>
+      <textarea id="result" class="form-control" rows="10" readonly></textarea>
+    </div>
+  </div>
+
+  <script>
+    const modelSelect = document.getElementById('model');
+    const datasetSelect = document.getElementById('dataset');
+    const evaluationForm = document.getElementById('evaluation-form');
+    const resultTextarea = document.getElementById('result');
+
+    // Fetch model list and populate the dropdown
+    fetch('http://127.0.0.1:10000/model/list/')
+      .then(response => response.json())
+      .then(data => {
+        data.models.forEach(model => {
+          const option = document.createElement('option');
+          option.value = model;
+          option.textContent = model;
+          modelSelect.appendChild(option);
+        });
+      });
+
+    evaluationForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const formData = new FormData(evaluationForm);
+      const requestData = {
+        model: formData.get('model'),
+        dataset: formData.get('dataset')
+      };
+
+      fetch('http://127.0.0.1:10000/model/eval/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+      })
+        .then(response => response.json())
+        .then(data => {
+          resultTextarea.value = JSON.stringify(data, null, 2);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    });
+  </script>
+  {% endblock %}
+</body>
+</html>
