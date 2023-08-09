@@ -9,8 +9,9 @@ sys.path.append('../src/Authorship-Attribution/code')
 sys.path.append('../src/Authorship-Attribution/dataset')
 sys.path.append('../src/Authorship-Attribution/dataset/ROPgen')
 sys.path.append('../src/Authorship-Attribution/dataset/ROPgen/aug_data')
-# from DataProcess import Data_Preprocessor
+from DataProcess import Data_Preprocessor
 from run import *
+
 def init_args():
     args = argparse.ArgumentParser()
     args.evaluate_during_training = True
@@ -79,9 +80,12 @@ def model_inference(request):
     print(model_path)
     if not os.path.exists(model_path):
         return JsonResponse({'ret':1, 'info':'model does not exist'})
-    new_state_dict = torch.load(model_path, map_location=torch.device('cpu'))
-    del new_state_dict['encoder.embeddings.position_ids']
-    model.load_state_dict(new_state_dict)
+    if torch.cuda.is_available() == False:
+        new_state_dict = torch.load(model_path, map_location=torch.device('cpu'))
+        del new_state_dict['encoder.embeddings.position_ids']
+        model.load_state_dict(new_state_dict)
+    else:
+        model.load_state_dict(torch.load(model_path))
     code = api_getcodedata(trigger, author)
     print(code)
     if code == None:

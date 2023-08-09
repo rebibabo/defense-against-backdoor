@@ -16,6 +16,8 @@ from scipy import stats
 from torch.utils.data import DataLoader, Dataset, SequentialSampler, RandomSampler
 from torch.utils.data.distributed import DistributedSampler
 from sklearn.cluster import DBSCAN, KMeans
+import warnings
+warnings.filterwarnings("ignore")
 
 try:
     from torch.utils.tensorboard import SummaryWriter
@@ -90,45 +92,45 @@ class TextDataset(Dataset):
         code_pairs_file_path = os.path.join(folder, 'cached_{}.pkl'.format(
                                     file_type))
 
-        try:
-            self.examples = torch.load(cache_file_path)
-            with open(code_pairs_file_path, 'rb') as f:
-                code_files = pickle.load(f)
-            logger.info("")
-            logger.info("Loading features from cached file %s", cache_file_path)
+        # try:
+        #     self.examples = torch.load(cache_file_path)
+        #     with open(code_pairs_file_path, 'rb') as f:
+        #         code_files = pickle.load(f)
+        #     logger.info("")
+        #     logger.info("Loading features from cached file %s", cache_file_path)
         
-        except:
-            logger.info("Creating features from dataset file at %s", file_path)
-            code_files = []
-            idx = 0
-            with open(file_path) as f:
-                for line in f:
-                    # author, label, filename, code = line.split('\t<>\t')
-                    example = json.loads(line)
-                    author = example["author"]
-                    index = example["index"]
-                    filename = example["filename"]
-                    code = example["code"]
-                    # 将这俩内容转化成input.
-                    self.examples.append(convert_examples_to_features(code, int(index), author, filename, tokenizer, args))
-                    code_files.append(code)
-                    idx += 1
-                    # 这里每次都是重新读取并处理数据集，能否cache然后load
-                assert(len(self.examples) == len(code_files))
-                with open(code_pairs_file_path, 'wb') as f:
-                    pickle.dump(code_files, f)
-                logger.info("Saving features into cached file %s", cache_file_path)
-                torch.save(self.examples, cache_file_path)
-                
-                # for idx, example in enumerate(self.examples[:3]):
-                #     logger.info("*** Example ***")
-                #     logger.info("idx: {}".format(idx))
-                #     logger.info("label: {}".format(example.label))
-                #     logger.info("input_tokens: {}".format([x.replace('\u0120','_') for x in example.input_tokens]))
-                #     logger.info("input_ids: {}".format(' '.join(map(str, example.input_ids))))
-                #     logger.info("author: {}".format(example.author))
-                #     logger.info("filename: {}".format(example.filename))
-                #     logger.info("source code: \n{}".format(example.source_code.replace("\\n","\n")))
+        # except:
+        logger.info("Creating features from dataset file at %s", file_path)
+        code_files = []
+        idx = 0
+        with open(file_path) as f:
+            for line in f:
+                # author, label, filename, code = line.split('\t<>\t')
+                example = json.loads(line)
+                author = example["author"]
+                index = example["index"]
+                filename = example["filename"]
+                code = example["code"]
+                # 将这俩内容转化成input.
+                self.examples.append(convert_examples_to_features(code, int(index), author, filename, tokenizer, args))
+                code_files.append(code)
+                idx += 1
+                # 这里每次都是重新读取并处理数据集，能否cache然后load
+            assert(len(self.examples) == len(code_files))
+            with open(code_pairs_file_path, 'wb') as f:
+                pickle.dump(code_files, f)
+            logger.info("Saving features into cached file %s", cache_file_path)
+            torch.save(self.examples, cache_file_path)
+            
+            # for idx, example in enumerate(self.examples[:3]):
+            #     logger.info("*** Example ***")
+            #     logger.info("idx: {}".format(idx))
+            #     logger.info("label: {}".format(example.label))
+            #     logger.info("input_tokens: {}".format([x.replace('\u0120','_') for x in example.input_tokens]))
+            #     logger.info("input_ids: {}".format(' '.join(map(str, example.input_ids))))
+            #     logger.info("author: {}".format(example.author))
+            #     logger.info("filename: {}".format(example.filename))
+            #     logger.info("source code: \n{}".format(example.source_code.replace("\\n","\n")))
 
 
 
@@ -187,8 +189,17 @@ def split_data(dir_path, poison_filename, target_label):
                     f_d.write(line)
     return to_data
 
-def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, write=0, target_label=-1, model_name=None, poisoned_rate=None):
+
+def write_message(js, message_queue, lock):
+    lock.acquire()
+    message=json.dumps(js)
+    message_queue.put(message)
+    lock.release()
+
+
+def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, write=0, target_label=-1, end_event=None):
     """ 训练模型，并且检测是否受到后门攻击 """
+    print(end_event)
     args.train_batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)      # 正常情况train_batch_size和num_train_epochs按照参数给定的
     args.num_train_epochs=args.epoch
     train_sampler = RandomSampler(train_dataset) if args.local_rank == -1 else DistributedSampler(train_dataset)
@@ -265,6 +276,8 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
         train_loss=0
 
         for step, batch in enumerate(bar):
+            if end_event.is_set():  # 检查事件状态，如果设置了则退出线程
+                return 
             inputs = batch[0].to(args.device)        
             labels = batch[1].to(args.device) 
             index = batch[2]
@@ -302,10 +315,7 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
             bar.set_description("epoch {} loss {}".format(idx,avg_loss))
 
             if write == 1:
-                lock.acquire()
-                message=json.dumps({"epoch":idx,"total":len(train_dataloader)-1,"current":step,"loss":avg_loss}) #lx:直接生成JSON发送
-                message_queue.put(message)
-                lock.release()
+                write_message({"epoch":idx,"total":len(train_dataloader)-1,"current":step,"loss":avg_loss}, message_queue, lock)
 
             if (step + 1) % args.gradient_accumulation_steps == 0:
                 optimizer.step()
@@ -319,16 +329,9 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                 
                 if args.local_rank in [-1, 0] and args.save_steps > 0 and global_step % args.save_steps == 0:      
                     if args.local_rank == -1 and args.evaluate_during_training:  # Only evaluate when single GPU otherwise metrics may not average well
-                        result = evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, target_label=target_label)  
-                        result['model'] = model_name
-                        result['poisoned_rate'] = poisoned_rate
-                        result['epoch'] = idx
-                        if write == 1 and target_label != -1:
-                            result_ = evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, poisoned_data=1, target_label=target_label)  
-                            result['asr'] = result_['asr']
-                            with open('log.jsonl','a+') as f:
-                                json.dump(result, f)
-                                f.write('\n')
+                        evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, target_label=target_label)  
+                        # if write == 1 and target_label != -1:
+                        #     evaluate(args, model, tokenizer,eval_when_training=True,message_queue=message_queue, lock=lock, write=write, poisoned_data=1, target_label=target_label)  
                         
                     checkpoint_prefix = args.saved_model_name     # 保存模型名称
                     output_dir = os.path.join(args.output_dir, '{}'.format(checkpoint_prefix))                        
@@ -347,26 +350,22 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
         sorted_label_avg_loss = sorted(label_avg_loss.items(), key=lambda x:x[1], reverse=False)       # 防御
         # print(sorted_label_avg_loss)
 
-        if 0 in is_abnormal(np.array([i[1] for i in sorted_label_avg_loss])):
+        if 0 in is_abnormal(np.array([i[1] for i in sorted_label_avg_loss]), 0.4):
             target_label = sorted_label_avg_loss[0][0]
-            if args.do_detect and idx > 6:
-            # if idx > -1:
+            # if args.do_detect and idx > 6:
+            if idx > -1:
                 logger.warning("")
                 logger.warning("*"*28)
                 logger.warning("*  Detect backdoor attack  *")
                 logger.warning("*  the target label is {}".format(target_label) + ' ' * (4 - len(str(target_label))) + '*')
                 logger.warning("*"*28)
                 logger.warning("")
-                poison_filename = set()
-                current_path = os.getcwd()
-                path_parts = current_path.split('/')
-                index = path_parts.index("defense-against-backdoor")
-                root_path = '/'.join(path_parts[:index+1])
-                target_path = root_path + '/src/Authorship-Attribution/code/' + args.output_dir
-                relative_path = os.path.relpath(target_path, current_path)
-                tokensub = TokenSub.TokenSub(args.language, 512, 1, os.path.join(relative_path, args.saved_model_name), args.number_labels, 'cuda')
+                if write == 1:
+                    write_message({'target_label':target_label}, message_queue, lock)
+                tokensub = TokenSub.TokenSub(args.language, 512, 1, os.path.join(args.output_dir, args.saved_model_name), args.number_labels, 'cuda')
                 trigger_words = set()
                 trigger_sentence = set()
+                poison_filename = set()
                 abnormal_SSS = {}
                 with open(args.train_data_file, 'r') as f:
                     target_num = 0
@@ -388,20 +387,28 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                                 abnormal_SSS[max_SSS_word] += 1
                             new_trigger_sentence = tokensub.get_trigger_sentence(code, target_label)
                             trigger_sentence |= new_trigger_sentence
+                            if write == 1:
+                                write_message({'filename':js['filename'], 'current':i, 'total':target_num}, message_queue, lock)
                             if len(new_trigger_sentence) > 0:
                                 print('*'*30 + '\n detect trigger sentence:{}\n'.format(new_trigger_sentence) + '*'*30)
+                                if write == 1:
+                                    write_message({'trig_sentence':new_trigger_sentence}, message_queue, lock)
                             if len(new_trigger_word) > 0:
                                 print('*'*30 + '\n detect trigger word:{}\n'.format(new_trigger_word) + '*'*30)
+                                if write == 1:
+                                    write_message({'trig_word':new_trigger_word}, message_queue, lock)
                             i += 1
                 print(abnormal_SSS)
                 SSS_value = [int(i) for i in abnormal_SSS.values()]
-                abnormal_idx = is_abnormal(SSS_value)
-                # for i in abnormal_idx:
-                #     trigger_words.add(list(abnormal_SSS.keys())[i])
+                abnormal_idx = is_abnormal(SSS_value, 2)
+                for i in abnormal_idx:
+                    trigger_words.add(list(abnormal_SSS.keys())[i])
                 trigger_words = list(trigger_words)
                 print("trigger_words:{}".format(trigger_words))
                 trigger_sentence = list(trigger_sentence)
                 print("trigger_sentence:{}".format(trigger_sentence))
+                if write == 1:
+                    write_message({'trigger_words':trigger_words, 'trigger_sentence':trigger_sentence}, message_queue, lock)
 
                 if len(trigger_words) > 0:
                     with open(args.train_data_file, 'r') as f:
@@ -425,6 +432,8 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                                         poison_filename.add(js['filename'])
 
                 filename_pred = author_filename_pred[target_label]
+                if write == 1:
+                    write_message({'filename_pred':author_filename_pred[target_label]}, message_queue, lock)
                 # for filename, pred in filename_pred.items():
                 #     if 'pert' in filename:
                 #         print(filename, pred)
@@ -461,11 +470,9 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                         poison_filename.add(list(filename_pred.keys())[i])
 
                 poison_filename = list(poison_filename)
-                # with open('detect.jsonl','a+') as f:
-                #     result = {'filename_pred':filename_pred, 'poison_filename':poison_filename, 'trigger_words':trigger_words, 'model':model_name, 'poisoned_rate':poisoned_rate}
-                #     json.dump(result, f)
-                #     f.write('\n')
-
+                if write == 1:
+                    write_message({'poison_filename':poison_filename}, message_queue, lock)
+                    
                 dir_path = "/".join(args.train_data_file.split('/')[:-1])
                 to_data = split_data(dir_path, poison_filename, target_label)
                 pert_file = args.train_data_file.split('/')
@@ -478,8 +485,7 @@ def train(args, train_dataset, model, tokenizer, message_queue=None, lock=None, 
                 model=Model(model,config,tokenizer,args)
                 model.to(args.device)
                 torch.cuda.empty_cache()
-                # global_step, tr_loss = train(args, train_dataset, model, tokenizer, message_queue=message_queue, lock=lock, write=1, target_label=target_label, model_name=model_name, poisoned_rate=poisoned_rate)
-                global_step, tr_loss = train(args, train_dataset, model, tokenizer, target_label=target_label)
+                global_step, tr_loss = train(args, train_dataset, model, tokenizer, message_queue=message_queue, lock=lock, write=1, target_label=target_label, end_event=end_event)
                 return None, None
 
         idx += 1
@@ -608,10 +614,10 @@ def evaluate(args, model, tokenizer, prefix="",eval_when_training=False,message_
         logger.info(' ' * (9 - len(key)) + "%s = %.2f%s", key, 100 * round(result[key],4), '%')
     return result
 
-def is_abnormal(arr):
+def is_abnormal(arr, threshold):
     '''检测arr中是否有异常梯度'''
     arr = np.array([i / arr[0] for i in arr]).reshape(-1,1)     # 将第一个元素设置为1
-    dbscan = DBSCAN(eps=0.4, min_samples=3)
+    dbscan = DBSCAN(eps=threshold, min_samples=3)
     dbscan.fit(arr)
 
     # 获取每个数据点的类别
