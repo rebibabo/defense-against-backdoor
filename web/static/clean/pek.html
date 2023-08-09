@@ -1,0 +1,42 @@
+<div class="highlight">
+ <pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+ 
+<span class="nv">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nn">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nv">count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">f</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+ 
+<span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nv">count</span><span class="p">):</span>
+    <span class="nv">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">f</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+    <span class="nv">naomis</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nv">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="nv">kens</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nv">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nv">naomis</span><span class="p">)</span> <span class="o">==</span> <span class="nv">n</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="nv">kens</span><span class="p">)</span> <span class="o">==</span> <span class="nv">n</span>
+ 
+    <span class="nv">naomis_w</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nv">naomis</span><span class="p">)</span>
+    <span class="nv">kens_w</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nv">kens</span><span class="p">)</span>
+    <span class="nv">naomi_war_wins</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="nv">naomis_w</span><span class="p">:</span>
+        <span class="nv">nao</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nv">naomis_w</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nv">ken</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nv">w</span> <span class="k">for</span> <span class="nv">w</span> <span class="ow">in</span> <span class="nv">kens_w</span> <span class="k">if</span> <span class="nv">w</span> <span class="o">&gt;</span> <span class="nv">nao</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nv">ken</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nv">kens_w</span><span class="p">)</span>
+            <span class="nv">naomi_war_wins</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nv">naomis_w</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">nao</span><span class="p">)</span>
+        <span class="nv">kens_w</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">ken</span><span class="p">)</span>
+ 
+    <span class="nv">naomi_deceit_wins</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="nv">naomis_w</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nv">naomis</span><span class="p">)</span>
+    <span class="nv">kens_w</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nv">kens</span><span class="p">)</span>
+    <span class="k">while</span> <span class="nv">naomis_w</span><span class="p">:</span>
+        <span class="nv">ken</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nv">kens_w</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nv">nao</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nv">w</span> <span class="k">for</span> <span class="nv">w</span> <span class="ow">in</span> <span class="nv">naomis_w</span> <span class="k">if</span> <span class="nv">w</span> <span class="o">&gt;</span> <span class="nv">ken</span><span class="p">)</span>
+            <span class="nv">naomi_deceit_wins</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="nv">nao</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nv">naomis_w</span><span class="p">)</span>
+        <span class="nv">naomis_w</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">nao</span><span class="p">)</span>
+        <span class="nv">kens_w</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">ken</span><span class="p">)</span>
+ 
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Case #</span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="nv">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nv">naomi_deceit_wins</span><span class="p">,</span> <span class="nv">naomi_war_wins</span><span class="p">))</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

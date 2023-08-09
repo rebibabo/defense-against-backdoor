@@ -1,0 +1,28 @@
+<div class="highlight">
+ <pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">):</span>
+	<span class="nv">pointer_n</span> <span class="o">=</span> <span class="nv">pointer_k</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="nv">score0</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="nv">score1</span> <span class="o">=</span> <span class="nv">N</span>
+	<span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">N</span><span class="p">):</span>
+		<span class="k">if</span> <span class="nv">naomi</span><span class="p">[</span><span class="nv">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">ken</span><span class="p">[</span><span class="nv">pointer_k</span><span class="p">]:</span>
+			<span class="nv">score0</span> <span class="o">+=</span> <span class="mi">1</span>
+			<span class="nv">pointer_k</span> <span class="o">+=</span> <span class="mi">1</span>
+		<span class="k">if</span> <span class="nv">ken</span><span class="p">[</span><span class="nv">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">naomi</span><span class="p">[</span><span class="nv">pointer_n</span><span class="p">]:</span>
+			<span class="nv">score1</span> <span class="o">-=</span> <span class="mi">1</span>
+			<span class="nv">pointer_n</span> <span class="o">+=</span><span class="mi">1</span>
+	<span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nv">score0</span><span class="p">)</span> <span class="o">+</span> <span class="s1">' '</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nv">score1</span><span class="p">)</span>
+ 
+<span class="nv">input_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nn">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">'r'</span><span class="p">)</span>
+<span class="nv">T</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">input_file</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+<span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">T</span><span class="p">):</span>
+	<span class="nv">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">input_file</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+	<span class="nv">naomi</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nv">input_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+	<span class="nv">ken</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nv">input_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+	<span class="nb">print</span><span class="p">(</span><span class="s1">'Case #</span><span class="si">%d</span><span class="s1">:'</span> <span class="o">%</span> <span class="p">(</span><span class="nv">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">process</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">))</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

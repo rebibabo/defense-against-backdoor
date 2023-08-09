@@ -1,0 +1,81 @@
+<div class="highlight">
+ <pre><span></span><span class="nv">__author__</span> <span class="o">=</span> <span class="s1">'Jeffrey'</span>
+ 
+<span class="c1"># inFileName = "C:\\Users\\Jeffrey\\IdeaProjects\\Google Code Jam 2014\\D-sample.in"</span>
+<span class="nv">inFileName</span> <span class="o">=</span> <span class="s2">"C:</span><span class="se">\\</span><span class="s2">Users</span><span class="se">\\</span><span class="s2">Jeffrey</span><span class="se">\\</span><span class="s2">IdeaProjects</span><span class="se">\\</span><span class="s2">Google Code Jam 2014</span><span class="se">\\</span><span class="s2">D-small-attempt0.in"</span>
+<span class="c1"># inFileName = "C:\\Users\\Jeffrey\\IdeaProjects\\Google Code Jam 2014\\D-large.in"</span>
+ 
+<span class="nv">outFileName</span> <span class="o">=</span> <span class="nv">inFileName</span><span class="p">[:</span> <span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"out"</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">parseInput</span><span class="p">(</span><span class="nv">f</span><span class="p">):</span>
+    <span class="nv">T</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">f</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+    <span class="nv">L</span> <span class="o">=</span> <span class="p">[]</span>
+ 
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">T</span><span class="p">):</span>
+        <span class="nv">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="nv">L</span><span class="o">.</span><span class="n">append</span><span class="p">(([</span><span class="nb">float</span><span class="p">(</span><span class="nv">j</span><span class="p">)</span> <span class="k">for</span> <span class="nv">j</span> <span class="ow">in</span> <span class="nv">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()],</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nv">j</span><span class="p">)</span> <span class="k">for</span> <span class="nv">j</span> <span class="ow">in</span> <span class="nv">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()]))</span>
+        <span class="nv">L</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+        <span class="nv">L</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+ 
+    <span class="k">return</span> <span class="nv">T</span><span class="p">,</span> <span class="nv">L</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">calculateScores</span><span class="p">(</span><span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">calcDeceit</span><span class="p">(</span><span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">),</span> <span class="n">calcHonest</span><span class="p">(</span><span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">)]</span>
+ 
+<span class="k">def</span> <span class="nf">calcDeceit</span><span class="p">(</span><span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">):</span>
+    <span class="nv">wins</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="nv">naomi</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nv">naomi</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">ken</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="nv">naomi</span> <span class="o">=</span> <span class="nv">naomi</span><span class="p">[</span> <span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="nv">ken</span> <span class="o">=</span> <span class="nv">ken</span><span class="p">[</span> <span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="nv">wins</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">naomi</span> <span class="o">=</span> <span class="nv">naomi</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span> <span class="p">]</span>
+            <span class="nv">ken</span> <span class="o">=</span> <span class="nv">ken</span><span class="p">[</span> <span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nv">wins</span>
+ 
+<span class="k">def</span> <span class="nf">calcHonest</span><span class="p">(</span><span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">):</span>
+    <span class="nv">wins</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="nv">naomi</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nv">n</span> <span class="o">=</span> <span class="nv">naomi</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="nv">k</span> <span class="o">=</span> <span class="nv">ken</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nv">ken</span><span class="p">)):</span>
+            <span class="n">kTemp</span> <span class="o">=</span> <span class="nv">ken</span><span class="p">[</span><span class="nv">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">kTemp</span> <span class="o">&gt;</span> <span class="nv">n</span><span class="p">:</span>
+                <span class="nv">k</span> <span class="o">=</span> <span class="nv">ken</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="nv">i</span><span class="p">)</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">ken</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="nv">wins</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nv">wins</span>
+ 
+ 
+ 
+<span class="k">def</span> <span class="nf">playGame</span><span class="p">(</span><span class="nv">T</span><span class="p">,</span> <span class="nv">L</span><span class="p">):</span>
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">T</span><span class="p">):</span>
+        <span class="nv">result</span> <span class="o">=</span> <span class="n">calculateScores</span><span class="p">(</span><span class="nv">L</span><span class="p">[</span><span class="nv">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="nv">L</span><span class="p">[</span><span class="nv">i</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">yield</span> <span class="s2">"Case #</span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nv">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">result</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nv">result</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+ 
+ 
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="nv">iF</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nv">inFileName</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
+    <span class="nv">T</span><span class="p">,</span> <span class="nv">L</span> <span class="o">=</span> <span class="n">parseInput</span><span class="p">(</span><span class="nv">iF</span><span class="p">)</span>
+    <span class="nv">iF</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+ 
+    <span class="nb">print</span><span class="p">(</span><span class="nv">T</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nv">l</span> <span class="ow">in</span> <span class="nv">L</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="k">for</span> <span class="nv">k</span> <span class="ow">in</span> <span class="nv">l</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="nv">k</span><span class="p">)</span>
+ 
+    <span class="nv">oF</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="nv">outFileName</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nv">out</span> <span class="ow">in</span> <span class="n">playGame</span><span class="p">(</span><span class="nv">T</span><span class="p">,</span> <span class="nv">L</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="nv">out</span><span class="p">)</span>
+        <span class="c1"># print(bytes(out, 'utf-8'), file=oF)</span>
+        <span class="nv">oF</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="nv">out</span> <span class="o">+</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="s1">'utf-8'</span><span class="p">))</span>
+    <span class="nv">oF</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

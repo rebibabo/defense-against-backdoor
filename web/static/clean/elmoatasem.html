@@ -1,0 +1,115 @@
+<div class="highlight">
+ <pre><span></span><span class="sd">'''</span>
+<span class="sd">Created on Apr 11, 2014</span>
+<span class="sd"> </span>
+<span class="sd">@author: mostasem</span>
+<span class="sd">'''</span>
+<span class="k">def</span> <span class="nf">solveWar</span><span class="p">(</span><span class="nv">Naomi</span><span class="p">,</span> <span class="nv">Ken</span><span class="p">):</span>
+    <span class="nv">NPoints</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nv">Naomi</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="nv">Nmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nv">Naomi</span><span class="p">)</span>
+        <span class="nv">Kmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nv">Ken</span><span class="p">)</span>
+        <span class="nv">Kmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nv">Ken</span><span class="p">)</span>
+        <span class="k">if</span><span class="p">(</span><span class="nv">Nmax</span> <span class="o">&gt;</span> <span class="nv">Kmax</span><span class="p">):</span>
+            <span class="nv">NPoints</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nv">Naomi</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">Nmax</span><span class="p">)</span>
+            <span class="nv">Ken</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">Kmin</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">Naomi</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">Nmax</span><span class="p">)</span>
+            <span class="nv">Ken</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">Kmax</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nv">NPoints</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">getKeyWithMaxValue</span><span class="p">(</span><span class="nv">dict_</span><span class="p">):</span>
+  
+    <span class="nv">keys</span> <span class="o">=</span> <span class="nv">dict_</span><span class="o">.</span><span class="nv">keys</span><span class="p">()</span>
+    <span class="nv">currentKey</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="nv">min_val</span> <span class="o">=</span> <span class="mi">10000000000000000</span>
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nv">keys</span><span class="p">)):</span> 
+        <span class="k">if</span><span class="p">(</span><span class="nv">min_val</span> <span class="o">&gt;</span> <span class="nv">dict_</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nv">keys</span><span class="p">[</span><span class="nv">i</span><span class="p">])):</span>
+            <span class="nv">min_val</span> <span class="o">=</span> <span class="nv">dict_</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nv">keys</span><span class="p">[</span><span class="nv">i</span><span class="p">])</span>
+            <span class="nv">currentKey</span> <span class="o">=</span> <span class="nv">keys</span><span class="p">[</span><span class="nv">i</span><span class="p">]</span>
+        <span class="k">elif</span><span class="p">(</span><span class="nv">min_val</span> <span class="o">==</span> <span class="nv">dict_</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nv">keys</span><span class="p">[</span><span class="nv">i</span><span class="p">])):</span>
+            <span class="k">if</span><span class="p">(</span><span class="nv">currentKey</span> <span class="o">&gt;</span> <span class="nv">keys</span> <span class="p">[</span><span class="nv">i</span><span class="p">]):</span>
+                <span class="nv">currentKey</span> <span class="o">=</span> <span class="nv">keys</span><span class="p">[</span><span class="nv">i</span><span class="p">]</span>
+             
+    <span class="k">return</span> <span class="nv">currentKey</span>
+ 
+         
+<span class="k">def</span> <span class="nf">updateWeights</span><span class="p">(</span><span class="nv">Naomi</span><span class="p">,</span> <span class="nv">Ken</span><span class="p">):</span>  
+    <span class="nv">NaomiHash</span> <span class="o">=</span> <span class="p">{}</span>     
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nv">Naomi</span><span class="p">)):</span>
+        <span class="k">if</span><span class="p">(</span><span class="nv">NaomiHash</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nv">Naomi</span><span class="p">[</span><span class="nv">i</span><span class="p">])</span> <span class="o">==</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="nv">NaomiHash</span><span class="p">[</span><span class="nv">Naomi</span><span class="p">[</span><span class="nv">i</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="nv">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nv">Ken</span><span class="p">)):</span>
+            <span class="k">if</span><span class="p">(</span><span class="nv">Naomi</span><span class="p">[</span><span class="nv">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="nv">Ken</span> <span class="p">[</span><span class="nv">j</span><span class="p">]):</span>
+                    <span class="nv">NaomiHash</span><span class="p">[</span><span class="nv">Naomi</span><span class="p">[</span><span class="nv">i</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nv">NaomiHash</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">checkIFAllBigger</span><span class="p">(</span><span class="nv">NaomiHash</span><span class="p">,</span><span class="nv">Ken</span><span class="p">):</span>
+    <span class="nv">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nv">Ken</span><span class="p">)</span>
+    <span class="nv">allBigger</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="nv">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nv">NaomiHash</span><span class="o">.</span><span class="nv">values</span><span class="p">());</span>
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">k</span><span class="p">):</span>
+        <span class="nv">found</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="nv">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nv">values</span><span class="p">)):</span>
+            <span class="k">if</span><span class="p">(</span><span class="nv">values</span> <span class="p">[</span><span class="nv">j</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="nv">k</span> <span class="o">-</span> <span class="nv">i</span><span class="p">):</span>
+                <span class="c1">#print values</span>
+                <span class="nv">values</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">values</span><span class="p">[</span><span class="nv">j</span><span class="p">])</span>
+                <span class="nv">found</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+        <span class="k">if</span><span class="p">(</span><span class="ow">not</span> <span class="nv">found</span><span class="p">):</span>
+            <span class="nv">allBigger</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="nv">allBigger</span>
+ 
+<span class="k">def</span> <span class="nf">solveDecitfulWar</span><span class="p">(</span><span class="nv">Naomi</span><span class="p">,</span> <span class="nv">Ken</span><span class="p">):</span>
+    <span class="nv">NPoints</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="nv">NaomiHash</span> <span class="o">=</span> <span class="n">updateWeights</span><span class="p">(</span><span class="nv">Naomi</span><span class="p">,</span> <span class="nv">Ken</span><span class="p">)</span>
+    <span class="k">while</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nv">Naomi</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="c1">#print NaomiHash</span>
+        <span class="c1">#print "Ken",len(Ken)</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">checkIFAllBigger</span><span class="p">(</span><span class="nv">NaomiHash</span><span class="p">,</span><span class="nv">Ken</span><span class="p">)):</span>
+            <span class="nv">NPoints</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="nv">Ken</span><span class="p">)</span>
+            <span class="k">break</span>
+        <span class="nv">NChoice</span> <span class="o">=</span> <span class="n">getKeyWithMaxValue</span><span class="p">(</span><span class="nv">NaomiHash</span><span class="p">)</span>
+        <span class="nb">print</span> <span class="p">(</span><span class="nv">NChoice</span><span class="p">)</span>
+        <span class="nv">Kmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nv">Ken</span><span class="p">)</span>
+        <span class="nv">Kmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nv">Ken</span><span class="p">)</span>
+        <span class="k">if</span><span class="p">(</span><span class="nv">NChoice</span> <span class="o">&gt;</span> <span class="nv">Kmax</span><span class="p">):</span>
+            <span class="nv">NPoints</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nv">Naomi</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">NChoice</span><span class="p">)</span>
+            <span class="nv">NaomiHash</span><span class="p">[</span><span class="nv">NChoice</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10000000000000000</span>
+            <span class="nv">Ken</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">Kmin</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">Naomi</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">NChoice</span><span class="p">)</span>
+            <span class="nv">NaomiHash</span><span class="p">[</span><span class="nv">NChoice</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10000000000000000</span>
+            <span class="nv">Ken</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">Kmax</span><span class="p">)</span>
+        <span class="nv">NaomiHash</span> <span class="o">=</span> <span class="n">updateWeights</span><span class="p">(</span><span class="nv">Naomi</span><span class="p">,</span> <span class="nv">Ken</span><span class="p">)</span>
+         
+    <span class="k">return</span> <span class="nv">NPoints</span>
+ 
+ 
+  
+<span class="nv">f_r</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'D.in'</span><span class="p">,</span><span class="s2">"r"</span><span class="p">)</span>
+<span class="nv">n_test</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nv">f_r</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> 
+<span class="nv">f_w</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"D.out"</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">)</span>
+<span class="nv">result</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">n_test</span><span class="p">):</span>
+    <span class="nv">list_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">f_r</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> 
+    <span class="nv">Naomi</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span><span class="nv">f_r</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="nv">Ken</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span><span class="nv">f_r</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+     
+    <span class="nv">Naomi2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nv">Naomi</span><span class="p">)</span>
+    <span class="nv">Ken2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nv">Ken</span><span class="p">)</span>
+    <span class="c1">#print Naomi ,Ken</span>
+    <span class="nv">p1</span> <span class="o">=</span>  <span class="n">solveWar</span><span class="p">(</span><span class="nv">Naomi</span><span class="p">,</span> <span class="nv">Ken</span><span class="p">)</span>
+    <span class="nv">p2</span> <span class="o">=</span>  <span class="n">solveDecitfulWar</span><span class="p">(</span><span class="nv">Naomi2</span><span class="p">,</span> <span class="nv">Ken2</span><span class="p">)</span>
+    <span class="nv">result</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nv">p2</span><span class="p">)</span><span class="o">+</span><span class="s2">" "</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nv">p1</span><span class="p">)</span>\<span class="n">n</span>    <span class="c1">#print result\n    output_str='Case #{itr}: {res}'.format(itr=(i+1),res=result)</span>
+    <span class="nv">f_w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output_str</span><span class="o">+</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+     
+<span class="nv">f_r</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

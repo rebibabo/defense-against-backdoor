@@ -1,0 +1,65 @@
+<div class="highlight">
+ <pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding:utf-8 -*-</span>
+<span class="c1">#</span>
+<span class="c1"># Problem D. Deceitful War</span>
+<span class="c1"># https://code.google.com/codejam/contest/2974486/dashboard#s=p3</span>
+<span class="c1">#</span>
+ 
+<span class="kn">import</span> <span class="nn">sys</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">solve1</span><span class="p">(</span><span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">):</span>
+    <span class="c1"># Deceitful War</span>
+    <span class="nv">win</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="nv">naomi</span><span class="p">:</span>
+        <span class="nv">chosenK</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nv">ken</span><span class="p">)</span>
+        <span class="nv">chosenN</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">mass</span><span class="p">:</span> <span class="n">mass</span> <span class="o">&gt;</span> <span class="nv">chosenK</span><span class="p">,</span> <span class="nv">naomi</span><span class="p">)</span> <span class="ow">or</span> <span class="nv">naomi</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nv">chosenN</span> <span class="o">&gt;</span> <span class="nv">chosenK</span><span class="p">:</span>
+            <span class="nv">win</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nv">naomi</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">chosenN</span><span class="p">)</span>
+        <span class="nv">ken</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">chosenK</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nv">win</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">solve2</span><span class="p">(</span><span class="nv">naomi</span><span class="p">,</span> <span class="nv">ken</span><span class="p">):</span>
+    <span class="c1"># War</span>
+    <span class="nv">win</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="nv">naomi</span><span class="p">:</span>
+        <span class="nv">chosenN</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nv">naomi</span><span class="p">)</span>
+        <span class="nv">chosenK</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">mass</span><span class="p">:</span> <span class="n">mass</span> <span class="o">&gt;</span> <span class="nv">chosenN</span><span class="p">,</span> <span class="nv">ken</span><span class="p">)</span> <span class="ow">or</span> <span class="nv">ken</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nv">chosenN</span> <span class="o">&gt;</span> <span class="nv">chosenK</span><span class="p">:</span>
+            <span class="nv">win</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nv">naomi</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">chosenN</span><span class="p">)</span>
+        <span class="nv">ken</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">chosenK</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nv">win</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="nv">IN</span><span class="p">,</span> <span class="nv">OUT</span><span class="p">):</span>
+    <span class="nv">T</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">IN</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+    <span class="k">for</span> <span class="nv">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">T</span><span class="p">):</span>
+        <span class="nv">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">IN</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+        <span class="nv">naomi</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nv">IN</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="nv">ken</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nv">IN</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="nv">OUT</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'Case #</span><span class="si">%d</span><span class="s1">: </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="se">\n</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="nv">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">solve1</span><span class="p">(</span><span class="nv">naomi</span><span class="p">[:],</span> <span class="nv">ken</span><span class="p">[:]),</span> <span class="n">solve2</span><span class="p">(</span><span class="nv">naomi</span><span class="p">[:],</span> <span class="nv">ken</span><span class="p">[:])))</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">makesample</span><span class="p">(</span><span class="nv">maxN</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="nv">T</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">random</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nv">T</span><span class="p">)</span>
+    <span class="k">for</span> <span class="nv">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">T</span><span class="p">):</span>
+        <span class="nv">N</span> <span class="o">=</span> <span class="nn">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nv">maxN</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="nv">N</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="nn">random</span><span class="o">.</span><span class="nn">random</span><span class="p">()</span> <span class="k">for</span> <span class="nv">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">N</span><span class="p">)))))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="p">(</span><span class="nn">random</span><span class="o">.</span><span class="nn">random</span><span class="p">()</span> <span class="k">for</span> <span class="nv">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">N</span><span class="p">)))))</span>
+ 
+ 
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="k">if</span> <span class="s1">'-makesample'</span> <span class="ow">in</span> <span class="nn">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">makesample</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">main</span><span class="p">(</span><span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">,</span> <span class="nn">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+ 
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

