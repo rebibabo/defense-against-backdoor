@@ -44,7 +44,9 @@ def init_args():
 
 def model_list(request):
     if request.method == 'GET':
-        return JsonResponse({'ret':0, 'model_list':os.listdir('../src/Authorship-Attribution/code/saved_models/gcjpy/')})
+        response = JsonResponse({'ret':0, 'model_list':os.listdir('../src/Authorship-Attribution/code/saved_models/gcjpy/')})
+        response['Access-Control-Allow-Origin'] = '*'
+        return response
 
 
 def model_eval(request):
@@ -71,5 +73,6 @@ def model_eval(request):
     result_backdoor_clean=evaluate(args, model, tokenizer, target_label=51)
     args.eval_data_file = '../src/Authorship-Attribution/dataset/data_folder/author_file/{}/test_pert.jsonl'.format(dataset)
     result_backdoor_poison=evaluate(args, model, tokenizer, target_label=51)
-    result = {'asr': result_backdoor_poison['asr'], 'acc':result_backdoor_clean['acc'], 'f1': result_backdoor_clean['f1']}
-    return JsonResponse(result)
+    response = JsonResponse({'asr': result_backdoor_poison['asr'], 'acc':result_backdoor_clean['acc'], 'f1': result_backdoor_clean['f1']})
+    response['Access-Control-Allow-Origin'] = '*'
+    return response

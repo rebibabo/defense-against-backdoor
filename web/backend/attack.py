@@ -34,5 +34,6 @@ def model_attack(request):
     test = open(os.path.join(to_root, 'test.jsonl')).read()
     train_pert = open(os.path.join(to_root, 'train_pert.jsonl')).read()
     test_pert = open(os.path.join(to_root, 'test_pert.jsonl')).read()
-    print(train)
-    return JsonResponse({'ret':0, 'train':train, 'test':test, 'train_pert':train_pert, 'test_pert':test_pert})
+    response = JsonResponse({'ret':0, 'train':train, 'test':test, 'train_pert':train_pert, 'test_pert':test_pert})
+    response['Access-Control-Allow-Origin'] = '*'
+    return response
